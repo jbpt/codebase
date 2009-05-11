@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008 Kai Schlichting
+ * Copyright (c) 2008 Kai Schlichting, Matthias Weidlich
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,11 +23,14 @@ package de.hpi.bpt.process.epc;
 
 
 /**
- * @author Kai Schlichting
+ * Factory to create EPCs.
+ * 
+ * 
+ * @author Kai Schlichting, Matthias Weidlich
  */
-
 public class EPCFactory {
-	public EPC createEPC(){
+	
+	public IEPC<ControlFlow, FlowObject, Event, Function, Connector, ProcessInterface, Connection, Node, NonFlowObject> createEPC(){
 		return new EPC();
 	}
 	

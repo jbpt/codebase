@@ -42,12 +42,6 @@ public class TransitiveClosure<E extends IDirectedEdge<V>,V extends IVertex> {
 			}
 		}
 	}
-
-	public boolean hasPath(int i, int j) {
-		if (matrix == null)
-			calculateMatrix();
-		return matrix[i][j];
-	}
 	
 	public boolean hasPath(V v1, V v2) {
 		if (matrix == null)

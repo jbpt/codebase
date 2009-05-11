@@ -26,20 +26,43 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import de.hpi.bpt.process.epc.Connection;
+import de.hpi.bpt.process.epc.Connector;
 import de.hpi.bpt.process.epc.ControlFlow;
-import de.hpi.bpt.process.epc.EPC;
+import de.hpi.bpt.process.epc.EPCFactory;
+import de.hpi.bpt.process.epc.Event;
 import de.hpi.bpt.process.epc.FlowObject;
+import de.hpi.bpt.process.epc.Function;
+import de.hpi.bpt.process.epc.IEPC;
+import de.hpi.bpt.process.epc.Node;
+import de.hpi.bpt.process.epc.NonFlowObject;
+import de.hpi.bpt.process.epc.ProcessInterface;
 
+/**
+ * It might be the case that one EPC model actually contains two EPC processes
+ * that are not connected. The EPCSplitter class checks whether this is the case
+ * and splits the model into multiple models if necessary.
+ * 
+ * @author gero.decker, matthias.weidlich
+ *
+ */
 public class EPCSplitter {
 
-	protected EPC model;
+	protected IEPC<ControlFlow, FlowObject, Event, Function, Connector, ProcessInterface, Connection, Node, NonFlowObject> model;
 	protected List<Set<FlowObject>> nodeSets = null;
+	protected EPCFactory factory;
 
-
-	public EPCSplitter(EPC model) {
+	public EPCSplitter(EPCFactory factory, IEPC<ControlFlow, FlowObject, Event, Function, Connector, ProcessInterface, Connection, Node, NonFlowObject> model) {
 		this.model = model;
+		this.factory = factory;
 	}
 	
+	/**
+	 * Decide whether the EPC model actually contains more than one EPC process
+	 * and therefore needs to be split up.
+	 * 
+	 * @return true, if the model contains more than one process
+	 */
 	public boolean needsSplitting() {
 		Set<FlowObject> nodes = new HashSet<FlowObject>();
 	
@@ -61,13 +84,11 @@ public class EPCSplitter {
 				count += nodes.size();
 				nodeSets.add(nodes);
 			}
-			
 			return true;
 		}
 	}
 
-	
-	private FlowObject getNextNode() {
+	protected FlowObject getNextNode() {
 		for (FlowObject n: model.getFlowObjects()) {
 			boolean found = false;
 			for (Set<FlowObject> nodes: nodeSets)
@@ -81,7 +102,13 @@ public class EPCSplitter {
 		return null;
 	}
 
-	private void checkIsConnected(Set<FlowObject> nodes, FlowObject n) {
+	/**
+	 * Checks whether a set of nodes is connected to a given flow object.
+	 * 
+	 * @param nodes
+	 * @param n
+	 */
+	protected void checkIsConnected(Set<FlowObject> nodes, FlowObject n) {
 		for (ControlFlow e: model.getControlFlow()) {
 			if (e.getTarget().equals(n)) {
 				FlowObject n2 = e.getSource();
@@ -102,20 +129,26 @@ public class EPCSplitter {
 		}
 	}
 
-	public List<EPC> splitModel() {
-		List<EPC> models = new ArrayList<EPC>(nodeSets.size());
+	/**
+	 * Splits up an EPC model into multiple EPC models, each containing exactly one
+	 * EPC process.
+	 * 
+	 * @return a list of EPC models
+	 */
+	public List<IEPC<ControlFlow, FlowObject, Event, Function, Connector, ProcessInterface, Connection, Node, NonFlowObject>> splitModel() {
+		List<IEPC<ControlFlow, FlowObject, Event, Function, Connector, ProcessInterface, Connection, Node, NonFlowObject>> models = new ArrayList<IEPC<ControlFlow, FlowObject, Event, Function, Connector, ProcessInterface, Connection, Node, NonFlowObject>>(nodeSets.size());
 		int i=1;
 		for (Set<FlowObject> nodes: nodeSets) {
-			EPC newm = new EPC();
+			IEPC<ControlFlow, FlowObject, Event, Function, Connector, ProcessInterface, Connection, Node, NonFlowObject> newm = this.factory.createEPC();
 			newm.setId(model.getId());
 			newm.setName(model.getName()+"_"+i);
 			models.add(newm);
 			
 			for (FlowObject n: nodes)
-				newm.getFlowObjects().add(n);
+				newm.addFlowObject(n);
 			for (ControlFlow e: model.getControlFlow())
 				if (nodes.contains(e.getSource())) {
-					newm.getControlFlow().add(e);
+					newm.addControlFlow(e.getSource(), e.getTarget());
 				}
 			
 			i++;
