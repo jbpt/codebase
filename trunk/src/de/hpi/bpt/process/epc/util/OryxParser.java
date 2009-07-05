@@ -162,6 +162,9 @@ public class OryxParser {
 				if (attribute.equals("outgoing")) {
 					c.connections.put(getResourceId(getAttributeValue(child, "rdf:resource")), n);
 				}
+				if (attribute.equals("title")) {
+					n.setName(child.getTextContent());
+				}
 			}
 		}
 	}
