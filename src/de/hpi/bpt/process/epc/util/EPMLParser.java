@@ -62,10 +62,10 @@ public class EPMLParser {
 	public IEPC<ControlFlow, FlowObject, Event, Function, Connector, ProcessInterface, Connection, de.hpi.bpt.process.epc.Node, NonFlowObject> getFirstModel() {
 		Node root = doc.getDocumentElement();
 		if (root == null) return null;
-		if (!root.getNodeName().equals("epml")) return null;
+		if (!root.getNodeName().toLowerCase().endsWith("epml")) return null;
 		
 		current = root.getFirstChild();
-		while (current != null && current instanceof Text)
+		while (current != null && (current instanceof Text || !current.getNodeName().toLowerCase().endsWith("epc")))
 			current = current.getNextSibling();
 		
 		return getNextModel();
@@ -79,7 +79,7 @@ public class EPMLParser {
 	 * @return the epc model 
 	 */
 	public IEPC<ControlFlow, FlowObject, Event, Function, Connector, ProcessInterface, Connection, de.hpi.bpt.process.epc.Node, NonFlowObject> getNextModel() {
-		if (current == null || !current.getNodeName().equals("epc")) return null;
+		if (current == null || !current.getNodeName().toLowerCase().endsWith("epc")) return null;
 		
 		IEPC<ControlFlow, FlowObject, Event, Function, Connector, ProcessInterface, Connection, de.hpi.bpt.process.epc.Node, NonFlowObject> model = this.factory.createEPC();
 		model.setId(current.getAttributes().getNamedItem("epcId").getNodeValue());
