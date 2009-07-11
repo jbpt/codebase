@@ -65,9 +65,15 @@ public class EPMLParser {
 		if (!root.getNodeName().toLowerCase().endsWith("epml")) return null;
 		
 		current = root.getFirstChild();
-		while (current != null && (current instanceof Text || !current.getNodeName().toLowerCase().endsWith("epc")))
-			current = current.getNextSibling();
-		
+		while (current != null && (!current.getNodeName().toLowerCase().endsWith("epc"))) {
+			if (current.getNodeName().equals("directory")) {
+				current = current.getFirstChild();
+			}
+			else {
+				current = current.getNextSibling();
+			}
+		}
+
 		return getNextModel();
 	}
 	
@@ -113,10 +119,21 @@ public class EPMLParser {
 				addAND(model, node);
 			} else if (type.equals("or")) {
 				addOR(model, node);
-			} else if (type.equals("arc")) {
-				addArc(model, node);
+			}			
+			node = node.getNextSibling();
+		}
+		node = current.getFirstChild();
+		while (node != null) {
+			if (node instanceof Text) {
+				node = node.getNextSibling();
+				continue;
 			}
 			
+			String type = node.getNodeName();
+			if (type.equals("arc")) {
+				addArc(model, node);
+			}
+		
 			node = node.getNextSibling();
 		}
 	}
