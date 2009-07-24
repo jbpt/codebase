@@ -253,7 +253,7 @@ public class EPCNormalizer {
 				/*
 				 * Handle degenerated connectors with one incoming and one outgoing flow
 				 */
-				if (this.epc.getPredecessors(connector).size() == 0 && this.epc.getSuccessors(connector).size() == 0) {
+				if (this.epc.getPredecessors(connector).size() == 1 && this.epc.getSuccessors(connector).size() == 1) {
 					connector.setConnectorType(ConnectorType.AND);
 				}
 			}
