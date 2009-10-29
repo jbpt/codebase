@@ -23,13 +23,15 @@ package de.hpi.bpt.graph.algo.spqr;
 
 import de.hpi.bpt.graph.abs.AbstractDirectedEdge;
 import de.hpi.bpt.graph.abs.AbstractMultiDirectedGraph;
+import de.hpi.bpt.graph.abs.IEdge;
+import de.hpi.bpt.hypergraph.abs.IVertex;
 
 /**
  * 
  * @author Artem Polyvyanyy
  *
  */
-public class SPQRTreeEdge<E,V> extends AbstractDirectedEdge<SPQRTreeNode<E,V>> {
+public class SPQRTreeEdge<E extends IEdge<V>, V extends IVertex> extends AbstractDirectedEdge<SPQRTreeNode<E,V>> {
 
 	@SuppressWarnings("unchecked")
 	protected SPQRTreeEdge(AbstractMultiDirectedGraph g, SPQRTreeNode source, SPQRTreeNode target) {
