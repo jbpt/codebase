@@ -21,6 +21,9 @@
  */
 package de.hpi.bpt.oryx.erdf;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.StringBufferInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,10 +32,12 @@ import java.util.Iterator;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import de.hpi.bpt.graph.abs.AbstractDirectedGraph;
 
@@ -112,13 +117,35 @@ public class ERDFModel<E extends ERDFEdge<V>, V extends ERDFNode> extends Abstra
 
 	/*******************************************************************************
 	 * Parser/serializer 
+	 * @throws IOException 
+	 * @throws ParserConfigurationException 
+	 * @throws SAXException 
 	 *******************************************************************************/
+	
+	/*
+	 * (non-Javadoc)
+	 * @see de.hpi.bpt.oryx.erdf.IERDFModel#parseERDFFile(java.lang.String)
+	 */
+	public void parseERDFFile(String erdfFile) throws IOException, SAXException, ParserConfigurationException {
+		String fileData = "";
+        BufferedReader reader = new BufferedReader(new FileReader(erdfFile));
+        char[] buf = new char[1024];
+        int numRead=0;
+        while((numRead=reader.read(buf)) != -1){
+            String readData = String.valueOf(buf, 0, numRead);
+            fileData += readData;
+            buf = new char[1024];
+        }
+        reader.close();
+		
+        this.parseERDF(fileData);
+	}
 	
 	/*
 	 * (non-Javadoc)
 	 * @see de.hpi.bpt.oryx.erdf.IERDFModel#parseERDF(java.lang.String)
 	 */
-	public void parseERDF(String erdfString) throws Exception {
+	public void parseERDF(String erdfString) throws SAXException, IOException, ParserConfigurationException {
 		// clear graph
 		this.removeEdges(this.getEdges());
 		this.removeVertices(this.getDisconnectedVertices());

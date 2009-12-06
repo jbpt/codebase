@@ -23,6 +23,7 @@ package de.hpi.bpt.process;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 import de.hpi.bpt.oryx.erdf.ERDFModel;
 
@@ -94,5 +95,19 @@ public class Process extends ERDFModel<ControlFlow, Node> {
 		else if (type.equals(Process.ERDF_XOR_TYPE))
 			return new Gateway(GatewayType.XOR);
 		return null;
+	}
+	
+	public Collection<Task> getTasks() {
+		Collection<Task> result = new ArrayList<Task>();
+		
+		Collection<Node> nodes = this.getVertices();
+		Iterator<Node> i = nodes.iterator();
+		while (i.hasNext()) {
+			Node obj = i.next();
+			if (obj instanceof Task)
+				result.add((Task)obj);
+		}
+		
+		return result;
 	}
 }

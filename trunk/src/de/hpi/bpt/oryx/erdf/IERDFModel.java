@@ -21,6 +21,12 @@
  */
 package de.hpi.bpt.oryx.erdf;
 
+import java.io.IOException;
+
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.SAXException;
+
 
 /**
  * Interface to an eRDF model
@@ -31,9 +37,15 @@ public interface IERDFModel<E extends ERDFEdge<V>, V extends ERDFNode> {
 	
 	/**
 	 * Parse eRDF model form eRDF string
-	 * @param erdfString Model eRDF encoding
+	 * @param erdfString String containing eRDF encoding
 	 */
-	public void parseERDF(String erdfString) throws Exception;
+	public void parseERDF(String erdfString) throws SAXException, IOException, ParserConfigurationException;
+	
+	/**
+	 * Parse eRDF model form eRDF file
+	 * @param erdfFile File containing eRDF encoding
+	 */
+	public void parseERDFFile(String erdfFile) throws SAXException, IOException, ParserConfigurationException;
 
 	/**
 	 * Get eRDF model serialization string
