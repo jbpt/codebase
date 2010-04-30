@@ -27,35 +27,37 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import de.hpi.bpt.graph.abs.AbstractMultiDirectedGraph;
+import de.hpi.bpt.graph.abs.AbstractDirectedGraph;
 import de.hpi.bpt.hypergraph.abs.Vertex;
-import de.hpi.bpt.process.engine.IProcess;
 
 /**
  * Petri net
  *  
- *  - Control bipartite property
- * @author artem.polyvyanyy
+ * @author Artem Polyvyanyy
  *
  */
-public class PetriNet extends AbstractMultiDirectedGraph<FlowRelation, Node> implements IProcess {
+public class PetriNet extends AbstractDirectedGraph<Flow, Node> {
 	
-	ArrayList<Place> places = new ArrayList<Place>();
-	ArrayList<Transition> transitions = new ArrayList<Transition>();
+	public PetriNet() {}
 	
-	public PetriNet() {
-	}
-
-	/*public boolean addFlow(FlowRelation f) {
-		if (!places.contains(f.getPlace())) places.add(f.getPlace());
-		if (!transitions.contains(f.getTransition())) transitions.add(f.getTransition());
+	public Flow addFlow(Node from, Node to) {
+		if (from == null || to == null) return null;
 		
-		return super.addEdge(f);
-	}*/
+		Collection<Node> ss = new ArrayList<Node>(); ss.add(from);
+		Collection<Node> ts = new ArrayList<Node>(); ts.add(to);
+		
+		if (!this.checkEdge(ss, ts)) return null;
+		
+		return new Flow(this, from, to);
+	}
+	
+	public Collection<Flow> getFlowRelation() {
+		return this.getEdges();
+	}
 	
 	public Set<Vertex> getEnabledElements() {
 		Set<Vertex> res = new HashSet<Vertex>();
-		Iterator<Transition> i = transitions.iterator();
+		Iterator<Transition> i = this.getTransitions().iterator();
 		while(i.hasNext()) {
 			Transition t = i.next();
 			if (this.isEnabled(t))
@@ -79,7 +81,7 @@ public class PetriNet extends AbstractMultiDirectedGraph<FlowRelation, Node> imp
 	}
 	
 	public boolean isTerminated() {
-		Iterator<Transition> i = transitions.iterator();
+		Iterator<Transition> i = this.getTransitions().iterator();
 		while (i.hasNext()) {
 			if (this.isEnabled(i.next())) return false;
 		}
@@ -121,54 +123,77 @@ public class PetriNet extends AbstractMultiDirectedGraph<FlowRelation, Node> imp
 		return p.putToken();
 	}
 
-	public void serialize() {
-		/*Graph graph = GraphFactory.newGraph();
-		graph.getInfo().setCaption("Petri net");
-	  
-		HashMap<String, GraphNode> map = new HashMap<String, GraphNode>();
-	  
-		Collection<FlowRelation> es = getEdges();
-		Iterator<FlowRelation> i = es.iterator();
-	  
-		while (i.hasNext()) {
-			FlowRelation f = i.next();
-		  
-			GraphNode n1 = map.get(f.getSource().toString());
-			if (n1 == null) {
-				n1 = graph.addNode();
-				n1.getInfo().setCaption(f.getSource().toString());
-				if (f.getSource() instanceof Place) n1.getInfo().setShapeCircle();
-				map.put(f.getSource().toString(), n1);
-			}
-			
-			GraphNode n2 = map.get(f.getTarget().toString());
-			if (n2 == null) {
-				n2 = graph.addNode();
-				n2.getInfo().setCaption(f.getTarget().toString());
-				if (f.getTarget() instanceof Place) n2.getInfo().setShapeCircle();
-				map.put(f.getTarget().toString(), n2);
-			}
-		  
-			graph.addEdge(n1, n2);
-		}
-
-		// output graph to *.gif
-		final String dotFileName = "PetriNet.dot"; 
-		final String gifFileName = "PetriNet.gif";
-		
-		try {
-			GRAPHtoDOTtoGIF.transform(graph, dotFileName, gifFileName, "C:\\Program Files\\Graphviz2.20\\bin\\dot.exe");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}*/
+	public Collection<Node> getNodes() {
+		return this.getVertices();
 	}
-
-
+	
 	public Collection<Transition> getTransitions() {
-		return transitions;
+		Collection<Transition> result = new ArrayList<Transition>();
+		
+		for (Node n : this.getVertices()) {
+			if (n instanceof Transition)
+				result.add((Transition)n);
+		}
+		
+		return result;
 	}
 
 	public Collection<Place> getPlaces() {
-		return places;
+		Collection<Place> result = new ArrayList<Place>();
+		
+		for (Node n : this.getVertices()) {
+			if (n instanceof Place)
+				result.add((Place)n);
+		}
+		
+		return result;
+	}
+	
+	public Collection<Place> getPostset(Transition t) {
+		if (!this.contains(t)) return null;
+		
+		Collection<Place> result = new ArrayList<Place>();
+		for (Node n : this.getSuccessors(t)) {
+			if (n instanceof Place)
+				result.add((Place)n);
+		}
+		
+		return result;
+	}
+	
+	public Collection<Place> getPreset(Transition t) {
+		if (!this.contains(t)) return null;
+		
+		Collection<Place> result = new ArrayList<Place>();
+		for (Node n : this.getPredecessors(t)) {
+			if (n instanceof Place)
+				result.add((Place)n);
+		}
+		
+		return result;
+	}
+	
+	public Collection<Transition> getPostset(Place p) {
+		if (!this.contains(p)) return null;
+		
+		Collection<Transition> result = new ArrayList<Transition>();
+		for (Node n : this.getSuccessors(p)) {
+			if (n instanceof Transition)
+				result.add((Transition)n);
+		}
+		
+		return result;
+	}
+	
+	public Collection<Transition> getPreset(Place p) {
+		if (!this.contains(p)) return null;
+		
+		Collection<Transition> result = new ArrayList<Transition>();
+		for (Node n : this.getPredecessors(p)) {
+			if (n instanceof Transition)
+				result.add((Transition)n);
+		}
+		
+		return result;
 	}
 }
