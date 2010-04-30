@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008 Artem Polyvyanyy
+ * Copyright (c) 2010 Artem Polyvyanyy
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,32 +19,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package de.hpi.bpt.process.petri;
+package de.hpi.bpt.process.petri.rels;
 
-import de.hpi.bpt.graph.abs.AbstractDirectedEdge;
-import de.hpi.bpt.graph.abs.AbstractMultiDirectedGraph;
+import de.hpi.bpt.graph.algo.DirectedGraphAlgorithms;
+import de.hpi.bpt.process.petri.Flow;
+import de.hpi.bpt.process.petri.Node;
+import de.hpi.bpt.process.petri.PNAnalyzer;
+import de.hpi.bpt.process.petri.PetriNet;
 
-/**
- * Petri net flow relation
- * @author artem.polyvyanyy
- *
- */
-public class FlowRelation extends AbstractDirectedEdge<Node> {
-	@SuppressWarnings("unchecked")
-	protected FlowRelation(AbstractMultiDirectedGraph g, Node source, Node target) {
-		super(g, source, target);
-	}
-
-	private Place p = null;
-	private Transition t = null;
+public class UnfoldingRelationsProfiler {
 	
-	
-
-	public Place getPlace() {
-		return p;
-	}
-
-	public Transition getTransition() {
-		return t;
+	public UnfoldingRelationsProfiler(PetriNet net) {
+		if (!PNAnalyzer.isBipartite(net)) throw new IllegalArgumentException();
+		if (!PNAnalyzer.isConnected(net)) throw new IllegalArgumentException();
+		if (!PNAnalyzer.isOccurrenceNet(net)) throw new IllegalArgumentException();
+		
+		DirectedGraphAlgorithms<Flow, Node> dga = new DirectedGraphAlgorithms<Flow, Node>();
+		
+		// TODO
 	}
 }

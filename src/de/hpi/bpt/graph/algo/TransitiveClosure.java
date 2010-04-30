@@ -64,6 +64,12 @@ public class TransitiveClosure<E extends IDirectedEdge<V>,V extends IVertex> {
 		}
 	}
 	
+	/**
+	 * Check if there exists a directed path between two vertices
+	 * @param v1 Vertex
+	 * @param v2 Vertex
+	 * @return <code>true</code> if there is a directed path from v1 to v2, <code>false</code> otherwise 
+	 */
 	public boolean hasPath(V v1, V v2) {
 		if (matrix == null)
 			calculateMatrix();
@@ -72,6 +78,11 @@ public class TransitiveClosure<E extends IDirectedEdge<V>,V extends IVertex> {
 		return matrix[i][j];
 	}
 	
+	/**
+	 * Check if vertex is part of a loop
+	 * @param v Vertex
+	 * @return <code>true</code> if vertex is part of a loop, <code>false</code> otherwise
+	 */
 	public boolean isInLoop(V v) {
 		if (matrix == null)
 			calculateMatrix();
