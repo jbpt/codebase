@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008 Matthias Weidlich
+ * Copyright (c) 2008 Matthias Weidlich, Artem Polyvyanyy
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -89,6 +89,39 @@ public class TransitiveClosure<E extends IDirectedEdge<V>,V extends IVertex> {
 		int index = this.verticesAsList.indexOf(v);
 		return matrix[index][index];
 	}
+	
+	@Override
+	public String toString() {
+		if (matrix == null)
+			calculateMatrix();
+		
+		String result = "";
+		
+		result += "==================================================\n";
+		result += " Transitive Closure\n";
+		result += "--------------------------------------------------\n";
+		for (int i=0; i<verticesAsList.size(); i++)
+			result += String.format("%d : %s\n", i, verticesAsList.get(i));
+		result += "--------------------------------------------------\n";
+		result += "    ";
+		for (int i=0; i<verticesAsList.size(); i++) result += String.format("%-4d", i);
+		result += "    \n";
+		for (int i=0; i<verticesAsList.size(); i++) {
+			result += String.format("%-4d", i);
+			for (int j=0; j<verticesAsList.size(); j++) {
+				result += String.format("%-4s",(matrix[i][j] ? "+" : "-"));
+			}
+			result += String.format("%-4d", i);
+			result += "\n";
+		}
+		result += "    ";
+		for (int i=0; i<verticesAsList.size(); i++) result += String.format("%-4d", i);
+		result += "    \n";
+		result += "==================================================";
+		
+		return result;
+	}
+
 }
 
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010 Artem Polyvyanyy
+ * Copyright (c) 2008 Matthias Weidlich, Artem Polyvyanyy
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,18 +19,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package de.hpi.bpt.process.petri.rels;
+package de.hpi.bpt.graph.algo;
 
-public enum UnfoldingRelationType {
-	CONFLICT, CAUSAL, INVERSE_CAUSAL, CONCURRENCY, NONE;
+import de.hpi.bpt.graph.abs.IDirectedEdge;
+import de.hpi.bpt.graph.abs.IDirectedGraph;
+import de.hpi.bpt.hypergraph.abs.IVertex;
 
+public class ReflexiveTransitiveClosure<E extends IDirectedEdge<V>,V extends IVertex> extends TransitiveClosure<E, V> {
+
+	public ReflexiveTransitiveClosure(IDirectedGraph<E, V> g) {
+		super(g);
+	}
+	
 	@Override
-	public String toString() {
-		if (this == CAUSAL) return ">";
-		if (this == INVERSE_CAUSAL) return "<";
-		if (this == CONFLICT) return "#";
-		if (this == CONCURRENCY) return "@";
+	protected void calculateMatrix() {
+		super.calculateMatrix();
 		
-		return "-";
+		for (int i=0; i<this.verticesAsList.size(); i++) {
+			this.matrix[i][i] = true;
+		}
 	}
 }
+
+
