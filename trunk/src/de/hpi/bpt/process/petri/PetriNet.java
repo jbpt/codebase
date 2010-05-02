@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import de.hpi.bpt.graph.abs.AbstractDirectedGraph;
+import de.hpi.bpt.graph.algo.DirectedGraphAlgorithms;
 import de.hpi.bpt.hypergraph.abs.Vertex;
 
 /**
@@ -37,6 +38,8 @@ import de.hpi.bpt.hypergraph.abs.Vertex;
  *
  */
 public class PetriNet extends AbstractDirectedGraph<Flow, Node> {
+	
+	private DirectedGraphAlgorithms<Flow,Node> dga = null;
 	
 	public PetriNet() {}
 	
@@ -49,6 +52,10 @@ public class PetriNet extends AbstractDirectedGraph<Flow, Node> {
 		if (!this.checkEdge(ss, ts)) return null;
 		
 		return new Flow(this, from, to);
+	}
+	
+	public Node addNode(Node n) {
+		return this.addVertex(n);
 	}
 	
 	public Collection<Flow> getFlowRelation() {
@@ -193,6 +200,52 @@ public class PetriNet extends AbstractDirectedGraph<Flow, Node> {
 			if (n instanceof Transition)
 				result.add((Transition)n);
 		}
+		
+		return result;
+	}
+	
+	public Collection<Node> getSourceNodes() {
+		if (dga == null) dga = new DirectedGraphAlgorithms<Flow, Node>();
+		return dga.getInputVertices(this);
+	}
+	
+	public Collection<Place> getSourcePlaces() {
+		Collection<Place> result = new ArrayList<Place>();
+		for (Node n : getSourceNodes())
+			if (n instanceof Place)
+				result.add((Place)n);
+		
+		return result;
+	}
+	
+	public Collection<Transition> getSourceTransitions() {
+		Collection<Transition> result = new ArrayList<Transition>();
+		for (Node n : getSourceNodes())
+			if (n instanceof Transition)
+				result.add((Transition)n);
+		
+		return result;
+	}
+	
+	public Collection<Node> getSinkNodes() {
+		if (dga == null) dga = new DirectedGraphAlgorithms<Flow, Node>();
+		return dga.getOutputVertices(this);
+	}
+	
+	public Collection<Place> getSinkPlaces() {
+		Collection<Place> result = new ArrayList<Place>();
+		for (Node n : getSinkNodes())
+			if (n instanceof Place)
+				result.add((Place)n);
+		
+		return result;
+	}
+	
+	public Collection<Transition> getSinkTransitions() {
+		Collection<Transition> result = new ArrayList<Transition>();
+		for (Node n : getSinkNodes())
+			if (n instanceof Transition)
+				result.add((Transition)n);
 		
 		return result;
 	}
