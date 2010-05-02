@@ -24,8 +24,10 @@ package de.hpi.bpt.process.petri;
 import java.util.HashSet;
 import java.util.Set;
 
+import de.hpi.bpt.graph.algo.DirectedGraphAlgorithms;
 import de.hpi.bpt.graph.algo.GraphAlgorithms;
-import de.hpi.bpt.graph.algo.TransitiveClosure;
+import de.hpi.bpt.process.petri.rels.UnfoldingRelationType;
+import de.hpi.bpt.process.petri.rels.UnfoldingRelationsProfiler;
 
 public class PNAnalyzer {
 	
@@ -64,16 +66,20 @@ public class PNAnalyzer {
 	}
 	
 	public static boolean isOccurrenceNet(PetriNet net) {
-		TransitiveClosure<Flow, Node> tc = new TransitiveClosure<Flow, Node>(net);
-		
-		// must be acyclic
-		for (Node n : net.getNodes())
-			if (tc.isInLoop(n))
-				return false;
 		
 		// no branched places
 		for (Place p : net.getPlaces())
 			if (net.getPreset(p).size()>1)
+				return false;
+		
+		// must be acyclic
+		DirectedGraphAlgorithms<Flow,Node> dga = new DirectedGraphAlgorithms<Flow, Node>();
+		if (dga.hasCycles(net)) return false;
+		
+		// no event is in self-conflict
+		UnfoldingRelationsProfiler urp = new UnfoldingRelationsProfiler(net);
+		for (Transition t : net.getTransitions())
+			if (urp.getRelation(t,t) == UnfoldingRelationType.CONFLICT)
 				return false;
 		
 		return true;

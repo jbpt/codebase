@@ -94,4 +94,18 @@ public class DirectedGraphAlgorithms<E extends IDirectedEdge<V>,V extends IVerte
 		
 		return result;
 	}
+	
+	/**
+	 * Check if directed graph has cycles
+	 * @param g Directed graph
+	 * @return <code>true</code> if graph has a cycle, <code>false</code> otherwise
+	 */
+	public boolean hasCycles(IDirectedGraph<E, V> g) {
+		TransitiveClosure<E, V> tc = new TransitiveClosure<E,V>(g);
+		for (V v : g.getVertices())
+			if (tc.isInLoop(v))
+				return true;
+		
+		return false;
+	}
 }
