@@ -142,4 +142,8 @@ public class Process extends ERDFModel<ControlFlow, Node> {
 		types.add(type);
 		return this.getGateways(types);
 	}
+	
+	public Collection<ControlFlow> getControlFlow() {
+		return this.getEdges();
+	}
 }

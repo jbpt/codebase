@@ -52,8 +52,7 @@ public class DirectedGraphAlgorithms<E extends IDirectedEdge<V>,V extends IVerte
 			V v = i.next();
 			int in = g.getIncomingEdges(v).size();
 			int out = g.getOutgoingEdges(v).size();
-			if ((in==0 || out==0) && (in>0 || out>0))
-				result.add(v);
+			if (in==0 || out==0) result.add(v);
 		}
 		
 		return result;
@@ -70,7 +69,7 @@ public class DirectedGraphAlgorithms<E extends IDirectedEdge<V>,V extends IVerte
 		Iterator<V> i = this.getBoundaryVertices(g).iterator();
 		while (i.hasNext()) {
 			V v = i.next();
-			if (g.getSuccessors(v).size()>0)
+			if (g.getPredecessors(v).size()==0)
 				result.add(v);
 		}
 		
@@ -88,7 +87,7 @@ public class DirectedGraphAlgorithms<E extends IDirectedEdge<V>,V extends IVerte
 		Iterator<V> i = this.getBoundaryVertices(g).iterator();
 		while (i.hasNext()) {
 			V v = i.next();
-			if (g.getPredecessors(v).size()>0)
+			if (g.getSuccessors(v).size()==0)
 				result.add(v);
 		}
 		
