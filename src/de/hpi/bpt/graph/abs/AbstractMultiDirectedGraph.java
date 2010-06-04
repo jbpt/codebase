@@ -121,6 +121,20 @@ public class AbstractMultiDirectedGraph<E extends IDirectedEdge<V>, V extends IV
 		
 		return null;
 	}
+	
+	public E getDirectedEdge(V v1, V v2) {
+		Collection<E> es = this.vertices.get(v1);
+		if (es == null) return null;
+		
+		Iterator<E> i = es.iterator();
+		while(i.hasNext()) {
+			E e = i.next();
+			if (e.getSource().equals(v1) && e.getTarget().equals(v2))
+				return e;
+		}
+		
+		return null;
+	}
 
 	/*
 	 * (non-Javadoc)
