@@ -168,18 +168,6 @@ public class PetriNet extends AbstractDirectedGraph<Flow, Node> {
 		return result;
 	}
 	
-	public Collection<Place> getPreset(Transition t) {
-		if (!this.contains(t)) return null;
-		
-		Collection<Place> result = new ArrayList<Place>();
-		for (Node n : this.getPredecessors(t)) {
-			if (n instanceof Place)
-				result.add((Place)n);
-		}
-		
-		return result;
-	}
-	
 	public Collection<Transition> getPostset(Place p) {
 		if (!this.contains(p)) return null;
 		
@@ -187,6 +175,25 @@ public class PetriNet extends AbstractDirectedGraph<Flow, Node> {
 		for (Node n : this.getSuccessors(p)) {
 			if (n instanceof Transition)
 				result.add((Transition)n);
+		}
+		
+		return result;
+	}
+	
+	public Collection<Node> getPostset(Node n) {
+		if (!this.contains(n)) return null;
+		
+		return this.getSuccessors(n);
+	}
+	
+	
+	public Collection<Place> getPreset(Transition t) {
+		if (!this.contains(t)) return null;
+		
+		Collection<Place> result = new ArrayList<Place>();
+		for (Node n : this.getPredecessors(t)) {
+			if (n instanceof Place)
+				result.add((Place)n);
 		}
 		
 		return result;
@@ -202,6 +209,12 @@ public class PetriNet extends AbstractDirectedGraph<Flow, Node> {
 		}
 		
 		return result;
+	}
+	
+	public Collection<Node> getPreset(Node n) {
+		if (!this.contains(n)) return null;
+		
+		return this.getPredecessors(n);
 	}
 	
 	public Collection<Node> getSourceNodes() {
