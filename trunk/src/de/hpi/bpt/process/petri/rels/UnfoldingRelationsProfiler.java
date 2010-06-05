@@ -43,7 +43,6 @@ public class UnfoldingRelationsProfiler {
 	public UnfoldingRelationsProfiler(PetriNet net) {
 		if (!PNAnalyzer.isBipartite(net)) throw new IllegalArgumentException();
 		if (!PNAnalyzer.isConnected(net)) throw new IllegalArgumentException();
-		if (!PNAnalyzer.isOccurrenceNet(net)) throw new IllegalArgumentException();
 		
 		int size = net.getNodes().size();
 		rels = new UnfoldingRelationType[size][size];
@@ -55,7 +54,6 @@ public class UnfoldingRelationsProfiler {
 				this.setRelation(i, j, UnfoldingRelationType.CONCURRENCY);
 		
 		ReflexiveTransitiveClosure<Flow, Node> tc = new ReflexiveTransitiveClosure<Flow, Node>(net);
-		System.out.println(tc);
 		
 		// set causal relation
 		for (int i=0; i<size; i++) {
@@ -84,14 +82,10 @@ public class UnfoldingRelationsProfiler {
 				Transition t1 = iter.next();
 				Transition t2 = iter.next();
 
-				boolean overlap = false;
-				for (Place p : net.getPreset(t1)) {
-					if (net.getPreset(t2).contains(p))
-						overlap = true;
-					break;
-				}
-				
-				if (overlap) conflicts.add(pair);
+				for (Place p1 : net.getPreset(t1))
+					for (Place p2 : net.getPreset(t2))
+						if (p1.equals(p2))
+							conflicts.add(pair);			
 			}
 		}
 		
