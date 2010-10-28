@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package de.hpi.bpt.graph.algo.spqr;
+package de.hpi.bpt.graph.algo.tctree;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,7 +40,7 @@ import de.hpi.bpt.hypergraph.abs.IVertex;
  * @param <E> template for edge (extends IEdge)
  * @param <V> template for vertex (extends IVertex)
  */
-public class SPQRTreeSkeleton<E extends IEdge<V>, V extends IVertex> extends AbstractMultiGraphFragment<E,V> {
+public class TCTreeSkeleton<E extends IEdge<V>, V extends IVertex> extends AbstractMultiGraphFragment<E,V> {
 	
 	public static String VIRTUAL_EDGE_LABEL = "virtual";
 	
@@ -48,7 +48,7 @@ public class SPQRTreeSkeleton<E extends IEdge<V>, V extends IVertex> extends Abs
 	 * Constructor
 	 * @param g Parent graph of the skeleton
 	 */
-	public SPQRTreeSkeleton(IGraph<E, V> g) {
+	public TCTreeSkeleton(IGraph<E, V> g) {
 		super(g);
 	}
 
@@ -62,7 +62,7 @@ public class SPQRTreeSkeleton<E extends IEdge<V>, V extends IVertex> extends Abs
 		E e = super.addNonFragmentEdge(v1, v2);
 		
 		// mark edge virtual
-		e.setDescription(SPQRTreeSkeleton.VIRTUAL_EDGE_LABEL);
+		e.setDescription(TCTreeSkeleton.VIRTUAL_EDGE_LABEL);
 		
 		return e;
 	}
@@ -90,7 +90,7 @@ public class SPQRTreeSkeleton<E extends IEdge<V>, V extends IVertex> extends Abs
 	 * @return <code>true</code> if edge is virtual, <code>false</code> otherwise
 	 */
 	public boolean isVirtual(E e) {
-		return e.getDescription().equals(SPQRTreeSkeleton.VIRTUAL_EDGE_LABEL);
+		return e.getDescription().equals(TCTreeSkeleton.VIRTUAL_EDGE_LABEL);
 	}
 
 
@@ -119,8 +119,8 @@ public class SPQRTreeSkeleton<E extends IEdge<V>, V extends IVertex> extends Abs
 	 * @see de.hpi.bpt.graph.abs.AbstractMultiGraphFragment#getComplementary()
 	 */
 	@Override
-	public SPQRTreeSkeleton<E, V> getComplementary() {
-		SPQRTreeSkeleton<E,V> result = new SPQRTreeSkeleton<E,V>(this.graph);
+	public TCTreeSkeleton<E, V> getComplementary() {
+		TCTreeSkeleton<E,V> result = new TCTreeSkeleton<E,V>(this.graph);
 		if (this.graph == null) return result;
 		
 		Collection<E> es = this.graph.getEdges();

@@ -19,23 +19,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package de.hpi.bpt.graph.algo.spqr;
+package de.hpi.bpt.graph.algo.tctree;
+
+import de.hpi.bpt.graph.abs.AbstractDirectedEdge;
+import de.hpi.bpt.graph.abs.AbstractMultiDirectedGraph;
+import de.hpi.bpt.graph.abs.IEdge;
+import de.hpi.bpt.hypergraph.abs.IVertex;
 
 /**
- * SPQR-tree node types
- * Type describes structural type of the fragment
- * 
- * S - sequential
- * P - parallel
- * Q - trivial (edge)
- * R - rigid
  * 
  * @author Artem Polyvyanyy
+ *
  */
-public enum SPQRType {
-	S,
-	P,
-	Q,
-	R,
-	UNDEFINED
+public class TCTreeEdge<E extends IEdge<V>, V extends IVertex> extends AbstractDirectedEdge<TCTreeNode<E,V>> {
+
+	@SuppressWarnings("unchecked")
+	protected TCTreeEdge(AbstractMultiDirectedGraph g, TCTreeNode source, TCTreeNode target) {
+		super(g, source, target);
+	}
 }
