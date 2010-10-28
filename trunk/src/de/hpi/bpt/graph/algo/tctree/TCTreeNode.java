@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package de.hpi.bpt.graph.algo.spqr;
+package de.hpi.bpt.graph.algo.tctree;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,11 +33,11 @@ import de.hpi.bpt.hypergraph.abs.Vertex;
  * @author Artem Polyvyanyy
  *
  */
-public class SPQRTreeNode<E extends IEdge<V>, V extends IVertex> extends Vertex {
+public class TCTreeNode<E extends IEdge<V>, V extends IVertex> extends Vertex {
 	
-	private SPQRType type = SPQRType.UNDEFINED;
+	private TCType type = TCType.UNDEFINED;
 	
-	private SPQRTreeSkeleton<E,V> skeleton;
+	private TCTreeSkeleton<E,V> skeleton;
 	
 	private Collection<V> boundary = new ArrayList<V>();
 	
@@ -48,7 +48,7 @@ public class SPQRTreeNode<E extends IEdge<V>, V extends IVertex> extends Vertex 
 	/**
 	 * Constructor
 	 */
-	public SPQRTreeNode() {
+	public TCTreeNode() {
 		super();
 	}
 	
@@ -56,23 +56,23 @@ public class SPQRTreeNode<E extends IEdge<V>, V extends IVertex> extends Vertex 
 	 * Constructor
 	 * @param name Node name
 	 */
-	public SPQRTreeNode(String name) {
+	public TCTreeNode(String name) {
 		super(name);
 	}
 
-	public SPQRType getType() {
+	public TCType getType() {
 		return type;
 	}
 
-	public void setType(SPQRType type) {
+	public void setType(TCType type) {
 		this.type = type;
 	}
 	
-	public SPQRTreeSkeleton<E,V> getSkeleton() {
+	public TCTreeSkeleton<E,V> getSkeleton() {
 		return this.skeleton;
 	}
 
-	public void setSkeleton(SPQRTreeSkeleton<E,V> skeleton) {
+	public void setSkeleton(TCTreeSkeleton<E,V> skeleton) {
 		this.skeleton = skeleton;
 	}
 	
