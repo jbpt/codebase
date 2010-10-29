@@ -28,9 +28,9 @@ import java.util.Iterator;
 import de.hpi.bpt.graph.abs.AbstractMultiGraphFragment;
 import de.hpi.bpt.graph.abs.IDirectedEdge;
 import de.hpi.bpt.graph.abs.IDirectedGraph;
-import de.hpi.bpt.graph.algo.spqr.SPQRTree;
-import de.hpi.bpt.graph.algo.spqr.SPQRTreeNode;
-import de.hpi.bpt.graph.algo.spqr.SPQRType;
+import de.hpi.bpt.graph.algo.tctree.TCTree;
+import de.hpi.bpt.graph.algo.tctree.TCTreeNode;
+import de.hpi.bpt.graph.algo.tctree.TCType;
 import de.hpi.bpt.hypergraph.abs.IGObject;
 import de.hpi.bpt.hypergraph.abs.IVertex;
 
@@ -40,14 +40,14 @@ import de.hpi.bpt.hypergraph.abs.IVertex;
  *
  */
 public class TriAbstraction<E extends IDirectedEdge<V>, V extends IVertex> {
-	private SPQRTree<E,V> spqr;
+	private TCTree<E,V> tc;
 	
 	/**
 	 * Constructor
 	 * @param g Graph to abstract
 	 */
 	public TriAbstraction(IDirectedGraph<E,V> g) {
-		this.spqr = new SPQRTree<E,V>(g);
+		this.tc = new TCTree<E,V>(g);
 	}
 	
 	/**
@@ -59,16 +59,16 @@ public class TriAbstraction<E extends IDirectedEdge<V>, V extends IVertex> {
 		TriAbstractionStepInfo result = null;
 		
 		V absVertex = this.getVertex(id);
-		SPQRTreeNode<E,V> absTreeNode = spqr.getVertex(absVertex);
+		TCTreeNode<E,V> absTreeNode = tc.getVertex(absVertex);
 		
 		if (this.isSimple(absTreeNode)) { // P or R
-			if (spqr.isRoot(absTreeNode)) return null;
+			if (tc.isRoot(absTreeNode)) return null;
 			
 			// get parent of node
-			SPQRTreeNode<E,V> absTreeNodeParent = spqr.getParent(absTreeNode);
+			TCTreeNode<E,V> absTreeNodeParent = tc.getParent(absTreeNode);
 			
-			if (absTreeNodeParent.getType() == SPQRType.R) { result = this.getRAbstractionInfo(absTreeNodeParent); }
-			if (absTreeNodeParent.getType() == SPQRType.P) { result = this.getPAbstractionInfo(absTreeNodeParent, absTreeNode); }
+			if (absTreeNodeParent.getType() == TCType.R) { result = this.getRAbstractionInfo(absTreeNodeParent); }
+			if (absTreeNodeParent.getType() == TCType.B) { result = this.getPAbstractionInfo(absTreeNodeParent, absTreeNode); }
 		}
 		else { // is not simple - Q or S
 			result = getQSAbstractionInfo(absTreeNode, absVertex);
@@ -87,31 +87,31 @@ public class TriAbstraction<E extends IDirectedEdge<V>, V extends IVertex> {
 		return result;
 	}
 	
-	private TriAbstractionStepInfo getRAbstractionInfo(SPQRTreeNode<E,V> node)
+	private TriAbstractionStepInfo getRAbstractionInfo(TCTreeNode<E,V> node)
 	{
 		TriAbstractionStepInfo result = new TriAbstractionStepInfo();
-		result.type = SPQRType.R;
-		result.fragment = this.getAllObjects(spqr.getFragment(node));
+		result.type = TCType.R;
+		result.fragment = this.getAllObjects(tc.getFragment(node));
 		result.entry = node.getEntry();
 		result.exit = node.getExit(); 
 		
 		return result;
 	}
 	
-	private TriAbstractionStepInfo getPAbstractionInfo(SPQRTreeNode<E,V> parent, SPQRTreeNode<E,V> node)
+	private TriAbstractionStepInfo getPAbstractionInfo(TCTreeNode<E,V> parent, TCTreeNode<E,V> node)
 	{
 		TriAbstractionStepInfo result = new TriAbstractionStepInfo();
-		result.type = SPQRType.P;
-		result.fragment = this.getAllObjects(spqr.getFragment(parent, node));
+		result.type = TCType.B;
+		result.fragment = this.getAllObjects(tc.getFragment(parent, node));
 		result.entry = parent.getEntry();
 		result.exit = parent.getExit(); 
 		
 		return result;
 	}
 	
-	private TriAbstractionStepInfo getQSAbstractionInfo(SPQRTreeNode<E,V> node, V v)
+	private TriAbstractionStepInfo getQSAbstractionInfo(TCTreeNode<E,V> node, V v)
 	{
-		TriAbstractionStepInfo result = spqr.getFragment(node, v); 
+		TriAbstractionStepInfo result = tc.getFragment(node, v); 
 		
 		return result;
 	}
@@ -119,7 +119,7 @@ public class TriAbstraction<E extends IDirectedEdge<V>, V extends IVertex> {
 	private V getVertex(String id)
 	{
 		V v = null;
-		Collection<V> vs = spqr.getGraph().getVertices();
+		Collection<V> vs = tc.getGraph().getVertices();
 		Iterator<V> i = vs.iterator();
 		while (i.hasNext()) {
 			v = i.next();
@@ -129,8 +129,8 @@ public class TriAbstraction<E extends IDirectedEdge<V>, V extends IVertex> {
 		return v;
 	}
 	
-	private boolean isSimple(SPQRTreeNode<E,V> node)
+	private boolean isSimple(TCTreeNode<E,V> node)
 	{
-		return (node.getType() == SPQRType.S && node.getSkeleton().getVertices().size() == 3);
+		return (node.getType() == TCType.P && node.getSkeleton().getVertices().size() == 3);
 	}
 }
