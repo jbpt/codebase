@@ -38,9 +38,10 @@ public class AllTests {
 		suite.addTestSuite(MultiDirectedHyperGraphTest.class);
 		suite.addTestSuite(DirectedFragmentsTest.class);
 		suite.addTestSuite(HyperGraphTest.class);
-		suite.addTestSuite(SPQRTreeTest.class);
+		suite.addTestSuite(TCTreeTest.class);
 		suite.addTestSuite(DirectedHyperGraphTest.class);
 		suite.addTestSuite(GraphAlgorithmsTest_isConnected.class);
+		suite.addTestSuite(BiconnectivityCheckTest.class);
 		//$JUnit-END$
 		return suite;
 	}
