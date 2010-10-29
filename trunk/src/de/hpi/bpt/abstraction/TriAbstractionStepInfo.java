@@ -24,7 +24,7 @@ package de.hpi.bpt.abstraction;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import de.hpi.bpt.graph.algo.spqr.SPQRType;
+import de.hpi.bpt.graph.algo.tctree.TCType;
 import de.hpi.bpt.hypergraph.abs.IGObject;
 
 /**
@@ -51,10 +51,10 @@ public class TriAbstractionStepInfo {
 		this.exit = exit;
 	}
 
-	protected SPQRType type = SPQRType.UNDEFINED;
+	protected TCType type = TCType.UNDEFINED;
 	
 	
-	public void setType(SPQRType type) {
+	public void setType(TCType type) {
 		this.type = type;
 	}
 
@@ -70,7 +70,7 @@ public class TriAbstractionStepInfo {
 		return exit;
 	}
 	
-	public SPQRType getType() {
+	public TCType getType() {
 		return type;
 	}
 	
