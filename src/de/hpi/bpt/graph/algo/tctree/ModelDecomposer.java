@@ -30,8 +30,6 @@ import java.util.Vector;
 
 import de.hpi.bpt.graph.abs.IEdge;
 import de.hpi.bpt.graph.abs.IGraph;
-import de.hpi.bpt.graph.algo.tctree.EdgeList;
-import de.hpi.bpt.graph.algo.tctree.NodeMap;
 import de.hpi.bpt.hypergraph.abs.IVertex;
 
 /**
@@ -74,7 +72,7 @@ public class ModelDecomposer<E extends IEdge<V>, V extends IVertex> {
 		meta.setMetaInfo(MetaInfo.ASSIGNED_VIRTUAL_EDGES, assignedVirtEdgeMap);
 		meta.setMetaInfo(MetaInfo.HIDDEN_EDGES, isHiddenMap);
 		
-		// check for self-loops, biconnectivity was already checked in the TCTree2 class
+		// check for self-loops, biconnectivity was already checked in the TCTree class
 		for (E edge:root.getSkeleton().getEdges()) {
 			if (edge.isSelfLoop()) return null;
 		}

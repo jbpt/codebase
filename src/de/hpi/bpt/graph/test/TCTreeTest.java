@@ -21,12 +21,9 @@
  */
 package de.hpi.bpt.graph.test;
 
-import java.util.Iterator;
-
 import junit.framework.TestCase;
 import de.hpi.bpt.graph.Edge;
 import de.hpi.bpt.graph.Graph;
-import de.hpi.bpt.graph.algo.GraphAlgorithms;
 import de.hpi.bpt.graph.algo.tctree.TCTree;
 import de.hpi.bpt.graph.algo.tctree.TCTreeNode;
 import de.hpi.bpt.graph.algo.tctree.TCType;
@@ -47,7 +44,7 @@ public class TCTreeTest extends TestCase {
 		//	.	  |				  |		.
 		//	.	  |_ s6 ---- j7 __|		.
 		// 	.		  |_ t8 _|			.
-		//	............................. (back edge created by TCTree)
+		//	............................. 
 		
 		Process p = new Process();
 		
@@ -73,11 +70,18 @@ public class TCTreeTest extends TestCase {
 		p.addControlFlow(t8, j7);
 		p.addControlFlow(j7, j5);
 		p.addControlFlow(j5, t9);
+		p.addControlFlow(t9, t1);
 		
 		TCTree<ControlFlow, Node> tc = new TCTree<ControlFlow, Node>(p);
 		
-		//assertEquals(tc.getVertices().size(), 6);
-		//assertEquals(tc.getEdges().size(), 5);
+		for (TCTreeNode<ControlFlow, Node> n:tc.getVertices()) {
+			System.out.println(String.valueOf(n) + ": " + n.getSkeleton().getEdges());
+			System.out.println(String.valueOf(n) + ": " + n.getSkeleton().getVirtualEdges());
+		}
+		System.out.println(tc.getEdges());
+		
+		assertEquals(tc.getVertices().size(), 6);
+		assertEquals(tc.getEdges().size(), 5);
 		assertEquals(tc.getVertices(TCType.B).size(), 2);
 		assertEquals(tc.getVertices(TCType.R).size(), 0);
 		assertEquals(tc.getVertices(TCType.P).size(), 4);
@@ -132,6 +136,7 @@ public class TCTreeTest extends TestCase {
 		p.addControlFlow(j9, j8);
 		p.addControlFlow(j8, j5);
 		p.addControlFlow(j5, t10);
+		p.addControlFlow(t10, t1);
 		
 		TCTree<ControlFlow, Node> tc = new TCTree<ControlFlow, Node>(p);
 		
@@ -147,7 +152,7 @@ public class TCTreeTest extends TestCase {
 		//		  |		 |			 |
 		// t1 -- s2 --- j4 -- t5 -- j6 -- t7
 		//	.	  						   .
-		//  ................................ (back edge created by TCTree)
+		//  ................................ 
 		
 		Process p = new Process();
 		
@@ -168,14 +173,20 @@ public class TCTreeTest extends TestCase {
 		p.addControlFlow(j4, t5);
 		p.addControlFlow(t5, j6);
 		p.addControlFlow(j6, t7);
+		ControlFlow backEdge = p.addControlFlow(t7, t1);
 		
-		TCTree<ControlFlow, Node> tc = new TCTree<ControlFlow, Node>(p);
+		TCTree<ControlFlow, Node> tc = new TCTree<ControlFlow, Node>(p, backEdge);
 		
-		//assertEquals(tc.getVertices().size(), 3);
-		//assertEquals(tc.getEdges().size(), 2);
-		assertEquals(tc.getVertices(TCType.B).size(), 0);
-		assertEquals(tc.getVertices(TCType.R).size(), 1);
-		assertEquals(tc.getVertices(TCType.P).size(), 2);
+		for (TCTreeNode<ControlFlow, Node> n:tc.getVertices()) {
+			System.out.println(String.valueOf(n) + ": " + n.getSkeleton().getEdges());
+			System.out.println(String.valueOf(n) + ": " + n.getSkeleton().getVirtualEdges());
+		}
+		
+		assertEquals(3, tc.getVertices().size());
+		assertEquals(2, tc.getEdges().size());
+		assertEquals(0, tc.getVertices(TCType.B).size());
+		assertEquals(1, tc.getVertices(TCType.R).size());
+		assertEquals(2, tc.getVertices(TCType.P).size());
 	}
 	
 	public void testGraphWithR2() {
@@ -208,19 +219,20 @@ public class TCTreeTest extends TestCase {
 		p.addControlFlow(t11, j8);
 		p.addControlFlow(j8, j5);
 		p.addControlFlow(j5, t10);
+		ControlFlow backEdge = p.addControlFlow(t10, t1);
 		
-		TCTree<ControlFlow, Node> tc = new TCTree<ControlFlow, Node>(p);
-		
-		//assertEquals(tc.getVertices().size(), 6);
-		//assertEquals(tc.getEdges().size(), 5);
-		assertEquals(tc.getVertices(TCType.B).size(), 1);
-		assertEquals(tc.getVertices(TCType.R).size(), 1);
-		assertEquals(tc.getVertices(TCType.P).size(), 4);
+		TCTree<ControlFlow, Node> tc = new TCTree<ControlFlow, Node>(p, backEdge);
 		
 		for (TCTreeNode<ControlFlow, Node> n:tc.getVertices()) {
 			System.out.println(String.valueOf(n) + ": " + n.getSkeleton().getEdges());
 			System.out.println(String.valueOf(n) + ": " + n.getSkeleton().getVirtualEdges());
 		}
+		
+		assertEquals(tc.getVertices().size(), 6);
+		assertEquals(tc.getEdges().size(), 5);
+		assertEquals(tc.getVertices(TCType.B).size(), 1);
+		assertEquals(tc.getVertices(TCType.R).size(), 1);
+		assertEquals(tc.getVertices(TCType.P).size(), 4);
 	}
 	
 	public void testType1SepPair() {
@@ -228,7 +240,7 @@ public class TCTreeTest extends TestCase {
 		//		   |	 |				   |
 		//	T1 -- S1 -- J1 -- T2 -- S3 -- J2 -- T3
 		//	 .			 |___________|			 .
-		//	 ..................................... (back edge created by TCTree)
+		//	 ..................................... 
 		
 		Process p = new Process();
 		
@@ -252,6 +264,7 @@ public class TCTreeTest extends TestCase {
 		p.addControlFlow(s3, j1);
 		p.addControlFlow(s3, j2);
 		p.addControlFlow(j2, t3);
+		p.addControlFlow(t3, t1);
 		
 		TCTree<ControlFlow, Node> tc = new TCTree<ControlFlow, Node>(p);
 		
@@ -264,8 +277,6 @@ public class TCTreeTest extends TestCase {
 	}
 	
 	public void testSomeBehavior() {
-		GraphAlgorithms<ControlFlow,Node> ga = new GraphAlgorithms<ControlFlow,Node>();
-		
 		// create process model graph
 		Process p = new Process();
 		
@@ -316,16 +327,13 @@ public class TCTreeTest extends TestCase {
 		p.addControlFlow(t6, j3);
 		p.addControlFlow(t13, j3);
 		p.addControlFlow(j3, t14);
-		
-		assertTrue(ga.isConnected(p));
-		assertEquals(2,ga.getBoundaryVertices(p).size());
-		assertEquals(20,p.countVertices());
-		assertEquals(25,p.countEdges());
+		p.addControlFlow(t14, t1);
 		
 		TCTree<ControlFlow, Node> tc = new TCTree<ControlFlow, Node>(p);
 		
 		for (TCTreeNode<ControlFlow, Node> n:tc.getVertices()) {
 			System.out.println(String.valueOf(n) + ": " + n.getSkeleton().getEdges());
+			System.out.println(String.valueOf(n) + ": " + n.getBoundaryNodes());
 		}
 		
 		System.out.println("Vertices: " + tc.countVertices());
@@ -336,17 +344,6 @@ public class TCTreeTest extends TestCase {
 		assertEquals(10, tc.getVertices(TCType.P).size());
 		
 		assertEquals(14, tc.getVertices().size());
-		
-		
-		System.out.println("==================================================");
-		System.out.println(tc.getRoot().getName() + ": " + tc.getRoot().getBoundaryNodes());
-		System.out.println("==================================================");
-		Iterator<TCTreeNode<ControlFlow,Node>> i = tc.getVertices().iterator();
-		while (i.hasNext()) {
-			TCTreeNode<ControlFlow,Node> nTree = i.next();
-			System.out.println(nTree.getName() + ": " + nTree.getBoundaryNodes() + " " + nTree.getEntry() + " -> " + nTree.getExit());
-		}
-		
 	}
 	
 	public void testOneMoreComplexExample() {
@@ -395,9 +392,10 @@ public class TCTreeTest extends TestCase {
 		g.addEdge(v3, e);
 		g.addEdge(v42, e);
 		g.addEdge(e, o);
+		g.addEdge(o, i);
 		
 		TCTree<Edge, Vertex> tc = new TCTree<Edge, Vertex>(g);
-		System.out.println("FOOOOO");
+		
 		for (TCTreeNode<Edge, Vertex> n:tc.getVertices()) {
 			System.out.println(String.valueOf(n) + ": " + n.getSkeleton().getEdges());
 		}
@@ -424,6 +422,7 @@ public class TCTreeTest extends TestCase {
 		g.addEdge(v2, v3);
 		g.addEdge(v3, v4);
 		g.addEdge(v3, v6);
+		g.addEdge(v6, v1);
 		
 		TCTree<Edge, Vertex> tc = new TCTree<Edge, Vertex>(g);
 		
@@ -456,6 +455,7 @@ public class TCTreeTest extends TestCase {
 		g.addEdge(v3, v6);
 		g.addEdge(v2, v7);
 		g.addEdge(v5, v7);
+		g.addEdge(v6, v1);
 		
 		TCTree<Edge, Vertex> tc = new TCTree<Edge, Vertex>(g);
 		
