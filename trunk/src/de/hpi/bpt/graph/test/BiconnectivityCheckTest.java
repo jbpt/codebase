@@ -21,6 +21,7 @@
  */
 package de.hpi.bpt.graph.test;
 
+import junit.framework.TestCase;
 import de.hpi.bpt.graph.algo.tctree.BiconnectivityCheck;
 import de.hpi.bpt.process.ControlFlow;
 import de.hpi.bpt.process.Gateway;
@@ -28,7 +29,6 @@ import de.hpi.bpt.process.GatewayType;
 import de.hpi.bpt.process.Node;
 import de.hpi.bpt.process.Process;
 import de.hpi.bpt.process.Task;
-import junit.framework.TestCase;
 
 public class BiconnectivityCheckTest extends TestCase {
 	

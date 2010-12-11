@@ -26,7 +26,6 @@ import java.util.Collection;
 
 import junit.framework.TestCase;
 import de.hpi.bpt.graph.Edge;
-import de.hpi.bpt.graph.Graph;
 import de.hpi.bpt.graph.MultiGraph;
 import de.hpi.bpt.hypergraph.abs.Vertex;
 

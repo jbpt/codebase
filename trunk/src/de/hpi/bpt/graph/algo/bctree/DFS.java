@@ -1,7 +1,7 @@
 package de.hpi.bpt.graph.algo.bctree;
 
-import java.util.Iterator;
 import java.util.Hashtable;
+import java.util.Iterator;
 
 import de.hpi.bpt.graph.abs.IEdge;
 import de.hpi.bpt.graph.abs.IGraph;

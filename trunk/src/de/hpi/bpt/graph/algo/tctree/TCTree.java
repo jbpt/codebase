@@ -24,7 +24,6 @@ package de.hpi.bpt.graph.algo.tctree;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
 import de.hpi.bpt.abstraction.TriAbstractionStepInfo;
 import de.hpi.bpt.graph.abs.AbstractDirectedGraph;
@@ -32,8 +31,6 @@ import de.hpi.bpt.graph.abs.AbstractMultiGraphFragment;
 import de.hpi.bpt.graph.abs.IDirectedEdge;
 import de.hpi.bpt.graph.abs.IEdge;
 import de.hpi.bpt.graph.abs.IGraph;
-import de.hpi.bpt.graph.algo.GraphAlgorithms;
-import de.hpi.bpt.graph.util.GMLUtils;
 import de.hpi.bpt.hypergraph.abs.IGObject;
 import de.hpi.bpt.hypergraph.abs.IVertex;
 
@@ -48,13 +45,9 @@ import de.hpi.bpt.hypergraph.abs.IVertex;
 public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractDirectedGraph<TCTreeEdge<E,V>, TCTreeNode<E,V>> {
 	private IGraph<E,V> graph;
 	
-	private static int n = 0;
-	
 	private Collection<TCTreeNode<E,V>> nodes = new ArrayList<TCTreeNode<E,V>>();
 	
 	private E backEdge;
-	
-	private GraphAlgorithms<E,V> ga = new GraphAlgorithms<E,V>();
 	
 	private TCTreeNode<E,V> root = null;
 	
@@ -75,16 +68,15 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractDirec
 	}
 	
 	/**
-	 * Constructor
-	 * @param g
+	 * This class decomposes the given a given biconnected graph into a tree of triconnected components.
+	 * If the given back edge is null, a random edge of the graph is chosen as back edge
+	 * @param graph - a biconnected graph 
+	 * @param edge - the according back edge
 	 */
-	public TCTree(IGraph<E,V> g) {
+	public TCTree(IGraph<E,V> g, E edge) {
 		if (g==null) return;
 		this.graph = g;
 		
-		//graph must have one entry and one exit
-		Collection<V> bs = ga.getBoundaryVertices(this.graph);
-		if (bs.size()!=2) return;
 		if (isTrivialCase()) {
 			TCTreeSkeleton<E,V> sk = new TCTreeSkeleton<E,V>(this.graph);
 			sk.copyOriginalGraph();
@@ -96,13 +88,15 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractDirec
 		} else {
 			TCTreeSkeleton<E,V> sk = new TCTreeSkeleton<E,V>(this.graph);
 			sk.copyOriginalGraph();
-			Iterator<V> bi = bs.iterator();
-			this.backEdge = sk.addVirtualEdge(bi.next(), bi.next());
+			if (edge == null)
+				// choose one edge to be the backEdge
+				this.backEdge = sk.getEdges().iterator().next();
+			else
+				this.backEdge = edge;
 			// graph must be biconnected
 			BiconnectivityCheck<E,V> check = new BiconnectivityCheck<E,V>(sk);
 			if (!check.isBiconnected()) return;
-			//if (!ga.isConnected(sk, 1)) return;
-	
+			
 			// make first node
 			this.root = new TCTreeNode<E,V>("0");
 			root.setSkeleton(sk);
@@ -115,28 +109,23 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractDirec
 					this.putNode(node);
 				}
 			}
+			
 			// classify node types
 			this.classifyNodes();
 			
-			Iterator<TCTreeNode<E,V>> ni = this.nodes.iterator();
-			
 			// construct tree
 			this.constructTree();
-			
-			nodes.clear();
-			nodes.addAll(this.getVertices());
-			this.nodes.remove(this.root);
-			
-			ni = this.nodes.iterator();
-			while (ni.hasNext()) {
-				TCTreeNode<E,V> n = ni.next();
-				List<V> bns = new ArrayList<V>(n.getBoundaryNodes());
-				this.classifyBoundaryNode(n,bns.get(0));
-				this.classifyBoundaryNode(n,bns.get(1));
-			}
-					
+		
 			this.nodes.clear();
 		}
+	}
+	
+	/**
+	 * A shot cut for TCTree(graph, null);
+	 * @param graph - a biconnected graph
+	 */
+	public TCTree(IGraph<E,V> g) {
+		this(g, null);
 	}
 	
 	private boolean isTrivialCase() {
@@ -195,7 +184,7 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractDirec
 	}
 	
 	/**
-	 * Classify TCTree nodes on types: S,P,R
+	 * Classify TCTree nodes on types: P,B,R
 	 */
 	private void classifyNodes() {
 		int Pc, Bc, Rc;
@@ -229,88 +218,28 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractDirec
 	}
 	
 	private void constructTree() {
-		GMLUtils<E, V> gmlV = new GMLUtils<E, V>();
+		//GMLUtils<E, V> gmlV = new GMLUtils<E, V>();
 		
 		// get root node - a node with back edge
 		Iterator<TCTreeNode<E,V>> i = this.nodes.iterator();
 		while (i.hasNext()) {
 			TCTreeNode<E,V> n = i.next();
 			E e = n.getSkeleton().getEdge(this.backEdge.getV1(), this.backEdge.getV2());
-			if (e!=null && n.getSkeleton().isVirtual(e))
+			if (e!=null) // && n.getSkeleton().isVirtual(e))
 			{				
 				this.root = n;
-				gmlV.serialize(n.getSkeleton(), "root.gml");
+				//gmlV.serialize(n.getSkeleton(), "root.gml");
 				break;
 			}
 		}
 		if (this.root == null) return;
 		this.addVertex(this.root);
 		this.root.setBoundaryNodes(this.backEdge.getVertices());
-		
-		Iterator<E> esi = this.graph.getEdges(this.backEdge.getV1()).iterator();
-		if (esi.hasNext()) {
-			E es = esi.next();
-			if (es instanceof IDirectedEdge<?>) {
-				IDirectedEdge<V> de = (IDirectedEdge<V>) es;
-				if (de.getSource().equals(this.backEdge.getV1())) this.root.setEntry(this.backEdge.getV1());
-				if (de.getTarget().equals(this.backEdge.getV1())) this.root.setExit(this.backEdge.getV1());
-			}
-		}
-		
-		esi = this.graph.getEdges(this.backEdge.getV2()).iterator();
-		if (esi.hasNext()) {
-			E es = esi.next();
-			if (es instanceof IDirectedEdge<?>) {
-				IDirectedEdge<V> de = (IDirectedEdge<V>) es;
-				if (de.getSource().equals(this.backEdge.getV2())) this.root.setEntry(this.backEdge.getV2());
-				if (de.getTarget().equals(this.backEdge.getV2())) this.root.setExit(this.backEdge.getV2());
-			}
-		}
-		
+	
 		Collection<TCTreeNode<E,V>> ns = new ArrayList<TCTreeNode<E,V>>(this.nodes);
 		ns.remove(this.root);
 		constructChildren(this.root,ns);
 	}
-	
-	private void classifyBoundaryNode(TCTreeNode<E,V> n, V v) {
-		if (n.getSkeleton() == null) return;
-		
-		Collection<E> sEdges = this.getFragment(n).getEdges(v);
-		Collection<E> gEdges = this.graph.getEdges(v);
-		
-		if (sEdges.size()==0 || gEdges.size()==0) return;
-		
-		int sIn, sOut, gIn, gOut;
-		sIn = sOut = gIn = gOut = 0;
-		
-		
-		Iterator<E> i = sEdges.iterator();
-		while (i.hasNext()) {
-			E e = i.next();
-			
-			E ge = this.graph.getEdge(e.getV1(), e.getV2());
-			if (!(ge instanceof IDirectedEdge<?>)) return;
-			
-			IDirectedEdge<V> de = (IDirectedEdge<V>) ge;
-			
-			if (de.getTarget().equals(v)) sIn++;
-			else sOut++;
-		}
-		
-		i = gEdges.iterator();
-		while (i.hasNext()) {
-			E e = i.next();
-			if (!(e instanceof IDirectedEdge<?>)) return;
-			
-			IDirectedEdge<V> de = (IDirectedEdge<V>) e;
-			if (de.getTarget().equals(v)) gIn++;
-			else gOut++;
-		}
-		
-		if (sIn == 0 || gOut-sOut == 0) n.setEntry(v);
-		if (sOut == 0 || gIn-sIn == 0) n.setExit(v);
-	}
-
 	
 	private void constructChildren(TCTreeNode<E,V> n, Collection<TCTreeNode<E,V>> ns)
 	{
@@ -333,7 +262,7 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractDirec
 					
 					nss.remove(vn);
 					
-					if (vn.getType() == TCType.P)
+					if (vn.getType() == TCType.B)
 						nps.add(vn);
 					else {
 						ncs.add(vn);
@@ -342,7 +271,7 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractDirec
 			}
 		}
 		
-		// first work with Ps
+		// first work with Bs
 		Collection<TCTreeNode<E,V>> cncs = new ArrayList<TCTreeNode<E,V>>(ncs);
 		Iterator<TCTreeNode<E,V>> j = nps.iterator();
 		while (j.hasNext()) {
