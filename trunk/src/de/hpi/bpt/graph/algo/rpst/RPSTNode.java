@@ -76,7 +76,7 @@ public class RPSTNode<E extends IDirectedEdge<V>, V extends IVertex> extends Ver
 	
 	@Override
 	public String toString() {
-		return (this.isQuasi ? "*" : "")+this.getName() + " [" + "] - " + this.getSkeleton() + " - " + this.getSkeleton().getVirtualEdges();
+		return (this.isQuasi ? "*" : "")+this.getName() + " [" + this.entry + "," + this.exit + "] - " + this.getSkeleton() + " - " + this.getSkeleton().getVirtualEdges();
 	}
 
 }

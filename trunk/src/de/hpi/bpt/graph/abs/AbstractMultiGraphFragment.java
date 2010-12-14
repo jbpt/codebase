@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import de.hpi.bpt.hypergraph.abs.IVertex;
 
@@ -151,8 +152,13 @@ public class AbstractMultiGraphFragment<E extends IEdge<V>, V extends IVertex> e
 	 * @return Edge in the original graph
 	 */
 	public E getOriginal(E e) {
-		if (this.graph!=null)
-			return this.esMap.get(e);
+		// TODO make efficient (get methode has a bug??!!)
+		Iterator<Entry<E,E>> it = this.esMap.entrySet().iterator();
+	    while (it.hasNext()) {
+	        Entry<E,E> pairs = it.next();
+	        if (pairs.getKey().getId().equals(e.getId()))
+	        	return pairs.getValue();
+	    }
 		
 		return null;
 	}

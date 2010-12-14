@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -116,7 +117,7 @@ public class RPST <E extends IDirectedEdge<V>, V extends IVertex>
 		// compute TCTree
 		this.tct = new TCTree(this.graph,this.backEdge);
 		
-		System.out.println(this.tct);
+		//System.out.println(this.tct);
 		
 		// remove extra edges
 		Set<TCTreeNode<IEdge<V>,V>> quasi = new HashSet<TCTreeNode<IEdge<V>,V>>();
@@ -129,7 +130,7 @@ public class RPST <E extends IDirectedEdge<V>, V extends IVertex>
 			}
 		}
 		
-		System.out.println(this.tct);
+		//System.out.println(this.tct);
 		
 		// CONSTRUCT RPST
 
@@ -153,7 +154,7 @@ public class RPST <E extends IDirectedEdge<V>, V extends IVertex>
 			}
 		}
 		
-		System.out.println(this.tct);
+		//System.out.println(this.tct);
 		
 		Map<TCTreeNode<IEdge<V>,V>,RPSTNode<E,V>> map2 = new HashMap<TCTreeNode<IEdge<V>,V>, RPSTNode<E,V>>();
 		for (TCTreeNode<IEdge<V>,V> node: this.tct.getVertices()) {
@@ -175,14 +176,6 @@ public class RPST <E extends IDirectedEdge<V>, V extends IVertex>
 						if (t == null) t = e.getV2();
 						n.getSkeleton().addVirtualEdge(s,t);
 					}
-					else {
-						// TODO!!! Work around the problem! Need to understand better what is happening!!!
-						V s = map.get(e.getV1()); 
-						V t = map.get(e.getV2());
-						if (s == null) s = e.getV1();
-						if (t == null) t = e.getV2();
-						n.getSkeleton().addEdge(s,t);
-					}
 					
 					continue;
 				}
@@ -197,18 +190,35 @@ public class RPST <E extends IDirectedEdge<V>, V extends IVertex>
 					if (s == null) s = de.getSource();
 					if (t == null) t = de.getTarget();
 					
+					if (s.equals(snk) && t.equals(src)) continue;
 					n.getSkeleton().addEdge(s,t);
 				}
 			}
 			
-			this.addVertex(n);
+			// fix entries/exits
+			if (this.tct.isRoot(node)) { n.setEntry(src); n.setExit(snk); }
+			else {
+				Iterator<V> bs = node.getBoundaryNodes().iterator();
+				V v1 = bs.next();
+				V v2 = bs.next();
+				Collection<E> inc = this.graph.getIncomingEdges(v1);
+				int s = inc.size();
+				inc.removeAll(node.getSkeleton().getEdges());
+				Collection<E> out = this.graph.getOutgoingEdges(v2);
+				
+				if (node.getSkeleton().getEdges().containsAll(out) || s==inc.size()) {
+					n.setEntry(v1);
+				}
+			}
+			
+			this.addVertex(n);			
 			map2.put(node, n);
 		}
 		
+		// build tree
 		for (TCTreeEdge<IEdge<V>,V> edge : this.tct.getEdges()) {
 			this.addEdge(map2.get(edge.getSource()), map2.get(edge.getTarget()));
 		}
-		
 		this.root = map2.get(this.tct.getRoot());
 		
 		// fix graph
@@ -220,9 +230,6 @@ public class RPST <E extends IDirectedEdge<V>, V extends IVertex>
 			this.graph.removeVertex(e.getTarget());
 		}
 		this.graph.removeEdge(this.backEdge);
-		
-		// fix entries/exits
-		//this.getRoot().getSkeleton().removeEdge(this.backEdge);
 		
 		System.out.println(this);
 	}
