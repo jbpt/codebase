@@ -25,17 +25,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import de.hpi.bpt.abstraction.TriAbstractionStepInfo;
 import de.hpi.bpt.graph.abs.AbstractDirectedGraph;
 import de.hpi.bpt.graph.abs.AbstractMultiGraphFragment;
-import de.hpi.bpt.graph.abs.IDirectedEdge;
 import de.hpi.bpt.graph.abs.IEdge;
 import de.hpi.bpt.graph.abs.IGraph;
-import de.hpi.bpt.hypergraph.abs.IGObject;
 import de.hpi.bpt.hypergraph.abs.IVertex;
 
 /**
- * SPQR-tree decomposition of the biconnected multi graph with respect to its triconnected components
+ * The tree of the triconnected components
+ * 
  * @author Artem Polyvyanyy
  * @author Christian Wiggert
  *
@@ -43,13 +41,14 @@ import de.hpi.bpt.hypergraph.abs.IVertex;
  * @param <V> template for vertex (extends IVertex)
  */
 public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractDirectedGraph<TCTreeEdge<E,V>, TCTreeNode<E,V>> {
-	private IGraph<E,V> graph;
+
+	protected IGraph<E,V> graph;
 	
-	private Collection<TCTreeNode<E,V>> nodes = new ArrayList<TCTreeNode<E,V>>();
+	protected Collection<TCTreeNode<E,V>> nodes = new ArrayList<TCTreeNode<E,V>>();
 	
-	private E backEdge;
+	protected E backEdge;
 	
-	private TCTreeNode<E,V> root = null;
+	protected TCTreeNode<E,V> root = null;
 	
 	/*
 	 * (non-Javadoc)
@@ -218,8 +217,6 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractDirec
 	}
 	
 	private void constructTree() {
-		//GMLUtils<E, V> gmlV = new GMLUtils<E, V>();
-		
 		// get root node - a node with back edge
 		Iterator<TCTreeNode<E,V>> i = this.nodes.iterator();
 		while (i.hasNext()) {
@@ -228,7 +225,6 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractDirec
 			if (e!=null) // && n.getSkeleton().isVirtual(e))
 			{				
 				this.root = n;
-				//gmlV.serialize(n.getSkeleton(), "root.gml");
 				break;
 			}
 		}
@@ -239,6 +235,23 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractDirec
 		Collection<TCTreeNode<E,V>> ns = new ArrayList<TCTreeNode<E,V>>(this.nodes);
 		ns.remove(this.root);
 		constructChildren(this.root,ns);
+		
+		// construct trivial nodes
+		int Tc = 0;
+		for (TCTreeNode<E,V> node : this.getVertices()) {
+			Collection<E> ts = new ArrayList<E>(node.getSkeleton().getEdges());
+			ts.removeAll(node.getSkeleton().getVirtualEdges());
+			for (E t : ts) {
+				TCTreeNode<E,V> n = new TCTreeNode<E,V>();
+				n.setType(TCType.T);
+				n.setBoundaryNodes(t.getVertices());
+				TCTreeSkeleton<E,V> sk = new TCTreeSkeleton<E,V>(this.graph);
+				sk.addEdge(t.getV1(), t.getV2());
+				n.setSkeleton(sk);
+				n.setName("T"+(Tc++));
+				this.addEdge(node,n);
+			}
+		}
 	}
 	
 	private void constructChildren(TCTreeNode<E,V> n, Collection<TCTreeNode<E,V>> ns)
@@ -443,54 +456,21 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractDirec
 		return result;
 	}
 	
-	/**
-	 * Q or S
-	 * @param node
-	 * @param v
-	 * @return
-	 */
-	public TriAbstractionStepInfo getFragment(TCTreeNode<E,V> node, V v)
-	{
-		TriAbstractionStepInfo result = new TriAbstractionStepInfo();
-		
-		AbstractMultiGraphFragment<E,V> frag = new AbstractMultiGraphFragment<E,V>(this.getGraph());
-		
-		Iterator<E> i = node.getSkeleton().getEdges(v).iterator();
-		while (i.hasNext()) {
-			E e = i.next();
-			if (!node.getSkeleton().isVirtual(e) &&
-					this.getGraph().getEdges(e.getV1()).size()==2 &&
-					this.getGraph().getEdges(e.getV2()).size()==2) {
-				E fe = frag.addEdge(e.getV1(), e.getV2());
-				
-				result.setFragment(this.getAllObjects(frag));
-				result.setType(TCType.T);
-				
-				E oe = frag.getOriginal(fe);
-				if (oe instanceof IDirectedEdge<?>) {
-					IDirectedEdge<V> de = (IDirectedEdge<V>) oe;
-					result.setEntry(de.getSource());
-					result.setExit(de.getTarget());
-				}
-				
-				return result;
-			}
-		}
-		
-		// TODO S-type abstraction fragment
-		
-		
-		
-		return result;
+	@Override
+	public String toString() {
+		return toStringHelper(this.getRoot(), 0);
 	}
 	
-	private Collection<IGObject> getAllObjects(AbstractMultiGraphFragment<E,V> frag)
-	{
-		Collection<IGObject> result = new ArrayList<IGObject>();
-		
-		result.addAll(frag.getVertices());
-		result.addAll(frag.getOriginalEdges());
-		
+	private String toStringHelper(TCTreeNode<E,V> tn, int depth) {
+		String result = "";
+		for (int i = 0; i < depth; i++){
+			result += "   ";
+		}
+		result += tn.toString();
+		result += "\n";
+		for (TCTreeNode<E,V> c: this.getChildren(tn)){
+			result += toStringHelper(c, depth+1);
+		}
 		return result;
 	}
 }

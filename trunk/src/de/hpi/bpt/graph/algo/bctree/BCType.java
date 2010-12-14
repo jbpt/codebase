@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008 Artem Polyvyanyy
+ * Copyright (c) 2010 Artem Polyvyanyy
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,20 +19,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package de.hpi.bpt.graph.algo.tctree;
+package de.hpi.bpt.graph.algo.bctree;
 
 /**
- * Structural types of triconnected components
+ * BCTree node types
  * 
- * P - polygon
- * B - bond
- * T - trivial (edge)
- * R - rigid
+ * B - biconnected component
+ * C - cutvertex
  */
-public enum TCType {
-	P, 
-	B, 
-	T, 
-	R, 
-	UNDEFINED
+public enum BCType {
+	B,
+	C,
+	UNDEFINED;
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008 Artem Polyvyanyy
+ * Copyright (c) 2010 Artem Polyvyanyy
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,67 +19,52 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package de.hpi.bpt.abstraction;
+package de.hpi.bpt.graph.algo.rpst;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
-import de.hpi.bpt.graph.algo.tctree.TCType;
-import de.hpi.bpt.hypergraph.abs.IGObject;
+import de.hpi.bpt.graph.abs.IDirectedEdge;
+import de.hpi.bpt.graph.algo.tctree.TCTreeNode;
+import de.hpi.bpt.hypergraph.abs.IVertex;
 
-/**
- * 
- * @author Artem Polyvyanyy
- *
- */
-public class TriAbstractionStepInfo {
-	protected Collection<IGObject> fragment = new ArrayList<IGObject>();
+public class RPSTNode<E extends IDirectedEdge<V>, V extends IVertex> extends TCTreeNode<E,V> {
+
+	private boolean isQuasi = false;
+
+	private V entry = null;
 	
-	public void setFragment(Collection<IGObject> fragment) {
-		this.fragment = fragment;
+	private V exit = null;
+	
+	protected RPSTNode(TCTreeNode<E,V> node) {
+		super();
+		
+		this.type = node.getType();
+		this.boundary = new ArrayList<V>(node.getBoundaryNodes());
+		this.skeleton = node.getSkeleton();
 	}
 
-	protected IGObject entry = null;
+	public boolean isQuasi() {
+		return isQuasi;
+	}
+
+	protected void setQuasi(boolean isQuasi) {
+		this.isQuasi = isQuasi;
+	}
 	
-	public void setEntry(IGObject entry) {
+	public V getEntry() {
+		return this.entry;
+	}
+
+	public void setEntry(V entry) {
 		this.entry = entry;
 	}
 
-	protected IGObject exit = null;
-	
-	public void setExit(IGObject exit) {
+	public V getExit() {
+		return this.exit;
+	}
+
+	public void setExit(V exit) {
 		this.exit = exit;
 	}
 
-	protected TCType type = TCType.UNDEFINED;
-	
-	
-	public void setType(TCType type) {
-		this.type = type;
-	}
-
-	public Collection<IGObject> getFragment() {
-		return fragment;
-	}
-	
-	public IGObject getEntry() {
-		return entry;
-	}
-	
-	public IGObject getExit() {
-		return exit;
-	}
-	
-	public TCType getType() {
-		return type;
-	}
-	
-	public void addObjects(Collection<IGObject> objs) {
-		this.fragment.addAll(objs);
-	}
-	
-	public void removeObjects(Collection<IGObject> objs) {
-		this.fragment.removeAll(objs);
-	}
-	
 }

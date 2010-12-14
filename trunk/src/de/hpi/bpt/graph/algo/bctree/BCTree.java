@@ -1,3 +1,24 @@
+/**
+ * Copyright (c) 2010 Artem Polyvyanyy
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package de.hpi.bpt.graph.algo.bctree;
 
 import java.io.FileNotFoundException;
@@ -12,6 +33,7 @@ import de.hpi.bpt.graph.algo.GraphAlgorithms;
 import de.hpi.bpt.hypergraph.abs.IVertex;
 
 /**
+ * The tree of the biconnected components
  * 
  * @author Artem Polyvyanyy
  * 
@@ -124,7 +146,7 @@ import de.hpi.bpt.hypergraph.abs.IVertex;
  *   end
  * end;
  */
-public class BCT<E extends IEdge<V>, V extends IVertex> extends DFS<E,V> {
+public class BCTree<E extends IEdge<V>, V extends IVertex> extends DFS<E,V> {
 
     protected class NodeAttrs extends DFS<E,V>.NodeAttrs {
         boolean cut;
@@ -154,7 +176,7 @@ public class BCT<E extends IEdge<V>, V extends IVertex> extends DFS<E,V> {
     
     private GraphAlgorithms<E,V> ga = new GraphAlgorithms<E,V>();
     
-    public BCT(IGraph<E,V> graph) throws FileNotFoundException {
+    public BCTree(IGraph<E,V> graph) throws FileNotFoundException {
         super(graph);
         
         startNode = graph.getVertices().iterator().next();
@@ -283,7 +305,7 @@ public class BCT<E extends IEdge<V>, V extends IVertex> extends DFS<E,V> {
     }
     
     protected void constructTree(BCTreeNode<E,V> node) {
-		if (node.getNodeType()==BCNodeType.B) {
+		if (node.getNodeType()==BCType.B) {
 			for (V p : this.artPoints) {
 				if (node.getGraph().getVertices().contains(p)) {
 					V p2 = null;
@@ -299,7 +321,7 @@ public class BCT<E extends IEdge<V>, V extends IVertex> extends DFS<E,V> {
 				}
 			}
 		}
-		else if (node.getNodeType()==BCNodeType.C) {
+		else if (node.getNodeType()==BCType.C) {
 			for (BCTComponent<E,V> g : this.components) {
 				if (g.getVertices().contains(node.getPoint()) && g!=node.getParentNode().getGraph()) {
 					BCTreeNode<E,V> child = new BCTreeNode<E,V>(g);
@@ -335,7 +357,7 @@ public class BCT<E extends IEdge<V>, V extends IVertex> extends DFS<E,V> {
 			for (BCTreeNode<E,V> child : currentNode.getChildren()) 
 				nodes.push(child);
 			
-			if (currentNode.getNodeType()==BCNodeType.B)
+			if (currentNode.getNodeType()==BCType.B)
 				result.add(currentNode);
 		}
 		
