@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010 Christian Wiggert
+ * Copyright (c) 2010 Christian Wiggert, Artem Polyvyanyy
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,12 +22,8 @@
 package de.hpi.bpt.graph.test;
 
 import junit.framework.TestCase;
-import de.hpi.bpt.graph.Edge;
-import de.hpi.bpt.graph.Graph;
 import de.hpi.bpt.graph.algo.tctree.TCTree;
-import de.hpi.bpt.graph.algo.tctree.TCTreeNode;
 import de.hpi.bpt.graph.algo.tctree.TCType;
-import de.hpi.bpt.hypergraph.abs.Vertex;
 import de.hpi.bpt.process.ControlFlow;
 import de.hpi.bpt.process.Gateway;
 import de.hpi.bpt.process.GatewayType;
@@ -38,6 +34,11 @@ import de.hpi.bpt.process.Task;
 public class TCTreeTest extends TestCase {
 		
 	public void testSimpleGraph() {
+		
+		System.out.println("========================================================");
+		System.out.println("Simple graph");
+		System.out.println("========================================================");
+		
 		//		  --- t3 --- t4 ---
 		//		  |				  |
 		// t1 -- s2 ------------ j5 -- t9
@@ -70,25 +71,29 @@ public class TCTreeTest extends TestCase {
 		p.addControlFlow(t8, j7);
 		p.addControlFlow(j7, j5);
 		p.addControlFlow(j5, t9);
-		p.addControlFlow(t9, t1);
+		ControlFlow backEdge = p.addControlFlow(t9, t1);
 		
-		TCTree<ControlFlow, Node> tc = new TCTree<ControlFlow, Node>(p);
+		TCTree<ControlFlow,Node> tc = new TCTree<ControlFlow,Node>(p,backEdge);
 		
-		for (TCTreeNode<ControlFlow, Node> n:tc.getVertices()) {
+		/*for (TCTreeNode<ControlFlow, Node> n:tc.getVertices()) {
 			System.out.println(String.valueOf(n) + ": " + n.getSkeleton().getEdges());
 			System.out.println(String.valueOf(n) + ": " + n.getSkeleton().getVirtualEdges());
-		}
-		System.out.println(tc.getEdges());
+		}*/
+		System.out.println(tc);
 		
-		assertEquals(tc.getVertices().size(), 6);
-		assertEquals(tc.getEdges().size(), 5);
+		assertEquals(tc.getVertices().size(), 18);
+		assertEquals(tc.getEdges().size(), 17);
 		assertEquals(tc.getVertices(TCType.B).size(), 2);
 		assertEquals(tc.getVertices(TCType.R).size(), 0);
 		assertEquals(tc.getVertices(TCType.P).size(), 4);
-		
+		assertEquals(tc.getVertices(TCType.T).size(), 12);
 	}
 	
-	public void testTrivialCase() {
+	/*public void testTrivialCase() {
+		System.out.println("============================");
+		System.out.println("Trivial case");
+		System.out.println("============================");
+		
 		Graph g = new Graph();
 		
 		Vertex v1 = new Vertex("1");
@@ -466,6 +471,6 @@ public class TCTreeTest extends TestCase {
 		assertEquals(0, tc.getVertices(TCType.R).size());
 		assertEquals(3, tc.getVertices(TCType.B).size());
 		assertEquals(4, tc.getVertices(TCType.P).size());
-	}
+	}*/
 
 }

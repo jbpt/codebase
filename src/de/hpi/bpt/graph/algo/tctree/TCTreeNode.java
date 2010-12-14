@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008 Artem Polyvyanyy
+ * Copyright (c) 2010 Artem Polyvyanyy
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,22 +28,13 @@ import de.hpi.bpt.graph.abs.IEdge;
 import de.hpi.bpt.hypergraph.abs.IVertex;
 import de.hpi.bpt.hypergraph.abs.Vertex;
 
-/**
- * 
- * @author Artem Polyvyanyy
- *
- */
 public class TCTreeNode<E extends IEdge<V>, V extends IVertex> extends Vertex {
+
+	protected TCType type = TCType.UNDEFINED;
 	
-	private TCType type = TCType.UNDEFINED;
+	protected TCTreeSkeleton<E,V> skeleton;
 	
-	private TCTreeSkeleton<E,V> skeleton;
-	
-	private Collection<V> boundary = new ArrayList<V>();
-	
-	private V entry = null;
-	
-	private V exit = null;
+	protected Collection<V> boundary = new ArrayList<V>();
 	
 	/**
 	 * Constructor
@@ -64,7 +55,7 @@ public class TCTreeNode<E extends IEdge<V>, V extends IVertex> extends Vertex {
 		return type;
 	}
 
-	public void setType(TCType type) {
+	protected void setType(TCType type) {
 		this.type = type;
 	}
 	
@@ -72,7 +63,7 @@ public class TCTreeNode<E extends IEdge<V>, V extends IVertex> extends Vertex {
 		return this.skeleton;
 	}
 
-	public void setSkeleton(TCTreeSkeleton<E,V> skeleton) {
+	protected void setSkeleton(TCTreeSkeleton<E,V> skeleton) {
 		this.skeleton = skeleton;
 	}
 	
@@ -80,35 +71,15 @@ public class TCTreeNode<E extends IEdge<V>, V extends IVertex> extends Vertex {
 		return new ArrayList<V>(this.boundary);
 	}
 
-	public void setBoundaryNodes(Collection<V> boundary) {
+	protected void setBoundaryNodes(Collection<V> boundary) {
 		if (boundary == null || boundary.size()!=2) return;
 		
 		this.boundary = new ArrayList<V>(boundary);
 	}
 	
-
-	public V getEntry() {
-		return entry;
-	}
-
-	public void setEntry(V entry) {
-		this.entry = entry;
-	}
-
-	public V getExit() {
-		return exit;
-	}
-
-	public void setExit(V exit) {
-		this.exit = exit;
-	}
-	
-	public void setEntryAndExit(V entry, V exit) {
-		this.setEntry(entry);
-		this.setExit(exit);
-		this.boundary.clear();
-		boundary.add(entry);
-		boundary.add(exit);
+	@Override
+	public String toString() {
+		return this.getName() + " " + this.getBoundaryNodes() + " - " + this.getSkeleton() + " - " + this.getSkeleton().getVirtualEdges();
 	}
 
 }

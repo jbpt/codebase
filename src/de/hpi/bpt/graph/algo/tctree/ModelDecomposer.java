@@ -183,7 +183,7 @@ public class ModelDecomposer<E extends IEdge<V>, V extends IVertex> {
 			}
 		}
 		
-		return  result;
+		return result;
 	}
 	
 	/**
