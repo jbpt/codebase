@@ -23,12 +23,18 @@ package de.hpi.bpt.graph.algo.rpst;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import de.hpi.bpt.graph.abs.AbstractDirectedGraph;
 import de.hpi.bpt.graph.abs.IDirectedEdge;
 import de.hpi.bpt.graph.abs.IDirectedGraph;
+import de.hpi.bpt.graph.abs.IEdge;
 import de.hpi.bpt.graph.algo.DirectedGraphAlgorithms;
 import de.hpi.bpt.graph.algo.tctree.TCTree;
+import de.hpi.bpt.graph.algo.tctree.TCTreeEdge;
 import de.hpi.bpt.graph.algo.tctree.TCTreeNode;
 import de.hpi.bpt.graph.algo.tctree.TCType;
 import de.hpi.bpt.hypergraph.abs.IVertex;
@@ -45,23 +51,31 @@ import de.hpi.bpt.hypergraph.abs.Vertex;
  * Hoboken, NJ, US, September 2010;
  */
 public class RPST <E extends IDirectedEdge<V>, V extends IVertex>
-				extends AbstractDirectedGraph<IDirectedEdge<RPSTNode<E,V>>, RPSTNode<E,V>> {
+				extends AbstractDirectedGraph<RPSTEdge<E,V>, RPSTNode<E,V>> {
 
 	private IDirectedGraph<E,V> graph = null;
 	
-	private IDirectedEdge<V> backEdge = null;
+	private E backEdge = null;
 	
 	private Collection<E> extraEdges = null;
 	
-	private TCTree<E,V> tct = null;
+	private TCTree<IEdge<V>,V> tct = null;
 	
-	private DirectedGraphAlgorithms<E,V> dga = new DirectedGraphAlgorithms<E, V>();
+	private DirectedGraphAlgorithms<E,V> dga = new DirectedGraphAlgorithms<E,V>();
 	
 	private RPSTNode<E,V> root = null;
 	
+	
 	@Override
-	public IDirectedEdge<RPSTNode<E, V>> addEdge(RPSTNode<E, V> s, RPSTNode<E, V> t) {
-		return super.addEdge(s, t);
+	public RPSTEdge<E,V> addEdge(RPSTNode<E,V> v1, RPSTNode<E,V> v2) {
+		if (v1 == null || v2 == null) return null;
+		
+		Collection<RPSTNode<E,V>> ss = new ArrayList<RPSTNode<E,V>>(); ss.add(v1);
+		Collection<RPSTNode<E,V>> ts = new ArrayList<RPSTNode<E,V>>(); ts.add(v2);
+		
+		if (!this.checkEdge(ss, ts)) return null;
+		
+		return new RPSTEdge<E,V>(this, v1, v2);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -80,11 +94,13 @@ public class RPST <E extends IDirectedEdge<V>, V extends IVertex>
 		
 		// expand mixed vertices
 		this.extraEdges = new ArrayList<E>();
+		Map<V,V> map = new HashMap<V,V>();
 		for (V v : this.graph.getVertices()) {
 			if (this.graph.getIncomingEdges(v).size()>1 &&
 					this.graph.getOutgoingEdges(v).size()>1) {
 				V newV = (V) (new Vertex());
 				newV.setName(v.getName()+"*");
+				map.put(newV, v);
 				this.graph.addVertex(newV);
 				
 				for (E e : this.graph.getOutgoingEdges(v)) {
@@ -103,9 +119,11 @@ public class RPST <E extends IDirectedEdge<V>, V extends IVertex>
 		System.out.println(this.tct);
 		
 		// remove extra edges
+		Set<TCTreeNode<IEdge<V>,V>> quasi = new HashSet<TCTreeNode<IEdge<V>,V>>();
 		for (TCTreeNode trivial : this.tct.getVertices(TCType.T)) {
 			
 			if (this.isExtraEdge(trivial.getBoundaryNodes())) {
+				quasi.add(tct.getParent(trivial));
 				this.tct.removeEdges(this.tct.getIncomingEdges(trivial));
 				this.tct.removeVertex(trivial);
 			}
@@ -114,10 +132,99 @@ public class RPST <E extends IDirectedEdge<V>, V extends IVertex>
 		System.out.println(this.tct);
 		
 		// CONSTRUCT RPST
-		this.root = new RPSTNode<E, V>(this.tct.getRoot());
+
+		// remove dummy nodes
+		for (TCTreeNode<IEdge<V>,V> node: this.tct.getVertices()) {
+			if (tct.getChildren(node).size()==1) {
+				TCTreeEdge<IEdge<V>,V> e = tct.getOutgoingEdges(node).iterator().next();
+				this.tct.removeEdge(e);
+				
+				if (this.tct.isRoot(node)) {
+					this.tct.removeEdge(e);
+					this.tct.removeVertex(node);
+					this.tct.setRoot(e.getTarget());
+				}
+				else {
+					TCTreeEdge<IEdge<V>,V> e2 = tct.getIncomingEdges(node).iterator().next();
+					this.tct.removeEdge(e2);
+					this.tct.removeVertex(node);
+					this.tct.addEdge(e2.getSource(), e.getTarget());
+				}
+			}
+		}
+		
+		System.out.println(this.tct);
+		
+		Map<TCTreeNode<IEdge<V>,V>,RPSTNode<E,V>> map2 = new HashMap<TCTreeNode<IEdge<V>,V>, RPSTNode<E,V>>();
+		for (TCTreeNode<IEdge<V>,V> node: this.tct.getVertices()) {
+			if (node.getType()==TCType.T && node.getBoundaryNodes().contains(src) &&
+					node.getBoundaryNodes().contains(snk)) continue;
+			
+			RPSTNode<E,V> n = new RPSTNode<E,V>();
+			n.setType(node.getType());
+			n.setName(node.getName());
+			if (quasi.contains(node)) n.setQuasi(true);
+			
+			for (IEdge<V> e : node.getSkeleton().getEdges()) {
+				IEdge<V> oe = node.getSkeleton().getOriginal(e);
+				if (oe == null) {
+					if (node.getSkeleton().isVirtual(e)) {
+						V s = map.get(e.getV1()); 
+						V t = map.get(e.getV2());
+						if (s == null) s = e.getV1();
+						if (t == null) t = e.getV2();
+						n.getSkeleton().addVirtualEdge(s,t);
+					}
+					else {
+						// TODO!!! Work around the problem! Need to understand better what is happening!!!
+						V s = map.get(e.getV1()); 
+						V t = map.get(e.getV2());
+						if (s == null) s = e.getV1();
+						if (t == null) t = e.getV2();
+						n.getSkeleton().addEdge(s,t);
+					}
+					
+					continue;
+				}
+				
+				if (oe instanceof IDirectedEdge<?>) {
+					IDirectedEdge<V> de = (IDirectedEdge<V>) oe;
+					
+					if (de.getSource().equals(map.get(de.getTarget()))) continue;
+					
+					V s = map.get(de.getSource()); 
+					V t = map.get(de.getTarget());
+					if (s == null) s = de.getSource();
+					if (t == null) t = de.getTarget();
+					
+					n.getSkeleton().addEdge(s,t);
+				}
+			}
+			
+			this.addVertex(n);
+			map2.put(node, n);
+		}
+		
+		for (TCTreeEdge<IEdge<V>,V> edge : this.tct.getEdges()) {
+			this.addEdge(map2.get(edge.getSource()), map2.get(edge.getTarget()));
+		}
+		
+		this.root = map2.get(this.tct.getRoot());
+		
+		// fix graph
+		for (E e : this.extraEdges) {
+			for (E e2 : this.graph.getOutgoingEdges(e.getTarget())) {
+				this.graph.addEdge(e.getSource(), e2.getTarget());
+				this.graph.removeEdge(e2);
+			}
+			this.graph.removeVertex(e.getTarget());
+		}
+		this.graph.removeEdge(this.backEdge);
+		
+		// fix entries/exits
+		//this.getRoot().getSkeleton().removeEdge(this.backEdge);
 		
 		System.out.println(this);
-		
 	}
 	
 	private boolean isExtraEdge(Collection<V> vs) {
@@ -152,6 +259,15 @@ public class RPST <E extends IDirectedEdge<V>, V extends IVertex>
 	 */
 	public Collection<RPSTNode<E,V>> getChildren(RPSTNode<E,V> node) {
 		return this.getSuccessors(node);
+	}
+	
+	/**
+	 * Get parent node
+	 * @param node node
+	 * @return parent of the node
+	 */
+	public RPSTNode<E,V> getParent(RPSTNode<E,V> node) {
+		return this.getFirstPredecessor(node);
 	}
 	
 	@Override

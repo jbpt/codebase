@@ -41,7 +41,7 @@ public class AbstractDirectedHyperEdge<V extends IVertex> extends AbstractHyperE
 	private AbstractMultiDirectedHyperGraph graph = null;
 
 	@SuppressWarnings("unchecked")
-	protected AbstractDirectedHyperEdge(AbstractMultiDirectedHyperGraph g) {
+	public AbstractDirectedHyperEdge(AbstractMultiDirectedHyperGraph g) {
 		super(g);
 		this.source = new ArrayList<V>();
 		this.target = new ArrayList<V>();

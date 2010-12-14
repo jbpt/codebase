@@ -21,62 +21,36 @@
  */
 package de.hpi.bpt.graph.algo.rpst;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
+import de.hpi.bpt.graph.abs.AbstractMultiDirectedGraph;
 import de.hpi.bpt.graph.abs.IDirectedEdge;
-import de.hpi.bpt.graph.algo.tctree.TCType;
 import de.hpi.bpt.hypergraph.abs.IVertex;
-import de.hpi.bpt.hypergraph.abs.Vertex;
 
-public class RPSTNode<E extends IDirectedEdge<V>, V extends IVertex> extends Vertex {
-
-	private boolean isQuasi = false;
-
-	private V entry = null;
+public class RPSTSkeleton<E extends IDirectedEdge<V>, V extends IVertex>
+			extends AbstractMultiDirectedGraph<E,V>
+{
+	private Collection<Collection<V>> vEdges = new ArrayList<Collection<V>>();
 	
-	private V exit = null;
-	
-	private TCType type = TCType.UNDEFINED;
-	
-	private RPSTSkeleton<E,V> skeleton = new RPSTSkeleton<E,V>();
-	
-	public boolean isQuasi() {
-		return isQuasi;
-	}
-
-	protected void setQuasi(boolean isQuasi) {
-		this.isQuasi = isQuasi;
-	}
-	
-	public V getEntry() {
-		return this.entry;
-	}
-
-	protected void setEntry(V entry) {
-		this.entry = entry;
-	}
-
-	public V getExit() {
-		return this.exit;
-	}
-
-	protected void setExit(V exit) {
-		this.exit = exit;
-	}
-	
-	public RPSTSkeleton<E,V> getSkeleton() {
-		return this.skeleton;
-	}
-	
-	public TCType getType() {
-		return this.type;
-	}
-	
-	protected void setType(TCType type) {
-		this.type = type;
+	public void addVirtualEdge(V v1, V v2) {
+		Collection<V> edge = new ArrayList<V>();
+		edge.add(v1);
+		edge.add(v2);
+		vEdges.add(edge);
 	}
 	
 	@Override
-	public String toString() {
-		return (this.isQuasi ? "*" : "")+this.getName() + " [" + "] - " + this.getSkeleton() + " - " + this.getSkeleton().getVirtualEdges();
+	public E removeEdge(E e) {
+		vEdges.remove(e);
+		return super.removeEdge(e);
 	}
-
+	
+	public Collection<Collection<V>> getVirtualEdges() {
+		return this.vEdges;
+	}
+	
+	public boolean isVirtual(E e) {
+		return vEdges.contains(e);
+	}
 }

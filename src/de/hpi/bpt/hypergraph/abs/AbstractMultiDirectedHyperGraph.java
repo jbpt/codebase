@@ -51,7 +51,7 @@ public class AbstractMultiDirectedHyperGraph <E extends IDirectedHyperEdge<V>,V 
 		
 		E e = (E) new AbstractDirectedHyperEdge<V>(this);
 		Collection<V> ss = new ArrayList<V>(); ss.add(s);
-		Collection<V> ts = new ArrayList<V>(); ts.add(s);
+		Collection<V> ts = new ArrayList<V>(); ts.add(t);
 		e.addSourceAndTagetVertices(ss, ts);
 		return e;
 	}

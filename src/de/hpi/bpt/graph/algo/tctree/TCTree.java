@@ -363,9 +363,17 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractDirec
 		return node.equals(this.root);
 	}
 	
-	public TCTreeNode<E,V> getRoot()
-	{
+	/**
+	 * Get root node
+	 * @return root node
+	 */
+	public TCTreeNode<E,V> getRoot() {
 		return this.root;
+	}
+	
+	public void setRoot(TCTreeNode<E,V> node) {
+		if (this.getVertices().contains(node))
+			this.root = node;
 	}
 	
 	/**
