@@ -21,62 +21,15 @@
  */
 package de.hpi.bpt.graph.algo.rpst;
 
-import de.hpi.bpt.graph.abs.IDirectedEdge;
-import de.hpi.bpt.graph.algo.tctree.TCType;
+import de.hpi.bpt.graph.abs.AbstractDirectedEdge;
+import de.hpi.bpt.graph.abs.AbstractMultiDirectedGraph;
+import de.hpi.bpt.graph.abs.IEdge;
 import de.hpi.bpt.hypergraph.abs.IVertex;
-import de.hpi.bpt.hypergraph.abs.Vertex;
 
-public class RPSTNode<E extends IDirectedEdge<V>, V extends IVertex> extends Vertex {
+public class RPSTEdge<E extends IEdge<V>, V extends IVertex> extends AbstractDirectedEdge<RPSTNode<E,V>> {
 
-	private boolean isQuasi = false;
-
-	private V entry = null;
-	
-	private V exit = null;
-	
-	private TCType type = TCType.UNDEFINED;
-	
-	private RPSTSkeleton<E,V> skeleton = new RPSTSkeleton<E,V>();
-	
-	public boolean isQuasi() {
-		return isQuasi;
+	@SuppressWarnings("unchecked")
+	protected RPSTEdge(AbstractMultiDirectedGraph g, RPSTNode source, RPSTNode target) {
+		super(g, source, target);
 	}
-
-	protected void setQuasi(boolean isQuasi) {
-		this.isQuasi = isQuasi;
-	}
-	
-	public V getEntry() {
-		return this.entry;
-	}
-
-	protected void setEntry(V entry) {
-		this.entry = entry;
-	}
-
-	public V getExit() {
-		return this.exit;
-	}
-
-	protected void setExit(V exit) {
-		this.exit = exit;
-	}
-	
-	public RPSTSkeleton<E,V> getSkeleton() {
-		return this.skeleton;
-	}
-	
-	public TCType getType() {
-		return this.type;
-	}
-	
-	protected void setType(TCType type) {
-		this.type = type;
-	}
-	
-	@Override
-	public String toString() {
-		return (this.isQuasi ? "*" : "")+this.getName() + " [" + "] - " + this.getSkeleton() + " - " + this.getSkeleton().getVirtualEdges();
-	}
-
 }
