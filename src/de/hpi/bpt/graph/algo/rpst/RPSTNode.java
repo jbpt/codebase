@@ -21,7 +21,9 @@
  */
 package de.hpi.bpt.graph.algo.rpst;
 
+import de.hpi.bpt.graph.abs.AbstractDirectedGraph;
 import de.hpi.bpt.graph.abs.IDirectedEdge;
+import de.hpi.bpt.graph.abs.IDirectedGraph;
 import de.hpi.bpt.graph.algo.tctree.TCType;
 import de.hpi.bpt.hypergraph.abs.IVertex;
 import de.hpi.bpt.hypergraph.abs.Vertex;
@@ -38,8 +40,14 @@ public class RPSTNode<E extends IDirectedEdge<V>, V extends IVertex> extends Ver
 	
 	private RPSTSkeleton<E,V> skeleton = new RPSTSkeleton<E,V>();
 	
+	private AbstractDirectedGraph<E,V> fragment = new AbstractDirectedGraph<E,V>();
+	
 	public boolean isQuasi() {
 		return isQuasi;
+	}
+	
+	public IDirectedGraph<E,V> getFragment() {
+		return (IDirectedGraph<E,V>) this.fragment;
 	}
 
 	protected void setQuasi(boolean isQuasi) {
@@ -76,7 +84,7 @@ public class RPSTNode<E extends IDirectedEdge<V>, V extends IVertex> extends Ver
 	
 	@Override
 	public String toString() {
-		return (this.isQuasi ? "*" : "")+this.getName() + " [" + this.entry + "," + this.exit + "] - " + this.getSkeleton() + " - " + this.getSkeleton().getVirtualEdges();
+		return (this.isQuasi ? "*" : "")+this.getName() + " [" + this.entry + "," + this.exit + "] - " + this.getSkeleton() + " - " + this.getSkeleton().getVirtualEdges() + " : " + this.getFragment();
 	}
 
 }

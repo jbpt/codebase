@@ -26,8 +26,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 
 import de.hpi.bpt.graph.abs.AbstractDirectedGraph;
 import de.hpi.bpt.graph.abs.IDirectedEdge;
@@ -117,8 +119,6 @@ public class RPST <E extends IDirectedEdge<V>, V extends IVertex>
 		// compute TCTree
 		this.tct = new TCTree(this.graph,this.backEdge);
 		
-		//System.out.println(this.tct);
-		
 		// remove extra edges
 		Set<TCTreeNode<IEdge<V>,V>> quasi = new HashSet<TCTreeNode<IEdge<V>,V>>();
 		for (TCTreeNode trivial : this.tct.getVertices(TCType.T)) {
@@ -129,8 +129,6 @@ public class RPST <E extends IDirectedEdge<V>, V extends IVertex>
 				this.tct.removeVertex(trivial);
 			}
 		}
-		
-		//System.out.println(this.tct);
 		
 		// CONSTRUCT RPST
 
@@ -154,8 +152,7 @@ public class RPST <E extends IDirectedEdge<V>, V extends IVertex>
 			}
 		}
 		
-		//System.out.println(this.tct);
-		
+		// construct RPST nodes
 		Map<TCTreeNode<IEdge<V>,V>,RPSTNode<E,V>> map2 = new HashMap<TCTreeNode<IEdge<V>,V>, RPSTNode<E,V>>();
 		for (TCTreeNode<IEdge<V>,V> node: this.tct.getVertices()) {
 			if (node.getType()==TCType.T && node.getBoundaryNodes().contains(src) &&
@@ -164,6 +161,13 @@ public class RPST <E extends IDirectedEdge<V>, V extends IVertex>
 			RPSTNode<E,V> n = new RPSTNode<E,V>();
 			n.setType(node.getType());
 			n.setName(node.getName());
+			Iterator<V> bs = node.getBoundaryNodes().iterator();
+			V b1 = bs.next();
+			b1 = (map.get(b1)==null) ? b1 : map.get(b1); 
+			n.setEntry(b1);
+			V b2 = bs.next();
+			b2 = (map.get(b2)==null) ? b2 : map.get(b2);
+			n.setExit(b2);
 			if (quasi.contains(node)) n.setQuasi(true);
 			
 			for (IEdge<V> e : node.getSkeleton().getEdges()) {
@@ -195,22 +199,6 @@ public class RPST <E extends IDirectedEdge<V>, V extends IVertex>
 				}
 			}
 			
-			// fix entries/exits
-			if (this.tct.isRoot(node)) { n.setEntry(src); n.setExit(snk); }
-			else {
-				Iterator<V> bs = node.getBoundaryNodes().iterator();
-				V v1 = bs.next();
-				V v2 = bs.next();
-				Collection<E> inc = this.graph.getIncomingEdges(v1);
-				int s = inc.size();
-				inc.removeAll(node.getSkeleton().getEdges());
-				Collection<E> out = this.graph.getOutgoingEdges(v2);
-				
-				if (node.getSkeleton().getEdges().containsAll(out) || s==inc.size()) {
-					n.setEntry(v1);
-				}
-			}
-			
 			this.addVertex(n);			
 			map2.put(node, n);
 		}
@@ -229,9 +217,54 @@ public class RPST <E extends IDirectedEdge<V>, V extends IVertex>
 			}
 			this.graph.removeVertex(e.getTarget());
 		}
-		this.graph.removeEdge(this.backEdge);
 		
-		System.out.println(this);
+		this.iterativePreorder();
+		// fix entries/exits
+		for (RPSTNode<E,V> n : this.getVertices()) {
+			if (this.isRoot(n)) { n.setEntry(src); n.setExit(snk); }
+			else {
+				V entry = n.getEntry();
+				
+				int cinf = n.getFragment().getIncomingEdges(entry).size();
+				int coutf = n.getFragment().getOutgoingEdges(entry).size();
+				//int cing = this.graph.getIncomingEdges(entry).size();
+				int coutg = this.graph.getOutgoingEdges(entry).size();
+				
+				if (cinf==0 || coutf==coutg) continue;
+				
+				//System.err.println(n.getName());
+				V exit = n.getExit();
+				n.setEntry(exit);
+				n.setExit(entry);
+			}
+		}
+		
+		this.graph.removeEdge(this.backEdge);
+	}
+	
+	public void iterativePreorder() {
+		Stack<RPSTNode<E,V>> nodes = new Stack<RPSTNode<E,V>>();
+		nodes.push(this.getRoot());
+		RPSTNode<E,V> currentNode;
+		List<RPSTNode<E,V>> list = new ArrayList<RPSTNode<E,V>>();
+		//List<String> list2 = new ArrayList<String>();
+		while (!nodes.isEmpty()) {
+			currentNode = nodes.pop();
+			list.add(0, currentNode);
+			//list2.add(0,currentNode.getName());
+			for (RPSTNode<E,V> n : this.getChildren(currentNode)) {
+				nodes.push(n);
+			}
+		}
+		
+		//System.err.println(list2);
+		for (RPSTNode<E,V> n : list) {
+			for (E e : n.getSkeleton().getEdges()) n.getFragment().addEdge(e.getSource(),e.getTarget());
+			for (RPSTNode<E,V> c : this.getChildren(n)) {
+				if (c.getType()!=TCType.T)
+					for (E e2 : c.getFragment().getEdges()) n.getFragment().addEdge(e2.getSource(),e2.getTarget());
+			}
+		}
 	}
 	
 	private boolean isExtraEdge(Collection<V> vs) {
@@ -292,6 +325,24 @@ public class RPST <E extends IDirectedEdge<V>, V extends IVertex>
 		for (RPSTNode<E,V> c: this.getChildren(tn)){
 			result += toStringHelper(c, depth+1);
 		}
+		return result;
+	}
+	
+	public boolean isRoot(RPSTNode<E,V> node) {
+		if (node == null) return false;
+		return node.equals(this.root);
+	}
+	
+	public Collection<RPSTNode<E,V>> getVertices(TCType type) {
+		Collection<RPSTNode<E,V>> result = new ArrayList<RPSTNode<E,V>>();
+		
+		Iterator<RPSTNode<E,V>> i = this.getVertices().iterator();
+		while (i.hasNext()) {
+			RPSTNode<E,V> n = i.next();
+			if (n.getType()==type)
+				result.add(n);
+		}
+		
 		return result;
 	}
 }

@@ -47,7 +47,7 @@ public class AbstractDirectedGraph<E extends IDirectedEdge<V>, V extends IVertex
 		Collection<V> ts = new ArrayList<V>(); ts.add(t);
 		if (!this.checkEdge(ss,ts)) return null;
 		
-		return super.addEdge(s, t);
+		return (E)(new AbstractDirectedEdge<V>(this,s,t));
 	}
 	
 	@Override
