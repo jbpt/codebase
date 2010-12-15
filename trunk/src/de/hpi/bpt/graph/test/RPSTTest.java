@@ -25,33 +25,44 @@ import junit.framework.TestCase;
 import de.hpi.bpt.graph.DirectedEdge;
 import de.hpi.bpt.graph.DirectedGraph;
 import de.hpi.bpt.graph.algo.rpst.RPST;
+import de.hpi.bpt.graph.algo.rpst.RPSTNode;
+import de.hpi.bpt.graph.algo.tctree.TCType;
 import de.hpi.bpt.hypergraph.abs.Vertex;
+import de.hpi.bpt.process.ControlFlow;
+import de.hpi.bpt.process.Gateway;
+import de.hpi.bpt.process.GatewayType;
+import de.hpi.bpt.process.Node;
+import de.hpi.bpt.process.Process;
+import de.hpi.bpt.process.Task;
 
 public class RPSTTest extends TestCase {
 		
-	/*public void testSimpleGraph() {
-		MultiGraph g = new MultiGraph();
+	public void testTrivialGraph() {
+		System.out.println("========================================================");
+		System.out.println("Trivial Graph");
+		System.out.println("========================================================");
+		
+		DirectedGraph g = new DirectedGraph();
 		
 		Vertex v1 = new Vertex("1");
 		Vertex v2 = new Vertex("2");
 		
 		g.addEdge(v1, v2);
 		
-		TCTree<Edge,Vertex> tc = new TCTree<Edge,Vertex>(g);
+		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
 		
-		for (TCTreeNode<Edge,Vertex> n:tc.getVertices()) {
-			System.out.println(String.valueOf(n) + ": " + n.getSkeleton().getEdges());
-			System.out.println(String.valueOf(n) + ": " + n.getSkeleton().getVirtualEdges());
+		System.out.println(rpst);
+		
+		for (RPSTNode<DirectedEdge,Vertex> node : rpst.getVertices()) {
+			System.out.println(node.getName() + " : " + node.getFragment());
 		}
-		System.out.println(tc.getEdges());
-		
-		System.out.println(tc.getVertices(TCType.B).size());
-		System.out.println(tc.getVertices(TCType.P).size());
-		System.out.println(tc.getVertices(TCType.R).size());
-		System.out.println(tc.getVertices(TCType.T).size());
-	}*/
+	}
 	
 	public void testBPM08Fig11() {
+		System.out.println("========================================================");
+		System.out.println("BPM08 Fig.11");
+		System.out.println("========================================================");
+		
 		DirectedGraph g = new DirectedGraph();
 		
 		Vertex s = new Vertex("s");
@@ -92,7 +103,95 @@ public class RPSTTest extends TestCase {
 		
 		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
 		
+		System.out.println(rpst);
 		
+		for (RPSTNode<DirectedEdge,Vertex> node : rpst.getVertices()) {
+			System.out.println(node.getName() + " : " + node.getFragment());
+		}
 	}
-
+	
+	public void testSimpleGraph() {
+		System.out.println("========================================================");
+		System.out.println("Simple Graph");
+		System.out.println("========================================================");
+		
+		DirectedGraph g = new DirectedGraph();
+		
+		Vertex s = new Vertex("s");
+		Vertex t = new Vertex("t");
+		Vertex y = new Vertex("y");
+		Vertex z = new Vertex("z");
+		
+		g.addVertex(s);
+		g.addVertex(t);
+		g.addVertex(y);
+		g.addVertex(z);
+		
+		g.addEdge(s,y);
+		g.addEdge(y,z);
+		g.addEdge(z,y);
+		g.addEdge(z,t);
+		
+		System.out.println(g);
+		
+		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
+		
+		System.out.println(rpst);
+		
+		for (RPSTNode<DirectedEdge,Vertex> node : rpst.getVertices()) {
+			System.out.println(node.getName() + " : " + node.getFragment());
+		}
+	}
+	
+	
+	public void testBondsTest() {
+		
+		System.out.println("========================================================");
+		System.out.println("Bonds test");
+		System.out.println("========================================================");
+		
+		//		  --- t3 --- t4 ---
+		//		  |				  |
+		// t1 -- s2 ------------ j5 -- t9
+		//	.	  |				  |		.
+		//	.	  |_ s6 ---- j7 __|		.
+		// 	.		  |_ t8 _|			.
+		//	............................. 
+		
+		Process p = new Process();
+		
+		Task t1 = new Task("1");
+		Task t3 = new Task("3");
+		Task t4 = new Task("4");
+		Task t8 = new Task("8");
+		Task t9 = new Task("9");
+		
+		Gateway s2 = new Gateway(GatewayType.XOR, "2");
+		Gateway s6 = new Gateway(GatewayType.XOR, "6");
+		Gateway j7 = new Gateway(GatewayType.XOR, "7");
+		Gateway j5 = new Gateway(GatewayType.XOR, "5");
+		
+		p.addControlFlow(t1, s2);
+		p.addControlFlow(s2, t3);
+		p.addControlFlow(s2, s6);
+		p.addControlFlow(s2, j5);
+		p.addControlFlow(t3, t4);
+		p.addControlFlow(t4, j5);
+		p.addControlFlow(s6, j7);
+		p.addControlFlow(s6, t8);
+		p.addControlFlow(t8, j7);
+		p.addControlFlow(j7, j5);
+		p.addControlFlow(j5, t9);
+		
+		RPST<ControlFlow,Node> rpst = new RPST<ControlFlow,Node>(p);
+		
+		System.out.println(rpst);
+		
+		assertEquals(rpst.getVertices().size(), 17);
+		assertEquals(rpst.getEdges().size(), 16);
+		assertEquals(rpst.getVertices(TCType.B).size(), 2);
+		assertEquals(rpst.getVertices(TCType.R).size(), 0);
+		assertEquals(rpst.getVertices(TCType.P).size(), 4);
+		assertEquals(rpst.getVertices(TCType.T).size(), 11);
+	}
 }

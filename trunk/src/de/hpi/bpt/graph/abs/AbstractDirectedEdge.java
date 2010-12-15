@@ -46,7 +46,7 @@ public class AbstractDirectedEdge<V extends IVertex> extends AbstractDirectedHyp
 	private AbstractMultiDirectedGraph graph = null;
 	
 	@SuppressWarnings("unchecked")
-	protected AbstractDirectedEdge(AbstractMultiDirectedGraph g, V source, V target) {
+	public AbstractDirectedEdge(AbstractMultiDirectedGraph g, V source, V target) {
 		super(g);
 		this.graph = g;
 		this.setVertices(source, target);
