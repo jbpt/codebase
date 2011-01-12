@@ -30,7 +30,7 @@ import de.hpi.bpt.graph.abs.AbstractDirectedGraph;
  *
  */
 public class Flow extends AbstractDirectedEdge<Node> {
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	protected Flow(AbstractDirectedGraph g, Node source, Node target) {
 		super(g, source, target);
 	}
