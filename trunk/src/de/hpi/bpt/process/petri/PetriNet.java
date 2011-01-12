@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import de.hpi.bpt.graph.abs.AbstractDirectedGraph;
@@ -87,6 +88,15 @@ public class PetriNet extends AbstractDirectedGraph<Flow, Node> {
 		return true;
 	}
 	
+	public Collection<Place> getMarkedPlaces() {
+		Collection<Place> markedPlaces = new HashSet<Place>();
+		for (Place p : this.getPlaces())
+			if (p.getTokens()>0)
+				markedPlaces.add(p);
+				
+		return markedPlaces;
+	}
+	
 	public boolean isTerminated() {
 		Iterator<Transition> i = this.getTransitions().iterator();
 		while (i.hasNext()) {
@@ -144,7 +154,7 @@ public class PetriNet extends AbstractDirectedGraph<Flow, Node> {
 		
 		return result;
 	}
-
+	
 	public Collection<Place> getPlaces() {
 		Collection<Place> result = new ArrayList<Place>();
 		
@@ -262,4 +272,45 @@ public class PetriNet extends AbstractDirectedGraph<Flow, Node> {
 		
 		return result;
 	}
+	
+	public boolean hasCycle() {
+		if (dga == null) dga = new DirectedGraphAlgorithms<Flow, Node>();
+		return dga.hasCycles(this);
+	}
+	
+	public boolean hasPath(Node from, Node to) {
+		if (dga == null) dga = new DirectedGraphAlgorithms<Flow, Node>();
+		return dga.hasPath(this, from, to);
+	}
+	
+	public boolean isFreeChoice() {
+		return PNAnalyzer.isFreeChoice(this);
+	}
+	
+	public boolean isExtendedFreeChoice() {
+		return PNAnalyzer.isExtendedFreeChoice(this);
+	}
+	
+	public boolean isWFNet() {
+		return PNAnalyzer.isWorkflowNet(this);
+	}
+
+	public boolean isSNet() {
+		return PNAnalyzer.isSNet(this);
+	}
+
+	public boolean isTNet() {
+		return PNAnalyzer.isTNet(this);
+	}
+
+	public Map<Node, Set<Node>> getDominators() {
+		if (dga == null) dga = new DirectedGraphAlgorithms<Flow, Node>();
+		return dga.getDominators(this, false);
+	}
+
+	public Map<Node, Set<Node>> getPostDominators() {
+		if (dga == null) dga = new DirectedGraphAlgorithms<Flow, Node>();
+		return dga.getDominators(this, true);
+	}
+	
 }
