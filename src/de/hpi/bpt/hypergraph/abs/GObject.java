@@ -28,7 +28,7 @@ import java.util.UUID;
  * 
  * @author Artem Polyvyanyy
  */
-public abstract class GObject implements IGObject {
+public abstract class GObject implements IGObject, Cloneable {
 	private String id = "";
 	private String name = "";
 	private String desc = "";
@@ -159,4 +159,19 @@ public abstract class GObject implements IGObject {
 	public int compareTo(IGObject o) {
 		return this.id.compareTo(o.getId());
 	}
+	
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		GObject clone = (GObject) super.clone();
+		
+		if (this.getId() != null)
+			clone.setId(new String(this.getId()));
+		if (this.getName() != null)
+			clone.setName(new String(this.getName()));
+		if (this.getDescription() != null)
+			clone.setDescription(new String(this.getDescription()));
+		
+		return clone;
+	}
+
 }
