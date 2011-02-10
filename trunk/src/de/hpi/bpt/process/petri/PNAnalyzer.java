@@ -100,10 +100,8 @@ public class PNAnalyzer {
 		for (Transition t1 : net.getTransitions()) {
 			for (Transition t2 : net.getTransitions()) {
 				for (Place p : net.getPlaces()) {
-					if (net.getPredecessors(t1).contains(p))
-						isFC &= net.getPredecessors(t2).contains(p);
-					if (net.getPredecessors(t2).contains(p))
-						isFC &= net.getPredecessors(t1).contains(p);
+					if (net.getPredecessors(t1).contains(p) && net.getPredecessors(t2).contains(p))
+						isFC &= net.getPreset(t1).equals(net.getPreset(t2));
 					if (!isFC) 
 						break outer;
 				}
