@@ -117,8 +117,6 @@ public class CBPCreatorNet implements CBPCreator {
 	public CausalBehaviouralProfile deriveCausalBehaviouralProfile(BehaviouralProfile bp) {
 		
 		PetriNet pn = bp.getNet();
-	
-		if (!pn.equals(bp.getNet())) throw new IllegalArgumentException();
 
 		/*
 		 * Get the behavioural profile

@@ -26,7 +26,7 @@ package de.hpi.bpt.process.petri;
  * @author artem.polyvyanyy
  *
  */
-public class Place extends Node {
+public class Place extends Node implements Cloneable {
 	private int tokens;
 	
 	/**
@@ -36,7 +36,15 @@ public class Place extends Node {
 		super();
 		this.tokens = 0;
 	}
-	
+
+	/**
+	 * Constructor to set the number of tokens directly
+	 */
+	public Place(int tokens) {
+		super();
+		this.tokens = tokens;
+	}
+
 	/**
 	 * Constructor with place name parameter
 	 * @param name Place name
@@ -63,7 +71,15 @@ public class Place extends Node {
 	public int getTokens() {
 		return this.tokens;
 	}
-	
+
+	/**
+	 * Set number of tokens in the place
+	 * @param tokens Number of tokens
+	 */
+	public void setTokens(int tokens) {
+		this.tokens = tokens;
+	}
+
 	/**
 	 * Put a token in the place
 	 * @return True on success, false otherwise
@@ -90,4 +106,16 @@ public class Place extends Node {
 	public String toString() {
 		return super.toString() + "(" + getTokens() + ")";
 	}
+	
+	/**
+	 * Returns a copy of the place
+	 * @throws CloneNotSupportedException 
+	 */
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		Place clone = (Place) super.clone();
+		clone.setTokens(this.getTokens());
+		return clone;
+	}
+
 }

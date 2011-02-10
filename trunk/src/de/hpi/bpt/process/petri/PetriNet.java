@@ -23,6 +23,7 @@ package de.hpi.bpt.process.petri;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -38,7 +39,7 @@ import de.hpi.bpt.hypergraph.abs.Vertex;
  * @author Artem Polyvyanyy
  *
  */
-public class PetriNet extends AbstractDirectedGraph<Flow, Node> {
+public class PetriNet extends AbstractDirectedGraph<Flow, Node> implements Cloneable {
 	
 	private DirectedGraphAlgorithms<Flow,Node> dga = null;
 	
@@ -313,4 +314,30 @@ public class PetriNet extends AbstractDirectedGraph<Flow, Node> {
 		return dga.getDominators(this, true);
 	}
 	
+	/**
+	 * Creates a deep copy of whole Petri net. 
+	 * 
+	 * @return the clone of the Petri net
+	 */
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		PetriNet clone = (PetriNet) super.clone();
+		
+		Map<Node,Node> nodeCopies = new HashMap<Node, Node>();
+		
+		for (Node n : this.getNodes()) {
+			Node c = (Node)n.clone();
+			clone.addNode(c);
+			nodeCopies.put(n, c);
+		}
+		
+		for (Flow f : this.getFlowRelation()) {
+			Node from = nodeCopies.get(f.getSource());
+			Node to = nodeCopies.get(f.getTarget());
+			clone.addFlow(from, to);
+		}
+		
+		return clone;
+	}
+
 }
