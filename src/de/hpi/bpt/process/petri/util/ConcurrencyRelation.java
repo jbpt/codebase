@@ -99,7 +99,7 @@ public class ConcurrencyRelation {
 	public ConcurrencyRelation(PetriNet pn) {
 		this.pn = pn;
 		this.matrix = null;
-		this.nodes = new ArrayList<Node>(this.nodes);
+		this.nodes = new ArrayList<Node>(this.pn.getNodes());
 		this.indirectPlaces = new HashMap<Node, Set<Node>>();
 	}
 	

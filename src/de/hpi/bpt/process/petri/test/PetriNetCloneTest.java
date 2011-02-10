@@ -64,15 +64,15 @@ public class PetriNetCloneTest extends TestCase {
 		
 		PetriNet clone = (PetriNet) net.clone();
 		
-		assertEquals(clone.getTransitions().size(), 6);
-		assertEquals(clone.getPlaces().size(), 7);
-		assertEquals(clone.getFlowRelation().size(), 14);
+		assertEquals(6, clone.getTransitions().size());
+		assertEquals(7, clone.getPlaces().size());
+		assertEquals(14, clone.getFlowRelation().size());
 		
 		for (Place p : clone.getPlaces()) {
 			if (p.getTokens() > 0) {
-				assertEquals(p.getTokens(),3);
-				assertEquals(clone.getPredecessors(p).size(),1); 
-				assertEquals(clone.getSuccessors(p).size(),2); 
+				assertEquals(3, p.getTokens());
+				assertEquals(1, clone.getPredecessors(p).size()); 
+				assertEquals(2, clone.getSuccessors(p).size()); 
 			}
 		}
 				
