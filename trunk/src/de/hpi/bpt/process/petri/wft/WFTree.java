@@ -148,18 +148,18 @@ public class WFTree {
 	 * @param node node to get type for
 	 * @return type of the block node: place bounded (Bp), transition bounded (Bt), loop (L), or none if not a block
 	 */
-	public PTBlockNodeType getBlockNodeType(RPSTNode<Flow, Node> node) {
-		if (node.getType()!= TCType.B) return PTBlockNodeType.none;
+	public WFTBlockNodeType getBlockNodeType(RPSTNode<Flow, Node> node) {
+		if (node.getType()!= TCType.B) return WFTBlockNodeType.none;
 		
 		Iterator<RPSTNode<Flow, Node>> children = rpst.getChildren(node).iterator();
 		while (children.hasNext())
 			if (children.next().getEntry().equals(node.getExit()))
-				return PTBlockNodeType.L;
+				return WFTBlockNodeType.L;
 		
 		if ((node.getEntry() instanceof Place) && (node.getExit() instanceof Place))
-			return PTBlockNodeType.Bp;
+			return WFTBlockNodeType.Bp;
 		if ((node.getEntry() instanceof Transition) && (node.getExit() instanceof Transition))
-			return PTBlockNodeType.Bt;
+			return WFTBlockNodeType.Bt;
 		
 		throw new IllegalArgumentException("WF-net is not sound");
 	}
@@ -169,17 +169,17 @@ public class WFTree {
 	 * @param node node to get loop orientation type for
 	 * @return loop orientation of the node: forward, backward, or none if parent node is not loop node (L)
 	 */
-	public PTLoopOrientationType getLoopOrientationType(RPSTNode<Flow, Node> node) {
-		if (rpst.getParent(node) !=null && getBlockNodeType(rpst.getParent(node))==PTBlockNodeType.L) {
+	public WFTLoopOrientationType getLoopOrientationType(RPSTNode<Flow, Node> node) {
+		if (rpst.getParent(node) !=null && getBlockNodeType(rpst.getParent(node))==WFTBlockNodeType.L) {
 			if (node.getEntry().equals(rpst.getParent(node).getEntry()))
-				return PTLoopOrientationType.forward;
+				return WFTLoopOrientationType.forward;
 			else if (node.getEntry().equals(rpst.getParent(node).getExit()))
-				return PTLoopOrientationType.backward;
+				return WFTLoopOrientationType.backward;
 			else
-				return PTLoopOrientationType.none;
+				return WFTLoopOrientationType.none;
 		}
 		
-		return PTLoopOrientationType.none;
+		return WFTLoopOrientationType.none;
 	}
 	
 	/**
@@ -296,7 +296,7 @@ public class WFTree {
 		
 		// check path from ROOT to parent of gamma
 		for (int i=0; i<path.size()-1; i++) {
-			if (getBlockNodeType(path.get(i))==PTBlockNodeType.L) return false;
+			if (getBlockNodeType(path.get(i))==WFTBlockNodeType.L) return false;
 			if (path.get(i).getType()==TCType.R && isChildInLoop(path.get(i), path.get(i+1))) return false;
 		}
 		
@@ -334,13 +334,13 @@ public class WFTree {
 		
 		// check path from ROOT to parent of gamma
 		for (int i=0; i<path.size()-1; i++) {
-			if (getBlockNodeType(path.get(i))==PTBlockNodeType.L) return false;
+			if (getBlockNodeType(path.get(i))==WFTBlockNodeType.L) return false;
 			if (path.get(i).getType()==TCType.R && isChildInLoop(path.get(i), path.get(i+1))) return false;
 		}
 		
 		// check gamma
 		if (gamma.getType()==TCType.R) return areExclusiveUType(t1,t2,gamma);
-		if (getBlockNodeType(gamma)==PTBlockNodeType.Bp) return true;
+		if (getBlockNodeType(gamma)==WFTBlockNodeType.Bp) return true;
 		
 		// handle alpha == beta == gamma case 
 		if (alpha.equals(beta)) return true;
@@ -375,14 +375,14 @@ public class WFTree {
 		
 		// check path from ROOT to the parent of gamma
 		for (int i=0; i<path.size()-1; i++) { 
-			if (getBlockNodeType(path.get(i))==PTBlockNodeType.L) return true;
+			if (getBlockNodeType(path.get(i))==WFTBlockNodeType.L) return true;
 			if (path.get(i).getType()==TCType.R && isChildInLoop(path.get(i), path.get(i+1))) return true;	
 		}
 		
 		// check gamma
 		if (gamma.getType()==TCType.R) return areInterleavingUType(t1, t2, gamma);  
-		PTBlockNodeType gammaBlockType = getBlockNodeType(gamma);
-		if (gammaBlockType==PTBlockNodeType.Bt || gammaBlockType==PTBlockNodeType.L) return true;
+		WFTBlockNodeType gammaBlockType = getBlockNodeType(gamma);
+		if (gammaBlockType==WFTBlockNodeType.Bt || gammaBlockType==WFTBlockNodeType.L) return true;
 		
 		return false;
 	}
@@ -407,8 +407,8 @@ public class WFTree {
 		for (int i=0; i < path.size()-1; i++) {
 			if	(!(
 					path.get(i).getType()==TCType.P ||
-					getBlockNodeType(path.get(i))==PTBlockNodeType.Bt ||
-					(getBlockNodeType(path.get(i))==PTBlockNodeType.L && getLoopOrientationType(path.get(i+1))==PTLoopOrientationType.forward)
+					getBlockNodeType(path.get(i))==WFTBlockNodeType.Bt ||
+					(getBlockNodeType(path.get(i))==WFTBlockNodeType.L && getLoopOrientationType(path.get(i+1))==WFTLoopOrientationType.forward)
 				)) 
 			{
 				// check if child on the path to beta is always reached, if yes continue with for loop
