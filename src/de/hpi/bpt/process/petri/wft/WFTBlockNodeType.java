@@ -1,5 +1,5 @@
 package de.hpi.bpt.process.petri.wft;
 
-public enum PTBlockNodeType {
+public enum WFTBlockNodeType {
 	Bp, Bt, L, none;
 }
