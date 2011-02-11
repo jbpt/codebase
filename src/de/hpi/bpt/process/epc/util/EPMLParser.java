@@ -45,6 +45,14 @@ import de.hpi.bpt.process.epc.ProcessInterface;
  */
 public class EPMLParser {
 
+	
+	/*
+	 * Both attributes may have to be configured specifically to the used 
+	 * EPML version.
+	 */
+	public static final String DURATION_ATTRIBUTE_NAME = "time_avg_prcs";
+	public static final String PROBABILITY_ATTRIBUTE_NAME = "prob";
+	
 	protected Document doc;
 	protected Node current;
 	protected EPCFactory factory;
@@ -149,6 +157,7 @@ public class EPMLParser {
 		Function n = this.factory.createFunction();
 		n.setId(getId(node));
 		n.setName(getName(node));
+		n.setDuration(getDuration(node));
 		model.addFlowObject(n);
 	}
 
@@ -174,18 +183,46 @@ public class EPMLParser {
 		Node flow = getChild(node, "flow");
 		FlowObject source = findFlowObject(model, flow.getAttributes().getNamedItem("source").getNodeValue());
 		FlowObject target = findFlowObject(model, flow.getAttributes().getNamedItem("target").getNodeValue());
-		model.addControlFlow(source, target);
+		float probability = getProbability(node);
+		model.addControlFlow(source, target, probability);
 	}
 	
 	protected String getId(Node node) {
 		return node.getAttributes().getNamedItem("id").getNodeValue();
 	}
 
-	protected String getName(Node node) {
-		String name = getChild(node, "name").getTextContent();
-		return name.replace('\n', ' ');
+	protected long getDuration(Node node) {
+		if (node.getAttributes().getNamedItem(DURATION_ATTRIBUTE_NAME) != null)
+			if (node.getAttributes().getNamedItem(DURATION_ATTRIBUTE_NAME).getNodeValue() != null)
+				return Long.valueOf(Math.round((Float.valueOf(node.getAttributes().getNamedItem(DURATION_ATTRIBUTE_NAME).getNodeValue())*100)));
+		return 100;
 	}
 
+	protected float getProbability(Node node) {
+		if (node.getAttributes() != null)
+			if (node.getAttributes().getNamedItem(PROBABILITY_ATTRIBUTE_NAME) != null)
+				return Float.valueOf(node.getAttributes().getNamedItem(PROBABILITY_ATTRIBUTE_NAME).getNodeValue());
+		return 1f;
+	}
+	
+	protected String getName(Node node) {
+		String name = getChild(node, "name").getTextContent();
+
+		name = name.toLowerCase();
+		name = name.replace("-", " ");
+		name = name.replace(".", "");
+		name = name.replace("(", "");
+		name = name.replace(")", "");
+		name = name.replace("[", "");
+		name = name.replace("]", "");
+		name = name.replace("\\", " ");
+		name = name.replace(",", " ");
+		name = name.replace(";", " ");
+		name = name.replace("\n", " ");
+		name = name.replace("\r", " ");
+		name = name.replace("\t", " ");
+		return name;
+	}
 	protected Node getChild(Node n, String name) {
 		for (Node node=n.getFirstChild(); node != null; node=node.getNextSibling())
 			if (node.getNodeName().indexOf(name) >= 0) 
