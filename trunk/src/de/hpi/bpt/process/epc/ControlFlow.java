@@ -38,6 +38,13 @@ public class ControlFlow extends AbstractDirectedEdge<FlowObject> implements ICo
 		super(g, source, target);
 	}
 
+	@SuppressWarnings("unchecked")
+	protected ControlFlow(AbstractDirectedGraph g, FlowObject source,
+			FlowObject target, float probability) {
+		super(g, source, target);
+		this.setProbability(probability);
+	}
+
 	public double getProbability() {
 		return this.p;
 	}

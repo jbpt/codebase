@@ -119,6 +119,9 @@ public interface IEPC<CF extends IControlFlow<FO>,
 	 */
 	CF addControlFlow(FO from, FO to);
 	
+
+	CF addControlFlow(FO from, FO to, float probability);
+
 	/**
 	 * Remove control flow from this EPC
 	 * @param controlFlow Control flow to remove

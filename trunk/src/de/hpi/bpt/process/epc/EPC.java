@@ -51,6 +51,14 @@ public class EPC extends AbstractDirectedGraph<ControlFlow,FlowObject> implement
 	 * @see de.hpi.bpt.process.epc.IEPC#addControlFlow(de.hpi.bpt.process.epc.FlowObject, de.hpi.bpt.process.epc.FlowObject)
 	 */
 	public ControlFlow addControlFlow(FlowObject from, FlowObject to) {
+		return addControlFlow(from, to, 1f);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.hpi.bpt.process.epc.IEPC#addControlFlow(de.hpi.bpt.process.epc.FlowObject, de.hpi.bpt.process.epc.FlowObject)
+	 */
+	public ControlFlow addControlFlow(FlowObject from, FlowObject to, float probability) {
 		if (from == null || to == null) return null;
 		
 		Collection<FlowObject> ss = new ArrayList<FlowObject>(); ss.add(from);
@@ -58,9 +66,8 @@ public class EPC extends AbstractDirectedGraph<ControlFlow,FlowObject> implement
 		
 		if (!this.checkEdge(ss, ts)) return null;
 		
-		return new ControlFlow(this, from, to);
+		return new ControlFlow(this, from, to, probability);
 	}
-
 	/*
 	 * (non-Javadoc)
 	 * @see de.hpi.bpt.process.epc.IEPC#addFlowObject(de.hpi.bpt.process.epc.FlowObject)
