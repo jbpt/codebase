@@ -11,9 +11,12 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.Vector;
 
+import de.hpi.bpt.graph.abs.AbstractDirectedEdge;
+import de.hpi.bpt.graph.abs.IDirectedGraph;
 import de.hpi.bpt.graph.algo.rpst.RPST;
 import de.hpi.bpt.graph.algo.rpst.RPSTNode;
 import de.hpi.bpt.graph.algo.tctree.TCType;
+import de.hpi.bpt.process.petri.CachePetriNet;
 import de.hpi.bpt.process.petri.Flow;
 import de.hpi.bpt.process.petri.Node;
 import de.hpi.bpt.process.petri.PetriNet;
@@ -484,19 +487,19 @@ public class WFTree {
 		/*
 		 * The subnet we are interested in. It represents the fragment.
 		 */
-		PetriNet subnet = (PetriNet) treeNode.getFragment();
+		IDirectedGraph<Flow, Node> subnet = treeNode.getFragment();
 		
 		/*
 		 * A new net, which will be a clone of the subnet. We do not use the
 		 * clone method, in order to keep track of the relation between nodes 
 		 * of both nets.
 		 */
-		PetriNet net = new PetriNet();
+		PetriNet net = new CachePetriNet();
 		
 		Map<Node,Node> nodeCopies = new HashMap<Node, Node>();
 
 		try {
-			for (Node n : subnet.getNodes()) {
+			for (Node n : subnet.getVertices()) {
 				if (n instanceof Place) {
 					Place c = (Place) ((Place) n).clone();
 					net.addNode(c);
@@ -508,7 +511,8 @@ public class WFTree {
 					nodeCopies.put(n, c);
 				}
 			}
-			for(Flow f : subnet.getFlowRelation()) {
+			
+			for(AbstractDirectedEdge<Node> f : subnet.getEdges()) {
 //				if (net.getNodes().contains(nodeCopies.get(f.getSource())) && net.getNodes().contains(nodeCopies.get(f.getTarget()))) {
 					net.addFlow(nodeCopies.get(f.getSource()), nodeCopies.get(f.getTarget()));
 //				}
@@ -521,7 +525,7 @@ public class WFTree {
 		Node entryNode = treeNode.getEntry();
 		Node exitNode = treeNode.getExit();
 		
-		if (net.getPredecessors(entryNode).size() != 0) {
+		if (net.getPredecessors(entryNode).size() != 0 || (entryNode instanceof Transition)) {
 			Place init = new Place();
 			net.addNode(init);
 			
@@ -535,19 +539,21 @@ public class WFTree {
 				net.addFlow(init, entryNode);
 		}
 		
-		if (net.getSuccessors(exitNode).size() != 0) {
+		if (net.getSuccessors(exitNode).size() != 0 || (exitNode instanceof Transition)) {
 			Place exit = new Place();
 			net.addNode(exit);
 			
 			if (exitNode instanceof Place) {
 				Transition exitT = new Transition();
 				net.addNode(exitT);
-				net.addFlow(exit, exitT);
-				net.addFlow(exitT, exitNode);
+				net.addFlow(exitNode, exitT);
+				net.addFlow(exitT, exit);
 			}
 			else
 				net.addFlow(exitNode, exit);
 		}
+		
+		
 
 		BehaviouralProfile bp = BPCreatorNet.getInstance().deriveBehaviouralProfile(net);
 		bp2nodemapping.put(bp, nodeCopies);
