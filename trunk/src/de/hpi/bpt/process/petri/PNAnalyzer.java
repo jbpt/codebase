@@ -24,10 +24,7 @@ package de.hpi.bpt.process.petri;
 import java.util.HashSet;
 import java.util.Set;
 
-import de.hpi.bpt.graph.algo.DirectedGraphAlgorithms;
 import de.hpi.bpt.graph.algo.GraphAlgorithms;
-import de.hpi.bpt.process.petri.rels.UnfoldingRelationType;
-import de.hpi.bpt.process.petri.rels.UnfoldingRelationsProfiler;
 
 public class PNAnalyzer {
 	
@@ -64,27 +61,7 @@ public class PNAnalyzer {
 		
 		return true;
 	}
-	
-	public static boolean isOccurrenceNet(PetriNet net) {
 		
-		// no branched places
-		for (Place p : net.getPlaces())
-			if (net.getPreset(p).size()>1)
-				return false;
-		
-		// must be acyclic
-		DirectedGraphAlgorithms<Flow,Node> dga = new DirectedGraphAlgorithms<Flow, Node>();
-		if (dga.hasCycles(net)) return false;
-		
-		// no event is in self-conflict
-		UnfoldingRelationsProfiler urp = new UnfoldingRelationsProfiler(net);
-		for (Transition t : net.getTransitions())
-			if (urp.getRelation(t,t) == UnfoldingRelationType.CONFLICT)
-				return false;
-		
-		return true;
-	}
-	
 	/**
 	 * Checks whether the given Petri net is extended free-choice. That is,
 	 * all transitions that share a place in their presets have to coincide
