@@ -29,7 +29,7 @@ import java.util.Set;
 import de.hpi.bpt.process.epc.Connection;
 import de.hpi.bpt.process.epc.Connector;
 import de.hpi.bpt.process.epc.ControlFlow;
-import de.hpi.bpt.process.epc.EPCFactory;
+import de.hpi.bpt.process.epc.EPC;
 import de.hpi.bpt.process.epc.Event;
 import de.hpi.bpt.process.epc.FlowObject;
 import de.hpi.bpt.process.epc.Function;
@@ -50,11 +50,9 @@ public class EPCSplitter {
 
 	protected IEPC<ControlFlow, FlowObject, Event, Function, Connector, ProcessInterface, Connection, Node, NonFlowObject> model;
 	protected List<Set<FlowObject>> nodeSets = null;
-	protected EPCFactory factory;
 
-	public EPCSplitter(EPCFactory factory, IEPC<ControlFlow, FlowObject, Event, Function, Connector, ProcessInterface, Connection, Node, NonFlowObject> model) {
+	public EPCSplitter(IEPC<ControlFlow, FlowObject, Event, Function, Connector, ProcessInterface, Connection, Node, NonFlowObject> model) {
 		this.model = model;
-		this.factory = factory;
 	}
 	
 	/**
@@ -139,7 +137,7 @@ public class EPCSplitter {
 		List<IEPC<ControlFlow, FlowObject, Event, Function, Connector, ProcessInterface, Connection, Node, NonFlowObject>> models = new ArrayList<IEPC<ControlFlow, FlowObject, Event, Function, Connector, ProcessInterface, Connection, Node, NonFlowObject>>(nodeSets.size());
 		int i=1;
 		for (Set<FlowObject> nodes: nodeSets) {
-			IEPC<ControlFlow, FlowObject, Event, Function, Connector, ProcessInterface, Connection, Node, NonFlowObject> newm = this.factory.createEPC();
+			IEPC<ControlFlow, FlowObject, Event, Function, Connector, ProcessInterface, Connection, Node, NonFlowObject> newm = new EPC();
 			newm.setId(model.getId());
 			newm.setName(model.getName()+"_"+i);
 			models.add(newm);

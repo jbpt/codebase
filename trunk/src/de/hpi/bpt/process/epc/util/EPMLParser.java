@@ -27,8 +27,9 @@ import org.w3c.dom.Text;
 
 import de.hpi.bpt.process.epc.Connection;
 import de.hpi.bpt.process.epc.Connector;
+import de.hpi.bpt.process.epc.ConnectorType;
 import de.hpi.bpt.process.epc.ControlFlow;
-import de.hpi.bpt.process.epc.EPCFactory;
+import de.hpi.bpt.process.epc.EPC;
 import de.hpi.bpt.process.epc.Event;
 import de.hpi.bpt.process.epc.FlowObject;
 import de.hpi.bpt.process.epc.Function;
@@ -55,10 +56,8 @@ public class EPMLParser {
 	
 	protected Document doc;
 	protected Node current;
-	protected EPCFactory factory;
 
-	public EPMLParser(EPCFactory factory, Document doc) {
-		this.factory = factory;
+	public EPMLParser(Document doc) {
 		this.doc = doc;
 	}
 	
@@ -95,7 +94,7 @@ public class EPMLParser {
 	public IEPC<ControlFlow, FlowObject, Event, Function, Connector, ProcessInterface, Connection, de.hpi.bpt.process.epc.Node, NonFlowObject> getNextModel() {
 		if (current == null || !current.getNodeName().toLowerCase().endsWith("epc")) return null;
 		
-		IEPC<ControlFlow, FlowObject, Event, Function, Connector, ProcessInterface, Connection, de.hpi.bpt.process.epc.Node, NonFlowObject> model = this.factory.createEPC();
+		IEPC<ControlFlow, FlowObject, Event, Function, Connector, ProcessInterface, Connection, de.hpi.bpt.process.epc.Node, NonFlowObject> model = new EPC();
 		model.setId(current.getAttributes().getNamedItem("epcId").getNodeValue());
 		model.setName(current.getAttributes().getNamedItem("name").getNodeValue());
 
@@ -147,14 +146,14 @@ public class EPMLParser {
 	}
 
 	protected void addEvent(IEPC<ControlFlow, FlowObject, Event, Function, Connector, ProcessInterface, Connection, de.hpi.bpt.process.epc.Node, NonFlowObject> model, Node node) {
-		Event n = this.factory.createEvent();
+		Event n = new Event();
 		n.setId(getId(node));
 		n.setName(getName(node));
 		model.addFlowObject(n);
 	}
 
 	protected void addFunction(IEPC<ControlFlow, FlowObject, Event, Function, Connector, ProcessInterface, Connection, de.hpi.bpt.process.epc.Node, NonFlowObject> model, Node node) {
-		Function n = this.factory.createFunction();
+		Function n = new Function();
 		n.setId(getId(node));
 		n.setName(getName(node));
 		n.setDuration(getDuration(node));
@@ -162,19 +161,19 @@ public class EPMLParser {
 	}
 
 	protected void addXOR(IEPC<ControlFlow, FlowObject, Event, Function, Connector, ProcessInterface, Connection, de.hpi.bpt.process.epc.Node, NonFlowObject> model, Node node) {
-		Connector n = this.factory.createXorConnector();
+		Connector n = new Connector(ConnectorType.XOR);
 		n.setId(getId(node));
 		model.addFlowObject(n);
 	}
 
 	protected void addAND(IEPC<ControlFlow, FlowObject, Event, Function, Connector, ProcessInterface, Connection, de.hpi.bpt.process.epc.Node, NonFlowObject> model, Node node) {
-		Connector n = this.factory.createAndConnector();
+		Connector n = new Connector(ConnectorType.AND);
 		n.setId(getId(node));
 		model.addFlowObject(n);
 	}
 
 	protected void addOR(IEPC<ControlFlow, FlowObject, Event, Function, Connector, ProcessInterface, Connection, de.hpi.bpt.process.epc.Node, NonFlowObject> model, Node node) {
-		Connector n = this.factory.createOrConnector();
+		Connector n = new Connector(ConnectorType.OR);
 		n.setId(getId(node));
 		model.addFlowObject(n);
 	}

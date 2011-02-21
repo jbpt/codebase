@@ -1,24 +1,3 @@
-/**
- * Copyright (c) 2009 Matthias Weidlich
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
 package de.hpi.bpt.process.epc.util;
 
 import java.util.ArrayList;
@@ -32,7 +11,6 @@ import de.hpi.bpt.process.epc.Connection;
 import de.hpi.bpt.process.epc.Connector;
 import de.hpi.bpt.process.epc.ConnectorType;
 import de.hpi.bpt.process.epc.ControlFlow;
-import de.hpi.bpt.process.epc.EPCFactory;
 import de.hpi.bpt.process.epc.Event;
 import de.hpi.bpt.process.epc.FlowObject;
 import de.hpi.bpt.process.epc.Function;
@@ -55,14 +33,11 @@ public class EPCNormalizer {
 	
 	protected TransitiveClosure<ControlFlow, FlowObject> closure;
 	
-	protected EPCFactory factory;
-	
 	protected int idCounter = 0;
 	
-	public EPCNormalizer(IEPC<ControlFlow, FlowObject, Event, Function, Connector, ProcessInterface, Connection, Node, NonFlowObject> epc, EPCFactory factory) {
+	public EPCNormalizer(IEPC<ControlFlow, FlowObject, Event, Function, Connector, ProcessInterface, Connection, Node, NonFlowObject> epc) {
 		this.epc = epc;
 		this.closure = new TransitiveClosure<ControlFlow, FlowObject>(this.epc);
-		this.factory = factory;
 	}
 
 	public boolean containsORConnector() {
@@ -337,7 +312,7 @@ public class EPCNormalizer {
 	}
 	
 	protected Connector createStartClosure(Connector end) {
-		Connector start = this.factory.createAndConnector();
+		Connector start = new Connector(ConnectorType.AND);
 		start.setId(getIdString());
 		start.setConnectorType(end.getConnectorType());
 
@@ -352,7 +327,7 @@ public class EPCNormalizer {
 	}
 	
 	protected Connector createEndClosure(Connector start) {
-		Connector end = this.factory.createAndConnector();
+		Connector end = new Connector(ConnectorType.AND);
 		end.setId(getIdString());
 		end.setConnectorType(start.getConnectorType());
 
@@ -460,12 +435,12 @@ public class EPCNormalizer {
 			if (canCreateStartClosure(new HashSet<FlowObject>(),startJoin,startJoin,startJoin)) {
 				Connector processStart = createStartClosure(startJoin);
 	
-				Event n = this.factory.createEvent();
+				Event n = new Event();
 				n.setId(getIdString());
 				n.setName("START EVENT");
 				this.epc.addFlowObject(n);
 				
-				Function a = this.factory.createFunction();
+				Function a = new Function();
 				a.setId(getIdString());
 				a.setName("START FUNCTION");
 				this.epc.addFlowObject(a);
@@ -617,12 +592,12 @@ public class EPCNormalizer {
 			if (canCreateEndClosure(new HashSet<FlowObject>(),endSplit,endSplit,endSplit)) {
 				Connector processEnd = createEndClosure(endSplit);
 	
-				Function a = this.factory.createFunction();
+				Function a = new Function();
 				a.setId(getIdString());
 				a.setName("END FUNCTION");
 				this.epc.addFlowObject(a);
 	
-				Event n = this.factory.createEvent();
+				Event n = new Event();
 				n.setId(getIdString());
 				n.setName("END EVENT");
 				this.epc.addFlowObject(n);
