@@ -9,7 +9,8 @@ import de.hpi.bpt.graph.algo.TransitiveClosure;
 /**
  * Extends the standard Petri net model by some caching routines. When using
  * this class make sure to call <code>invalidateCache</code> whenever the 
- * structure or the marking of the net changes.
+ * structure or the marking of the net changes. For the methods
+ * <code>addNode</code> and <code>addFlow</code> this is done automatically.
  * 
  * @author matthias.weidlich
  *
@@ -33,6 +34,18 @@ public class CachePetriNet extends PetriNet {
 		super();
 	}
 	
+	@Override
+	public Flow addFlow(Node from, Node to) {
+		invalidateCache();
+		return super.addFlow(from, to);
+	}
+	
+	@Override
+	public Node addNode(Node n) {
+		invalidateCache();
+		return super.addNode(n);
+	}
+
 	public void invalidateCache() {
 		this.isExtendedFreeChoice = -1;
 		this.isFreeChoice = -1;
@@ -107,5 +120,5 @@ public class CachePetriNet extends PetriNet {
 			this.postdominators = super.getPostDominators();
 		return this.postdominators;
 	}
-	
+		
 }
