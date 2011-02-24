@@ -24,7 +24,7 @@ import de.hpi.bpt.process.petri.wft.WFTree;
  * @author matthias.weidlich
  *
  */
-public class BPCreatorTree extends AbstractBPCreator {
+public class BPCreatorTree extends AbstractBPCreator implements BPCreator {
 	
 	private static BPCreatorTree eInstance;
 	

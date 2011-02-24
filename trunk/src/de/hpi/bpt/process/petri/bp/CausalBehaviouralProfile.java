@@ -1,29 +1,9 @@
-/**
- * Copyright (c) 2009 Matthias Weidlich
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
 package de.hpi.bpt.process.petri.bp;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 import de.hpi.bpt.process.petri.Node;
@@ -102,7 +82,9 @@ public class CausalBehaviouralProfile extends BehaviouralProfile {
 	 * Checks equality for two causal behavioural profiles
 	 * 
 	 * Returns false, if both matrices are not based on the same
-	 * Petri net.
+	 * Petri net or on the same set of nodes. This check is done
+	 * when equivalence is determined for the relations of the 
+	 * behavioural profile.
 	 * 
 	 * @param profile that should be compared
 	 * @return true, if the given profile is equivalent to this profile
@@ -119,6 +101,38 @@ public class CausalBehaviouralProfile extends BehaviouralProfile {
 		}
 		return equal;
 	}
+	
+	/**
+	 * Checks equality for two causal behavioural profiles only for the
+	 * shared nodes. That is, we assess whether the profiles define
+	 * equal relations (including co-occurrence) for all nodes for 
+	 * which both profiles are defined.
+	 * 
+	 * Returns false, if both matrices are not based on the same
+	 * Petri net. This check is done
+	 * when equivalence is determined for the relations of the 
+	 * behavioural profile.
+	 * 
+	 * @param profile that should be compared
+	 * @return true, if the given profile is equivalent to this profile
+	 */
+	public boolean equalsForSharedNodes (CausalBehaviouralProfile profile) {
+		boolean equal = super.equals(profile);
+		if (!equal)
+			return equal;
+		
+		HashSet<Node> sharedNodes = new HashSet<Node>(this.getNodes());
+		sharedNodes.retainAll(profile.getNodes()); 
+		
+		for(Node n1 : sharedNodes) {
+			for(Node n2 : sharedNodes) {
+				equal &= (this.areCooccurring(n1, n2) == profile.areCooccurring(n1, n2));
+			}
+		}
+		return equal;
+	}
+
+
 
 	public String toString(){
 		StringBuilder sb = new StringBuilder();

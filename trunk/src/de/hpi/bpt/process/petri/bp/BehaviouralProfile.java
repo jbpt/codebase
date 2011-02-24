@@ -1,29 +1,9 @@
-/**
- * Copyright (c) 2009 Matthias Weidlich
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
 package de.hpi.bpt.process.petri.bp;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 import de.hpi.bpt.process.petri.Node;
@@ -280,10 +260,10 @@ public class BehaviouralProfile {
 	}
 	
 	/**
-	 * Checks equality for two behavioural profiles
+	 * Checks equality for two behavioural profiles.
 	 * 
 	 * Returns false, if both matrices are not based on the same
-	 * Petri net.
+	 * Petri net or on the same set of nodes.
 	 * 
 	 * @param profile that should be compared
 	 * @return true, if the given profile is equivalent to this profile
@@ -292,11 +272,50 @@ public class BehaviouralProfile {
 		if (!this.pn.equals(profile.getNet()))
 			return false;
 		
+		if (!this.getNodes().containsAll(profile.getNodes()) || !profile.getNodes().containsAll(this.getNodes()))
+			return false;
+		
 		boolean equal = true;
 		
 		for(Node n1 : this.nodes) {
 			for(Node n2 : this.nodes) {
 				equal &= this.getRelationForNodes(n1, n2).equals(profile.getRelationForNodes(n1, n2));
+			}
+		}
+		return equal;
+	}
+	
+	/**
+	 * Checks equality for two behavioural profiles only for the
+	 * shared nodes. That is, we assess whether the profiles define
+	 * equal relations for all nodes for which both profiles are
+	 * defined.
+	 * 
+	 * Returns false, if both matrices are not based on the same
+	 * Petri net.
+	 * 
+	 * @param profile that should be compared
+	 * @return true, if the given profile is equivalent to this profile
+	 */
+	public boolean equalsForSharedNodes (BehaviouralProfile profile) {
+		if (!this.pn.equals(profile.getNet()))
+			return false;
+		
+		boolean equal = true;
+		
+		HashSet<Node> sharedNodes = new HashSet<Node>(this.getNodes());
+		sharedNodes.retainAll(profile.getNodes()); 
+		
+		for(Node n1 : sharedNodes) {
+			for(Node n2 : sharedNodes) {
+				equal &= this.getRelationForNodes(n1, n2).equals(profile.getRelationForNodes(n1, n2));
+//				if (!this.getRelationForNodes(n1, n2).equals(profile.getRelationForNodes(n1, n2))) {
+//					System.out.println(n1);
+//					System.out.println(n2);
+//					System.out.println(this.getRelationForNodes(n1, n2));
+//					System.out.println(profile.getRelationForNodes(n1, n2));
+//					
+//				}
 			}
 		}
 		return equal;

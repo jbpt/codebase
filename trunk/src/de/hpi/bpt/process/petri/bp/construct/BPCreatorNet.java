@@ -19,7 +19,7 @@ import de.hpi.bpt.process.petri.util.ConcurrencyRelation;
  * @author matthias.weidlich
  *
  */
-public class BPCreatorNet extends AbstractBPCreator {
+public class BPCreatorNet extends AbstractBPCreator implements BPCreator {
 	
 	private static BPCreatorNet eInstance;
 	
