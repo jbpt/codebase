@@ -11,7 +11,7 @@ import de.hpi.bpt.process.petri.bp.BehaviouralProfile.CharacteristicRelationType
 import de.hpi.bpt.process.petri.bp.CausalBehaviouralProfile;
 
 
-public class CBPCreatorNet implements CBPCreator {
+public class CBPCreatorNet extends AbstractBPCreator implements CBPCreator {
 
 	private static CBPCreatorNet eInstance;
 	

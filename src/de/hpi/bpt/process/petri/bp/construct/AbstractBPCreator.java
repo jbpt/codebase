@@ -8,7 +8,7 @@ import de.hpi.bpt.process.petri.bp.BehaviouralProfile.CharacteristicRelationType
  * @author matthias.weidlich
  *
  */
-public abstract class AbstractBPCreator implements BPCreator {
+public abstract class AbstractBPCreator {
 
 	/**
 	 * As the matrix of the behavioral profile is symmetric for
