@@ -71,6 +71,10 @@ public class AbstractMultiGraphFragment<E extends IEdge<V>, V extends IVertex> e
 		return e;
 	}
 	
+	public Map<E,E> getESMap() {
+		return esMap;
+	}
+	
 	/*private Collection<E> filterByIds(Collection<E> es, Collection<E> es2) {
 		Collection<E> result = new ArrayList<E>();
 		
