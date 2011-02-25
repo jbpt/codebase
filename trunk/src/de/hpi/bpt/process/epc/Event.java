@@ -1,4 +1,3 @@
-
 package de.hpi.bpt.process.epc;
 
 /**
