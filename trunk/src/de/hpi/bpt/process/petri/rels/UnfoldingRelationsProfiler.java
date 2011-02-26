@@ -1,119 +1,148 @@
 package de.hpi.bpt.process.petri.rels;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import hub.top.uma.DNode;
+import hub.top.uma.DNodeBP;
+import hub.top.uma.DNodeSet.DNodeSetElement;
 
-import de.hpi.bpt.graph.algo.CombinationGenerator;
-import de.hpi.bpt.graph.algo.ReflexiveTransitiveClosure;
-import de.hpi.bpt.process.petri.Flow;
-import de.hpi.bpt.process.petri.Node;
-import de.hpi.bpt.process.petri.PNAnalyzer;
-import de.hpi.bpt.process.petri.PetriNet;
-import de.hpi.bpt.process.petri.Place;
-import de.hpi.bpt.process.petri.Transition;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.Map;
 
 public class UnfoldingRelationsProfiler {
 
+	// unfolding relations
 	UnfoldingRelationType[][] rels = null;
-	List<Node> nodes = null;
 	
-	public UnfoldingRelationsProfiler(PetriNet net) {
-		if (!PNAnalyzer.isBipartite(net)) throw new IllegalArgumentException();
-		if (!PNAnalyzer.isConnected(net)) throw new IllegalArgumentException();
+	// all nodes of the unfolding
+	DNodeSetElement nodes = null;
+	
+	Map<DNode, Integer> entryMap = new LinkedHashMap<DNode, Integer>();
+	
+	public UnfoldingRelationsProfiler(DNodeBP unfolding) {
 		
-		int size = net.getNodes().size();
+		int size = unfolding.getBranchingProcess().getAllNodes().size();
 		rels = new UnfoldingRelationType[size][size];
-		nodes = new ArrayList<Node>(net.getNodes());
+		nodes = unfolding.getBranchingProcess().getAllNodes();
 		
-		// initialize with concurrency relations
-		for (int i=0; i<size; i++)
-			for (int j=0; j<size; j++)
-				this.setRelation(i, j, UnfoldingRelationType.CONCURRENCY);
+		computePrefixRelations();
 		
-		ReflexiveTransitiveClosure<Flow, Node> tc = new ReflexiveTransitiveClosure<Flow, Node>(net);
+	}
+	
+	/**
+	 * Computes ordering relations of all events in a Complete Prefix brprocolding
+	 * (This method implements the first phase in Algorithm 1).
+	 * 
+	 * @param brproc	The complete prefix brprocolding
+	 */
+	private void computePrefixRelations() {
+		// STEP 1: Initialize all ordering relations to CONCURRENCY
+		rels = new UnfoldingRelationType[nodes.size()][nodes.size()];
+		for (int i = 0; i < rels.length; i++)
+			for (int j = 0; j < rels.length; j++)
+				rels[i][j] = UnfoldingRelationType.CONCURRENCY;
 		
-		// set causal relation
-		for (int i=0; i<size; i++) {
-			for (int j=i+1; j<size; j++) {
-				if (tc.hasPath(nodes.get(i), nodes.get(j))) {
-					this.setRelation(i, j, UnfoldingRelationType.CAUSAL);
-					this.setRelation(j, i, UnfoldingRelationType.INVERSE_CAUSAL);
-				}
-				
-				if (tc.hasPath(nodes.get(j), nodes.get(i))) {
-					this.setRelation(i, j, UnfoldingRelationType.INVERSE_CAUSAL);
-					this.setRelation(j, i, UnfoldingRelationType.CAUSAL);
-				}
-			}
-		}
+		int index = 0;
 		
-		// get conflicts
-		Collection<Transition> transitions = new ArrayList<Transition>(net.getTransitions());
-		Collection<Collection<Transition>> conflicts = new ArrayList<Collection<Transition>>();
-		if (transitions.size()>1) {
-			CombinationGenerator<Transition> pairs = new CombinationGenerator<Transition>(transitions,2);
-			while (pairs.hasMore()) {
-				Collection<Transition> pair = pairs.getNextCombination();
-				
-				Iterator<Transition> iter = pair.iterator();
-				Transition t1 = iter.next();
-				Transition t2 = iter.next();
+		// STEP 2
+		//   - Outer-most loop: Traverse the brprocolding using a pre-order DFS strategy.
+		//   - Nested loops are implemented in updateEventRelations method.
+		HashSet<DNode> visited = new HashSet<DNode>();
+		LinkedList<DNode> worklist = new LinkedList<DNode>();
 
-				for (Place p1 : net.getPreset(t1))
-					for (Place p2 : net.getPreset(t2))
-						if (p1.equals(p2))
-							conflicts.add(pair);			
+		for (DNode n : nodes) {
+			if (n.pre.length == 0) {
+				visited.add(n);
+				entryMap.put(n, index++);
+				worklist.add(n);
 			}
 		}
 		
-		// set conflict relation
-		for (int i=0; i<size; i++) {
-			for (int j=i; j<size; j++) {
-				if (this.getRelation(i,j) == UnfoldingRelationType.CONCURRENCY) {
-					for (Collection<Transition> pair : conflicts) {
-						Iterator<Transition> iter = pair.iterator();
-						Transition t1 = iter.next();
-						Transition t2 = iter.next();
-						Node x1 = nodes.get(i);
-						Node x2 = nodes.get(j);
-						
-						if ((tc.hasPath(t1, x1) && tc.hasPath(t2, x2)) || (tc.hasPath(t1, x2) && tc.hasPath(t2, x1))) {
-							this.setRelation(x1, x2, UnfoldingRelationType.CONFLICT);
-							this.setRelation(x2, x1, UnfoldingRelationType.CONFLICT);
+		while (!worklist.isEmpty()) {
+			DNode n = worklist.removeFirst();
+			if (!entryMap.containsKey(n)) {
+				entryMap.put(n, index++);
+			}
+			if (visited.containsAll(Arrays.asList(n.pre))) {
+				updateRelations(n);
+				visited.add(n);
+				if (n.post != null) {
+					for (DNode succ: n.post) {
+						if (!worklist.contains(succ))
+								worklist.add(succ);
+					}
+				}
+			} else
+				worklist.addLast(n);
+		}
+	}
+	
+	private void updateRelations(DNode n_i) {
+		
+		if (n_i.pre.length != 0) {
+			for (DNode n_j : n_i.pre) {
+				rels[entryMap.get(n_j)][entryMap.get(n_i)] = UnfoldingRelationType.CAUSAL;
+				rels[entryMap.get(n_i)][entryMap.get(n_j)] = UnfoldingRelationType.INVERSE_CAUSAL;		
+	
+				for (int k = 0; k < rels.length; k++) {
+					if (rels[entryMap.get(n_j)][k] == UnfoldingRelationType.INVERSE_CAUSAL) {
+						rels[k][entryMap.get(n_i)] = UnfoldingRelationType.CAUSAL;
+						rels[entryMap.get(n_i)][k] = UnfoldingRelationType.INVERSE_CAUSAL;
+					}
+					if (rels[entryMap.get(n_j)][k] == UnfoldingRelationType.CONFLICT) {
+						rels[k][entryMap.get(n_i)] = UnfoldingRelationType.CONFLICT;
+						rels[entryMap.get(n_i)][k] = UnfoldingRelationType.CONFLICT;					
+					}
+				}
+			}
+		}
+		
+		if (n_i.isEvent) {
+			for (DNode n_pre: n_i.pre) {
+				for (DNode n_j: n_pre.post) {
+					if (n_j != n_i && entryMap.get(n_j) != null && entryMap.get(n_i) != null) {
+						rels[entryMap.get(n_j)][entryMap.get(n_i)] = UnfoldingRelationType.CONFLICT;
+						rels[entryMap.get(n_i)][entryMap.get(n_j)] = UnfoldingRelationType.CONFLICT;
+						for (int k = 0; k < rels.length; k++) {
+							if (entryMap.get(n_i) != k && rels[entryMap.get(n_j)][k] == UnfoldingRelationType.CAUSAL) {
+								rels[k][entryMap.get(n_i)] = UnfoldingRelationType.CONFLICT;
+								rels[entryMap.get(n_i)][k] = UnfoldingRelationType.CONFLICT;		
+							}
 						}
 					}
 				}
 			}
 		}
 	}
+
 	
-	public UnfoldingRelationType getRelation(Node n1, Node n2) {
-		return rels[nodes.indexOf(n1)][nodes.indexOf(n2)];
+	public UnfoldingRelationType getRelation(DNode n1, DNode n2) {
+		return rels[entryMap.get(n1)][entryMap.get(n2)];
 	}
 	
-	private UnfoldingRelationType getRelation(int i1, int i2) {
-		return rels[i1][i2];
+	public boolean areCausal(DNode n1, DNode n2) {
+		return (rels[entryMap.get(n1)][entryMap.get(n2)]).equals(UnfoldingRelationType.CAUSAL);
 	}
-	
-	private void setRelation (int i1, int i2, UnfoldingRelationType type) {
-		rels[i1][i2] = type;
+
+	public boolean areInConflict(DNode n1, DNode n2) {
+		return (rels[entryMap.get(n1)][entryMap.get(n2)]).equals(UnfoldingRelationType.CONFLICT);
 	}
-	
-	private void setRelation (Node n1, Node n2, UnfoldingRelationType type) {
-		rels[nodes.indexOf(n1)][nodes.indexOf(n2)] = type;
+
+	public boolean areConcurrent(DNode n1, DNode n2) {
+		return (rels[entryMap.get(n1)][entryMap.get(n2)]).equals(UnfoldingRelationType.CONCURRENCY);
 	}
-	
+
 	@Override
 	public String toString() {
+		
 		String result = "";
 		
 		result += "==================================================\n";
 		result += " Unfolding Relations Profile\n";
 		result += "--------------------------------------------------\n";
-		for (int i=0; i<nodes.size(); i++)
-			result += String.format("%d : %s\n", i, nodes.get(i));
+		for (DNode n : entryMap.keySet())
+			result += String.format("%d : %s\n", entryMap.get(n), n);
 		result += "--------------------------------------------------\n";
 		result += "    ";
 		for (int i=0; i<nodes.size(); i++) result += String.format("%-4d", i);
