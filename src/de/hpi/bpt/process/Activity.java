@@ -6,7 +6,7 @@ package de.hpi.bpt.process;
  *
  */
 public abstract class Activity extends Node {
-
+	
 	public Activity() {
 		super();
 	}
@@ -18,4 +18,6 @@ public abstract class Activity extends Node {
 	public Activity(String name) {
 		super(name);
 	}
+
+	
 }

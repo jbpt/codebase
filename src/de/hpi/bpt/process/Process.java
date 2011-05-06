@@ -23,6 +23,8 @@ public class Process extends ERDFModel<ControlFlow, Node> {
 	protected static Collection<String> eTypes = new ArrayList<String>();
 	protected static Collection<String> nTypes = new ArrayList<String>();
 	
+	private String name;
+	
 	static {
 		eTypes.add(Process.ERDF_SEQUENCEFLOW_TYPE);
 		
@@ -35,6 +37,12 @@ public class Process extends ERDFModel<ControlFlow, Node> {
 	
 	public Process() {
 		super(Process.eTypes, Process.nTypes);
+		this.name = "";
+	}
+	
+	public Process(String uName) {
+		super(Process.eTypes, Process.nTypes);
+		this.name = uName;
 	}
 
 	public ControlFlow addControlFlow(Node from, Node to) {
@@ -124,5 +132,13 @@ public class Process extends ERDFModel<ControlFlow, Node> {
 	
 	public Collection<ControlFlow> getControlFlow() {
 		return this.getEdges();
+	}
+	
+	public String getName() {
+		return this.name;
+	}
+	
+	public void setName(String uName) {
+		this.name = uName;
 	}
 }
