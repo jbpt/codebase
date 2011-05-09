@@ -20,4 +20,8 @@ public abstract class Node extends ERDFNode {
 	public Node(String name) {
 		super(name);
 	}
+	
+	public String toString() {
+		return this.getId();
+	}
 }

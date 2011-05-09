@@ -1,5 +1,7 @@
 package de.hpi.bpt.process.petri.util;
 
+import hub.top.petrinet.PetriNet;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,7 +9,6 @@ import de.hpi.bpt.process.petri.Flow;
 import de.hpi.bpt.process.petri.Node;
 import de.hpi.bpt.process.petri.Place;
 import de.hpi.bpt.process.petri.Transition;
-import hub.top.petrinet.PetriNet;
 
 public class PNAPIMapper {
 	

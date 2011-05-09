@@ -23,8 +23,8 @@ import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.Place;
 import de.hpi.bpt.process.petri.Transition;
 import de.hpi.bpt.process.petri.bp.BehaviouralProfile;
-import de.hpi.bpt.process.petri.bp.BehaviouralProfile.CharacteristicRelationType;
 import de.hpi.bpt.process.petri.bp.CausalBehaviouralProfile;
+import de.hpi.bpt.process.petri.bp.BehaviouralProfile.CharacteristicRelationType;
 import de.hpi.bpt.process.petri.bp.construct.BPCreatorNet;
 import de.hpi.bpt.process.petri.bp.construct.CBPCreatorNet;
 
