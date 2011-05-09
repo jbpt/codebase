@@ -7,8 +7,8 @@ import java.util.Set;
 import de.hpi.bpt.process.petri.Node;
 import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.bp.BehaviouralProfile;
-import de.hpi.bpt.process.petri.bp.BehaviouralProfile.CharacteristicRelationType;
 import de.hpi.bpt.process.petri.bp.CausalBehaviouralProfile;
+import de.hpi.bpt.process.petri.bp.BehaviouralProfile.CharacteristicRelationType;
 
 
 public class CBPCreatorNet extends AbstractBPCreator implements CBPCreator {

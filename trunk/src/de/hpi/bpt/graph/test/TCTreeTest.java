@@ -1,8 +1,5 @@
 package de.hpi.bpt.graph.test;
 
-import java.util.Collection;
-import java.util.List;
-
 import junit.framework.TestCase;
 import de.hpi.bpt.graph.algo.tctree.TCTree;
 import de.hpi.bpt.graph.algo.tctree.TCTreeNode;

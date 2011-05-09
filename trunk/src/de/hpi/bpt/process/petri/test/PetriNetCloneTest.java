@@ -1,9 +1,9 @@
 package de.hpi.bpt.process.petri.test;
 
+import junit.framework.TestCase;
 import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.Place;
 import de.hpi.bpt.process.petri.Transition;
-import junit.framework.TestCase;
 
 public class PetriNetCloneTest extends TestCase {
 	

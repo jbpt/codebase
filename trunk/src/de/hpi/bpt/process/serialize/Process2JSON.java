@@ -1,14 +1,14 @@
 package de.hpi.bpt.process.serialize;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import de.hpi.bpt.process.ControlFlow;
 import de.hpi.bpt.process.Gateway;
 import de.hpi.bpt.process.GatewayType;
 import de.hpi.bpt.process.Process;
 import de.hpi.bpt.process.Task;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class Process2JSON {
 
