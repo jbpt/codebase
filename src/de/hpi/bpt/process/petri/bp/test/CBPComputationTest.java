@@ -11,7 +11,6 @@ import de.hpi.bpt.process.petri.bp.construct.BPCreatorNet;
 import de.hpi.bpt.process.petri.bp.construct.BPCreatorTree;
 import de.hpi.bpt.process.petri.bp.construct.BPCreatorUnfolding;
 import de.hpi.bpt.process.petri.bp.construct.CBPCreatorTree;
-import de.hpi.bpt.process.petri.bp.construct.CBPCreatorUnfoldingOLD;
 import de.hpi.bpt.process.petri.bp.construct.CBPCreatorUnfolding;
 
 public class CBPComputationTest extends TestCase {

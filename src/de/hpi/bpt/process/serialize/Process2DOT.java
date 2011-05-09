@@ -1,10 +1,22 @@
-package de.hpi.bpt.process;
+package de.hpi.bpt.process.serialize;
 
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 
-public class ProcessSerializer {
-	public static void toDOT(String fileName, Process p) throws FileNotFoundException {
+import de.hpi.bpt.process.ControlFlow;
+import de.hpi.bpt.process.Gateway;
+import de.hpi.bpt.process.GatewayType;
+import de.hpi.bpt.process.Process;
+import de.hpi.bpt.process.Task;
+
+public class Process2DOT {
+	
+	/**
+	 * @param p Process to serialize
+	 * @param fileName Name of the file to serialize to
+	 * @throws FileNotFoundException
+	 */
+	public static void convert(Process p, String fileName) throws FileNotFoundException {
 		PrintStream out = new PrintStream(fileName);
 		
 		out.println("digraph G {");
