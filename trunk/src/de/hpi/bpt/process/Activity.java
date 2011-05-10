@@ -1,10 +1,6 @@
 package de.hpi.bpt.process;
 
-/**
- * 
- * @author Artem Polyvyanyy
- *
- */
+
 public abstract class Activity extends Node {
 	
 	public Activity() {

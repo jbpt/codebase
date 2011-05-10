@@ -1,13 +1,9 @@
 package de.hpi.bpt.process;
 
-import de.hpi.bpt.oryx.erdf.ERDFNode;
+import de.hpi.bpt.hypergraph.abs.Vertex;
 
-/**
- * 
- * @author Artem Polyvyanyy
- *
- */
-public abstract class Node extends ERDFNode {
+
+public abstract class Node extends Vertex {
 
 	public Node() {
 		super();
@@ -19,9 +15,5 @@ public abstract class Node extends ERDFNode {
 
 	public Node(String name) {
 		super(name);
-	}
-	
-	public String toString() {
-		return this.getId();
 	}
 }
