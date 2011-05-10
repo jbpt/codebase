@@ -6,7 +6,7 @@ import de.hpi.bpt.graph.abs.AbstractMultiDirectedGraph;
 
 public class ControlFlow extends AbstractDirectedEdge<Node> {
 
-	private String label;
+	private String label = "";
 	
 	@SuppressWarnings("unchecked")
 	protected ControlFlow(AbstractMultiDirectedGraph g, Node source, Node target) {
