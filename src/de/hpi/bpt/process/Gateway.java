@@ -1,11 +1,8 @@
 package de.hpi.bpt.process;
 
-/**
- * 
- * @author Artem Polyvyanyy
- *
- */
+
 public class Gateway extends Node {	
+	
 	private GatewayType type;
 
 	public Gateway(GatewayType type) {

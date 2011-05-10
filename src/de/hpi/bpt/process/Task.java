@@ -1,11 +1,6 @@
 package de.hpi.bpt.process;
 
 
-/**
- * 
- * @author Artem Polyvyanyy
- *
- */
 public class Task extends Activity {
 
 	public Task() {

@@ -1,14 +1,10 @@
 package de.hpi.bpt.process;
 
+import de.hpi.bpt.graph.abs.AbstractDirectedEdge;
 import de.hpi.bpt.graph.abs.AbstractMultiDirectedGraph;
-import de.hpi.bpt.oryx.erdf.ERDFEdge;
 
-/**
- * 
- * @author Artem Polyvyanyy
- *
- */
-public class ControlFlow extends ERDFEdge<Node> {
+
+public class ControlFlow extends AbstractDirectedEdge<Node> {
 
 	private String label;
 	
