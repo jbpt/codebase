@@ -17,7 +17,8 @@ public class ProcessStructureChecker {
 				new ContainsTaskCheck(),
 				new FlowCountCheck(),
 				new SourceAndSinkCheck(),
-				new PathCheck());
+				new PathCheck(),
+				new UnstructuredOrCheck());
 	}
 	
 	/**

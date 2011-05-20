@@ -1,6 +1,7 @@
 package de.hpi.bpt.graph.test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.TestCase;
 import de.hpi.bpt.process.ControlFlow;
@@ -8,6 +9,7 @@ import de.hpi.bpt.process.Gateway;
 import de.hpi.bpt.process.GatewayType;
 import de.hpi.bpt.process.Process;
 import de.hpi.bpt.process.Task;
+import de.hpi.bpt.process.checks.structural.ProcessStructureChecker;
 import de.hpi.bpt.process.serialize.JSON2Process;
 import de.hpi.bpt.process.serialize.Process2JSON;
 import de.hpi.bpt.process.serialize.SerializationException;
@@ -103,5 +105,39 @@ public class ProcessSerializationTest extends TestCase {
 			assertEquals(SerializationException.class, e.getClass());
 			assertEquals("Couldn't determine GatewayType.", e.getMessage());
 		}
+	}
+	
+	public void testUnstructuredOr() {
+		Process process = new Process("test case");
+		Task task1 = new Task("Task 1");
+		task1.setId("task1");
+		process.addVertex(task1);
+		Task task2 = new Task("Task 2");
+		task2.setId("task2");
+		process.addVertex(task2);
+		Task task3 = new Task("Task 3");
+		task3.setId("task3");
+		process.addVertex(task3);
+		Task task4 = new Task("Task 4");
+		task4.setId("task4");
+		process.addVertex(task4);
+		Gateway gate1 = new Gateway(GatewayType.OR);
+		gate1.setId("gate1");
+		process.addVertex(gate1);
+		Gateway gate2 = new Gateway(GatewayType.XOR);
+		gate2.setId("gate2");
+		process.addVertex(gate2);
+		process.addControlFlow(task1, gate1);
+		process.addControlFlow(gate1, task2);
+		process.addControlFlow(gate1, task3);
+		process.addControlFlow(task2, gate2);
+		process.addControlFlow(task3, gate2);
+		process.addControlFlow(gate2, task4);
+		process.addControlFlow(task2, task3);
+		List<String> errors = ProcessStructureChecker.checkStructure(process);
+		assertEquals(3, errors.size());
+		assertEquals("Task task3 has more than one incoming flow.", errors.get(0));
+		assertEquals("Task task2 has more than one outgoing flow.", errors.get(1));
+		assertEquals("Gateway gate1 is an unstructured OR-Gateway.", errors.get(2));
 	}
 }
