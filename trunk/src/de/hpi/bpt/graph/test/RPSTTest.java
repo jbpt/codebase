@@ -3,6 +3,7 @@ package de.hpi.bpt.graph.test;
 import junit.framework.TestCase;
 import de.hpi.bpt.graph.DirectedEdge;
 import de.hpi.bpt.graph.DirectedGraph;
+import de.hpi.bpt.graph.abs.IDirectedEdge;
 import de.hpi.bpt.graph.algo.rpst.RPST;
 import de.hpi.bpt.graph.algo.rpst.RPSTNode;
 import de.hpi.bpt.graph.algo.tctree.TCType;
@@ -15,6 +16,30 @@ import de.hpi.bpt.process.Process;
 import de.hpi.bpt.process.Task;
 
 public class RPSTTest extends TestCase {
+	
+	public void testTrivialGraph2() {
+		System.out.println("========================================================");
+		System.out.println("Trivial Graph");
+		System.out.println("========================================================");
+		
+		DirectedGraph g = new DirectedGraph();
+		
+		Vertex v1 = new Vertex("1");
+		Vertex v2 = new Vertex("2");
+		
+		g.addEdge(v1, v2);
+		
+		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
+		
+		System.out.println(rpst);
+		
+		for (RPSTNode<DirectedEdge,Vertex> node : rpst.getVertices()) {
+			System.out.println(node.getName() + " : " + node.getFragment());
+		}
+		
+		for (IDirectedEdge<Vertex> edge: rpst.getRoot().getFragmentEdges())
+			System.out.println(edge);
+	}
 		
 	public void testTrivialGraph() {
 		System.out.println("========================================================");

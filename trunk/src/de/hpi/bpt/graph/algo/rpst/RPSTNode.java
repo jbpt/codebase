@@ -1,5 +1,8 @@
 package de.hpi.bpt.graph.algo.rpst;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import de.hpi.bpt.graph.abs.AbstractDirectedGraph;
 import de.hpi.bpt.graph.abs.IDirectedEdge;
 import de.hpi.bpt.graph.abs.IDirectedGraph;
@@ -27,6 +30,15 @@ public class RPSTNode<E extends IDirectedEdge<V>, V extends IVertex> extends Ver
 	
 	public IDirectedGraph<E,V> getFragment() {
 		return (IDirectedGraph<E,V>) this.fragment;
+	}
+	
+	public Collection<IDirectedEdge<V>> getFragmentEdges() {
+		Collection<IDirectedEdge<V>> result = new ArrayList<IDirectedEdge<V>>();
+		
+		for (E e : this.fragment.getEdges())
+			result.add((IDirectedEdge<V>) e);
+		
+		return result;
 	}
 
 	protected void setQuasi(boolean isQuasi) {
