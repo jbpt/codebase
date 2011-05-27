@@ -7,6 +7,13 @@ import de.hpi.bpt.process.Gateway;
 import de.hpi.bpt.process.Process;
 import de.hpi.bpt.process.Task;
 
+/**
+ * Checks if a {@link Process} has only {@link Task}s with one incoming and one outgoing edge.
+ * Furthermore {@link Gateway}s are checked whether they have at least one incoming and one outgoing edge
+ * and in sum at least three connected edges. 
+ * @author Christian Wiggert
+ *
+ */
 public class FlowCountCheck implements ICheck {
 
 	@Override

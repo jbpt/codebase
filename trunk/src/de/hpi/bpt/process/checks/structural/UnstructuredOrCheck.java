@@ -12,6 +12,11 @@ import de.hpi.bpt.process.Node;
 
 import de.hpi.bpt.process.Process;
 
+/**
+ * Checks whether the {@link Process} contains unstructered OR {@link Gateway}s.
+ * @author Christian Wiggert
+ *
+ */
 public class UnstructuredOrCheck implements ICheck {
 
 	@Override
