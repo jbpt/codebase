@@ -1,4 +1,4 @@
-package de.hpi.bpt.process.petri;
+package de.hpi.bpt.process.petri.util;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -8,12 +8,18 @@ import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import de.hpi.bpt.process.petri.Flow;
+import de.hpi.bpt.process.petri.PetriNet;
+import de.hpi.bpt.process.petri.Place;
+import de.hpi.bpt.process.petri.Transition;
+import de.hpi.bpt.process.serialize.SerializationException;
+
 public class PetriNet2PNML {
 	
 	public static int DEFAULT = 0;
 	public static int LOLA = 1;
 	
-	public static Document convert(PetriNet net) {
+	public static Document convert(PetriNet net) throws SerializationException {
 		return convert(net, DEFAULT);
 	}
 	
@@ -24,7 +30,7 @@ public class PetriNet2PNML {
 	 * @param integer indicating the tool
 	 * @return Document object
 	 */
-	public static Document convert(PetriNet net, int tool) {
+	public static Document convert(PetriNet net, int tool) throws SerializationException {
 		DocumentBuilderFactory docBFac = DocumentBuilderFactory.newInstance();
 		Document doc = null;
 		try {
@@ -32,35 +38,33 @@ public class PetriNet2PNML {
 			DOMImplementation impl = docBuild.getDOMImplementation();
 			doc = impl.createDocument("http://www.pnml.org/version-2009/grammar/pnml", "pnml", null);
 		} catch (ParserConfigurationException e) {
-			// TODO: throw exception and signal that the document couldn't be created
 			e.printStackTrace();
+			throw new SerializationException(e.getMessage());
 		}
-		if (doc != null) {
-			Element root = doc.getDocumentElement();
-			Element netNode = doc.createElement("net");
-			root.appendChild(netNode);
-			if (!net.getId().equals(""))
-				netNode.setAttribute("id", net.getId());
-			else
-				netNode.setAttribute("id", "ptnet");
-			netNode.setAttribute("type", "http://www.pnml.org/version-2009/grammar/ptnet");
-			addElementWithText(doc, netNode, "name", net.getName());
-			
-			Element page = doc.createElement("page");
-			page.setAttribute("id", "page0");
-			netNode.appendChild(page);
-			for (Place place:net.getPlaces()) {
-				addPlace(doc, page, place);
-			}
-			for (Transition trans:net.getTransitions()) {
-				addTransition(doc, page, trans);
-			}
-			for (Flow flow:net.getFlowRelation()) {
-				addFlow(doc, page, flow);
-			}
-			if (tool == LOLA)
-				addFinalMarkings(doc, page, net);
+		Element root = doc.getDocumentElement();
+		Element netNode = doc.createElement("net");
+		root.appendChild(netNode);
+		if (!net.getId().equals(""))
+			netNode.setAttribute("id", net.getId());
+		else
+			netNode.setAttribute("id", "ptnet");
+		netNode.setAttribute("type", "http://www.pnml.org/version-2009/grammar/ptnet");
+		addElementWithText(doc, netNode, "name", net.getName());
+		
+		Element page = doc.createElement("page");
+		page.setAttribute("id", "page0");
+		netNode.appendChild(page);
+		for (Place place:net.getPlaces()) {
+			addPlace(doc, page, place);
 		}
+		for (Transition trans:net.getTransitions()) {
+			addTransition(doc, page, trans);
+		}
+		for (Flow flow:net.getFlowRelation()) {
+			addFlow(doc, page, flow);
+		}
+		if (tool == LOLA)
+			addFinalMarkings(doc, page, net);
 		return doc;
 	}
 	

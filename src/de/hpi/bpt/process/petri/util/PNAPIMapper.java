@@ -37,21 +37,23 @@ public class PNAPIMapper {
 		
 		for (hub.top.petrinet.Place p : net.getPlaces()) {
 			Place n = new Place();
-			n.setId(p.getName());
+			n.setId(p.getUniqueIdentifier());
+			n.setName(p.getName());
 			result.addNode(n);
 			n.setTokens(p.getTokens());
-			nodes.put(p.getName(),n);
+			nodes.put(p.getUniqueIdentifier(),n);
 		}
 			
 		for (hub.top.petrinet.Transition t : net.getTransitions()) {
 			Transition n = new Transition();
-			n.setId(t.getName());
+			n.setId(t.getUniqueIdentifier());
+			n.setName(t.getName());
 			result.addNode(n);
-			nodes.put(t.getName(),n);
+			nodes.put(t.getUniqueIdentifier(),n);
 		}
 			
 		for (hub.top.petrinet.Arc a : net.getArcs()) {
-			result.addFlow(nodes.get(a.getSource().getName()),nodes.get(a.getTarget().getName()));
+			result.addFlow(nodes.get(a.getSource().getUniqueIdentifier()),nodes.get(a.getTarget().getUniqueIdentifier()));
 		}
 		
 		return result;

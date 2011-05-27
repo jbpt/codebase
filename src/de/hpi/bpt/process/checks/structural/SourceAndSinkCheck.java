@@ -6,6 +6,11 @@ import java.util.List;
 import de.hpi.bpt.process.Process;
 import de.hpi.bpt.process.Task;
 
+/**
+ * Checks whether the {@link Process} has at least one source and one sink node. 
+ * @author Christian Wiggert
+ *
+ */
 public class SourceAndSinkCheck implements ICheck {
 
 	@Override

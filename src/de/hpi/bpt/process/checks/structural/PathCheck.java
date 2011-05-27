@@ -7,6 +7,12 @@ import java.util.List;
 import de.hpi.bpt.process.Node;
 import de.hpi.bpt.process.Process;
 
+/**
+ * Checks whether every {@link Node} in a {@link Process} is positioned on a path
+ * from a source node to a sink node. 
+ * @author Christian Wiggert
+ *
+ */
 public class PathCheck implements ICheck {
 
 	private HashSet<Node> visited;

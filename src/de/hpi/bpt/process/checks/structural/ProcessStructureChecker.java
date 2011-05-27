@@ -6,6 +6,11 @@ import java.util.List;
 
 import de.hpi.bpt.process.Process;
 
+/**
+ * This class uses multiple small and light-weight checks to check the structure of a {@link Process}.
+ * @author Christian Wiggert
+ *
+ */
 public class ProcessStructureChecker {
 
 	/**
@@ -14,6 +19,7 @@ public class ProcessStructureChecker {
 	 */
 	private static List<ICheck> getChecks() {
 		return Arrays.asList (
+				new UniqueIdCheck(),
 				new ContainsTaskCheck(),
 				new FlowCountCheck(),
 				new SourceAndSinkCheck(),

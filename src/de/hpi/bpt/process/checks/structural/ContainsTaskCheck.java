@@ -5,6 +5,11 @@ import java.util.List;
 
 import de.hpi.bpt.process.Process;
 
+/**
+ * Checks if a {@link Process} contains any {@link Task}
+ * @author Christian Wiggert
+ *
+ */
 public class ContainsTaskCheck implements ICheck {
 
 	@Override
