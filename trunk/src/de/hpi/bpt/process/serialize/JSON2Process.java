@@ -48,8 +48,15 @@ public class JSON2Process {
 			process.addVertices(nodes.values());
 			JSONArray flows = json.getJSONArray("flows");
 			for (int i = 0; i < flows.length(); i++) {
-				Node from = nodes.get(flows.getJSONObject(i).getString("src"));
-				Node to = nodes.get(flows.getJSONObject(i).getString("tgt"));
+				Node from, to;
+				if (nodes.containsKey(flows.getJSONObject(i).getString("src")))
+					from = nodes.get(flows.getJSONObject(i).getString("src"));
+				else 
+					throw new SerializationException("Unknown node " + flows.getJSONObject(i).getString("src") + " was referenced by a flow as 'src'.");		
+				if (nodes.containsKey(flows.getJSONObject(i).getString("tgt")))
+					to = nodes.get(flows.getJSONObject(i).getString("tgt"));
+				else
+					throw new SerializationException("Unknown node " + flows.getJSONObject(i).getString("tgt") + " was referenced by a flow as 'tgt'.");
 				ControlFlow flow = process.addControlFlow(from, to);
 				flow.setLabel(flows.getJSONObject(i).getString("label"));
 			}
