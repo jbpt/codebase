@@ -52,6 +52,7 @@ public class WoflanUtils {
 					else label = line.substring(7, line.length()-2);
 					
 					p.setId(label);
+					p.setName(label);
 					net.getPlaces().add(p);
 					s2p.put(label,p);
 				}
@@ -60,6 +61,7 @@ public class WoflanUtils {
 					Transition t = new Transition();
 					String label = line.substring(7, line.length()-1);
 					t.setId(label);
+					t.setName(label);
 					net.getTransitions().add(t);
 					
 					String lineIn = bufRead.readLine();
