@@ -10,7 +10,6 @@ import de.hpi.bpt.process.petri.bp.BehaviouralProfile.CharacteristicRelationType
 import de.hpi.bpt.process.petri.bp.construct.BPCreatorNet;
 import de.hpi.bpt.process.petri.bp.construct.BPCreatorTree;
 import de.hpi.bpt.process.petri.bp.construct.BPCreatorUnfolding;
-import de.hpi.bpt.process.petri.bp.construct.CBPCreatorNet;
 import de.hpi.bpt.process.petri.bp.construct.CBPCreatorTree;
 import de.hpi.bpt.process.petri.bp.construct.CBPCreatorUnfolding;
 
