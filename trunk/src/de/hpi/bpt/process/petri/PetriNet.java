@@ -292,6 +292,15 @@ public class PetriNet extends AbstractDirectedGraph<Flow, Node> implements Clone
 		if (dga == null) dga = new DirectedGraphAlgorithms<Flow, Node>();
 		return dga.getDominators(this, true);
 	}
+
+	/**
+	 * Reset private and protected members. Needed for clone routines.
+	 */
+	@Override
+	public void clearMembers() {
+		super.clearMembers();
+		this.dga = null;
+	}
 	
 	/**
 	 * Creates a deep copy of whole Petri net. 
@@ -301,6 +310,13 @@ public class PetriNet extends AbstractDirectedGraph<Flow, Node> implements Clone
 	@Override
 	public Object clone() throws CloneNotSupportedException {
 		PetriNet clone = (PetriNet) super.clone();
+		
+		// clear algorithm class
+		clone.clearMembers();
+		
+		// workaround since abstract graph notifier is not cloned
+		clone.removeVertices(clone.getVertices());
+		clone.removeEdges(clone.getEdges());
 		
 		Map<Node,Node> nodeCopies = new HashMap<Node, Node>();
 		
@@ -318,5 +334,37 @@ public class PetriNet extends AbstractDirectedGraph<Flow, Node> implements Clone
 		
 		return clone;
 	}
+	
+	/**
+	 * Creates a deep copy of whole Petri net and enters 
+	 * the node mapping between the original and the clone
+	 * into the given map.
+	 * 
+	 * @param nodeMapping, mapping between nodes of the original and of the clone
+	 * 
+	 * @return the clone of the Petri net
+	 */
+	public Object clone(Map<Node,Node> nodeMapping) throws CloneNotSupportedException {
+		PetriNet clone = (PetriNet) super.clone();
+		
+		// clear members that have not been cloned by a deep copy
+		clone.clearMembers();
+		
+		for (Node n : this.getNodes()) {
+			Node c = (Node)n.clone();
+			clone.addNode(c);
+			nodeMapping.put(n, c);
+		}
+		
+		for (Flow f : this.getFlowRelation()) {
+			Node from = nodeMapping.get(f.getSource());
+			Node to = nodeMapping.get(f.getTarget());
+			clone.addFlow(from, to);
+		}
+		
+		return clone;
+	}
+	
+	
 
 }

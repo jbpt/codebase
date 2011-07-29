@@ -76,7 +76,27 @@ public class CBPCreatorUnfolding extends AbstractBPCreator implements
 
 		clear();
 		
-		this.createAugmentedNet(pn);
+		/*
+		 * We need to augment the Petri net before we unfold it to get the co-occurrence
+		 * relation of the causal behavioural profile. Therefore, we first clone the net 
+		 * and unfold the clone. We use a dedicated clone method that provides us with 
+		 * an according node mapping between the original net and the clone.
+		 */
+		PetriNet netClone = null;
+		Map<Node, Node> nodeMapping = new HashMap<Node, Node>();
+		try {
+			netClone = (PetriNet) pn.clone(nodeMapping);
+		} catch (CloneNotSupportedException e) {
+			System.err.println("Clone not supported for PetriNet in CBPCreatorUnfolding. Take original net.");
+		}
+		// Fall back to original net
+		if (netClone == null) {
+			netClone = pn;
+			for (Node n : pn.getNodes())
+				nodeMapping.put(n, n);
+		}
+
+		this.createAugmentedNet(netClone);
 		this.eventContinuationProfiler = new EventContinuationProfiler(this.augmentedNet);
 		this.allEvents = new ArrayList<DNode>(this.eventContinuationProfiler.getUnfolding().getBranchingProcess().getAllEvents());				
 				
@@ -102,14 +122,14 @@ public class CBPCreatorUnfolding extends AbstractBPCreator implements
 				else {
 					boolean check = true;
 					for (DNode e : this.eventContinuationProfiler.getUnfolding().getBranchingProcess().getAllEvents()) {
-						if (this.cutOfLocalConfContainsAugmentedPlaceForTransition.get(e).contains(t1)
-								&& !this.cutOfLocalConfContainsAugmentedPlaceForTransition.get(e).contains(t2)) {
+						if (this.cutOfLocalConfContainsAugmentedPlaceForTransition.get(e).contains(nodeMapping.get(t1))
+								&& !this.cutOfLocalConfContainsAugmentedPlaceForTransition.get(e).contains(nodeMapping.get(t2))) {
 //							Node t_e = this.unfoldingNodesToNetNodes.get(e);
 //							System.out.println("check " + e + " " + t_e);
 							boolean foundOneForE = false;
 							for (DNode f : this.eventContinuationProfiler.getUnfolding().getBranchingProcess().getAllEvents()) {
 								if (this.augmentationFunction.containsKey(this.unfoldingNodesToNetNodes.get(f))) {
-									if (this.augmentationFunction.get(this.unfoldingNodesToNetNodes.get(f)).equals(t2)
+									if (this.augmentationFunction.get(this.unfoldingNodesToNetNodes.get(f)).equals(nodeMapping.get(t2))
 										&& (e.equals(f) || isEventContinuation(e,f))) {
 										foundOneForE = true;
 										break;

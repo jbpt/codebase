@@ -52,6 +52,8 @@ public class WFTree {
 	public WFTree(PetriNet net) {
 		wf = net;
 		
+		checkNet();
+		
 		preProcessWF();
 		
 		// construct the tree
@@ -69,18 +71,21 @@ public class WFTree {
 	}
 
 	/**
-	 * Pre-process Petri net
-	 * - check if net is a WF-net and an FC-net
-	 * - Perform node-splitting
+	 * Check whether Petri net is WF-net and FC-net
 	 * 
 	 * @throws IllegalArgumentException
 	 */
-	public void preProcessWF() {
-//		System.out.print(wf);
-		// check input/output
+	public void checkNet() {
 		if (!wf.isWFNet()) throw new IllegalArgumentException();
 		if (!wf.isExtendedFreeChoice()) throw new IllegalArgumentException();
-
+	}
+	
+	/**
+	 * Pre-process Petri net by 
+	 * performing node-splitting
+	 * 
+	 */
+	public void preProcessWF() {
 		PetriNetUtils.splitMixedPlaces(wf);
 		PetriNetUtils.isolateTransitions(wf);
 	}
