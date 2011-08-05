@@ -36,7 +36,11 @@ public class ProcessStructureChecker {
 	public static List<String> checkStructure(Process process) {
 		List<String> errors = new ArrayList<String>();
 		for (ICheck check:getChecks()) {
-			errors.addAll(check.check(process));
+			try {
+				errors.addAll(check.check(process));
+			} catch (Exception e) {
+				errors.add("An error occured during a structure test.");
+			}
 		}
 		return errors;
 	}

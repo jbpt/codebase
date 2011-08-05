@@ -294,6 +294,45 @@ public class PetriNet extends AbstractDirectedGraph<Flow, Node> implements Clone
 	}
 
 	/**
+	 * Returns the current marking of this petri net.
+	 * @return {@link Marking}
+	 */
+	public Marking getMarking() {
+		Marking marking = new Marking(this);
+		for (Place p:getPlaces()) {
+			marking.put(p, p.getTokens());
+		}
+		return marking;
+	}
+	
+	/**
+	 * Applies the given {@link Marking} to this petri net.
+	 * Places not listed in the marking will receive zero tokens.
+	 * @param marking
+	 */
+	public void setMarking(Marking marking) {
+		for (Place p:getPlaces()) {
+			Integer value = marking.get(p);
+			if (value != null)
+				p.setTokens(value);
+			else
+				p.setTokens(0);
+		}
+	}
+	
+	/**
+	 * Sets the number of tokens of all source places to one and the rest to zero.
+	 */
+	public void setInitialMarking() {
+		Collection<Place> sources = getSourcePlaces();
+		for (Place p:getPlaces())
+			if (sources.contains(p))
+				p.setTokens(1);
+			else 
+				p.setTokens(0);
+	}
+	
+	/**
 	 * Reset private and protected members. Needed for clone routines.
 	 */
 	@Override
