@@ -35,12 +35,17 @@ public class EventContinuationProfiler {
 
 	public EventContinuationProfiler(PetriNet pn) {
 		
-		this.unfolding = UMAUnfolderWrapper.getUMAUnfolding(PNAPIMapper.jBPT2PNAPI(pn));		
+		this.unfolding = UMAUnfolderWrapper.getUMAUnfolding(PNAPIMapper.jBPT2PNAPI(pn));
 		this.profiler = new UnfoldingRelationsProfiler(this.unfolding);
 
-		for (DNode n : this.unfolding.equivalentNode().keySet())
-			if (n.isCutOff && !this.unfolding.equivalentNode().get(n).equals(n))
-				this.cutOffEventsToCorrespondingEvents.put(n.pre[0], this.unfolding.equivalentNode().get(n).pre[0]);
+		for (DNode n : this.unfolding.equivalentNode().keySet()) {
+			if (n.isCutOff && !this.unfolding.equivalentNode().get(n).equals(n)) {
+				if (this.unfolding.equivalentNode().get(n).pre.length != 0)
+					this.cutOffEventsToCorrespondingEvents.put(n.pre[0], this.unfolding.equivalentNode().get(n).pre[0]);
+				else if (this.unfolding.equivalentNode().get(n).post.length != 0)
+					this.cutOffEventsToCorrespondingEvents.put(n.pre[0], this.unfolding.equivalentNode().get(n).post[0]);
+			}
+		}
 				
 		this.deriveCutOfLocalConfiguration();
 		this.deriveTransitiveCutoffRelation();
