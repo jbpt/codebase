@@ -63,6 +63,31 @@ public class BehaviouralProfile {
 	}
 	
 	/**
+	 * Returns the complementary relation for a profile relation. The complement
+	 * relation is defined according to the strictness hierarchy of profile 
+	 * relations:
+	 * 
+	 * Strict order -> Reverse strict order
+	 * Reverse strict order -> Strict order
+	 * Exclusiveness -> Interleaving order
+	 * Interleaving order -> Exclusiveness
+	 * 
+	 * @param behavioural profile relation
+	 * @return the complement relation
+	 */
+	public static CharacteristicRelationType getComplementRelation(CharacteristicRelationType rel) {
+		if (rel.equals(CharacteristicRelationType.StrictOrder))
+			return CharacteristicRelationType.ReverseStrictOrder;
+		if (rel.equals(CharacteristicRelationType.ReverseStrictOrder))
+			return CharacteristicRelationType.StrictOrder;
+		if (rel.equals(CharacteristicRelationType.InterleavingOrder))
+			return CharacteristicRelationType.Exclusive;
+
+		return CharacteristicRelationType.InterleavingOrder;
+	}
+
+	
+	/**
 	 * Returns a short string representation for a profile relation.
 
 	 * @param behavioural profile relation
@@ -319,6 +344,38 @@ public class BehaviouralProfile {
 			}
 		}
 		return equal;
+	}
+	
+	/**
+	 * Checks emptiness of a behavioural profile. It is empty, if it defines 
+	 * exclusiveness for all pairs of nodes.
+	 * 
+	 * @return true, if the behavioural profile is empty
+	 */
+	public boolean isEmpty() {
+		for (Node n1 : getNodes()) 
+			for (Node n2 : getNodes()) 
+				if (!getRelationForNodes(n1, n2).equals(CharacteristicRelationType.Exclusive))
+						return false;
+		
+		return true;
+	}
+
+	/**
+	 * Returns the complement of the behavioural profile. It is defined as the profile
+	 * that comprises the complement relations for all pairs of nodes.
+	 * 
+	 * @return 
+	 */
+	public BehaviouralProfile getComplement() {
+		BehaviouralProfile cProfile = new BehaviouralProfile(getNet(),getNodes());
+		CharacteristicRelationType[][] cMatrix = cProfile.getMatrix();
+		
+		for (int i = 0; i < matrix.length; i++) 
+			for (int j = 0; j < matrix.length; j++)
+				cMatrix[i][j] = getComplementRelation(matrix[i][j]);
+
+		return cProfile;
 	}
 
 }
