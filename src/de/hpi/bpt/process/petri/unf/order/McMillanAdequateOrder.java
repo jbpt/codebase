@@ -1,6 +1,10 @@
-package de.hpi.bpt.process.petri.unf;
+package de.hpi.bpt.process.petri.unf.order;
 
 import java.util.Collection;
+
+import de.hpi.bpt.process.petri.unf.Event;
+import de.hpi.bpt.process.petri.unf.LocalConfiguration;
+import de.hpi.bpt.process.petri.unf.Unfolding;
 
 /**
  * McMillan adequate order

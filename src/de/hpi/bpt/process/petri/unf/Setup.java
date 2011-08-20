@@ -1,5 +1,8 @@
 package de.hpi.bpt.process.petri.unf;
 
+import de.hpi.bpt.process.petri.unf.order.AdequateOrder;
+import de.hpi.bpt.process.petri.unf.order.McMillanAdequateOrder;
+
 /**
  * Configure unfolding
  * 

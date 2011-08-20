@@ -3,7 +3,7 @@ package de.hpi.bpt.process.petri.unf;
 import de.hpi.bpt.process.petri.Place;
 
 /**
- * Condition of a branching process
+ * Unfolding condition
  * 
  * @author Artem Polyvyanyy
  */
@@ -11,9 +11,7 @@ public class Condition extends BPNode {
 	Place s = null;
 	Event e = null;
 	
-	public Condition() {}
-	
-	public Condition(Place place, Event event) {
+	protected Condition(Place place, Event event) {
 		this.s = place;
 		this.e = event;
 	}
@@ -22,7 +20,7 @@ public class Condition extends BPNode {
 		return this.s;
 	}
 	
-	public Event getEvent() {
+	public Event getPreEvent() {
 		return this.e;
 	}
 	
@@ -30,13 +28,9 @@ public class Condition extends BPNode {
 		this.s = place;
 	}
 	
-	public void setEvent(Event event) {
-		this.e= event;
-	}
-	
 	@Override
 	public String toString() {
-		return "["+this.getPlace().getName()+","+( this.getEvent()==null ? "null" : this.getEvent().getTransition().getName())+"]";
+		return "["+this.getPlace().getName()+","+( this.getPreEvent()==null ? "null" : this.getPreEvent().getTransition().getName())+"]";
 	}
 	
 	@Override

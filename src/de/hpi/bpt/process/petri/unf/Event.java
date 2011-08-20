@@ -2,46 +2,69 @@ package de.hpi.bpt.process.petri.unf;
 
 import java.util.Set;
 
-import com.google.gwt.dev.util.collect.HashSet;
-
 import de.hpi.bpt.process.petri.Transition;
 
 /**
- * Event of a branching process
+ * Unfolding event
  * 
  * @author Artem Polyvyanyy
  */
 public class Event extends BPNode {
-	private Transition t = null;
-	private Set<Condition> B = null;
-	protected Set<Condition> post = new HashSet<Condition>();
 	
-	public Event() {}
+	// required to capture unfolding
+	private Transition t = null;		// transition that corresponds to event
+	private Set<Condition> pre = null;	// preconditions of event - *e
 	
-	public Event(Transition transition, Set<Condition> conditions) {
-		this.B = conditions;
-		this.t = transition;
+	// for convenience reasons
+	private Unfolding unf = null;					// reference to unfolding
+	private Set<Condition> post = null;				// postconditions of event - e*
+	private LocalConfiguration localConf = null;	// local configuration - [e]
+	
+	/**
+	 * Constructor - expects required fields only
+	 * 
+	 * @param unf reference to unfolding
+	 * @param t transition which occurrence is represented by this event 
+	 * @param pre preset of conditions which caused event to occur
+	 */
+	protected Event(Unfolding unf, Transition t, Set<Condition> pre) {
+		this.unf = unf;
+		this.pre = pre;
+		this.t = t;
 	}
 	
-	public Set<Condition> getConditions() {
-		return this.B;
+	/**
+	 * Get local configuration
+	 * 
+	 * @return local configuration
+	 */
+	public LocalConfiguration getLocalConfiguration() {
+		if (this.localConf == null) 
+			this.localConf = new LocalConfiguration(this.unf, this);
+		
+		return this.localConf;
 	}
+	
+	protected void setPostConditions(Set<Condition> post) {
+		this.post = post;
+	}
+	
+	public Set<Condition> getPostConditions() {
+		return this.post;
+	}
+	
 	
 	public Transition getTransition() {
 		return this.t;
 	}
 	
-	public void setConditions(Set<Condition> conditions) {
-		this.B = conditions;
-	}
-	
-	public void setTransition(Transition transition) {
-		this.t= transition;
+	public Set<Condition> getPreConditions() {
+		return this.pre;
 	}
 	
 	@Override
 	public String toString() {
-		return "["+this.getTransition().getName()+","+this.getConditions()+"]";
+		return "["+this.getTransition().getName()+","+this.getPreConditions()+"]";
 	}
 	
 	@Override
