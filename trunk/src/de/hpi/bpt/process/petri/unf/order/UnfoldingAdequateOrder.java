@@ -1,4 +1,4 @@
-package de.hpi.bpt.process.petri.unf;
+package de.hpi.bpt.process.petri.unf.order;
 
 /**
  * Dummy adequate order

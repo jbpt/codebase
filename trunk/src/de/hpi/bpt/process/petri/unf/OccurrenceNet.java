@@ -48,13 +48,13 @@ public class OccurrenceNet extends PetriNet {
 		}
 		
 		for (Event e : this.unf.getEvents()) {
-			for (Condition c : e.getConditions()) {
+			for (Condition c : e.getPreConditions()) {
 				this.addFlow(c2p.get(c), e2t.get(e));
 			}
 		}
 		
 		for (Condition c : this.unf.getConditions()) {
-			this.addFlow(e2t.get(c.getEvent()),c2p.get(c));
+			this.addFlow(e2t.get(c.getPreEvent()),c2p.get(c));
 		}	
 	}
 	

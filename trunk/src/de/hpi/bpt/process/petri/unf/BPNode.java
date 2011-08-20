@@ -2,6 +2,11 @@ package de.hpi.bpt.process.petri.unf;
 
 import de.hpi.bpt.hypergraph.abs.Vertex;
 
+/**
+ * Unfolding node - event or condition
+ * 
+ * @author Artem Polyvyanyy
+ */
 public class BPNode extends Vertex {
 
 	@Override

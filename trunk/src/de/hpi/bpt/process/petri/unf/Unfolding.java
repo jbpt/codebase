@@ -64,11 +64,11 @@ public class Unfolding {
 	 * Constructor - constructs unfolding of a net system
 	 * 
 	 * @param pn net system to unfold
-	 * @param conf unfolding configuration
+	 * @param setup unfolding configuration
 	 */
-	public Unfolding(PetriNet pn, Setup conf) {
+	public Unfolding(PetriNet pn, Setup setup) {
 		this.net = pn;
-		this.setup = conf;
+		this.setup = setup;
 		
 		// construct unfolding
 		this.construct();
@@ -93,44 +93,44 @@ public class Unfolding {
 		if (!this.addCut(initialBP)) return;
 		
 		// CONSTRUCT UNFOLDING
-		// get possible extensions of the initial branching process
+		// get possible extensions of initial branching process
 		Collection<Event> pe = getPossibleExtensions();		
 		// while extensions exist
 		while (pe.size()>0) {
 			Event e = this.setup.ADEQUATE_ORDER.getMininmal(this,pe);	// event to use for extending unfolding
-			LocalConfiguration lc = new LocalConfiguration(this,e);
 			
-			if (!this.overlap(cutoff2corr.keySet(),lc)) {
-				this.addEvent(e);				// add event to unfolding
+			if (!this.overlap(cutoff2corr.keySet(),e.getLocalConfiguration())) {
+				this.addEvent(e); // add event to unfolding
 				
-				// add conditions that correspond to places in the postset of transition that correspond to the event
-				Collection<Condition> newCs = new ArrayList<Condition>(); // collection of new conditions
-				// iterate over places in the postset
-				for (Place s : this.net.getPostset(e.getTransition())) {
-					Condition c = new Condition(s,e);	// new condition 
-					newCs.add(c);						// store
-					this.addCondition(c);				// add condition to unfolding
+				// add conditions that correspond to post-places of transition that corresponds to new event
+				Set<Condition> postConds = new HashSet<Condition>(); // collection of new conditions
+				for (Place s : this.net.getPostset(e.getTransition())) {	// iterate over places in the postset
+					Condition c = new Condition(s,e);	 					// construct new condition
+					postConds.add(c);
+					this.addCondition(c);									// add condition to unfolding
 				}
-				e.post.addAll(newCs);
+				e.setPostConditions(postConds);								// set post conditions of event
 				
 				// compute new cuts of unfolding
-				for (Cut cut : c2cut.get(e.getConditions().iterator().next())) {
-					if (contains(cut,e.getConditions())) {
+				for (Cut cut : c2cut.get(e.getPreConditions().iterator().next())) {
+					if (contains(cut,e.getPreConditions())) {
 						Cut newCut = new Cut(cut);
-						newCut.removeAll(e.getConditions());
-						newCut.addAll(newCs);
+						newCut.removeAll(e.getPreConditions());
+						newCut.addAll(postConds);
 						if (!this.addCut(newCut)) return;
 					}
 				}
 				
+				// track number of events in unfolding
 				this.countEvent++;
 				if (this.countEvent==this.setup.MAX_EVENTS) return;
 				
 				// get possible extensions of unfolding
 				pe = getPossibleExtensions();
 				
-				Event corr = this.checkEvent4Cutoff(e); 
-				if (corr!=null) this.cutoff2corr.put(e,corr);
+				Event corr = this.checkEvent4Cutoff(e); // check for cutoff event 
+				if (corr!=null) 
+					this.cutoff2corr.put(e,corr);		// e is cutoff event
 			}
 			else {
 				pe.remove(e);
@@ -139,24 +139,15 @@ public class Unfolding {
 	}
 
 	private Event checkEvent4Cutoff(Event e) {
-		LocalConfiguration lce = new LocalConfiguration(this,e);
+		LocalConfiguration lce = e.getLocalConfiguration();
 		for (Event f : this.getEvents()) {
 			if (f.equals(e)) continue;
-			LocalConfiguration lcf = new LocalConfiguration(this,f);	
-			if (this.equal(lce.getMarking(),lcf.getMarking()) && this.setup.ADEQUATE_ORDER.isSmaller(lcf, lce))
+			LocalConfiguration lcf = f.getLocalConfiguration();	
+			if (lce.getMarking().equals(lcf.getMarking()) && this.setup.ADEQUATE_ORDER.isSmaller(lcf, lce))
 				return f;
 		}
 		
 		return null;
-	}
-
-	private boolean equal(Collection<Place> ps1, Collection<Place> ps2) {
-		if (ps1.size() != ps2.size()) return false;
-		
-		Collection<Place> ps2c = new ArrayList<Place>(ps2);
-		for (Place p : ps1) ps2c.remove(p);
-		
-		return ps2c.size() == 0;
 	}
 
 	/**
@@ -184,7 +175,7 @@ public class Unfolding {
 						boolean flag = false;
 						if (t2es.get(t)!=null) {
 							for (Event e : t2es.get(t)) {
-								if (equal(e.getConditions(),coset)) {
+								if (equal(e.getPreConditions(),coset)) {
 									flag = true;
 									break;
 								}
@@ -192,7 +183,7 @@ public class Unfolding {
 							}
 						}
 						if (!flag) { // we found possible extension !!!
-							Event e = new Event(t,coset);
+							Event e = new Event(this,t,coset);
 							result.add(e);
 						}
 					}
@@ -214,13 +205,13 @@ public class Unfolding {
 	private void updateConcurrency(Cut cut) {
 		for (Condition c1 : cut) {
 			if (this.co.get(c1)==null) this.co.put(c1, new HashSet<BPNode>());
-			Event e1 = c1.getEvent();
+			Event e1 = c1.getPreEvent();
 			if (e1 != null && this.co.get(e1)==null) this.co.put(e1, new HashSet<BPNode>());
 			for (Condition c2 : cut) {
 				if (this.co.get(c2)==null) this.co.put(c2, new HashSet<BPNode>());
 				this.co.get(c1).add(c2);
 				
-				Event e2 = c2.getEvent();
+				Event e2 = c2.getPreEvent();
 				if (e1!=null && e2!=null && !this.ca.get(e1).contains(e2) && !this.ca.get(e2).contains(e1)) this.co.get(e1).add(e2);
 				if (!c1.equals(c2) && e1!=null && !this.ca.get(c2).contains(e1) && !this.ca.get(e1).contains(c2)) {
 					this.co.get(c2).add(e1);
@@ -238,7 +229,7 @@ public class Unfolding {
 		this.ica.put(c, new HashSet<BPNode>());
 		this.ca.put(c, new HashSet<BPNode>());
 		
-		Event e = c.getEvent();
+		Event e = c.getPreEvent();
 		if (e==null) return;
 		
 		this.ica.get(c).addAll(this.ica.get(e));
@@ -257,7 +248,7 @@ public class Unfolding {
 		this.ica.put(e, new HashSet<BPNode>());
 		this.ca.put(e, new HashSet<BPNode>());
 		
-		Collection<Condition> cs = e.getConditions();		
+		Collection<Condition> cs = e.getPreConditions();		
 		for (Condition c : cs)  this.ica.get(e).addAll(this.ica.get(c));
 		this.ica.get(e).addAll(cs);
 		
