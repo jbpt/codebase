@@ -14,7 +14,7 @@ import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.Place;
 import de.hpi.bpt.process.petri.Transition;
 import de.hpi.bpt.process.petri.unf.OccurrenceNet;
-import de.hpi.bpt.process.petri.unf.Setup;
+import de.hpi.bpt.process.petri.unf.UnfoldingSetup;
 import de.hpi.bpt.process.petri.unf.Unfolding;
 import de.hpi.bpt.process.petri.unf.Utils;
 import de.hpi.bpt.process.petri.util.TransformationException;
@@ -74,7 +74,7 @@ public class UnfoldingTest extends TestCase {
 		//net.getMarkedPlaces().iterator().next().setTokens(2);
 		PNSerializer.toDOT("net.dot",net);
 		
-		Setup conf = new Setup();
+		UnfoldingSetup conf = new UnfoldingSetup();
 		//conf.MAX_EVENTS = 5;
 		Unfolding bp = new Unfolding(net,conf);
 		bp.printOrderingRelations();
