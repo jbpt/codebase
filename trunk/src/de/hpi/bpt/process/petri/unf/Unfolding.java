@@ -23,19 +23,19 @@ import de.hpi.bpt.process.petri.Transition;
  */
 public class Unfolding {
 	// originative net system
-	private PetriNet net = null;
-	private Setup setup = null;
+	protected PetriNet net = null;
+	protected UnfoldingSetup setup = null;
 
 	// unfolding
-	private Set<Event> events = new HashSet<Event>();			// events of the unfolding
-	private Set<Condition> conds = new HashSet<Condition>();	// conditions of the unfolding
+	private Set<Event> events		= new HashSet<Event>();			// events of the unfolding
+	private Set<Condition> conds	= new HashSet<Condition>();	// conditions of the unfolding
 	
 	// map a condition to a set of cuts that contain the condition
 	private Map<Condition,Collection<Cut>> c2cut = new HashMap<Condition,Collection<Cut>>();
 	
 	// maps of transitions/places to sets of events/conditions (occurrences of transitions/places)
-	private Map<Transition,Set<Event>> t2es = new HashMap<Transition,Set<Event>>();
-	private Map<Place,Set<Condition>> p2cs = new HashMap<Place,Set<Condition>>();
+	protected Map<Transition,Set<Event>> t2es	= new HashMap<Transition,Set<Event>>();
+	protected Map<Place,Set<Condition>> p2cs	= new HashMap<Place,Set<Condition>>();
 	
 	// ordering relations
 	protected Map<BPNode,Set<BPNode>> co	= new HashMap<BPNode,Set<BPNode>>(); // concurrent
@@ -46,10 +46,15 @@ public class Unfolding {
 	private int countEvent = 0;
 	
 	// map of cutoff events to corresponding events
-	private Map<Event,Event> cutoff2corr = new HashMap<Event,Event>();
+	protected Map<Event,Event> cutoff2corr = new HashMap<Event,Event>();
 	
 	// initial branching process
 	protected Cut initialBP = new Cut();
+	
+	/**
+	 * Dummy constructor
+	 */
+	protected Unfolding() {}
 	
 	/**
 	 * Constructor - constructs unfolding of a net system
@@ -57,7 +62,7 @@ public class Unfolding {
 	 * @param pn net system to unfold
 	 */
 	public Unfolding(PetriNet pn) {
-		this(pn,new Setup());
+		this(pn,new UnfoldingSetup());
 	}
 	
 	/**
@@ -66,7 +71,7 @@ public class Unfolding {
 	 * @param pn net system to unfold
 	 * @param setup unfolding configuration
 	 */
-	public Unfolding(PetriNet pn, Setup setup) {
+	public Unfolding(PetriNet pn, UnfoldingSetup setup) {
 		this.net = pn;
 		this.setup = setup;
 		
@@ -76,8 +81,9 @@ public class Unfolding {
 
 	/**
 	 * Construct unfolding
+	 * @throws  
 	 */
-	private void construct() {
+	protected void construct() {
 		if (this.net==null) return;
 
 		// CONSTRUCT INITIAL BRANCHING PROCESS
@@ -94,67 +100,33 @@ public class Unfolding {
 		
 		// CONSTRUCT UNFOLDING
 		// get possible extensions of initial branching process
-		Collection<Event> pe = getPossibleExtensions();		
-		// while extensions exist
-		while (pe.size()>0) {
+		Collection<Event> pe = getPossibleExtensions();
+		while (pe.size()>0) { 											// while extensions exist
 			Event e = this.setup.ADEQUATE_ORDER.getMininmal(this,pe);	// event to use for extending unfolding
 			
 			if (!this.overlap(cutoff2corr.keySet(),e.getLocalConfiguration())) {
-				this.addEvent(e); // add event to unfolding
+				this.addEvent(e);										// add event to unfolding
+
+				if (++this.countEvent>=this.setup.MAX_EVENTS) return;	// track number of events in unfolding
 				
-				// add conditions that correspond to post-places of transition that corresponds to new event
-				Set<Condition> postConds = new HashSet<Condition>(); // collection of new conditions
-				for (Place s : this.net.getPostset(e.getTransition())) {	// iterate over places in the postset
-					Condition c = new Condition(s,e);	 					// construct new condition
-					postConds.add(c);
-					this.addCondition(c);									// add condition to unfolding
-				}
-				e.setPostConditions(postConds);								// set post conditions of event
+				pe = getPossibleExtensions();							// get possible extensions of unfolding
 				
-				// compute new cuts of unfolding
-				for (Cut cut : c2cut.get(e.getPreConditions().iterator().next())) {
-					if (contains(cut,e.getPreConditions())) {
-						Cut newCut = new Cut(cut);
-						newCut.removeAll(e.getPreConditions());
-						newCut.addAll(postConds);
-						if (!this.addCut(newCut)) return;
-					}
-				}
-				
-				// track number of events in unfolding
-				this.countEvent++;
-				if (this.countEvent==this.setup.MAX_EVENTS) return;
-				
-				// get possible extensions of unfolding
-				pe = getPossibleExtensions();
-				
-				Event corr = this.checkEvent4Cutoff(e); // check for cutoff event 
-				if (corr!=null) 
-					this.cutoff2corr.put(e,corr);		// e is cutoff event
+				Event corr = this.checkCutoff(e);						// check for cutoff event 
+				if (corr!=null) this.cutoff2corr.put(e,corr);			// e is cutoff event
 			}
 			else {
 				pe.remove(e);
 			}
+			
+			if (pe.size() == 0) pe = this.getMorePossibleExtensions();	// extension point
 		}
-	}
-
-	private Event checkEvent4Cutoff(Event e) {
-		LocalConfiguration lce = e.getLocalConfiguration();
-		for (Event f : this.getEvents()) {
-			if (f.equals(e)) continue;
-			LocalConfiguration lcf = f.getLocalConfiguration();	
-			if (lce.getMarking().equals(lcf.getMarking()) && this.setup.ADEQUATE_ORDER.isSmaller(lcf, lce))
-				return f;
-		}
-		
-		return null;
 	}
 
 	/**
 	 * Get possible extensions of the unfolding
-	 * @return Collection of events suitable to extend unfolding
+	 * @return collection of events suitable to extend unfolding
 	 */
-	private Collection<Event> getPossibleExtensions() {
+	protected Collection<Event> getPossibleExtensions() {
 		Collection<Event> result = new ArrayList<Event>();
 		
 		// iterate over all transitions of the originative net
@@ -165,17 +137,17 @@ public class Unfolding {
 				// get cuts that contain conditions that correspond to the place
 				Collection<Cut> cuts = this.getCutsWithPlace(p);
 				// there must be at least one cut
-				if (cuts.size()==0) continue;
+				if (cuts.size()==0) break;
 				// iterate over cuts
 				for (Cut cut : cuts) {
 					// get co-set of conditions that correspond to places in the preset (contained in the cut)
-					Cut coset = contains(cut,pre);
+					Cut coset = this.contains(cut,pre);
 					if (coset!=null) { // if there exists such a co-set
 						// check if there already exists an event that corresponds to the transition with the preset of conditions which equals to coset 
 						boolean flag = false;
 						if (t2es.get(t)!=null) {
 							for (Event e : t2es.get(t)) {
-								if (equal(e.getPreConditions(),coset)) {
+								if (this.equal(e.getPreConditions(),coset)) {
 									flag = true;
 									break;
 								}
@@ -192,6 +164,31 @@ public class Unfolding {
 		}
 		
 		return result;
+	}
+	
+	/**
+	 * Get possible extensions when unfolding is constructed (extension point)
+	 * @return collection of events suitable to extend unfolding
+	 */
+	protected Collection<Event> getMorePossibleExtensions() {
+		return new ArrayList<Event>();
+	}
+	
+	/**
+	 * Check whether event is cutoff
+	 * @param e event
+	 * @return corresponding event; null if event is not cutoff
+	 */
+	protected Event checkCutoff(Event e) {
+		LocalConfiguration lce = e.getLocalConfiguration();
+		for (Event f : this.getEvents()) {
+			if (f.equals(e)) continue;
+			LocalConfiguration lcf = f.getLocalConfiguration();	
+			if (lce.getMarking().equals(lcf.getMarking()) && this.setup.ADEQUATE_ORDER.isSmaller(lcf, lce))
+				return f;
+		}
+		
+		return null;
 	}
 	
 	/**************************************************************************
@@ -266,7 +263,7 @@ public class Unfolding {
 	 * @param p place
 	 * @return collection of cuts that contain conditions that correspond to the place
 	 */
-	private Collection<Cut> getCutsWithPlace(Place p) {
+	protected Collection<Cut> getCutsWithPlace(Place p) {
 		Collection<Cut> result = new ArrayList<Cut>();
 		
 		Collection<Condition> cs = p2cs.get(p);
@@ -283,7 +280,7 @@ public class Unfolding {
 	 * @param cs2
 	 * @return true if sets are equal; otherwise false
 	 */
-	private boolean equal(Set<Condition> cs1, Set<Condition> cs2) {
+	protected boolean equal(Set<Condition> cs1, Set<Condition> cs2) {
 		if (cs1.size()!= cs2.size()) return false;
 		
 		for (Condition c1 : cs1) {
@@ -306,7 +303,7 @@ public class Unfolding {
 	 * @param ps collection of places
 	 * @return co-set of conditions that correspond to places in the collection; null if not every place has a corresponding condition 
 	 */
-	private Cut contains(Cut cut, Collection<Place> ps) {
+	protected Cut contains(Cut cut, Collection<Place> ps) {
 		Cut result = new Cut();
 		
 		for (Place p : ps) {
@@ -330,7 +327,7 @@ public class Unfolding {
 	 * @param cs conditions
 	 * @return true if cut contains conditions; otherwise false
 	 */
-	private boolean contains(Cut cut, Set<Condition> cs) {
+	protected boolean contains(Collection<Condition> cut, Collection<Condition> cs) {
 		for (Condition c1 : cs) {
 			boolean flag = false;
 			for (Condition c2 : cut) {
@@ -345,7 +342,7 @@ public class Unfolding {
 		return true;
 	}
 	
-	private boolean overlap(Set<Event> es1, Set<Event> es2) {
+	protected boolean overlap(Set<Event> es1, Set<Event> es2) {
 		for (Event e1 : es1) {
 			for (Event e2 : es2) {
 				if (e1.equals(e2)) return true;
@@ -359,7 +356,7 @@ public class Unfolding {
 	 * Add condition to all housekeeping data structures 
 	 * @param c condition
 	 */
-	private void addCondition(Condition c) {
+	protected void addCondition(Condition c) {
 		this.conds.add(c);
 		this.updateCausalityCondition(c);
 		
@@ -376,7 +373,7 @@ public class Unfolding {
 	 * Add event to all housekeeping data structures 
 	 * @param e event
 	 */
-	private void addEvent(Event e) {
+	protected void addEvent(Event e) {
 		this.events.add(e);
 		this.updateCausalityEvent(e);
 		
@@ -387,6 +384,25 @@ public class Unfolding {
 			es.add(e);
 			t2es.put(e.getTransition(), es);
 		}
+		
+		// add conditions that correspond to post-places of transition that corresponds to new event
+		Set<Condition> postConds = new HashSet<Condition>(); // collection of new conditions
+		for (Place s : this.net.getPostset(e.getTransition())) {	// iterate over places in the postset
+			Condition c = new Condition(s,e);	 					// construct new condition
+			postConds.add(c);
+			this.addCondition(c);									// add condition to unfolding
+		}
+		e.setPostConditions(postConds);								// set post conditions of event
+		
+		// compute new cuts of unfolding
+		for (Cut cut : c2cut.get(e.getPreConditions().iterator().next())) {
+			if (contains(cut,e.getPreConditions())) {
+				Cut newCut = new Cut(cut);
+				newCut.removeAll(e.getPreConditions());
+				newCut.addAll(postConds);
+				if (!this.addCut(newCut)) return;
+			}
+		}
 	}
 
 	/**
@@ -394,7 +410,7 @@ public class Unfolding {
 	 * @param cut cut
 	 * @return true is cut was added successfully; otherwise false;
 	 */
-	private boolean addCut(Cut cut) {
+	protected boolean addCut(Cut cut) {
 		this.updateConcurrency(cut);
 		
 		Map<Place,Integer> p2i = new HashMap<Place,Integer>();
@@ -426,7 +442,7 @@ public class Unfolding {
 	/**
 	 * Get configuration of this unfolding
 	 */
-	public Setup getSetup() {
+	public UnfoldingSetup getSetup() {
 		return this.setup;
 	}
 	
@@ -470,23 +486,53 @@ public class Unfolding {
 		return this.net;
 	}
 	
+	/**
+	 * Check if two nodes are in causal relation
+	 * @param n1 node
+	 * @param n2 node
+	 * @return true if n1 and n2 are in causal relation; otherwise false
+	 */
 	public boolean areCausal(BPNode n1, BPNode n2) {
 		return this.ca.get(n1).contains(n2);
 	}
 	
+	/**
+	 * Check if two nodes are in inverse causal relation
+	 * @param n1 node
+	 * @param n2 node
+	 * @return true if n1 and n2 are in inverse causal relation; otherwise false
+	 */
 	public boolean areInverseCausal(BPNode n1, BPNode n2) {
 		return this.ica.get(n1).contains(n2);
 	}
 	
+	/**
+	 * Check if two nodes are concurrent
+	 * @param n1 node
+	 * @param n2 node
+	 * @return true if n1 and n2 are concurrent; otherwise false
+	 */
 	public boolean areConcurrent(BPNode n1, BPNode n2) {
 		if (this.co.get(n1)==null) return false;
 		return this.co.get(n1).contains(n2);
 	}
 	
+	/**
+	 * Check if two nodes are in conflict
+	 * @param n1 node
+	 * @param n2 node
+	 * @return true if n1 and n2 are in conflict; otherwise false
+	 */
 	public boolean areInConflict(BPNode n1, BPNode n2) {
 		return !this.areCausal(n1,n2) && !this.areInverseCausal(n1,n2) && !this.areConcurrent(n1,n2);
 	}
 	
+	/**
+	 * Get ordering relation between two nodes
+	 * @param n1 node
+	 * @param n2 node
+	 * @return ordering relation between n1 and n2
+	 */
 	public OrderingRelation getOrderingRelation(BPNode n1, BPNode n2) {
 		if (this.areCausal(n1,n2)) return OrderingRelation.CAUSAL;
 		if (this.areInverseCausal(n1,n2)) return OrderingRelation.INVERSE_CAUSAL;
@@ -496,10 +542,17 @@ public class Unfolding {
 		return OrderingRelation.NONE;
 	}
 	
+	/**
+	 * Get occurrence net that captures this unfolding
+	 * @return occurrence net
+	 */
 	public OccurrenceNet getOccurrenceNet() {
 		return new OccurrenceNet(this);
 	}
 	
+	/**
+	 * Print ordering relations to System.out - for debugging 
+	 */
 	public void printOrderingRelations() {
 		List<BPNode> ns = new ArrayList<BPNode>();
 		ns.addAll(this.getConditions());
@@ -523,14 +576,28 @@ public class Unfolding {
 		}
 	}
 	
+	/**
+	 * Get all cutoff events
+	 * @return all cutoff events
+	 */
 	public Set<Event> getCutoffEvents() {
 		return this.cutoff2corr.keySet();
 	}
 	
+	/**
+	 * Check if event is cutoff event
+	 * @param e event
+	 * @return true if e is cutoff event; otherwise false
+	 */
 	public boolean isCutoffEvent(Event e) {
 		return this.cutoff2corr.containsKey(e);
 	}
 	
+	/**
+	 * Get corresponding event
+	 * @param e event
+	 * @return corresponding event of e; null if e is not cutoff event
+	 */
 	public Event getCorrespondingEvent(Event e) {
 		return this.cutoff2corr.get(e);
 	}

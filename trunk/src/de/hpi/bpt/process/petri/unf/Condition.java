@@ -11,7 +11,7 @@ public class Condition extends BPNode {
 	Place s = null;
 	Event e = null;
 	
-	protected Condition(Place place, Event event) {
+	public Condition(Place place, Event event) {
 		this.s = place;
 		this.e = event;
 	}

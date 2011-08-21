@@ -27,7 +27,7 @@ public class Event extends BPNode {
 	 * @param t transition which occurrence is represented by this event 
 	 * @param pre preset of conditions which caused event to occur
 	 */
-	protected Event(Unfolding unf, Transition t, Set<Condition> pre) {
+	public Event(Unfolding unf, Transition t, Set<Condition> pre) {
 		this.unf = unf;
 		this.pre = pre;
 		this.t = t;
