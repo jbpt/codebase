@@ -102,7 +102,7 @@ public class Unfolding {
 		// get possible extensions of initial branching process
 		Collection<Event> pe = getPossibleExtensions();
 		while (pe.size()>0) { 											// while extensions exist
-			Event e = this.setup.ADEQUATE_ORDER.getMininmal(this,pe);	// event to use for extending unfolding
+			Event e = this.setup.ADEQUATE_ORDER.getMininmal(pe);	// event to use for extending unfolding
 			
 			if (!this.overlap(cutoff2corr.keySet(),e.getLocalConfiguration())) {
 				this.addEvent(e);										// add event to unfolding
@@ -141,17 +141,16 @@ public class Unfolding {
 				// iterate over cuts
 				for (Cut cut : cuts) {
 					// get co-set of conditions that correspond to places in the preset (contained in the cut)
-					Cut coset = this.contains(cut,pre);
+					Coset coset = this.containsPlaces(cut,pre);
 					if (coset!=null) { // if there exists such a co-set
 						// check if there already exists an event that corresponds to the transition with the preset of conditions which equals to coset 
 						boolean flag = false;
 						if (t2es.get(t)!=null) {
 							for (Event e : t2es.get(t)) {
-								if (this.equal(e.getPreConditions(),coset)) {
+								if (this.areEqual(e.getPreConditions(),coset)) {
 									flag = true;
 									break;
 								}
-								if (flag) break;
 							}
 						}
 						if (!flag) { // we found possible extension !!!
@@ -164,14 +163,6 @@ public class Unfolding {
 		}
 		
 		return result;
-	}
-	
-	/**
-	 * Get possible extensions when unfolding is constructed (extension point)
-	 * @return collection of events suitable to extend unfolding
-	 */
-	protected Collection<Event> getMorePossibleExtensions() {
-		return new ArrayList<Event>();
 	}
 	
 	/**
@@ -189,6 +180,14 @@ public class Unfolding {
 		}
 		
 		return null;
+	}
+	
+	/**
+	 * Get possible extensions when unfolding is constructed (extension point)
+	 * @return collection of events suitable to extend unfolding
+	 */
+	protected Collection<Event> getMorePossibleExtensions() {
+		return new ArrayList<Event>();
 	}
 	
 	/**************************************************************************
@@ -280,7 +279,8 @@ public class Unfolding {
 	 * @param cs2
 	 * @return true if sets are equal; otherwise false
 	 */
-	protected boolean equal(Set<Condition> cs1, Set<Condition> cs2) {
+	protected boolean areEqual(Set<Condition> cs1, Set<Condition> cs2) {
+		if (cs1 == null || cs2 == null) return false;
 		if (cs1.size()!= cs2.size()) return false;
 		
 		for (Condition c1 : cs1) {
@@ -303,8 +303,8 @@ public class Unfolding {
 	 * @param ps collection of places
 	 * @return co-set of conditions that correspond to places in the collection; null if not every place has a corresponding condition 
 	 */
-	protected Cut contains(Cut cut, Collection<Place> ps) {
-		Cut result = new Cut();
+	protected Coset containsPlaces(Cut cut, Collection<Place> ps) {
+		Coset result = new Coset();
 		
 		for (Place p : ps) {
 			boolean flag = false;
@@ -322,15 +322,15 @@ public class Unfolding {
 	}
 	
 	/**
-	 * Check if cut contains conditions
-	 * @param cut cut
-	 * @param cs conditions
-	 * @return true if cut contains conditions; otherwise false
+	 * Check if one collection of conditions contains another one
+	 * @param cs1 conditions
+	 * @param cs2 conditions
+	 * @return true if cs1 contains cs2; otherwise false
 	 */
-	protected boolean contains(Collection<Condition> cut, Collection<Condition> cs) {
-		for (Condition c1 : cs) {
+	protected boolean contains(Collection<Condition> cs1, Collection<Condition> cs2) {
+		for (Condition c1 : cs2) {
 			boolean flag = false;
-			for (Condition c2 : cut) {
+			for (Condition c2 : cs1) {
 				if (c1.equals(c2)) {
 					flag = true;
 					break;
@@ -342,7 +342,15 @@ public class Unfolding {
 		return true;
 	}
 	
+	/**
+	 * Check if two sets of events overlap
+	 * @param es1 set of events
+	 * @param es2 set of events
+	 * @return true if sets overlap; otherwise false
+	 */
 	protected boolean overlap(Set<Event> es1, Set<Event> es2) {
+		if (es1 == null || es2 == null) return false;
+		
 		for (Event e1 : es1) {
 			for (Event e2 : es2) {
 				if (e1.equals(e2)) return true;
