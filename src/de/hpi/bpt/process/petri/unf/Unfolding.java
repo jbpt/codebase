@@ -102,10 +102,10 @@ public class Unfolding {
 		// get possible extensions of initial branching process
 		Collection<Event> pe = getPossibleExtensions();
 		while (pe.size()>0) { 											// while extensions exist
-			Event e = this.setup.ADEQUATE_ORDER.getMininmal(pe);	// event to use for extending unfolding
+			Event e = this.setup.ADEQUATE_ORDER.getMininmal(pe);		// event to use for extending unfolding
 			
 			if (!this.overlap(cutoff2corr.keySet(),e.getLocalConfiguration())) {
-				this.addEvent(e);										// add event to unfolding
+				if (!this.addEvent(e)) return;							// add event to unfolding
 
 				if (++this.countEvent>=this.setup.MAX_EVENTS) return;	// track number of events in unfolding
 				
@@ -137,7 +137,7 @@ public class Unfolding {
 				// get cuts that contain conditions that correspond to the place
 				Collection<Cut> cuts = this.getCutsWithPlace(p);
 				// there must be at least one cut
-				if (cuts.size()==0) break;
+				if (cuts.size()==0) continue;
 				// iterate over cuts
 				for (Cut cut : cuts) {
 					// get co-set of conditions that correspond to places in the preset (contained in the cut)
@@ -267,8 +267,10 @@ public class Unfolding {
 		
 		Collection<Condition> cs = p2cs.get(p);
 		if (cs==null) return result;
-		for (Condition c : cs)
-			result.addAll(c2cut.get(c));
+		for (Condition c : cs) {
+			Collection<Cut> cuts = c2cut.get(c);
+			if (cuts!=null) result.addAll(cuts);	
+		}
 		
 		return result;
 	}
@@ -380,8 +382,9 @@ public class Unfolding {
 	/**
 	 * Add event to all housekeeping data structures 
 	 * @param e event
+	 * @return true if event was added successfuly; otherwise false
 	 */
-	protected void addEvent(Event e) {
+	protected boolean addEvent(Event e) {
 		this.events.add(e);
 		this.updateCausalityEvent(e);
 		
@@ -408,9 +411,11 @@ public class Unfolding {
 				Cut newCut = new Cut(cut);
 				newCut.removeAll(e.getPreConditions());
 				newCut.addAll(postConds);
-				if (!this.addCut(newCut)) return;
+				if (!this.addCut(newCut)) return false;
 			}
 		}
+		
+		return true;
 	}
 
 	/**
