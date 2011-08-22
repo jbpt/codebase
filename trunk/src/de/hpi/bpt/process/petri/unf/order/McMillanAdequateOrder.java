@@ -4,7 +4,6 @@ import java.util.Collection;
 
 import de.hpi.bpt.process.petri.unf.Event;
 import de.hpi.bpt.process.petri.unf.LocalConfiguration;
-import de.hpi.bpt.process.petri.unf.Unfolding;
 
 /**
  * McMillan adequate order
@@ -14,12 +13,12 @@ import de.hpi.bpt.process.petri.unf.Unfolding;
 public class McMillanAdequateOrder extends AdequateOrder {
 
 	@Override
-	public Event getMininmal(Unfolding unf, Collection<Event> es) {
+	public Event getMininmal(Collection<Event> es) {
 		Event min = es.iterator().next();
-		LocalConfiguration lcMin = new LocalConfiguration(unf,min);
+		LocalConfiguration lcMin = min.getLocalConfiguration();
 		
 		for (Event e : es) {
-			LocalConfiguration lce = new LocalConfiguration(unf,e);
+			LocalConfiguration lce = e.getLocalConfiguration();
 			if (lce.size() < lcMin.size()) {
 				min = e;
 				lcMin = lce;

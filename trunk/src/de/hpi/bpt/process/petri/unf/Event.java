@@ -45,19 +45,34 @@ public class Event extends BPNode {
 		return this.localConf;
 	}
 	
+	/**
+	 * Set post conditions of event
+	 * @param post post conditions
+	 */
 	protected void setPostConditions(Set<Condition> post) {
 		this.post = post;
 	}
 	
+	/**
+	 * Get post conditions of event
+	 * @return post conditions
+	 */
 	public Set<Condition> getPostConditions() {
 		return this.post;
 	}
 	
-	
+	/**
+	 * Get transition that corresponds to event
+	 * @return corresponding transition
+	 */
 	public Transition getTransition() {
 		return this.t;
 	}
 	
+	/**
+	 * Get pre conditions of event
+	 * @return pre conditions
+	 */
 	public Set<Condition> getPreConditions() {
 		return this.pre;
 	}
