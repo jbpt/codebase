@@ -19,7 +19,7 @@ import de.hpi.bpt.hypergraph.abs.Vertex;
  *
  */
 public class PetriNet extends AbstractDirectedGraph<Flow, Node> implements Cloneable {
-	
+
 	private DirectedGraphAlgorithms<Flow,Node> dga = null;
 	
 	public PetriNet() {}
@@ -404,6 +404,33 @@ public class PetriNet extends AbstractDirectedGraph<Flow, Node> implements Clone
 		return clone;
 	}
 	
-	
+	@Override
+	public String toDOT() {
+		String result = "digraph G {\n";
+		result += "graph [fontname=\"Helvetica\" fontsize=10 nodesep=0.35 ranksep=\"0.25 equally\"];\n";
+		result += "node [fontname=\"Helvetica\" fontsize=10 fixedsize style=filled fillcolor=white penwidth=\"2\"];\n";
+		result += "edge [fontname=\"Helvetica\" fontsize=10 arrowhead=normal color=black];\n";
+		result += "\n";
+		result += "node [shape=circle];\n";
+		
+		for (Place n : this.getPlaces())
+			result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".3\"];\n", n.getId().replace("-", ""), n.getName());
+		
+		result += "\n";
+		result += "node [shape=box];\n";
+		
+		for (Transition t : this.getTransitions()) {
+			if (t.getName()=="") result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".1\"];\n", t.getId().replace("-", ""), t.getName());
+			else result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".3\"];\n", t.getId().replace("-", ""), t.getName());
+		}
+		
+		result += "\n";
+		for (Flow f: this.getFlowRelation()) {
+			result += String.format("\tn%s->n%s;\n", f.getSource().getId().replace("-", ""), f.getTarget().getId().replace("-", ""));
+		}
+		result += "}\n";
+		
+		return result;
+	}
 
 }

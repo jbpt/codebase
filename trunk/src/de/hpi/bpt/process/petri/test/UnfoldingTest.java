@@ -9,7 +9,6 @@ import de.hpi.bpt.process.GatewayType;
 import de.hpi.bpt.process.Process;
 import de.hpi.bpt.process.Task;
 import de.hpi.bpt.process.checks.structural.ProcessStructureChecker;
-import de.hpi.bpt.process.petri.PNSerializer;
 import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.Place;
 import de.hpi.bpt.process.petri.Transition;
@@ -23,6 +22,7 @@ import de.hpi.bpt.process.petri.unf.order.EsparzaTotalAdequateOrderForSafeSystem
 import de.hpi.bpt.process.petri.unf.order.UnfoldingAdequateOrder;
 import de.hpi.bpt.process.petri.util.TransformationException;
 import de.hpi.bpt.process.serialize.Process2DOT;
+import de.hpi.bpt.utils.IOUtils;
 
 
 public class UnfoldingTest extends TestCase {
@@ -75,15 +75,14 @@ public class UnfoldingTest extends TestCase {
 		for (Place place : net.getPlaces()) place.setName("p"+cp++);
 		for (Transition trans : net.getTransitions()) trans.setName("t"+ct++);
 		Utils.addInitialMarking(net);
-		//net.getMarkedPlaces().iterator().next().setTokens(2);
-		PNSerializer.toDOT("net.dot",net);
+		IOUtils.toFile("net.dot", net.toDOT());
 		
 		UnfoldingSetup conf = new UnfoldingSetup();
 		//conf.MAX_EVENTS = 5;
 		Unfolding bp = new Unfolding(net,conf);
 
 		OccurrenceNet bpnet = bp.getOccurrenceNet();
-		PNSerializer.toDOT("unf.dot",bpnet);
+		IOUtils.toFile("unf.dot", bpnet.toDOT());
 	}
 	
 	public void test1a() throws TransformationException, FileNotFoundException {
@@ -135,14 +134,14 @@ public class UnfoldingTest extends TestCase {
 		for (Place place : net.getPlaces()) place.setName("p"+cp++);
 		for (Transition trans : net.getTransitions()) trans.setName("t"+ct++);
 		Utils.addInitialMarking(net);
-		PNSerializer.toDOT("net1a.dot",net);
+		IOUtils.toFile("net1a.dot", net.toDOT());
 		
 		UnfoldingSetup setup = new UnfoldingSetup();
 		setup.ADEQUATE_ORDER = new EsparzaAdequateOrderForArbitrarySystems();
 		Unfolding bp = new Unfolding(net,setup);
 		
 		OccurrenceNet bpnet = bp.getOccurrenceNet();
-		bpnet.toDOT("unf1a.dot");
+		IOUtils.toFile("unf1a.dot", bpnet.toDOT());
 	}
 
 	public void test1b() throws TransformationException, FileNotFoundException {
@@ -194,14 +193,14 @@ public class UnfoldingTest extends TestCase {
 		for (Place place : net.getPlaces()) place.setName("p"+cp++);
 		for (Transition trans : net.getTransitions()) trans.setName("t"+ct++);
 		Utils.addInitialMarking(net);
-		PNSerializer.toDOT("net1b.dot",net);
+		IOUtils.toFile("net1b.dot", net.toDOT());
 		
 		UnfoldingSetup setup = new UnfoldingSetup();
 		setup.ADEQUATE_ORDER = new EsparzaTotalAdequateOrderForSafeSystems();
 		Unfolding bp = new Unfolding(net,setup);
 				
 		OccurrenceNet bpnet = bp.getOccurrenceNet();
-		bpnet.toDOT("unf1b.dot");
+		IOUtils.toFile("unf1b.dot", bpnet.toDOT());
 	}
 
 	
@@ -241,12 +240,12 @@ public class UnfoldingTest extends TestCase {
 		for (Place place : net.getPlaces()) place.setName("p"+cp++);
 		for (Transition trans : net.getTransitions()) trans.setName("t"+ct++);
 		Utils.addInitialMarking(net);
-		PNSerializer.toDOT("net2.dot",net);
+		IOUtils.toFile("net2.dot", net.toDOT());
 		
 		Unfolding bp = new Unfolding(net);
 		
 		OccurrenceNet bpnet = bp.getOccurrenceNet();
-		bpnet.toDOT("unf2.dot");
+		IOUtils.toFile("unf2.dot", bpnet.toDOT());
 	}
 	
 	public void test2a() throws TransformationException, FileNotFoundException {
@@ -285,14 +284,14 @@ public class UnfoldingTest extends TestCase {
 		for (Place place : net.getPlaces()) place.setName("p"+cp++);
 		for (Transition trans : net.getTransitions()) trans.setName("t"+ct++);
 		Utils.addInitialMarking(net);
-		PNSerializer.toDOT("net2a.dot",net);
+		IOUtils.toFile("net2a.dot", net.toDOT());
 		
 		UnfoldingSetup setup = new UnfoldingSetup();
 		setup.ADEQUATE_ORDER = new EsparzaAdequateOrderForArbitrarySystems();
 		Unfolding bp = new Unfolding(net,setup);
 		
 		OccurrenceNet bpnet = bp.getOccurrenceNet();
-		bpnet.toDOT("unf2a.dot");
+		IOUtils.toFile("unf2a.dot", bpnet.toDOT());
 	}
 	
 	public void test2b() throws TransformationException, FileNotFoundException {
@@ -331,14 +330,14 @@ public class UnfoldingTest extends TestCase {
 		for (Place place : net.getPlaces()) place.setName("p"+cp++);
 		for (Transition trans : net.getTransitions()) trans.setName("t"+ct++);
 		Utils.addInitialMarking(net);
-		PNSerializer.toDOT("net2b.dot",net);
+		IOUtils.toFile("net2b.dot", net.toDOT());
 		
 		UnfoldingSetup setup = new UnfoldingSetup();
 		setup.ADEQUATE_ORDER = new EsparzaTotalAdequateOrderForSafeSystems();
 		Unfolding bp = new Unfolding(net,setup);
 		
 		OccurrenceNet bpnet = bp.getOccurrenceNet();
-		bpnet.toDOT("unf2b.dot");
+		IOUtils.toFile("unf2b.dot", bpnet.toDOT());
 	}
 	
 	public void test2Esparza() throws TransformationException, FileNotFoundException {
@@ -382,27 +381,27 @@ public class UnfoldingTest extends TestCase {
 		net.addFlow(t3b, p4);
 		
 		Utils.addInitialMarking(net);
-		PNSerializer.toDOT("netEsp.dot",net);
+		IOUtils.toFile("netEsp.dot", net.toDOT());
 		
 		Unfolding unf = new Unfolding(net);
 		OccurrenceNet bpnet = unf.getOccurrenceNet();
-		bpnet.toDOT("unfMcMil.dot");
+		IOUtils.toFile("unfMcMil.dot", bpnet.toDOT());
 		
 		UnfoldingSetup setup = new UnfoldingSetup();
 		setup.ADEQUATE_ORDER = new UnfoldingAdequateOrder();
 		unf = new Unfolding(net,setup);
 		bpnet = unf.getOccurrenceNet();
-		bpnet.toDOT("unfUnf.dot");
+		IOUtils.toFile("unfUnf.dot", bpnet.toDOT());
 		
 		setup.ADEQUATE_ORDER = new EsparzaAdequateOrderForArbitrarySystems();
 		unf = new Unfolding(net,setup);
 		bpnet = unf.getOccurrenceNet();
-		bpnet.toDOT("unfEspArbitrary.dot");
+		IOUtils.toFile("unfEspArbitrary.dot", bpnet.toDOT());
 		
 		//setup.ADEQUATE_ORDER = new EsparzaTotalAdequateOrderForSafeSystems();
 		unf = new ProperUnfolding(net);
 		bpnet = unf.getOccurrenceNet();
-		bpnet.toDOT("unfEspSafe.dot");
+		IOUtils.toFile("unfEspSafe.dot", bpnet.toDOT());
 	}
 		
 }
