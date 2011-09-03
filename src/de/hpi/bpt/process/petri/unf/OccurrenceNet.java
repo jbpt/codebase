@@ -1,7 +1,5 @@
 package de.hpi.bpt.process.petri.unf;
 
-import java.io.FileNotFoundException;
-import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -103,30 +101,45 @@ public class OccurrenceNet extends PetriNet {
 	public boolean isCutoffEvent(Transition t) {
 		return this.unf.isCutoffEvent(t2e.get(t));
 	}
-	
-	public void toDOT(String fileName) throws FileNotFoundException {
-		PrintStream out = new PrintStream(fileName);
+
+	@Override
+	public String toDOT() {
+		String result = "digraph G {\n";
+		result += "graph [fontname=\"Helvetica\" fontsize=10 nodesep=0.35 ranksep=\"0.25 equally\"];\n";
+		result += "node [fontname=\"Helvetica\" fontsize=10 fixedsize style=filled penwidth=\"2\"];\n";
+		result += "edge [fontname=\"Helvetica\" fontsize=10 arrowhead=normal color=black];\n";
+		result += "\n";
+		result += "node [shape=circle];\n";
 		
-		out.println("digraph G {");
-		for (Transition t : this.getTransitions()) {
-			if (this.isCutoffEvent(t))
-				out.printf("\tn%s[shape=box,style=filled,fillcolor=orange,label=\"%s\"];\n", t.getId().replace("-", ""), t.getName());
-			else
-				out.printf("\tn%s[shape=box,label=\"%s\"];\n", t.getId().replace("-", ""), t.getName());	
-		}
 		for (Place n : this.getPlaces())
-			out.printf("\tn%s[shape=circle,label=\"%s\"];\n", n.getId().replace("-", ""), n.getName());
+			result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".3\" fillcolor=white];\n", n.getId().replace("-", ""), n.getName());
 		
+		result += "\n";
+		result += "node [shape=box];\n";
+		
+		for (Transition t : this.getTransitions()) {
+			if (this.isCutoffEvent(t)) {
+				if (t.getName()=="") result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".1\" fillcolor=orange];\n", t.getId().replace("-", ""), t.getName());
+				else result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".3\" fillcolor=orange];\n", t.getId().replace("-", ""), t.getName());	
+			}
+			else {
+				if (t.getName()=="") result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".1\" fillcolor=white];\n", t.getId().replace("-", ""), t.getName());
+				else result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".3\" fillcolor=white];\n", t.getId().replace("-", ""), t.getName());
+			}
+		}
+		
+		result += "\n";
 		for (Flow f: this.getFlowRelation()) {
-			out.printf("\tn%s->n%s;\n", f.getSource().getId().replace("-", ""), f.getTarget().getId().replace("-", ""));
+			result += String.format("\tn%s->n%s;\n", f.getSource().getId().replace("-", ""), f.getTarget().getId().replace("-", ""));
 		}
 		
-		out.print("\tedge [fontname=\"Helvetica\" fontsize=8 arrowhead=normal color=orange];\n");
+		result += "\tedge [fontname=\"Helvetica\" fontsize=8 arrowhead=normal color=orange];\n";
 		for (Transition t : this.getCutoffEvents()) {
-			out.printf("\tn%s->n%s;\n", t.getId().replace("-", ""), this.getCorrespondingEvent(t).getId().replace("-", ""));
+			result += String.format("\tn%s->n%s;\n", t.getId().replace("-", ""), this.getCorrespondingEvent(t).getId().replace("-", ""));
 		}
-		out.println("}");
 		
-		out.close();
+		result += "}\n";
+		
+		return result;
 	}
 }

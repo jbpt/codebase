@@ -126,4 +126,10 @@ public class AbstractMultiDirectedGraph<E extends IDirectedEdge<V>, V extends IV
 		
 		return this.getEdges(vs);
 	}
+
+	@Override
+	public String toDOT() {
+		// TODO Auto-generated method stub
+		return "";
+	}
 }

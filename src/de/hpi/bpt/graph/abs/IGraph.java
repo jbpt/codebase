@@ -47,4 +47,10 @@ public interface IGraph<E extends IEdge<V>,V extends IVertex> extends IHyperGrap
 	 * @return Edge added to the graph, <code>null</code> upon failure
 	 */
 	public E addEdge(V v1, V v2);
+	
+	/**
+	 * Serialize graph to GraphViz DOT language
+	 * @return DOT string
+	 */
+	public String toDOT();
 }

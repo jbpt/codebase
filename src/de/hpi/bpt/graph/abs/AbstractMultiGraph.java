@@ -135,4 +135,10 @@ public class AbstractMultiGraph<E extends IEdge<V>,V extends IVertex>
 		
 		return this.getEdges(vs);
 	}
+	
+	@Override
+	public String toDOT() {
+		// TODO Auto-generated method stub
+		return "";
+	}
 }

@@ -3,29 +3,7 @@ package de.hpi.bpt.process.petri;
 import java.util.HashSet;
 import java.util.Set;
 
-import de.hpi.bpt.graph.algo.GraphAlgorithms;
-
 public class PNAnalyzer {
-	
-	public static boolean isBipartite(PetriNet net) {
-		for (Flow f : net.getFlowRelation()) {
-			int cp,ct;
-			cp = ct = 0;
-			if (f.getTarget() instanceof Place) cp++;
-			else ct++;
-			if (f.getSource() instanceof Place) cp++;
-			else ct++;
-			
-			if (cp!=ct) return false;
-		}
-		
-		return true;
-	}
-	
-	public static boolean isConnected(PetriNet net) {
-		GraphAlgorithms<Flow, Node> ga = new GraphAlgorithms<Flow, Node>();
-		return ga.isConnected(net);
-	}
 	
 	public static boolean isFreeChoice(PetriNet net) {
 		for (Place p : net.getPlaces()) {
