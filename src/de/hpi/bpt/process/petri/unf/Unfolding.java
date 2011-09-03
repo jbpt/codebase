@@ -14,8 +14,8 @@ import de.hpi.bpt.process.petri.Place;
 import de.hpi.bpt.process.petri.Transition;
 
 /**
- * Simple unfolding of a net system (maximal branching process)
- * Note that unfolding of live system is infinite!
+ * Unfolding (complete prefix unfolding) of a net system
+ * Note that unfolding of a live system is infinite!
  * 
  * Javier Esparza, Stefan Roemer, Walter Vogler: An Improvement of McMillan's Unfolding Algorithm. Formal Methods in System Design (FMSD) 20(3):285-310 (2002)
  * 
@@ -24,6 +24,7 @@ import de.hpi.bpt.process.petri.Transition;
 public class Unfolding {
 	// originative net system
 	protected PetriNet net = null;
+	protected List<Transition> totalOrderTs = null;
 	protected UnfoldingSetup setup = null;
 
 	// unfolding
@@ -73,6 +74,7 @@ public class Unfolding {
 	 */
 	public Unfolding(PetriNet pn, UnfoldingSetup setup) {
 		this.net = pn;
+		this.totalOrderTs = new ArrayList<Transition>(pn.getTransitions());
 		this.setup = setup;
 		
 		// construct unfolding
@@ -112,13 +114,14 @@ public class Unfolding {
 				pe = getPossibleExtensions();							// get possible extensions of unfolding
 				
 				Event corr = this.checkCutoff(e);						// check for cutoff event 
+			if (corr!=null) corr = this.checkCutoffExt(e,corr);			// ! extension point for checking cutoff
 				if (corr!=null) this.cutoff2corr.put(e,corr);			// e is cutoff event
 			}
 			else {
 				pe.remove(e);
 			}
 			
-			if (pe.size() == 0) pe = this.getMorePossibleExtensions();	// extension point
+			if (pe.size() == 0) pe = this.getPossibleExtensionsExt();	// !extension point for finding more possible extensions
 		}
 	}
 
@@ -137,7 +140,7 @@ public class Unfolding {
 				// get cuts that contain conditions that correspond to the place
 				Collection<Cut> cuts = this.getCutsWithPlace(p);
 				// there must be at least one cut
-				if (cuts.size()==0) continue;
+				if (cuts.size()==0) break;
 				// iterate over cuts
 				for (Cut cut : cuts) {
 					// get co-set of conditions that correspond to places in the preset (contained in the cut)
@@ -186,8 +189,18 @@ public class Unfolding {
 	 * Get possible extensions when unfolding is constructed (extension point)
 	 * @return collection of events suitable to extend unfolding
 	 */
-	protected Collection<Event> getMorePossibleExtensions() {
+	protected Collection<Event> getPossibleExtensionsExt() {
 		return new ArrayList<Event>();
+	}
+	
+	/**
+	 * Perform additional checks for event being cutoff 
+	 * @param e cutoff event
+	 * @param corr corresponding event
+	 * @return corresponding event if e is cutoff; otherwise null
+	 */
+	protected Event checkCutoffExt(Event e, Event corr) {
+		return corr;
 	}
 	
 	/**************************************************************************
@@ -506,6 +519,8 @@ public class Unfolding {
 	 * @return true if n1 and n2 are in causal relation; otherwise false
 	 */
 	public boolean areCausal(BPNode n1, BPNode n2) {
+		if (n1==null || n2==null) return false;
+		if (this.ca.get(n1)==null) return false; 
 		return this.ca.get(n1).contains(n2);
 	}
 	
@@ -516,6 +531,8 @@ public class Unfolding {
 	 * @return true if n1 and n2 are in inverse causal relation; otherwise false
 	 */
 	public boolean areInverseCausal(BPNode n1, BPNode n2) {
+		if (n1==null || n2==null) return false;
+		if (this.ica.get(n1)==null) return false; 
 		return this.ica.get(n1).contains(n2);
 	}
 	
@@ -526,6 +543,7 @@ public class Unfolding {
 	 * @return true if n1 and n2 are concurrent; otherwise false
 	 */
 	public boolean areConcurrent(BPNode n1, BPNode n2) {
+		if (n1==null || n2==null) return false;
 		if (this.co.get(n1)==null) return false;
 		return this.co.get(n1).contains(n2);
 	}
@@ -550,9 +568,7 @@ public class Unfolding {
 		if (this.areCausal(n1,n2)) return OrderingRelation.CAUSAL;
 		if (this.areInverseCausal(n1,n2)) return OrderingRelation.INVERSE_CAUSAL;
 		if (this.areConcurrent(n1,n2)) return OrderingRelation.CONCURRENT;
-		if (this.areInConflict(n1,n2)) return OrderingRelation.CONFLICT;
-		
-		return OrderingRelation.NONE;
+		return OrderingRelation.CONFLICT;
 	}
 	
 	/**

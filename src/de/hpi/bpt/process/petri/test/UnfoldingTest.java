@@ -14,9 +14,13 @@ import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.Place;
 import de.hpi.bpt.process.petri.Transition;
 import de.hpi.bpt.process.petri.unf.OccurrenceNet;
-import de.hpi.bpt.process.petri.unf.UnfoldingSetup;
+import de.hpi.bpt.process.petri.unf.ProperUnfolding;
 import de.hpi.bpt.process.petri.unf.Unfolding;
+import de.hpi.bpt.process.petri.unf.UnfoldingSetup;
 import de.hpi.bpt.process.petri.unf.Utils;
+import de.hpi.bpt.process.petri.unf.order.EsparzaAdequateOrderForArbitrarySystems;
+import de.hpi.bpt.process.petri.unf.order.EsparzaTotalAdequateOrderForSafeSystems;
+import de.hpi.bpt.process.petri.unf.order.UnfoldingAdequateOrder;
 import de.hpi.bpt.process.petri.util.TransformationException;
 import de.hpi.bpt.process.serialize.Process2DOT;
 
@@ -77,11 +81,129 @@ public class UnfoldingTest extends TestCase {
 		UnfoldingSetup conf = new UnfoldingSetup();
 		//conf.MAX_EVENTS = 5;
 		Unfolding bp = new Unfolding(net,conf);
-		bp.printOrderingRelations();
-		
+
 		OccurrenceNet bpnet = bp.getOccurrenceNet();
 		PNSerializer.toDOT("unf.dot",bpnet);
 	}
+	
+	public void test1a() throws TransformationException, FileNotFoundException {
+		Process p = new Process();
+		
+		Task ti = new Task("I");
+		Task to = new Task("O");
+		Task ta = new Task("A");
+		Task tb = new Task("B");
+		Task tc = new Task("C");
+		Task td = new Task("D");
+	
+		Gateway s1 = new Gateway(GatewayType.AND);
+		Gateway j2 = new Gateway(GatewayType.XOR);
+		Gateway s2 = new Gateway(GatewayType.XOR);
+		Gateway j1 = new Gateway(GatewayType.AND);
+		
+		p.addTask(ti);
+		p.addTask(to);
+		p.addTask(ta);
+		p.addTask(tb);
+		p.addTask(tc);
+		p.addTask(td);
+		p.addGateway(s1);
+		p.addGateway(s2);
+		p.addGateway(j1);
+		p.addGateway(j2);
+		
+		p.addControlFlow(ti,s1);
+		p.addControlFlow(s1,ta);
+		p.addControlFlow(s1,s2);
+		p.addControlFlow(ta,j1);
+		p.addControlFlow(s2,tb);
+		p.addControlFlow(s2,tc);
+		p.addControlFlow(tb,j2);
+		p.addControlFlow(tc,j2);
+		p.addControlFlow(j2,td);
+		p.addControlFlow(td,j1);
+		p.addControlFlow(j1,to);
+		
+		List<String> errors = ProcessStructureChecker.checkStructure(p);
+		if (errors.size()>0)
+			for (String e : errors) System.err.println(e);
+		
+		Utils.toFile("model1a.dot", Process2DOT.convert(p));
+		
+		PetriNet net = Utils.process2net(p);
+		int cp = 1; int ct = 1;
+		for (Place place : net.getPlaces()) place.setName("p"+cp++);
+		for (Transition trans : net.getTransitions()) trans.setName("t"+ct++);
+		Utils.addInitialMarking(net);
+		PNSerializer.toDOT("net1a.dot",net);
+		
+		UnfoldingSetup setup = new UnfoldingSetup();
+		setup.ADEQUATE_ORDER = new EsparzaAdequateOrderForArbitrarySystems();
+		Unfolding bp = new Unfolding(net,setup);
+		
+		OccurrenceNet bpnet = bp.getOccurrenceNet();
+		bpnet.toDOT("unf1a.dot");
+	}
+
+	public void test1b() throws TransformationException, FileNotFoundException {
+		Process p = new Process();
+		
+		Task ti = new Task("I");
+		Task to = new Task("O");
+		Task ta = new Task("A");
+		Task tb = new Task("B");
+		Task tc = new Task("C");
+		Task td = new Task("D");
+	
+		Gateway s1 = new Gateway(GatewayType.AND);
+		Gateway j2 = new Gateway(GatewayType.XOR);
+		Gateway s2 = new Gateway(GatewayType.XOR);
+		Gateway j1 = new Gateway(GatewayType.AND);
+		
+		p.addTask(ti);
+		p.addTask(to);
+		p.addTask(ta);
+		p.addTask(tb);
+		p.addTask(tc);
+		p.addTask(td);
+		p.addGateway(s1);
+		p.addGateway(s2);
+		p.addGateway(j1);
+		p.addGateway(j2);
+		
+		p.addControlFlow(ti,s1);
+		p.addControlFlow(s1,ta);
+		p.addControlFlow(s1,s2);
+		p.addControlFlow(ta,j1);
+		p.addControlFlow(s2,tb);
+		p.addControlFlow(s2,tc);
+		p.addControlFlow(tb,j2);
+		p.addControlFlow(tc,j2);
+		p.addControlFlow(j2,td);
+		p.addControlFlow(td,j1);
+		p.addControlFlow(j1,to);
+		
+		List<String> errors = ProcessStructureChecker.checkStructure(p);
+		if (errors.size()>0)
+			for (String e : errors) System.err.println(e);
+		
+		Utils.toFile("model1b.dot", Process2DOT.convert(p));
+		
+		PetriNet net = Utils.process2net(p);
+		int cp = 1; int ct = 1;
+		for (Place place : net.getPlaces()) place.setName("p"+cp++);
+		for (Transition trans : net.getTransitions()) trans.setName("t"+ct++);
+		Utils.addInitialMarking(net);
+		PNSerializer.toDOT("net1b.dot",net);
+		
+		UnfoldingSetup setup = new UnfoldingSetup();
+		setup.ADEQUATE_ORDER = new EsparzaTotalAdequateOrderForSafeSystems();
+		Unfolding bp = new Unfolding(net,setup);
+				
+		OccurrenceNet bpnet = bp.getOccurrenceNet();
+		bpnet.toDOT("unf1b.dot");
+	}
+
 	
 	public void test2() throws TransformationException, FileNotFoundException {
 		Process p = new Process();
@@ -122,9 +244,165 @@ public class UnfoldingTest extends TestCase {
 		PNSerializer.toDOT("net2.dot",net);
 		
 		Unfolding bp = new Unfolding(net);
-		bp.printOrderingRelations();
 		
 		OccurrenceNet bpnet = bp.getOccurrenceNet();
 		bpnet.toDOT("unf2.dot");
 	}
+	
+	public void test2a() throws TransformationException, FileNotFoundException {
+		Process p = new Process();
+		
+		Task ti = new Task("I");
+		Task to = new Task("O");
+		Task ta = new Task("A");
+		Task tb = new Task("B");
+	
+		Gateway s1 = new Gateway(GatewayType.XOR);
+		Gateway j1 = new Gateway(GatewayType.XOR);
+		
+		p.addTask(ti);
+		p.addTask(to);
+		p.addTask(ta);
+		p.addTask(tb);
+		p.addGateway(s1);
+		p.addGateway(j1);
+		
+		p.addControlFlow(ti,j1);
+		p.addControlFlow(j1,ta);
+		p.addControlFlow(ta,s1);
+		p.addControlFlow(s1,tb);
+		p.addControlFlow(tb,j1);
+		p.addControlFlow(s1,to);
+		
+		List<String> errors = ProcessStructureChecker.checkStructure(p);
+		if (errors.size()>0)
+			for (String e : errors) System.err.println(e);
+		
+		Utils.toFile("model2a.dot", Process2DOT.convert(p));
+		
+		PetriNet net = Utils.process2net(p);
+		int cp = 1; int ct = 1;
+		for (Place place : net.getPlaces()) place.setName("p"+cp++);
+		for (Transition trans : net.getTransitions()) trans.setName("t"+ct++);
+		Utils.addInitialMarking(net);
+		PNSerializer.toDOT("net2a.dot",net);
+		
+		UnfoldingSetup setup = new UnfoldingSetup();
+		setup.ADEQUATE_ORDER = new EsparzaAdequateOrderForArbitrarySystems();
+		Unfolding bp = new Unfolding(net,setup);
+		
+		OccurrenceNet bpnet = bp.getOccurrenceNet();
+		bpnet.toDOT("unf2a.dot");
+	}
+	
+	public void test2b() throws TransformationException, FileNotFoundException {
+		Process p = new Process();
+		
+		Task ti = new Task("I");
+		Task to = new Task("O");
+		Task ta = new Task("A");
+		Task tb = new Task("B");
+	
+		Gateway s1 = new Gateway(GatewayType.XOR);
+		Gateway j1 = new Gateway(GatewayType.XOR);
+		
+		p.addTask(ti);
+		p.addTask(to);
+		p.addTask(ta);
+		p.addTask(tb);
+		p.addGateway(s1);
+		p.addGateway(j1);
+		
+		p.addControlFlow(ti,j1);
+		p.addControlFlow(j1,ta);
+		p.addControlFlow(ta,s1);
+		p.addControlFlow(s1,tb);
+		p.addControlFlow(tb,j1);
+		p.addControlFlow(s1,to);
+		
+		List<String> errors = ProcessStructureChecker.checkStructure(p);
+		if (errors.size()>0)
+			for (String e : errors) System.err.println(e);
+		
+		Utils.toFile("model2b.dot", Process2DOT.convert(p));
+		
+		PetriNet net = Utils.process2net(p);
+		int cp = 1; int ct = 1;
+		for (Place place : net.getPlaces()) place.setName("p"+cp++);
+		for (Transition trans : net.getTransitions()) trans.setName("t"+ct++);
+		Utils.addInitialMarking(net);
+		PNSerializer.toDOT("net2b.dot",net);
+		
+		UnfoldingSetup setup = new UnfoldingSetup();
+		setup.ADEQUATE_ORDER = new EsparzaTotalAdequateOrderForSafeSystems();
+		Unfolding bp = new Unfolding(net,setup);
+		
+		OccurrenceNet bpnet = bp.getOccurrenceNet();
+		bpnet.toDOT("unf2b.dot");
+	}
+	
+	public void test2Esparza() throws TransformationException, FileNotFoundException {
+		PetriNet net = new PetriNet();
+		
+		Place p1 = new Place("p1");
+		Place p2 = new Place("p2");
+		Place p3 = new Place("p3");
+		Place p4 = new Place("p4");
+		
+		net.addVertex(p1);
+		net.addVertex(p2);
+		net.addVertex(p3);
+		net.addVertex(p4);
+		
+		Transition t1a = new Transition("t1a");
+		Transition t1b = new Transition("t1b");
+		Transition t2a = new Transition("t2a");
+		Transition t2b = new Transition("t2b");
+		Transition t3a = new Transition("t3a");
+		Transition t3b = new Transition("t3b");
+		
+		net.addVertex(t1a);
+		net.addVertex(t2a);
+		net.addVertex(t3a);
+		net.addVertex(t1b);
+		net.addVertex(t2b);
+		net.addVertex(t3b);
+		
+		net.addFlow(p1, t1a);
+		net.addFlow(p1, t1b);
+		net.addFlow(t1a, p2);
+		net.addFlow(t1b, p2);
+		net.addFlow(p2, t2a);
+		net.addFlow(p2, t2b);
+		net.addFlow(t2a, p3);
+		net.addFlow(t2b, p3);
+		net.addFlow(p3, t3a);
+		net.addFlow(p3, t3b);
+		net.addFlow(t3a, p4);
+		net.addFlow(t3b, p4);
+		
+		Utils.addInitialMarking(net);
+		PNSerializer.toDOT("netEsp.dot",net);
+		
+		Unfolding unf = new Unfolding(net);
+		OccurrenceNet bpnet = unf.getOccurrenceNet();
+		bpnet.toDOT("unfMcMil.dot");
+		
+		UnfoldingSetup setup = new UnfoldingSetup();
+		setup.ADEQUATE_ORDER = new UnfoldingAdequateOrder();
+		unf = new Unfolding(net,setup);
+		bpnet = unf.getOccurrenceNet();
+		bpnet.toDOT("unfUnf.dot");
+		
+		setup.ADEQUATE_ORDER = new EsparzaAdequateOrderForArbitrarySystems();
+		unf = new Unfolding(net,setup);
+		bpnet = unf.getOccurrenceNet();
+		bpnet.toDOT("unfEspArbitrary.dot");
+		
+		//setup.ADEQUATE_ORDER = new EsparzaTotalAdequateOrderForSafeSystems();
+		unf = new ProperUnfolding(net);
+		bpnet = unf.getOccurrenceNet();
+		bpnet.toDOT("unfEspSafe.dot");
+	}
+		
 }
