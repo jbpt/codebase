@@ -4,7 +4,9 @@ import de.hpi.bpt.process.petri.unf.order.AdequateOrder;
 import de.hpi.bpt.process.petri.unf.order.McMillanAdequateOrder;
 
 /**
- * Configure unfolding
+ * Unfolding setup
+ * 
+ * Uses McMillan adequate order by default
  * 
  * @author Artem Polyvyanyy
  */

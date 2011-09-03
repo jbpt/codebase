@@ -15,10 +15,21 @@ public abstract class AdequateOrder {
 	/**
 	 * Get minimal event
 	 * @param es events
-	 * @return minimal event from the collection of events
+	 * @return minimal event (according to the adequate order) from the collection of events
 	 */
 	public Event getMininmal(Collection<Event> es) {
-		return es.iterator().next();
+		Event min = es.iterator().next();
+		LocalConfiguration lcMin = min.getLocalConfiguration();
+		
+		for (Event e : es) {
+			LocalConfiguration lce = e.getLocalConfiguration();
+			if (this.isSmaller(lce,lcMin)) {
+				min = e;
+				lcMin = lce;
+			}
+		}
+		
+		return min;
 	}
 	
 	/**
