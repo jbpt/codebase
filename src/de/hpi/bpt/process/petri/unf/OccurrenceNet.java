@@ -1,10 +1,9 @@
 package de.hpi.bpt.process.petri.unf;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import com.google.gwt.dev.util.collect.HashSet;
 
 import de.hpi.bpt.process.petri.Flow;
 import de.hpi.bpt.process.petri.Node;
