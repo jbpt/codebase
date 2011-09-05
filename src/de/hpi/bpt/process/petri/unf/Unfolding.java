@@ -44,7 +44,7 @@ public class Unfolding {
 	protected Map<BPNode,Set<BPNode>> ica	= new HashMap<BPNode,Set<BPNode>>(); // inverse causal
 	
 	// event counter
-	private int countEvent = 0;
+	private int countEvents = 0;
 	
 	// map of cutoff events to corresponding events
 	protected Map<Event,Event> cutoff2corr = new HashMap<Event,Event>();
@@ -104,22 +104,20 @@ public class Unfolding {
 		// get possible extensions of initial branching process
 		Collection<Event> pe = getPossibleExtensions();
 		while (pe.size()>0) { 											// while extensions exist
+			if (this.countEvents>=this.setup.MAX_EVENTS) return;			// track number of events in unfolding
 			Event e = this.setup.ADEQUATE_ORDER.getMininmal(pe);		// event to use for extending unfolding
 			
 			if (!this.overlap(cutoff2corr.keySet(),e.getLocalConfiguration())) {
 				if (!this.addEvent(e)) return;							// add event to unfolding
+				this.countEvents++;
 
-				if (++this.countEvent>=this.setup.MAX_EVENTS) return;	// track number of events in unfolding
-				
 				pe = getPossibleExtensions();							// get possible extensions of unfolding
 				
 				Event corr = this.checkCutoff(e);						// check for cutoff event 
-			if (corr!=null) corr = this.checkCutoffExt(e,corr);			// ! extension point for checking cutoff
+				if (corr!=null) corr = this.checkCutoffExt(e,corr);		// ! extension point for checking cutoff
 				if (corr!=null) this.cutoff2corr.put(e,corr);			// e is cutoff event
 			}
-			else {
-				pe.remove(e);
-			}
+			else pe.remove(e);
 			
 			if (pe.size() == 0) pe = this.getPossibleExtensionsExt();	// !extension point for finding more possible extensions
 		}
@@ -490,7 +488,7 @@ public class Unfolding {
 	
 	/**
 	 * Get events
-	 * @return conditions of unfolding
+	 * @return events of unfolding
 	 */
 	public Set<Event> getEvents() {
 		return this.events;

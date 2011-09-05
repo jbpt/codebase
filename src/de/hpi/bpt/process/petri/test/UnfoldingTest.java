@@ -9,6 +9,7 @@ import de.hpi.bpt.process.GatewayType;
 import de.hpi.bpt.process.Process;
 import de.hpi.bpt.process.Task;
 import de.hpi.bpt.process.checks.structural.ProcessStructureChecker;
+import de.hpi.bpt.process.petri.Marking;
 import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.Place;
 import de.hpi.bpt.process.petri.Transition;
@@ -402,6 +403,70 @@ public class UnfoldingTest extends TestCase {
 		unf = new ProperUnfolding(net);
 		bpnet = unf.getOccurrenceNet();
 		IOUtils.toFile("unfEspSafe.dot", bpnet.toDOT());
+	}
+	
+	public void testPhilosophers() throws TransformationException, FileNotFoundException {
+		PetriNet net = new PetriNet();
+		
+		Place p1 = new Place("p1");
+		Place p2 = new Place("p2");
+		Place p3 = new Place("p3");
+		Place p4 = new Place("p4");
+		Place p5 = new Place("p5");
+		Place p6 = new Place("p6");
+		Place p7 = new Place("p7");
+		Place p8 = new Place("p8");
+		
+		Transition t1 = new Transition("t1");
+		Transition t2 = new Transition("t2");
+		Transition t3 = new Transition("t3");
+		Transition t4 = new Transition("t4");
+		Transition t5 = new Transition("t5");
+		Transition t6 = new Transition("t6");
+		Transition t7 = new Transition("t7");
+		Transition t8 = new Transition("t8");
+		
+		net.addFlow(t5, p1);
+		net.addFlow(p1, t2);
+		net.addFlow(t5, p4);
+		net.addFlow(p5, t5);
+		net.addFlow(t1, p5);
+		net.addFlow(p4, t1);
+		net.addFlow(p1, t1);
+		net.addFlow(t2, p6);
+		net.addFlow(p6, t6);
+		net.addFlow(t6, p1);
+		net.addFlow(t6, p2);
+		net.addFlow(p2, t2);
+		net.addFlow(p2, t3);
+		net.addFlow(t3, p7);
+		net.addFlow(p7, t7);
+		net.addFlow(t7, p2);
+		net.addFlow(t7, p3);
+		net.addFlow(p3, t3);
+		net.addFlow(p4, t4);
+		net.addFlow(t4, p8);
+		net.addFlow(p8, t8);
+		net.addFlow(t8, p4);
+		net.addFlow(t8, p3);
+		net.addFlow(p3, t4);
+		
+		Marking M0 = new Marking(net);
+		M0.put(p1, 1);
+		M0.put(p2, 1);
+		M0.put(p3, 1);
+		M0.put(p4, 1);
+		M0.apply();
+		
+		IOUtils.toFile("netPhilosophers.dot", net.toDOT());
+		
+		UnfoldingSetup setup = new UnfoldingSetup();
+		setup.ADEQUATE_ORDER = new EsparzaTotalAdequateOrderForSafeSystems();
+		setup.MAX_EVENTS = 8;
+		
+		Unfolding unf = new Unfolding(net,setup);
+		OccurrenceNet bpnet = unf.getOccurrenceNet();
+		IOUtils.toFile("unfPhilosophers.dot", bpnet.toDOT());
 	}
 		
 }
