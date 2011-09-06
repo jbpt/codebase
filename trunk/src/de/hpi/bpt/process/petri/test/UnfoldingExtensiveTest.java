@@ -14,10 +14,12 @@ import de.hpi.bpt.process.Process;
 import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.Place;
 import de.hpi.bpt.process.petri.Transition;
-import de.hpi.bpt.process.petri.unf.Unfolding;
-import de.hpi.bpt.process.petri.unf.UnfoldingSetup;
-import de.hpi.bpt.process.petri.unf.Utils;
-import de.hpi.bpt.process.petri.unf.order.EsparzaTotalAdequateOrderForSafeSystems;
+
+import de.hpi.bpt.process.petri.unf.copy.Unfolding;
+import de.hpi.bpt.process.petri.unf.copy.UnfoldingSetup;
+import de.hpi.bpt.process.petri.unf.copy.Utils;
+import de.hpi.bpt.process.petri.unf.order.copy.EsparzaTotalAdequateOrderForSafeSystems;
+
 import de.hpi.bpt.process.petri.util.PNAPIMapper;
 import de.hpi.bpt.process.petri.util.TransformationException;
 import de.hpi.bpt.process.petri.util.UMAUnfolderWrapper;
@@ -72,14 +74,14 @@ public class UnfoldingExtensiveTest extends TestCase {
 				
 				System.out.println(System.nanoTime());
 				System.out.println(count);
-				if (count==160) break;
+				if (count==20) break;
 			}
 		}
 		
 		out.close();
 		
-		System.out.println("jBPT time: " + jbptTime);
-		System.out.println("UMA time: " + umaTime);
+		System.out.println("jBPT time:\t" + jbptTime);
+		System.out.println("UMA time:\t" + umaTime);
 	}
 	
 	protected Process loadProcess(String filename) throws SerializationException, IOException {

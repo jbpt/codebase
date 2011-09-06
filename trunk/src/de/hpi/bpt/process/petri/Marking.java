@@ -48,4 +48,20 @@ public class Marking extends HashMap<Place, Integer> {
 		if (key instanceof Place) return 0;
 		return null;
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o == null) return false;
+		if (!(o instanceof Marking)) return false;
+		Marking that = (Marking) o;
+		if (this.size()!=that.size()) return false;
+		
+		for (Map.Entry<Place, Integer> i : this.entrySet()) {
+			Integer value = that.get(i.getKey());
+			if (value == null) return false;
+			if (!i.getValue().equals(value)) return false;
+		}
+		
+		return true;
+	}
 }
