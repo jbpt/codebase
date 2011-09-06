@@ -100,6 +100,8 @@ public class Unfolding {
 		}
 		if (!this.addCut(initialBP)) return;
 		
+		Event cutoffIni = null; Event corrIni = null; // for special handling of events that induce initial markings
+		
 		// CONSTRUCT UNFOLDING
 		// get possible extensions of initial branching process
 		Collection<Event> pe = getPossibleExtensions();
@@ -113,16 +115,28 @@ public class Unfolding {
 
 				pe = getPossibleExtensions();							// get possible extensions of unfolding
 				
-				Event corr = this.checkCutoff(e);						// check for cutoff event 
+				Event corr = this.checkCutoff(e);						// check for cutoff event
 				if (corr!=null) corr = this.checkCutoffExt(e,corr);		// ! extension point for checking cutoff
 				if (corr!=null) this.cutoff2corr.put(e,corr);			// e is cutoff event
+				
+				// The following functionality is not captured by Esparza's algorithm !!!
+				// The code handles situation when there exist a cutoff event which induces initial marking
+				// The identification of such cutoff is postponed to the point until second event which induces initial marking is identified
+				if (corrIni == null) {
+					boolean isCutoffIni = e.getLocalConfiguration().getMarking().equals(this.net.getMarking());
+					if (cutoffIni == null && isCutoffIni) cutoffIni = e;
+					else if (cutoffIni != null && corrIni == null && isCutoffIni) {
+						corrIni = e;
+						this.cutoff2corr.put(cutoffIni, corrIni);
+					}
+				}
 			}
 			else pe.remove(e);
 			
 			if (pe.size() == 0) pe = this.getPossibleExtensionsExt();	// !extension point for finding more possible extensions
 		}
 	}
-
+	
 	/**
 	 * Get possible extensions of the unfolding
 	 * @return collection of events suitable to extend unfolding
@@ -173,6 +187,7 @@ public class Unfolding {
 	 */
 	protected Event checkCutoff(Event e) {
 		LocalConfiguration lce = e.getLocalConfiguration();
+		
 		for (Event f : this.getEvents()) {
 			if (f.equals(e)) continue;
 			LocalConfiguration lcf = f.getLocalConfiguration();	
