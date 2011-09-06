@@ -1,5 +1,7 @@
 package de.hpi.bpt.process.petri.test;
 
+import hub.top.uma.DNodeBP;
+
 import java.io.FileNotFoundException;
 import java.util.List;
 
@@ -21,7 +23,9 @@ import de.hpi.bpt.process.petri.unf.Utils;
 import de.hpi.bpt.process.petri.unf.order.EsparzaAdequateOrderForArbitrarySystems;
 import de.hpi.bpt.process.petri.unf.order.EsparzaTotalAdequateOrderForSafeSystems;
 import de.hpi.bpt.process.petri.unf.order.UnfoldingAdequateOrder;
+import de.hpi.bpt.process.petri.util.PNAPIMapper;
 import de.hpi.bpt.process.petri.util.TransformationException;
+import de.hpi.bpt.process.petri.util.UMAUnfolderWrapper;
 import de.hpi.bpt.process.serialize.Process2DOT;
 import de.hpi.bpt.utils.IOUtils;
 
@@ -462,11 +466,16 @@ public class UnfoldingTest extends TestCase {
 		
 		UnfoldingSetup setup = new UnfoldingSetup();
 		setup.ADEQUATE_ORDER = new EsparzaTotalAdequateOrderForSafeSystems();
-		setup.MAX_EVENTS = 8;
+		//setup.MAX_EVENTS = 6;
 		
 		Unfolding unf = new Unfolding(net,setup);
 		OccurrenceNet bpnet = unf.getOccurrenceNet();
 		IOUtils.toFile("unfPhilosophers.dot", bpnet.toDOT());
+		
+		// Unfold with UMA
+		
+		DNodeBP umaunf = UMAUnfolderWrapper.getUMAUnfolding(PNAPIMapper.jBPT2PNAPI(net));
+		IOUtils.toFile("unfPhilosophersUMA.dot", umaunf.toDot());
 	}
 		
 }
