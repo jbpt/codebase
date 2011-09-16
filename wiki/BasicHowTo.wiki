@@ -1,0 +1,62 @@
+#summary Exemplary usage of the algorithms implemented in jBPT.
+
+= Overview =
+
+This page shall show the usage of the algorithms implemented in jBPT using simple example snippets.
+
+
+== How to create a process graph ==
+
+We create a process graph with the following structure
+{{{
+         -- t3 --- t4 --
+         |             |
+   t1 -- s2 ---------- j5 -- t9
+         |             |    
+         |_ s6 --- j7 _|   
+            |_ t8 _|         
+
+}}}
+{{{
+// Create the process graph
+Process p = new Process();
+
+// Create the tasks
+Task t1 = new Task("1");
+Task t3 = new Task("3");
+Task t4 = new Task("4");
+Task t8 = new Task("8");
+Task t9 = new Task("9");
+
+// Add tasks to process graph
+p.addTask(t1);
+p.addTask(t3);
+p.addTask(t4);
+p.addTask(t8);
+p.addTask(t9);
+
+// Create gateways
+Gateway s2 = new Gateway(GatewayType.XOR, "2");
+Gateway s6 = new Gateway(GatewayType.AND, "6");
+Gateway j7 = new Gateway(GatewayType.AND, "7");
+Gateway j5 = new Gateway(GatewayType.XOR, "5");
+
+// Add gateways to process graph
+p.addGateway(s2);
+p.addGateway(s6);
+p.addGateway(j7);
+p.addGateway(j5);
+
+// Add control flow edges
+p.addControlFlow(t1, s2);
+p.addControlFlow(s2, t3);
+p.addControlFlow(s2, s6);
+p.addControlFlow(s2, j5);
+p.addControlFlow(t3, t4);
+p.addControlFlow(t4, j5);
+p.addControlFlow(s6, j7);
+p.addControlFlow(s6, t8);
+p.addControlFlow(t8, j7);
+p.addControlFlow(j7, j5);
+p.addControlFlow(j5, t9);
+}}}
