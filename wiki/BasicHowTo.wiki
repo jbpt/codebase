@@ -79,3 +79,16 @@ System.out.println("Process graph has cycles: " + dga.hasCycles(p));
 System.out.println("Process graph has " + dga.getInputVertices(p).size() + " nodes without predecessors.");
 System.out.println("Process graph has " + dga.getOutputVertices(p).size() + " nodes without successors.");
 }}}
+
+== How to create the RPST of a process graph ==
+
+We want to create the Refined Process Structure Tree of a process graph.
+
+{{{
+/*
+ * Assume that p is an object of type Process. 
+ * Then, we create the RPST as follows.
+ */
+RPST<ControlFlow,Node> rpst = new RPST<ControlFlow,Node>(p);
+System.out.println(rpst);
+}}}
