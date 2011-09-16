@@ -4,7 +4,6 @@
 
 This page shall show the usage of the algorithms implemented in jBPT using simple example snippets.
 
-
 == How to create a process graph ==
 
 We create a process graph with the following structure
@@ -59,4 +58,24 @@ p.addControlFlow(s6, t8);
 p.addControlFlow(t8, j7);
 p.addControlFlow(j7, j5);
 p.addControlFlow(j5, t9);
+}}}
+
+== How to check some basic properties of a process graph ==
+
+We want to know whether a process graph has cycles and how many nodes have no predecessors or successors, respectively.
+
+{{{
+
+/* Create an algorithms object for a process graph, which 
+ * is a directed graph defined with nodes and control flow
+ */
+DirectedGraphAlgorithms<ControlFlow, Node> dga = new DirectedGraphAlgorithms<ControlFlow, Node>();
+
+/*
+ * Assume that p is an object of type Process. Then, we use the
+ * algorithms object to check the properties.
+ */
+System.out.println("Process graph has cycles: " + dga.hasCycles(p));
+System.out.println("Process graph has " + dga.getInputVertices(p).size() + " nodes without predecessors.");
+System.out.println("Process graph has " + dga.getOutputVertices(p).size() + " nodes without successors.");
 }}}
