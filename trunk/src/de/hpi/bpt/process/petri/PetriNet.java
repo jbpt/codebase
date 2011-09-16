@@ -19,6 +19,11 @@ import de.hpi.bpt.hypergraph.abs.Vertex;
  *
  */
 public class PetriNet extends AbstractDirectedGraph<Flow, Node> implements Cloneable {
+	
+	/**
+	 * Silent transitions shall carry the following label.
+	 */
+	public static final String SILENT_LABEL = "tau";
 
 	private DirectedGraphAlgorithms<Flow,Node> dga = null;
 	
@@ -134,6 +139,18 @@ public class PetriNet extends AbstractDirectedGraph<Flow, Node> implements Clone
 		
 		return result;
 	}
+	
+	public Collection<Transition> getNonSilentTransitions() {
+		Collection<Transition> result = new ArrayList<Transition>();
+		
+		for (Transition t : this.getTransitions()) {
+			if (!t.getName().equals(SILENT_LABEL))
+				result.add(t);
+		}
+		
+		return result;
+	}
+
 	
 	public Collection<Place> getPlaces() {
 		Collection<Place> result = new ArrayList<Place>();
@@ -431,6 +448,13 @@ public class PetriNet extends AbstractDirectedGraph<Flow, Node> implements Clone
 		result += "}\n";
 		
 		return result;
+	}
+
+	public Node findNode(String string) {
+		for (Node n : this.getNodes())
+			if (n.getId().equals(string))
+				return n;
+		return null;
 	}
 
 }
