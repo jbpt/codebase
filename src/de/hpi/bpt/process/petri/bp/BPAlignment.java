@@ -34,5 +34,27 @@ public class BPAlignment extends Alignment<Flow, Node> {
 	public BehaviouralProfile getSecondProfile() {
 		return this.bp2;
 	}
+	
+	/**
+	 * Init the alignment with correspondences between nodes that
+	 * carry equal labels.
+	 * 
+	 * We overwrite the method from the superclass in order to avoid
+	 * that tau-transitions are all mapped to each other.
+	 */
+	@Override
+	public void initCorrespondenceRelation() {
+		for (Node v1 : getFirstGraph().getVertices()) {
+			for (Node v2 : getSecondGraph().getVertices()) {
+				
+				String s1 = normaliseLabel(v1.getName());
+				String s2 = normaliseLabel(v2.getName());
+				
+				if (s1.equals(s2) && !s1.equals(PetriNet.SILENT_LABEL) && !s2.equals(PetriNet.SILENT_LABEL))
+					addElementaryCorrespondence(v1,v2);
+			}
+		}
+	}
+
 
 }

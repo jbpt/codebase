@@ -15,7 +15,25 @@ import de.hpi.bpt.process.petri.bp.BehaviouralProfile;
 import de.hpi.bpt.process.petri.bp.BehaviouralProfile.CharacteristicRelationType;
 import de.hpi.bpt.process.petri.rels.UnfoldingRelationType;
 
-
+/**
+ * Computation of the behavioural profile for a given collection of 
+ * transitions (or all transitions) of a bounded net system using its complete
+ * prefix unfolding. To derive the complete prefix unfolding we rely on 
+ * UMA.
+ * 
+ * Note that boundedness is not checked explicitly. If this class is
+ * used for unbounded nets, it will still return a behavioural profile
+ * as a result since UMA has a fixed boundary for concurrent conditions
+ * that relate to the same place in the unfolding. Hence, UMA stops
+ * even if there does not exist a finite prefix. However, it is not 
+ * guaranteed that the obtained behavioural profile is correct in this
+ * case!
+ * 
+ * Implemented as a singleton, use <code>getInstance()</code>.
+ * 
+ * @author matthias.weidlich
+ *
+ */
 public class BPCreatorUnfolding extends AbstractBPCreator implements BPCreator {
 
 	private static BPCreatorUnfolding eInstance;
@@ -29,17 +47,21 @@ public class BPCreatorUnfolding extends AbstractBPCreator implements BPCreator {
 	private BPCreatorUnfolding() {
 		
 	}
-
+	
+	// needed to extract the relations of events in the unfolding
 	protected EventContinuationProfiler eventContinuationProfiler;
 	
+	// captures relation between unfolding and original net
 	protected Map<DNode, Transition> unfoldingNodesToNetTransitions = new HashMap<DNode, Transition>(); 
+	
+	// captures the weak order for transitions
 	protected boolean[][] weakOrderMatrixForTransitions; 
+	
+	// list to have identifiers for the transitions in the matrix
 	protected List<Transition> transitionsForWeakOrderMatrix;
-			
+	
 	protected void clear() {
-
 		eventContinuationProfiler = null;
-		
 		unfoldingNodesToNetTransitions = new HashMap<DNode, Transition>(); 
 		weakOrderMatrixForTransitions = null; 
 		transitionsForWeakOrderMatrix = new ArrayList<Transition>();
@@ -118,7 +140,6 @@ public class BPCreatorUnfolding extends AbstractBPCreator implements BPCreator {
 	private boolean isWeakOrder(Node n1, Node n2) {
 		return weakOrderMatrixForTransitions[this.transitionsForWeakOrderMatrix.indexOf(n1)][this.transitionsForWeakOrderMatrix.indexOf(n2)];
 	}
-	
 
 	private void addToRelation(boolean[][] matrix, Node n1, Node n2) {
 		matrix[this.transitionsForWeakOrderMatrix.indexOf(n1)][this.transitionsForWeakOrderMatrix.indexOf(n2)] = true;
