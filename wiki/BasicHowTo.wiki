@@ -149,7 +149,7 @@ net1.addFlow(p5, d);
 net1.addFlow(d, p6);
 }}}
 
-A Petri net object carries information on certain properties that are satisfied by the net. If those are used frequently, they shall not be computed each time they are needed. Therefore, the class CachePetriNet extends the standard Petri net model by some caching routines. When using this class make sure to call invalidateCache whenever the structure or the marking of the net changes. For the methods addNode and addFlow this is done automatically.
+A Petri net object carries information on certain properties that are satisfied by the net. If those are used frequently, they shall not be computed each time they are needed. Therefore, the class !CachePetriNet extends the standard Petri net model by some caching routines. When using this class make sure to call _invalidateCache_ whenever the structure or the marking of the net changes. For the methods _addNode_ and _addFlow_ this is done automatically.
 
 {{{
 /* 
@@ -229,7 +229,8 @@ System.out.println("X and Y are in strict order: " + bp.areInStrictOrder(x,y));
 System.out.println("X and Y are interleaving: " + bp.areInterleaving(x,y));
 
 System.out.println("X and Y has the following relation: " + bp.getRelationForNodes(x,y));
-System.out.println("X and Y has the following relation: " + BehaviouralProfile.getSymbolForRelation(bp.getRelationForNodes(x,y)));
+System.out.println("X and Y has the following relation: " +
+BehaviouralProfile.getSymbolForRelation(bp.getRelationForNodes(x,y)));
 
 System.out.println("X and Y are co-occurring: " + cbp.areCooccurring(x,y));
 }}}
