@@ -148,3 +148,88 @@ net1.addFlow(p4, d);
 net1.addFlow(p5, d);
 net1.addFlow(d, p6);
 }}}
+
+A Petri net object carries information on certain properties that are satisfied by the net. If those are used frequently, they shall not be computed each time they are needed. Therefore, the class CachePetriNet extends the standard Petri net model by some caching routines. When using this class make sure to call invalidateCache whenever the structure or the marking of the net changes. For the methods addNode and addFlow this is done automatically.
+
+{{{
+/* 
+ * Create a Petri net that caches basic properties.
+ */
+PetriNet net = new CachePetriNet();
+}}}
+
+
+==How to check some basic properties of a Petri net==
+
+Let us check whether a given Petri net has cycles and whether it belongs to certain structural classes of Petri nets.
+
+{{{
+/* 
+ * Create an algorithms object for a Petri net, which 
+ * is a directed graph defined with Petri net nodes and Petri net flows
+ */
+DirectedGraphAlgorithms<Flow, Node> dga = new DirectedGraphAlgorithms<Flow, Node>();
+
+/*
+ * Assume that n is an object of type PetriNet. 
+ */
+System.out.println("Petri net has cycles: " + dga.hasCycles(n));
+
+/*
+ * The Petri net related properties are accessed directly at the Petri net object. 
+ */
+System.out.println("Petri net is free-choice: " + n.isFreeChoice());
+System.out.println("Petri net is extended free-choice: " + n.isExtendedFreeChoice());
+System.out.println("Petri net is S-net: " + n.isSNet());
+System.out.println("Petri net is T-net: " + n.isTNet());
+System.out.println("Petri net is workflow net: " + n.isWFNet());
+}}}
+
+==How to derive behavioural profiles of a Petri net==
+
+There are different methods for the computation of behavioural profiles of a Petri net system. These methods impose different assumptions on the Petri net structure and its behavioural properties.
+
+{{{
+/*
+ * Assume that n is an object of class Petri net that is free-choice, sound, and has workflow structure.
+ * Then, we compute the (causal) behavioural profile with a methods that leverages the 
+ * RPST of the Petri net as follows.
+ */
+BehaviouralProfile bp = BPCreatorTree.getInstance().deriveBehaviouralProfile(n);
+CausalBehaviouralProfile cbp = CBPCreatorTree.getInstance().deriveCausalBehaviouralProfile(n);
+
+/*
+ * Assume that n is an object of class Petri net that is free-choice, sound, and has workflow structure.
+ * As an alternative, we use an approach that leverages the concurrency relation and the flow dependencies.
+ * Note that this approach applied for the causal behavioural profile also requires that the Petri net 
+ * is acyclic or an S-net. This assumption is not required if only the (non-causal) behavioural profile
+ * is computed.
+ */
+BehaviouralProfile bp2 = BPCreatorNet.getInstance().deriveBehaviouralProfile(n);
+CausalBehaviouralProfile cbp2 = CBPCreatorNet.getInstance().deriveCausalBehaviouralProfile(n);
+
+/*
+ * Finally, if n is an object of class Petri net that is bounded, we may use a methods based on 
+ * Petri net unfolding. It is way more costly than the aforementioned approaches, but assumes only
+ * boundedness.
+ */
+BehaviouralProfile bp3 = BPCreatorUnfolding.getInstance().deriveBehaviouralProfile(n);
+CausalBehaviouralProfile cbp3 = CBPCreatorUnfolding.getInstance().deriveCausalBehaviouralProfile(n);
+}}}
+
+The classes for behavioural profiles and causal behavioural profiles offers the following methods as an API. 
+
+{{{
+/*
+ * Assume that bp / cbp is a behavioural profile / causal behavioural profile, and x and y 
+ * are nodes of a Petri net over which the behavioural profiles has been defined.
+ */
+System.out.println("X and Y are exclusive: " + bp.areExclusive(x,y));
+System.out.println("X and Y are in strict order: " + bp.areInStrictOrder(x,y));
+System.out.println("X and Y are interleaving: " + bp.areInterleaving(x,y));
+
+System.out.println("X and Y has the following relation: " + bp.getRelationForNodes(x,y));
+System.out.println("X and Y has the following relation: " + BehaviouralProfile.getSymbolForRelation(bp.getRelationForNodes(x,y)));
+
+System.out.println("X and Y are co-occurring: " + cbp.areCooccurring(x,y));
+}}}
