@@ -15,14 +15,16 @@ import de.hpi.bpt.process.petri.unf.order.EsparzaTotalAdequateOrderForSafeSystem
  */
 public class ProperUnfolding extends Unfolding {
 	
-	private static UnfoldingSetup setup = new UnfoldingSetup(); 
+	protected static UnfoldingSetup properSetup = new UnfoldingSetup(); 
 	
 	static {
-		ProperUnfolding.setup.ADEQUATE_ORDER = new EsparzaTotalAdequateOrderForSafeSystems();		
+		ProperUnfolding.properSetup.ADEQUATE_ORDER = new EsparzaTotalAdequateOrderForSafeSystems();		
 	}
 
+	protected ProperUnfolding() {}
+	
 	public ProperUnfolding(PetriNet pn) {	
-		super(pn,ProperUnfolding.setup);
+		super(pn,ProperUnfolding.properSetup);
 	}
 
 	/**

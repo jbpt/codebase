@@ -638,7 +638,7 @@ public class Unfolding {
 	/**
 	 * Get corresponding event
 	 * @param e event
-	 * @return corresponding event of e; null if e is not cutoff event
+	 * @return corresponding event of e; null if e is not a cutoff event
 	 */
 	public Event getCorrespondingEvent(Event e) {
 		return this.cutoff2corr.get(e);
