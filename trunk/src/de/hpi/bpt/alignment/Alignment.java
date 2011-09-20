@@ -141,7 +141,7 @@ public class Alignment<E extends IEdge<V>,V extends IVertex>  {
 			return true;
 		}
 		
-		private static String normaliseLabel(String s) {
+		protected static String normaliseLabel(String s) {
 			String result = s.toLowerCase();
 			result = result.trim();
 			return result;
