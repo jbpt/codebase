@@ -1,9 +1,12 @@
 package de.hpi.bpt.process.petri.unf;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 import de.hpi.bpt.graph.algo.DirectedGraphAlgorithms;
+import de.hpi.bpt.graph.algo.TransitiveClosure;
 import de.hpi.bpt.process.petri.Flow;
 import de.hpi.bpt.process.petri.Node;
 import de.hpi.bpt.process.petri.PetriNet;
@@ -13,6 +16,8 @@ import de.hpi.bpt.process.petri.unf.order.EsparzaTotalAdequateOrderForSafeSystem
 
 /**
  * Unfolding for soundness checks
+ * 
+ * Proof of concept - must be improved
  * 
  * @author Artem Polyvyanyy
  */
@@ -26,6 +31,7 @@ public class SoundUnfolding extends ProperUnfolding {
 		DirectedGraphAlgorithms<Flow,Node> dga = new DirectedGraphAlgorithms<Flow,Node>();
 		if (dga.hasCycles(pn)) return; // net must be acyclic
 		
+		this.totalOrderTs = new ArrayList<Transition>(pn.getTransitions());
 		this.net = pn;
 		
 		UnfoldingSetup setup = new UnfoldingSetup();
@@ -60,6 +66,12 @@ public class SoundUnfolding extends ProperUnfolding {
 		return this.unsafe;
 	}
 	
+	class DeadlockCandidate {
+		public Place p;
+		public Place p1;
+		public Transition t1;
+	}
+	
 	/**
 	 * Get local deadlock conditions
 	 * @return set of local deadlock conditions
@@ -79,11 +91,58 @@ public class SoundUnfolding extends ProperUnfolding {
 					else
 						this.deadlock.add(occNet.getCondition(p));
 				}
+			}
+			
+			Collection<Place> sinks = occNet.getSinkPlaces();
+			Collection<DeadlockCandidate> dcs = new ArrayList<DeadlockCandidate>();
+			
+			for (Place p : occNet.getPlaces()) {
+				if (occNet.getPostset(p).size()==0) continue;
 				
-				// TODO
+				Transition t = occNet.getPostset(p).iterator().next();  
+				if (occNet.getPreset(t).size()<2) continue;
+				
+				for (Place p1 : occNet.getPreset(t)) {
+					if (p.equals(p1)) continue;
+					
+					for (Place p2 : sinks) {
+						if (occNet.getOrderingRelation(p,p2)==OrderingRelation.CONFLICT &&
+								occNet.getOrderingRelation(p1, p2)==OrderingRelation.CONCURRENT) {
+							if (occNet.getPreset(p2).size()==0) continue;
+							
+							Transition t1 = occNet.getPreset(p2).iterator().next();
+							if (!occNet.isCutoffEvent(t1)) continue;
+							
+							DeadlockCandidate dc = new DeadlockCandidate();
+							dc.p = p; dc.p1 = p1; dc.t1 = t1;
+							
+							dcs.add(dc);
+						}
+					}
+				}
+			}
+			
+			// update occurrence net (re-wire)
+			Set<Transition> cutoffs = occNet.getCutoffEvents();
+			for (Transition cutoff : cutoffs) {
+				occNet.removeVertices(occNet.getSuccessors(cutoff));
+				Transition corr = occNet.getCorrespondingEvent(cutoff);
+				for (Place pcorr : occNet.getPostset(corr))
+					occNet.addFlow(cutoff, pcorr);
+			}
+			
+			TransitiveClosure<Flow, Node> tc = new TransitiveClosure<Flow,Node>(occNet);
+			
+			for (DeadlockCandidate dc : dcs) {
+				if (tc.hasPath(dc.t1, dc.p))
+					this.deadlock.add(occNet.getCondition(dc.p));
 			}
 		}
 		
 		return this.deadlock;
+	}
+	
+	public boolean isSound() {
+		return this.getLocallyUnsafeConditions().size()==0 && this.getLocalDeadlockConditions().size()==0;
 	}
 }
