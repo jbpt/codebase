@@ -25,11 +25,14 @@ public class SoundUnfolding extends ProperUnfolding {
 	
 	private Set<Condition> unsafe	= null;
 	private Set<Condition> deadlock	= null;
+	
+	protected SoundUnfolding() {}
 
 	public SoundUnfolding(PetriNet pn) {
-		if (!pn.isFreeChoice()) return; // net must be free choice
+		if (!pn.isFreeChoice()) return; // must be free choice
+		if (!pn.isWFNet()) return; // must be WF-net
 		DirectedGraphAlgorithms<Flow,Node> dga = new DirectedGraphAlgorithms<Flow,Node>();
-		if (dga.hasCycles(pn)) return; // net must be acyclic
+		if (dga.hasCycles(pn)) return; // must be acyclic
 		
 		this.totalOrderTs = new ArrayList<Transition>(pn.getTransitions());
 		this.net = pn;
@@ -123,6 +126,7 @@ public class SoundUnfolding extends ProperUnfolding {
 			}
 			
 			// update occurrence net (re-wire)
+			// TODO must be corrected - there should exist no path!
 			Set<Transition> cutoffs = occNet.getCutoffEvents();
 			for (Transition cutoff : cutoffs) {
 				occNet.removeVertices(occNet.getSuccessors(cutoff));
