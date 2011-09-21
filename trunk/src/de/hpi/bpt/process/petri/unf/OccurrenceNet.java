@@ -1,5 +1,7 @@
 package de.hpi.bpt.process.petri.unf;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -103,6 +105,23 @@ public class OccurrenceNet extends PetriNet {
 
 	@Override
 	public String toDOT() {
+		return this.toDOT(new ArrayList<Place>());
+	}
+	
+	public String toDOTcs(Collection<Condition> cs) {
+		if (cs == null) return "";
+		Collection<Place> ps = new ArrayList<Place>();
+		
+		for (Condition c : cs) {
+			ps.add(this.c2p.get(c));
+		}
+		
+		return this.toDOT(ps);
+	}
+	
+	public String toDOT(Collection<Place> ps) {
+		if (ps == null) return "";
+		
 		String result = "digraph G {\n";
 		result += "graph [fontname=\"Helvetica\" fontsize=10 nodesep=0.35 ranksep=\"0.25 equally\"];\n";
 		result += "node [fontname=\"Helvetica\" fontsize=10 fixedsize style=filled penwidth=\"2\"];\n";
@@ -110,8 +129,13 @@ public class OccurrenceNet extends PetriNet {
 		result += "\n";
 		result += "node [shape=circle];\n";
 		
-		for (Place n : this.getPlaces())
-			result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".3\" fillcolor=white];\n", n.getId().replace("-", ""), n.getName());
+		for (Place p : this.getPlaces()) {
+			if (ps.contains(p))
+				result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".3\" fillcolor=red];\n", p.getId().replace("-", ""), p.getName());
+			else
+				result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".3\" fillcolor=white];\n", p.getId().replace("-", ""), p.getName());
+		}
+			
 		
 		result += "\n";
 		result += "node [shape=box];\n";
