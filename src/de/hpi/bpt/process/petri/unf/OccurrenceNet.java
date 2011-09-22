@@ -84,7 +84,7 @@ public class OccurrenceNet extends PetriNet {
 		BPNode bpn2 = this.getUnfNode(n2);
 		
 		if (bpn1!=null && bpn2!=null) 
-			this.unf.getOrderingRelation(bpn1,bpn2);
+			return this.unf.getOrderingRelation(bpn1,bpn2);
 		
 		return OrderingRelation.NONE;
 	}

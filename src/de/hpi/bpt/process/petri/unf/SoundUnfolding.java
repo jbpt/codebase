@@ -2,7 +2,9 @@ package de.hpi.bpt.process.petri.unf;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import de.hpi.bpt.graph.algo.DirectedGraphAlgorithms;
@@ -29,10 +31,10 @@ public class SoundUnfolding extends ProperUnfolding {
 	protected SoundUnfolding() {}
 
 	public SoundUnfolding(PetriNet pn) {
-		if (!pn.isFreeChoice()) return; // must be free choice
-		if (!pn.isWFNet()) return; // must be WF-net
+		if (!pn.isFreeChoice()) throw new IllegalArgumentException("Net must be free choice!");
+		if (!pn.isWFNet()) throw new IllegalArgumentException("Net must be a WF-net!");
 		DirectedGraphAlgorithms<Flow,Node> dga = new DirectedGraphAlgorithms<Flow,Node>();
-		if (dga.hasCycles(pn)) return; // must be acyclic
+		if (dga.hasCycles(pn)) throw new IllegalArgumentException("Net must be acyclic!");
 		
 		this.totalOrderTs = new ArrayList<Transition>(pn.getTransitions());
 		this.net = pn;
@@ -69,12 +71,6 @@ public class SoundUnfolding extends ProperUnfolding {
 		return this.unsafe;
 	}
 	
-	class DeadlockCandidate {
-		public Place p;
-		public Place p1;
-		public Transition t1;
-	}
-	
 	/**
 	 * Get local deadlock conditions
 	 * @return set of local deadlock conditions
@@ -84,6 +80,7 @@ public class SoundUnfolding extends ProperUnfolding {
 			this.deadlock = new HashSet<Condition>();			
 			OccurrenceNet occNet = this.getOccurrenceNet();
 			
+			// A
 			for (Place p : occNet.getPlaces()) {
 				if (occNet.getPostset(p).size()==0 && this.net.getPostset(occNet.getCondition(p).getPlace()).size()>0) {
 					if (occNet.getPreset(p).size()>0) {
@@ -96,37 +93,47 @@ public class SoundUnfolding extends ProperUnfolding {
 				}
 			}
 			
+			// B
 			Collection<Place> sinks = occNet.getSinkPlaces();
-			Collection<DeadlockCandidate> dcs = new ArrayList<DeadlockCandidate>();
+			Map<Place,Set<Transition>> p2s = new HashMap<Place,Set<Transition>>(); 
 			
 			for (Place p : occNet.getPlaces()) {
-				if (occNet.getPostset(p).size()==0) continue;
+				boolean flag = false;
 				
-				Transition t = occNet.getPostset(p).iterator().next();  
-				if (occNet.getPreset(t).size()<2) continue;
-				
-				for (Place p1 : occNet.getPreset(t)) {
-					if (p.equals(p1)) continue;
-					
-					for (Place p2 : sinks) {
-						if (occNet.getOrderingRelation(p,p2)==OrderingRelation.CONFLICT &&
-								occNet.getOrderingRelation(p1, p2)==OrderingRelation.CONCURRENT) {
-							if (occNet.getPreset(p2).size()==0) continue;
-							
-							Transition t1 = occNet.getPreset(p2).iterator().next();
-							if (!occNet.isCutoffEvent(t1)) continue;
-							
-							DeadlockCandidate dc = new DeadlockCandidate();
-							dc.p = p; dc.p1 = p1; dc.t1 = t1;
-							
-							dcs.add(dc);
+				for (Transition t : occNet.getPostset(p)){					
+					for (Place p1 : occNet.getPreset(t)) {
+						if (p.equals(p1)) continue;
+						
+						for (Place p2 : sinks) {
+							if (occNet.getOrderingRelation(p,p2)==OrderingRelation.CONFLICT && 
+									occNet.getOrderingRelation(p1,p2)==OrderingRelation.CONCURRENT) {
+								
+								if (occNet.getPreset(p2).size()==0) {
+									this.deadlock.add(occNet.getCondition(p));
+									p2s.remove(p);
+									flag = true;
+									break;
+								}
+								
+								Transition t1 = occNet.getPreset(p2).iterator().next();
+								if (!occNet.isCutoffEvent(t1)) {
+									this.deadlock.add(occNet.getCondition(p));
+									p2s.remove(p);
+									flag = true;
+									break;
+								}
+								else {
+									if (p2s.get(p)==null) p2s.put(p, new HashSet<Transition>());
+									p2s.get(p).add(t1);
+								}
+							}
 						}
-					}
+						if (flag) break;
+					}	
 				}
 			}
 			
 			// update occurrence net (re-wire)
-			// TODO must be corrected - there should exist no path!
 			Set<Transition> cutoffs = occNet.getCutoffEvents();
 			for (Transition cutoff : cutoffs) {
 				occNet.removeVertices(occNet.getSuccessors(cutoff));
@@ -137,15 +144,27 @@ public class SoundUnfolding extends ProperUnfolding {
 			
 			TransitiveClosure<Flow, Node> tc = new TransitiveClosure<Flow,Node>(occNet);
 			
-			for (DeadlockCandidate dc : dcs) {
-				if (tc.hasPath(dc.t1, dc.p))
-					this.deadlock.add(occNet.getCondition(dc.p));
+			for (Map.Entry<Place,Set<Transition>> entry : p2s.entrySet()) {
+				boolean flag = false;
+				for (Transition t : entry.getValue()) {
+					if (tc.hasPath(t,entry.getKey())) {
+						flag = true;
+						break;
+					}
+				}
+				
+				if (!flag)
+					this.deadlock.add(occNet.getCondition(entry.getKey()));
 			}
 		}
 		
 		return this.deadlock;
 	}
 	
+	/**
+	 * Check if the net is sound
+	 * @return true if originative net is sound; otherwise false
+	 */
 	public boolean isSound() {
 		return this.getLocallyUnsafeConditions().size()==0 && this.getLocalDeadlockConditions().size()==0;
 	}

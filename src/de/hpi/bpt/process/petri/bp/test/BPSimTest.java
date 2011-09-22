@@ -140,7 +140,7 @@ public class BPSimTest extends TestCase {
 		assertTrue(Math.round(eso.score(al)*1000) == 286);
 		assertTrue(Math.round(eio.score(al)*1000) == 222);
 
-		al.removeElementaryCorrespondence(b, y);
+		//al.removeElementaryCorrespondence(b, y);
 		al.addElementaryCorrespondence(d, y);
 		
 		assertTrue(Math.round(ex.score(al)*1000) == 714);
