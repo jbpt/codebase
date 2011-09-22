@@ -16,7 +16,7 @@ import de.hpi.bpt.process.petri.util.TransformationException;
 import de.hpi.bpt.process.serialize.JSON2Process;
 import de.hpi.bpt.process.serialize.SerializationException;
 
-public class SoundUnfoldingExtensiveTest extends TestCase {
+public class SoundUnfoldingExtensiveTestA extends TestCase {
 
 	protected static final String MODELS_DIR = "models/process_json/acyclic/original";
 	
