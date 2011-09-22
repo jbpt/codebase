@@ -144,9 +144,9 @@ public class BehaviouralProfileAlgebra {
 		CharacteristicRelationType[][] matrix = profile.getMatrix();
 		
 		for(Node v1 : nodeList) {
-			int index1 = nodeList.indexOf(v1);
+			int index1 = profile.getNodes().indexOf(v1);
 			for(Node v2 : nodeList) {
-				int index2 = nodeList.indexOf(v2);
+				int index2 = profile.getNodes().indexOf(v2);
 				
 				/*
 				 * The behavioural profile matrix is symmetric. Therefore, we 
@@ -173,7 +173,7 @@ public class BehaviouralProfileAlgebra {
 						(relation2.equals(CharacteristicRelationType.StrictOrder) && (relation1.equals(CharacteristicRelationType.StrictOrder) || relation1.equals(CharacteristicRelationType.InterleavingOrder)))) {
 					
 					matrix[index1][index2] = CharacteristicRelationType.StrictOrder;
-					matrix[index2][index1] = CharacteristicRelationType.StrictOrder;
+					matrix[index2][index1] = CharacteristicRelationType.ReverseStrictOrder;
 				}
 				else if (relation1.equals(CharacteristicRelationType.InterleavingOrder) && relation2.equals(CharacteristicRelationType.InterleavingOrder)) {
 					matrix[index1][index2] = CharacteristicRelationType.InterleavingOrder;
@@ -181,7 +181,7 @@ public class BehaviouralProfileAlgebra {
 				}
 				else {
 					matrix[index1][index2] = CharacteristicRelationType.ReverseStrictOrder;
-					matrix[index2][index1] = CharacteristicRelationType.ReverseStrictOrder;
+					matrix[index2][index1] = CharacteristicRelationType.StrictOrder;
 				}
 			}
 		}
@@ -208,9 +208,9 @@ public class BehaviouralProfileAlgebra {
 		CharacteristicRelationType[][] matrix = profile.getMatrix();
 		
 		for(Node v1 : nodeList) {
-			int index1 = nodeList.indexOf(v1);
+			int index1 = profile.getNodes().indexOf(v1);
 			for(Node v2 : nodeList) {
-				int index2 = nodeList.indexOf(v2);
+				int index2 = profile.getNodes().indexOf(v2);
 				
 				/*
 				 * The behavioural profile matrix is symmetric. Therefore, we 
@@ -237,7 +237,7 @@ public class BehaviouralProfileAlgebra {
 						(relation2.equals(CharacteristicRelationType.StrictOrder) && (relation1.equals(CharacteristicRelationType.StrictOrder) || relation1.equals(CharacteristicRelationType.Exclusive)))) {
 					
 					matrix[index1][index2] = CharacteristicRelationType.StrictOrder;
-					matrix[index2][index1] = CharacteristicRelationType.StrictOrder;
+					matrix[index2][index1] = CharacteristicRelationType.ReverseStrictOrder;
 				}
 				else if (relation1.equals(CharacteristicRelationType.Exclusive) && relation2.equals(CharacteristicRelationType.Exclusive)) {
 					matrix[index1][index2] = CharacteristicRelationType.Exclusive;
@@ -245,7 +245,7 @@ public class BehaviouralProfileAlgebra {
 				}
 				else {
 					matrix[index1][index2] = CharacteristicRelationType.ReverseStrictOrder;
-					matrix[index2][index1] = CharacteristicRelationType.ReverseStrictOrder;
+					matrix[index2][index1] = CharacteristicRelationType.StrictOrder;
 				}
 			}
 		}
