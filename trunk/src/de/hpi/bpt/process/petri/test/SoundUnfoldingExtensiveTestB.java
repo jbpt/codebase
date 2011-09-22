@@ -18,6 +18,7 @@ import de.hpi.bpt.process.petri.Transition;
 import de.hpi.bpt.process.petri.unf.OccurrenceNet;
 import de.hpi.bpt.process.petri.unf.SoundUnfolding;
 import de.hpi.bpt.process.petri.unf.copy.Utils;
+import de.hpi.bpt.process.petri.util.LolaSoundnessChecker;
 import de.hpi.bpt.process.petri.util.TransformationException;
 import de.hpi.bpt.process.serialize.JSON2Process;
 import de.hpi.bpt.process.serialize.SerializationException;
@@ -39,6 +40,9 @@ public class SoundUnfoldingExtensiveTestB extends TestCase {
 				Process p = loadProcess(MODELS_DIR + File.separator + name);
 				if (dga.hasCycles(p)) continue;
 				
+				count++;
+				if (count<170) continue;
+				
 				System.out.print(name + " ... ");
 				PetriNet net = Utils.process2net(p);
 				int cp = 1; int ct = 1;
@@ -47,8 +51,19 @@ public class SoundUnfoldingExtensiveTestB extends TestCase {
 				Utils.addInitialMarking(net);
 				SoundUnfolding unf = new SoundUnfolding(net);
 				
-				if (unf.isSound())
-					System.out.println("\tSOUND");
+				if (unf.isSound()) {
+					System.out.print("\tSOUND");
+					
+					String fileName = name+".NET";
+					IOUtils.toFile(fileName+".dot", net.toDOT());
+					out.write("dot -Tpng -o"+fileName+".png "+fileName+".dot\n");
+					
+					OccurrenceNet bpnet = unf.getOccurrenceNet();
+					
+					fileName = name+".UNF";
+					IOUtils.toFile(fileName+".dot", bpnet.toDOTcs(unf.getLocallyUnsafeConditions()));
+					out.write("dot -Tpng -o"+fileName+".png "+fileName+".dot\n");
+				}
 				else {
 					String fileName = name+".NET";
 					IOUtils.toFile(fileName+".dot", net.toDOT());
@@ -64,10 +79,16 @@ public class SoundUnfoldingExtensiveTestB extends TestCase {
 					IOUtils.toFile(fileName+".dot", bpnet.toDOTcs(unf.getLocalDeadlockConditions()));
 					out.write("dot -Tpng -o"+fileName+".png "+fileName+".dot\n");
 					
-					System.out.println("\tUNSOUND");
+					System.out.print("\tUNSOUND");
 				}
 				
-				if (++count==10) break;
+				boolean soundLola = LolaSoundnessChecker.isSound(net);
+				if (soundLola) System.out.println("\tSOUND");
+				else System.out.println("\tUNSOUND");
+				
+				if (unf.isSound() != soundLola) out.close();
+				assertEquals(soundLola, unf.isSound());
+				if (count==185) break;
 			}
 		}
 		
