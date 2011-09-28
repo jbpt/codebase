@@ -1,11 +1,11 @@
-package de.hpi.bpt.process.petri.unf.order.copy;
+package de.hpi.bpt.process.petri.unf.order;
 
 import java.util.List;
 import java.util.Set;
 
 import de.hpi.bpt.process.petri.Transition;
-import de.hpi.bpt.process.petri.unf.copy.Event;
-import de.hpi.bpt.process.petri.unf.copy.LocalConfiguration;
+import de.hpi.bpt.process.petri.unf.Event;
+import de.hpi.bpt.process.petri.unf.LocalConfiguration;
 
 /**
  * Esparza adequate order for 1-safe systems (total order)
@@ -14,7 +14,7 @@ import de.hpi.bpt.process.petri.unf.copy.LocalConfiguration;
  * 
  * @author Artem Polyvyanyy
  */
-public class EsparzaTotalAdequateOrderForSafeSystems extends AdequateOrder {
+public class EsparzaAdequateTotalOrderForSafeSystems extends AdequateOrder {
 	
 	@Override
 	public boolean isSmaller(LocalConfiguration lc1, LocalConfiguration lc2) {

@@ -14,7 +14,7 @@ import de.hpi.bpt.process.petri.Node;
 import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.Place;
 import de.hpi.bpt.process.petri.Transition;
-import de.hpi.bpt.process.petri.unf.order.EsparzaTotalAdequateOrderForSafeSystems;
+import de.hpi.bpt.process.petri.unf.order.UnfoldingAdequateOrder;
 
 /**
  * Unfolding for soundness checks
@@ -28,22 +28,22 @@ public class SoundUnfolding extends ProperUnfolding {
 	private Set<Condition> unsafe	= null;
 	private Set<Condition> deadlock	= null;
 	
+	protected static DirectedGraphAlgorithms<Flow,Node> dga = new DirectedGraphAlgorithms<Flow,Node>();
+	
 	protected SoundUnfolding() {}
 
 	public SoundUnfolding(PetriNet pn) {
 		if (!pn.isFreeChoice()) throw new IllegalArgumentException("Net must be free choice!");
 		if (!pn.isWFNet()) throw new IllegalArgumentException("Net must be a WF-net!");
-		DirectedGraphAlgorithms<Flow,Node> dga = new DirectedGraphAlgorithms<Flow,Node>();
 		if (dga.hasCycles(pn)) throw new IllegalArgumentException("Net must be acyclic!");
 		
-		this.totalOrderTs = new ArrayList<Transition>(pn.getTransitions());
 		this.net = pn;
+		this.totalOrderTs = new ArrayList<Transition>(this.net.getTransitions());
 		
 		UnfoldingSetup setup = new UnfoldingSetup();
-		setup.ADEQUATE_ORDER = new EsparzaTotalAdequateOrderForSafeSystems();
-		setup.MAX_BOUND	= Integer.MAX_VALUE;
-		setup.MAX_EVENTS = Integer.MAX_VALUE;
-		
+		setup.ADEQUATE_ORDER = new UnfoldingAdequateOrder();
+		setup.MAX_BOUND		 = Integer.MAX_VALUE;
+		setup.MAX_EVENTS	 = Integer.MAX_VALUE;
 		this.setup = setup;
 		
 		this.construct();
@@ -78,46 +78,48 @@ public class SoundUnfolding extends ProperUnfolding {
 	public Set<Condition> getLocalDeadlockConditions() {
 		if (this.deadlock == null) {
 			this.deadlock = new HashSet<Condition>();			
-			OccurrenceNet occNet = this.getOccurrenceNet();
+			OccurrenceNet BP = null;
+			try { BP = (OccurrenceNet) this.getOccurrenceNet().clone(); } 
+			catch (CloneNotSupportedException e) { e.printStackTrace(); }
 			
-			// A
-			for (Place p : occNet.getPlaces()) {
-				if (occNet.getPostset(p).size()==0 && this.net.getPostset(occNet.getCondition(p).getPlace()).size()>0) {
-					if (occNet.getPreset(p).size()>0) {
-						Transition t = occNet.getPreset(p).iterator().next();
-						if (occNet.getCorrespondingEvent(t) == null)
-							this.deadlock.add(occNet.getCondition(p));
+			// p* is empty, nu(p)* is not empty, and there exists no t in *p that is a cutoff
+			for (Place p : BP.getPlaces()) {
+				if (BP.getPostset(p).isEmpty() && !this.net.getPostset(BP.getCondition(p).getPlace()).isEmpty()) {
+					if (!BP.getPreset(p).isEmpty()) {
+						Transition t = BP.getPreset(p).iterator().next();
+						if (!BP.isCutoffEvent(t))
+							this.deadlock.add(BP.getCondition(p));
 					}
 					else
-						this.deadlock.add(occNet.getCondition(p));
+						this.deadlock.add(BP.getCondition(p));
 				}
 			}
 			
-			// B
-			Collection<Place> sinks = occNet.getSinkPlaces();
+			// !!!
+			Collection<Place> sinks = BP.getSinkPlaces();
 			Map<Place,Set<Transition>> p2s = new HashMap<Place,Set<Transition>>(); 
 			
-			for (Place p : occNet.getPlaces()) {
+			for (Place p : BP.getPlaces()) {
 				boolean flag = false;
 				
-				for (Transition t : occNet.getPostset(p)){					
-					for (Place p1 : occNet.getPreset(t)) {
+				for (Transition t : BP.getPostset(p)){					
+					for (Place p1 : BP.getPreset(t)) {
 						if (p.equals(p1)) continue;
 						
 						for (Place p2 : sinks) {
-							if (occNet.getOrderingRelation(p,p2)==OrderingRelation.CONFLICT && 
-									occNet.getOrderingRelation(p1,p2)==OrderingRelation.CONCURRENT) {
+							if (BP.getOrderingRelation(p,p2)==OrderingRelation.CONFLICT && 
+									BP.getOrderingRelation(p1,p2)==OrderingRelation.CONCURRENT) {
 								
-								if (occNet.getPreset(p2).size()==0) {
-									this.deadlock.add(occNet.getCondition(p));
+								if (BP.getPreset(p2).size()==0) {
+									this.deadlock.add(BP.getCondition(p));
 									p2s.remove(p);
 									flag = true;
 									break;
 								}
 								
-								Transition t1 = occNet.getPreset(p2).iterator().next();
-								if (!occNet.isCutoffEvent(t1)) {
-									this.deadlock.add(occNet.getCondition(p));
+								Transition t1 = BP.getPreset(p2).iterator().next();
+								if (!BP.isCutoffEvent(t1)) {
+									this.deadlock.add(BP.getCondition(p));
 									p2s.remove(p);
 									flag = true;
 									break;
@@ -134,15 +136,15 @@ public class SoundUnfolding extends ProperUnfolding {
 			}
 			
 			// update occurrence net (re-wire)
-			Set<Transition> cutoffs = occNet.getCutoffEvents();
+			Set<Transition> cutoffs = BP.getCutoffEvents();
 			for (Transition cutoff : cutoffs) {
-				occNet.removeVertices(occNet.getSuccessors(cutoff));
-				Transition corr = occNet.getCorrespondingEvent(cutoff);
-				for (Place pcorr : occNet.getPostset(corr))
-					occNet.addFlow(cutoff, pcorr);
+				BP.removeVertices(BP.getSuccessors(cutoff));
+				Transition corr = BP.getCorrespondingEvent(cutoff);
+				for (Place pcorr : BP.getPostset(corr))
+					BP.addFlow(cutoff, pcorr);
 			}
 			
-			TransitiveClosure<Flow, Node> tc = new TransitiveClosure<Flow,Node>(occNet);
+			TransitiveClosure<Flow, Node> tc = new TransitiveClosure<Flow,Node>(BP);
 			
 			for (Map.Entry<Place,Set<Transition>> entry : p2s.entrySet()) {
 				boolean flag = false;
@@ -154,7 +156,7 @@ public class SoundUnfolding extends ProperUnfolding {
 				}
 				
 				if (!flag)
-					this.deadlock.add(occNet.getCondition(entry.getKey()));
+					this.deadlock.add(BP.getCondition(entry.getKey()));
 			}
 		}
 		

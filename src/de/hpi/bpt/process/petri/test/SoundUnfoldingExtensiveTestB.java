@@ -17,7 +17,7 @@ import de.hpi.bpt.process.petri.Place;
 import de.hpi.bpt.process.petri.Transition;
 import de.hpi.bpt.process.petri.unf.OccurrenceNet;
 import de.hpi.bpt.process.petri.unf.SoundUnfolding;
-import de.hpi.bpt.process.petri.unf.copy.Utils;
+import de.hpi.bpt.process.petri.unf.Utils;
 import de.hpi.bpt.process.petri.util.LolaSoundnessChecker;
 import de.hpi.bpt.process.petri.util.TransformationException;
 import de.hpi.bpt.process.serialize.JSON2Process;
@@ -36,12 +36,13 @@ public class SoundUnfoldingExtensiveTestB extends TestCase {
 		int count = 0;
 		DirectedGraphAlgorithms<ControlFlow,Node> dga = new DirectedGraphAlgorithms<ControlFlow,Node>();
 		for (String name : modelsDir.list()) {
-			if (name.endsWith(".json")) {
+			if (name.endsWith(".json"))	{
 				Process p = loadProcess(MODELS_DIR + File.separator + name);
 				if (dga.hasCycles(p)) continue;
 				
 				count++;
-				if (count<170) continue;
+				if (count<314) continue;
+				System.out.println(count);
 				
 				System.out.print(name + " ... ");
 				PetriNet net = Utils.process2net(p);
@@ -49,6 +50,7 @@ public class SoundUnfoldingExtensiveTestB extends TestCase {
 				for (Place place : net.getPlaces()) place.setName("p"+cp++);
 				for (Transition trans : net.getTransitions()) trans.setName("t"+ct++);
 				Utils.addInitialMarking(net);
+				
 				SoundUnfolding unf = new SoundUnfolding(net);
 				
 				if (unf.isSound()) {
@@ -82,13 +84,18 @@ public class SoundUnfoldingExtensiveTestB extends TestCase {
 					System.out.print("\tUNSOUND");
 				}
 				
-				boolean soundLola = LolaSoundnessChecker.isSound(net);
-				if (soundLola) System.out.println("\tSOUND");
-				else System.out.println("\tUNSOUND");
+				boolean soundLola = false;
+				try {
+					soundLola = LolaSoundnessChecker.isSound(net);
+					if (soundLola) System.out.println("\tSOUND");
+					else System.out.println("\tUNSOUND");	
+				} catch (IOException e) {
+					System.out.println("\tWARNING");
+				}
 				
 				if (unf.isSound() != soundLola) out.close();
 				assertEquals(soundLola, unf.isSound());
-				if (count==185) break;
+				//if (count==218) break;
 			}
 		}
 		

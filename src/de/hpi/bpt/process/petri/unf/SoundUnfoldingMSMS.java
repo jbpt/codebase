@@ -2,15 +2,14 @@ package de.hpi.bpt.process.petri.unf;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import de.hpi.bpt.graph.algo.CombinationGenerator;
-import de.hpi.bpt.graph.algo.DirectedGraphAlgorithms;
-import de.hpi.bpt.process.petri.Flow;
-import de.hpi.bpt.process.petri.Node;
 import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.Place;
 import de.hpi.bpt.process.petri.Transition;
-import de.hpi.bpt.process.petri.unf.order.EsparzaTotalAdequateOrderForSafeSystems;
+import de.hpi.bpt.process.petri.unf.order.EsparzaAdequateOrderForArbitrarySystems;
 
 /**
  * Unfolding for soundness checks (multi-source-multi-sink nets)
@@ -20,45 +19,105 @@ import de.hpi.bpt.process.petri.unf.order.EsparzaTotalAdequateOrderForSafeSystem
  * @author Artem Polyvyanyy
  */
 public class SoundUnfoldingMSMS extends SoundUnfolding {
+
+	protected PetriNet originalNet = null;
 	
+	/**
+	 * Constructor
+	 * 
+	 * @param pn net to unfold
+	 */
 	public SoundUnfoldingMSMS(PetriNet pn) {
-		if (!pn.isFreeChoice()) return; // must be free choice new IllegalArgumentException ();
-		DirectedGraphAlgorithms<Flow,Node> dga = new DirectedGraphAlgorithms<Flow,Node>();
-		if (dga.hasCycles(pn)) return; // must be acyclic
+		// perform structural checks
+		if (!pn.isFreeChoice()) throw new IllegalArgumentException("Net must be free choice!");
+		if (dga.hasCycles(pn)) throw new IllegalArgumentException("Net must be acyclic!");
 		
-		this.constructAugmentedNet(pn);
+		// initialization
+		this.originalNet = pn;
+		this.net = this.constructAugmentedVersion(this.originalNet);
 		this.totalOrderTs = new ArrayList<Transition>(this.net.getTransitions());
 		
 		UnfoldingSetup setup = new UnfoldingSetup();
-		setup.ADEQUATE_ORDER = new EsparzaTotalAdequateOrderForSafeSystems();
-		setup.MAX_BOUND	= Integer.MAX_VALUE;
-		setup.MAX_EVENTS = Integer.MAX_VALUE;
-		
+		setup.ADEQUATE_ORDER = new EsparzaAdequateOrderForArbitrarySystems();
+		setup.MAX_BOUND		 = Integer.MAX_VALUE;
+		setup.MAX_EVENTS	 = Integer.MAX_VALUE;
 		this.setup = setup;
 		
+		// construct unfolding
 		this.construct();
 	}
 
-	private void constructAugmentedNet(PetriNet net) {
-		try { this.net = (PetriNet) net.clone(); } 
-		catch (CloneNotSupportedException e) { e.printStackTrace(); }
+	/**
+	 * Construct the augmented version of the net
+	 * - Add a fresh source place s 
+	 * - Add a fresh start transition t_c for every combination c of source places of the net
+	 * - Add a fresh flow from s to every start transition
+	 * - For every start transition t_c, add fresh flow from t_c to every place in c
+	 * 
+	 * @param net net
+	 */
+	private PetriNet constructAugmentedVersion(PetriNet net) {
+		PetriNet result = null;
 		
-		Collection<Place> sources = this.net.getSourcePlaces();
-		Place s = new Place("s");
-		this.net.addNode(s);
+		try { 
+			result = (PetriNet) net.clone(); 
+		} catch (CloneNotSupportedException e) { 
+			return result;
+		}
+		
+		Collection<Place> sources = result.getSourcePlaces();
+		Place s = new Place();
 		for (int i=0; i<sources.size(); i++) {
 			CombinationGenerator<Place> cg = new CombinationGenerator<Place>(sources, i+1);
 			while (cg.hasMore()) {
 				Collection<Place> comb = cg.getNextCombination();
 				Transition t = new Transition();
-				this.net.addNode(t);
-				this.net.addFlow(s, t);
+				result.addFlow(s,t);
 				for (Place p : comb) {
-					this.net.addFlow(t, p);
+					result.addFlow(t,p);
 				}
 			}
 		}
 		
-		Utils.addInitialMarking(this.net);
+		Utils.addInitialMarking(result);
+		return  result;
+	}
+	
+	@Override
+	public PetriNet getNet() {
+		return this.originalNet;
+	}
+	
+	@Override
+	public boolean isSound() {
+		Collection<Transition> augTs = new ArrayList<Transition>(this.net.getTransitions());
+		Collection<Transition> augStartTs = new ArrayList<Transition>(this.net.getPostset(this.net.getSourcePlaces().iterator().next()));
+		augTs.removeAll(augStartTs);
+		
+		Set<Condition> cs = new HashSet<Condition>(this.getLocallyUnsafeConditions());
+		cs.addAll(this.getLocalDeadlockConditions());
+		
+		for (Event e : this.getEvents()) {
+			boolean flag = false;
+			for (Condition c : cs) {
+				if (this.areCausal(e,c) || this.areCausal(c,e)) {
+					flag = true;
+					break;
+				}
+			}
+			if (flag) continue;
+			
+			augTs.remove(e.getTransition());
+		}
+		
+		return augTs.isEmpty();
+	}
+	
+	/**
+	 * Get original net without augmentation
+	 * @return original net
+	 */
+	public PetriNet getOriginalNet() {
+		return this.originalNet;
 	}
 }

@@ -15,10 +15,10 @@ import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.Place;
 import de.hpi.bpt.process.petri.Transition;
 
-import de.hpi.bpt.process.petri.unf.copy.Unfolding;
-import de.hpi.bpt.process.petri.unf.copy.UnfoldingSetup;
-import de.hpi.bpt.process.petri.unf.copy.Utils;
-import de.hpi.bpt.process.petri.unf.order.copy.EsparzaTotalAdequateOrderForSafeSystems;
+import de.hpi.bpt.process.petri.unf.Unfolding;
+import de.hpi.bpt.process.petri.unf.UnfoldingSetup;
+import de.hpi.bpt.process.petri.unf.Utils;
+import de.hpi.bpt.process.petri.unf.order.EsparzaAdequateTotalOrderForSafeSystems;
 
 import de.hpi.bpt.process.petri.util.PNAPIMapper;
 import de.hpi.bpt.process.petri.util.TransformationException;
@@ -53,7 +53,7 @@ public class UnfoldingExtensiveTest extends TestCase {
 				
 				// Compute jBPT unfolding
 				UnfoldingSetup setup = new UnfoldingSetup();
-				setup.ADEQUATE_ORDER = new EsparzaTotalAdequateOrderForSafeSystems();
+				setup.ADEQUATE_ORDER = new EsparzaAdequateTotalOrderForSafeSystems();
 				start = System.nanoTime();
 				Unfolding unf = new Unfolding(net,setup);
 				stop = System.nanoTime();

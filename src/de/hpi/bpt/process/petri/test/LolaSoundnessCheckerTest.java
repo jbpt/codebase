@@ -2,12 +2,12 @@ package de.hpi.bpt.process.petri.test;
 
 import java.io.IOException;
 
+import junit.framework.TestCase;
 import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.Place;
 import de.hpi.bpt.process.petri.Transition;
 import de.hpi.bpt.process.petri.util.LolaSoundnessChecker;
 import de.hpi.bpt.process.serialize.SerializationException;
-import junit.framework.TestCase;
 
 public class LolaSoundnessCheckerTest extends TestCase {
 

@@ -21,7 +21,7 @@ import de.hpi.bpt.process.petri.unf.Unfolding;
 import de.hpi.bpt.process.petri.unf.UnfoldingSetup;
 import de.hpi.bpt.process.petri.unf.Utils;
 import de.hpi.bpt.process.petri.unf.order.EsparzaAdequateOrderForArbitrarySystems;
-import de.hpi.bpt.process.petri.unf.order.EsparzaTotalAdequateOrderForSafeSystems;
+import de.hpi.bpt.process.petri.unf.order.EsparzaAdequateTotalOrderForSafeSystems;
 import de.hpi.bpt.process.petri.unf.order.UnfoldingAdequateOrder;
 import de.hpi.bpt.process.petri.util.PNAPIMapper;
 import de.hpi.bpt.process.petri.util.TransformationException;
@@ -201,7 +201,7 @@ public class UnfoldingTest extends TestCase {
 		IOUtils.toFile("net1b.dot", net.toDOT());
 		
 		UnfoldingSetup setup = new UnfoldingSetup();
-		setup.ADEQUATE_ORDER = new EsparzaTotalAdequateOrderForSafeSystems();
+		setup.ADEQUATE_ORDER = new EsparzaAdequateTotalOrderForSafeSystems();
 		Unfolding bp = new Unfolding(net,setup);
 				
 		OccurrenceNet bpnet = bp.getOccurrenceNet();
@@ -338,7 +338,7 @@ public class UnfoldingTest extends TestCase {
 		IOUtils.toFile("net2b.dot", net.toDOT());
 		
 		UnfoldingSetup setup = new UnfoldingSetup();
-		setup.ADEQUATE_ORDER = new EsparzaTotalAdequateOrderForSafeSystems();
+		setup.ADEQUATE_ORDER = new EsparzaAdequateTotalOrderForSafeSystems();
 		Unfolding bp = new Unfolding(net,setup);
 		
 		OccurrenceNet bpnet = bp.getOccurrenceNet();
@@ -403,8 +403,8 @@ public class UnfoldingTest extends TestCase {
 		bpnet = unf.getOccurrenceNet();
 		IOUtils.toFile("unfEspArbitrary.dot", bpnet.toDOT());
 		
-		//setup.ADEQUATE_ORDER = new EsparzaTotalAdequateOrderForSafeSystems();
-		unf = new ProperUnfolding(net);
+		setup.ADEQUATE_ORDER = new EsparzaAdequateTotalOrderForSafeSystems();
+		unf = new ProperUnfolding(net,setup);
 		bpnet = unf.getOccurrenceNet();
 		IOUtils.toFile("unfEspSafe.dot", bpnet.toDOT());
 	}
@@ -465,17 +465,14 @@ public class UnfoldingTest extends TestCase {
 		IOUtils.toFile("netPhilosophers.dot", net.toDOT());
 		
 		UnfoldingSetup setup = new UnfoldingSetup();
-		setup.ADEQUATE_ORDER = new EsparzaTotalAdequateOrderForSafeSystems();
-		//setup.MAX_EVENTS = 6;
+		setup.ADEQUATE_ORDER = new EsparzaAdequateTotalOrderForSafeSystems();
 		
 		Unfolding unf = new Unfolding(net,setup);
 		OccurrenceNet bpnet = unf.getOccurrenceNet();
 		IOUtils.toFile("unfPhilosophers.dot", bpnet.toDOT());
 		
-		// Unfold with UMA
-		
+		// Unfold with UMA	
 		DNodeBP umaunf = UMAUnfolderWrapper.getUMAUnfolding(PNAPIMapper.jBPT2PNAPI(net));
 		IOUtils.toFile("unfPhilosophersUMA.dot", umaunf.toDot());
 	}
-		
 }

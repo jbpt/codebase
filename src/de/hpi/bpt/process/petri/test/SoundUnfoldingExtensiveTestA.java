@@ -11,7 +11,7 @@ import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.Place;
 import de.hpi.bpt.process.petri.Transition;
 import de.hpi.bpt.process.petri.unf.SoundUnfolding;
-import de.hpi.bpt.process.petri.unf.copy.Utils;
+import de.hpi.bpt.process.petri.unf.Utils;
 import de.hpi.bpt.process.petri.util.TransformationException;
 import de.hpi.bpt.process.serialize.JSON2Process;
 import de.hpi.bpt.process.serialize.SerializationException;
