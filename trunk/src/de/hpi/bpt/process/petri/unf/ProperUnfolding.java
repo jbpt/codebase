@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import de.hpi.bpt.process.petri.PetriNet;
-import de.hpi.bpt.process.petri.unf.order.EsparzaTotalAdequateOrderForSafeSystems;
 
 /**
  * Proper complete prefix unfolding
@@ -15,16 +14,14 @@ import de.hpi.bpt.process.petri.unf.order.EsparzaTotalAdequateOrderForSafeSystem
  */
 public class ProperUnfolding extends Unfolding {
 	
-	protected static UnfoldingSetup properSetup = new UnfoldingSetup(); 
-	
-	static {
-		ProperUnfolding.properSetup.ADEQUATE_ORDER = new EsparzaTotalAdequateOrderForSafeSystems();		
-	}
-
 	protected ProperUnfolding() {}
+
+	public ProperUnfolding(PetriNet pn) {
+		super(pn);
+	}
 	
-	public ProperUnfolding(PetriNet pn) {	
-		super(pn,ProperUnfolding.properSetup);
+	public ProperUnfolding(PetriNet pn, UnfoldingSetup setup) {
+		super(pn, setup);
 	}
 
 	/**

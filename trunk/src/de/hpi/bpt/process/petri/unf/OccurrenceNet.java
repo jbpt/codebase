@@ -18,7 +18,8 @@ import de.hpi.bpt.process.petri.Transition;
  * 
  * @author Artem Polyvyanyy
  */
-public class OccurrenceNet extends PetriNet {	
+public class OccurrenceNet extends PetriNet {
+
 	private Unfolding unf = null;
 	
 	private Map<Transition,Event> t2e = new HashMap<Transition,Event>();
@@ -34,14 +35,14 @@ public class OccurrenceNet extends PetriNet {
 	private void construct() {
 		for (Event e : this.unf.getEvents()) {
 			Transition t = new Transition(e.getName());
-			this.addVertex(t); // TODO
+			this.addVertex(t);
 			e2t.put(e,t);
 			t2e.put(t,e);
 		}
 			
 		for (Condition c : this.unf.getConditions()) {
 			Place p = new Place(c.getName());
-			this.addVertex(p); // TODO
+			this.addVertex(p);
 			c2p.put(c,p);
 			p2c.put(p,c);
 		}
@@ -164,5 +165,18 @@ public class OccurrenceNet extends PetriNet {
 		result += "}\n";
 		
 		return result;
+	}
+	
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		OccurrenceNet clone = (OccurrenceNet) super.clone();
+		
+		clone.unf = this.unf;
+		clone.c2p = new HashMap<Condition,Place>(this.c2p);
+		clone.p2c = new HashMap<Place,Condition>(this.p2c);
+		clone.t2e = new HashMap<Transition,Event>(this.t2e);
+		clone.e2t = new HashMap<Event,Transition>(this.e2t);
+		
+		return clone;
 	}
 }

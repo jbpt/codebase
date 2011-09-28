@@ -52,6 +52,8 @@ public class Unfolding {
 	// initial branching process
 	protected Cut initialBP = new Cut();
 	
+	private OccurrenceNet occNet = null;
+	
 	/**
 	 * Dummy constructor
 	 */
@@ -63,7 +65,7 @@ public class Unfolding {
 	 * @param pn net system to unfold
 	 */
 	public Unfolding(PetriNet pn) {
-		this(pn,new UnfoldingSetup());
+		this(pn, new UnfoldingSetup());
 	}
 	
 	/**
@@ -589,7 +591,10 @@ public class Unfolding {
 	 * @return occurrence net
 	 */
 	public OccurrenceNet getOccurrenceNet() {
-		return new OccurrenceNet(this);
+		if (this.occNet == null)
+			this.occNet = new OccurrenceNet(this); 
+		
+		return this.occNet; 
 	}
 	
 	/**

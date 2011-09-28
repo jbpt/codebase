@@ -19,7 +19,7 @@ import de.hpi.bpt.hypergraph.abs.Vertex;
  *
  */
 public class PetriNet extends AbstractDirectedGraph<Flow, Node> implements Cloneable {
-	
+
 	/**
 	 * Silent transitions shall carry the following label.
 	 */

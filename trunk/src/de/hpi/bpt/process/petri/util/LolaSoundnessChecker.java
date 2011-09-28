@@ -8,6 +8,7 @@ import java.io.StringWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.util.concurrent.TimeoutException;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -20,26 +21,45 @@ import org.w3c.dom.Document;
 import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.serialize.SerializationException;
 
+
 public class LolaSoundnessChecker {
 	private static final String LOLA_URI = "http://esla.informatik.uni-rostock.de/service-tech/.lola/lola.php";
-	private static int TIMEOUT = 2000;
+	private static int TIMEOUT = 60000;
+	private static int N = 5;
 	
 	/**
 	 * Uses the LoLA service to check the soundness of the given {@link PetriNet}.
 	 * @param petrinet to check
-	 * @return true if petrinet is sound
+	 * @return true if Petri net is sound
 	 * @throws IOException
+	 * @throws TimeoutException 
+	 * @throws SerializationException 
+	 * @throws IOException 
 	 */
-	public static boolean isSound(PetriNet net) throws IOException, SerializationException {
+	public static boolean isSound(PetriNet net) throws SerializationException, IOException {
 		String pnml = serializePetriNet(net);
-		String response = callLola(pnml, LOLA_URI);
-		return analyseResponse(response);
+		boolean result = false;
+		
+		for (int i=0; i<LolaSoundnessChecker.N; i++) {
+			String response = callLola(pnml, LOLA_URI);
+			try { result = analyseResponse(response); }
+			catch (IllegalArgumentException e) {
+				if (i==LolaSoundnessChecker.N-1) throw new IOException("Lola service failure!");
+				
+				System.err.println("TRY AGAIN");
+				continue;
+			}
+			return result;
+		}
+		
+		return result;
 	}
 
 	/**
-	 * Creates a PNML XML string from the given petrinet.
+	 * Creates a PNML XML string from the given Petri net.
 	 * @param petrinet to serialize
 	 * @return PNML string
+	 * @throws SerializationException 
 	 */
 	private static String serializePetriNet(PetriNet net) throws SerializationException {
 		Document doc = PetriNet2PNML.convert(net, PetriNet2PNML.LOLA);
@@ -56,16 +76,16 @@ public class LolaSoundnessChecker {
 		} catch (TransformerException e) {
 			e.printStackTrace();
 			throw new SerializationException(e.getMessage());
-		} 
+		}
 		return ((StringWriter) streamResult.getWriter()).getBuffer().toString();
 	}
 	
 	/**
 	 * Calls the LoLA service with the given PNML under the given URL.
-	 * @param pnml of the petrinet
+	 * @param pnml of the Petri net
 	 * @param address - URL of the LoLA service 
 	 * @return text response from LoLA
-	 * @throws IOException
+	 * @throws IOException 
 	 */
 	private static String callLola(String pnml, String address) throws IOException {
 		URL url = new URL(address);
@@ -96,8 +116,8 @@ public class LolaSoundnessChecker {
 	 * @param response from LoLA
 	 * @return true if all checks were positive
 	 */
-	private static boolean analyseResponse(String response) {
-		// simply check for soundness
-		return response.toLowerCase().matches(".*?;soundness = true;.*");
+	private static boolean analyseResponse(String response) throws IllegalArgumentException {
+		if (response.toLowerCase().matches(".*warning.*")) throw new IllegalArgumentException("Warning in response!");
+		return response.toLowerCase().matches(".*;soundness = true;.*");
 	}
 }
