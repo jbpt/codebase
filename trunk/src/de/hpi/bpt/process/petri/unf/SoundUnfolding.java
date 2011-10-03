@@ -1,14 +1,10 @@
 package de.hpi.bpt.process.petri.unf;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import de.hpi.bpt.graph.algo.DirectedGraphAlgorithms;
-import de.hpi.bpt.graph.algo.TransitiveClosure;
 import de.hpi.bpt.process.petri.Flow;
 import de.hpi.bpt.process.petri.Node;
 import de.hpi.bpt.process.petri.PetriNet;
@@ -78,85 +74,26 @@ public class SoundUnfolding extends ProperUnfolding {
 	public Set<Condition> getLocalDeadlockConditions() {
 		if (this.deadlock == null) {
 			this.deadlock = new HashSet<Condition>();			
-			OccurrenceNet BP = null;
-			try { BP = (OccurrenceNet) this.getOccurrenceNet().clone(); } 
-			catch (CloneNotSupportedException e) { e.printStackTrace(); }
+			OccurrenceNet BP = this.getOccurrenceNet();
 			
-			// p* is empty, nu(p)* is not empty, and there exists no t in *p that is a cutoff
 			for (Place p : BP.getPlaces()) {
 				if (BP.getPostset(p).isEmpty() && !this.net.getPostset(BP.getCondition(p).getPlace()).isEmpty()) {
-					if (!BP.getPreset(p).isEmpty()) {
-						Transition t = BP.getPreset(p).iterator().next();
-						if (!BP.isCutoffEvent(t))
-							this.deadlock.add(BP.getCondition(p));
-					}
-					else
-						this.deadlock.add(BP.getCondition(p));
+					this.deadlock.add(BP.getCondition(p));
 				}
 			}
-			
-			// !!!
-			Collection<Place> sinks = BP.getSinkPlaces();
-			Map<Place,Set<Transition>> p2s = new HashMap<Place,Set<Transition>>(); 
-			
+						
 			for (Place p : BP.getPlaces()) {
-				boolean flag = false;
-				
 				for (Transition t : BP.getPostset(p)){					
 					for (Place p1 : BP.getPreset(t)) {
 						if (p.equals(p1)) continue;
 						
-						for (Place p2 : sinks) {
-							if (BP.getOrderingRelation(p,p2)==OrderingRelation.CONFLICT && 
-									BP.getOrderingRelation(p1,p2)==OrderingRelation.CONCURRENT) {
-								
-								if (BP.getPreset(p2).size()==0) {
-									this.deadlock.add(BP.getCondition(p));
-									p2s.remove(p);
-									flag = true;
-									break;
-								}
-								
-								Transition t1 = BP.getPreset(p2).iterator().next();
-								if (!BP.isCutoffEvent(t1)) {
-									this.deadlock.add(BP.getCondition(p));
-									p2s.remove(p);
-									flag = true;
-									break;
-								}
-								else {
-									if (p2s.get(p)==null) p2s.put(p, new HashSet<Transition>());
-									p2s.get(p).add(t1);
-								}
+						for (Place p2 : BP.getSinkPlaces()) {
+							if (BP.getOrderingRelation(p,p2)==OrderingRelation.CONFLICT && BP.getOrderingRelation(p1,p2)==OrderingRelation.CONCURRENT) {
+								this.deadlock.add(BP.getCondition(p));
 							}
 						}
-						if (flag) break;
-					}	
-				}
-			}
-			
-			// update occurrence net (re-wire)
-			Set<Transition> cutoffs = BP.getCutoffEvents();
-			for (Transition cutoff : cutoffs) {
-				BP.removeVertices(BP.getSuccessors(cutoff));
-				Transition corr = BP.getCorrespondingEvent(cutoff);
-				for (Place pcorr : BP.getPostset(corr))
-					BP.addFlow(cutoff, pcorr);
-			}
-			
-			TransitiveClosure<Flow, Node> tc = new TransitiveClosure<Flow,Node>(BP);
-			
-			for (Map.Entry<Place,Set<Transition>> entry : p2s.entrySet()) {
-				boolean flag = false;
-				for (Transition t : entry.getValue()) {
-					if (tc.hasPath(t,entry.getKey())) {
-						flag = true;
-						break;
 					}
 				}
-				
-				if (!flag)
-					this.deadlock.add(BP.getCondition(entry.getKey()));
 			}
 		}
 		
