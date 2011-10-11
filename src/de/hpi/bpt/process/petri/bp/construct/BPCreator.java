@@ -2,38 +2,38 @@ package de.hpi.bpt.process.petri.bp.construct;
 
 import java.util.Collection;
 
-import de.hpi.bpt.process.petri.Node;
-import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.bp.BehaviouralProfile;
 
 /**
  * Interface for all computations that derive a behavioural 
- * profile for a Petri net.
+ * profile for a model.
  * 
  * @author matthias.weidlich
  *
  */
-public interface BPCreator {
+public interface BPCreator<M, N> {
 
 	/**
-	 * Returns the behavioural profile for the given Petri net. Depending on 
-	 * the concrete creator, the profile is computed either for all transitions 
-	 * or for all nodes.
+	 * Returns the behavioural profile for the given model. Depending on 
+	 * the concrete creator, the profile relations are computed for a distinguished set 
+	 * of entities. For instance, if the model is a Petri net, the behavioural 
+	 * profile may be derived for all nodes or all transitions.
 	 * 
-	 * @param Petri net
-	 * @return the behavioural profile for the Petri net
+	 * @param model, a model
+	 * @return the behavioural profile of the model
 	 */
-	public BehaviouralProfile deriveBehaviouralProfile(PetriNet pn);
+	public BehaviouralProfile<M, N> deriveBehaviouralProfile(M model);
 
 	/**
-	 * Returns the behavioural profile for the given collection of nodes 
-	 * of the Petri net. Whether this collection must comprise solely transitions 
-	 * or is allowed to comprise places depends on the implementation of the creator.
+	 * Returns the behavioural profile for the given collection of entities 
+	 * of the model. Creator classes may implicitly restrict this set.
+	 * For instance, if the model is a Petri net, some creators may
+	 * requires the set of entities to contain only transitions.
 	 * 
-	 * @param Petri net
-	 * @param a collection of nodes of the Petri net
-	 * @return the behavioural profile for the Petri net
+	 * @param model, a model
+	 * @param a collection of entities of the model
+	 * @return the behavioural profile of the model
 	 */
-	public BehaviouralProfile deriveBehaviouralProfile(PetriNet pn, Collection<Node> nodes);
+	public BehaviouralProfile<M, N> deriveBehaviouralProfile(M model, Collection<N> entities);
 
 }

@@ -6,63 +6,61 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
-import de.hpi.bpt.process.petri.Node;
-import de.hpi.bpt.process.petri.PetriNet;
-
 /**
- * Captures the causal behavioural profile for a Petri net. The causal profile
- * adds the co-occurrence relation to the behavioural profile.
+ * Captures the causal behavioural profile for a model (e.g., a Petri net). 
+ * The causal behavioural profile adds the co-occurrence relation to the 
+ * behavioural profile.
  * 
  * @author matthias.weidlich
  *
  */
-public class CausalBehaviouralProfile extends BehaviouralProfile {
+public class CausalBehaviouralProfile<M, N> extends BehaviouralProfile<M, N> {
 
 	/**
-	 * Matrix that captures co-occurrence for the Cartesian product of nodes 
+	 * Matrix that captures co-occurrence for the Cartesian product of entities 
 	 * over which the profile is defined. Those are defined by a list member of 
-	 * the behavioral profile.
+	 * the behavioural profile.
 	 */
 	protected boolean[][] cooccurrenceMatrix;
 	
 	/**
 	 * Create a causal behavioural profile structure for a given Petri net and a 
-	 * given list of nodes.
+	 * given list of entities.
 	 * 
 	 * @param pn
-	 * @param nodes
+	 * @param entities
 	 */
-	public CausalBehaviouralProfile(PetriNet pn, List<Node> nodes) {
-		super(pn,nodes);
-		this.cooccurrenceMatrix = new boolean[super.nodes.size()][super.nodes.size()];
+	public CausalBehaviouralProfile(M model, List<N> entities) {
+		super(model,entities);
+		this.cooccurrenceMatrix = new boolean[super.entities.size()][super.entities.size()];
 	}
 	
 	/**
 	 * Creates a causal behavioural profile structure for a given Petri net and 
-	 * a dedicated collection of nodes of the Petri net.
+	 * a dedicated collection of entities of the Petri net.
 	 * 
 	 * Wrapper method that creates a list from the given collection.
 	 * 
 	 * @param the Petri net
-	 * @param a collection of nodes of the Petri net
+	 * @param a collection of entities of the Petri net
 	 */
-	public CausalBehaviouralProfile(PetriNet pn, Collection<Node> nodes) {
-		this(pn,new ArrayList<Node>(nodes));
+	public CausalBehaviouralProfile(M model, Collection<N> entities) {
+		this(model,new ArrayList<N>(entities));
 	}
 
 	
 	/**
-	 * Checks whether two given nodes are co-occurring.
+	 * Checks whether two given entities are co-occurring.
 	 * 
 	 * @param n1
 	 * @param n2
-	 * @return true, if both nodes are co-occurring
+	 * @return true, if both entities are co-occurring
 	 */
-	public boolean areCooccurring(Node n1, Node n2) {
-		int index1 = this.nodes.indexOf(n1);
-		int index2 = this.nodes.indexOf(n2);
+	public boolean areCooccurring(N n1, N n2) {
+		int index1 = this.entities.indexOf(n1);
+		int index2 = this.entities.indexOf(n2);
 		if (index1 == -1 || index2 == -1)
-			throw new InvalidParameterException("The profile is not defined for the respective nodes.");
+			throw new InvalidParameterException("The profile is not defined for the respective entities.");
 		return cooccurrenceMatrix[index1][index2];
 	}
 	
@@ -82,20 +80,20 @@ public class CausalBehaviouralProfile extends BehaviouralProfile {
 	 * Checks equality for two causal behavioural profiles
 	 * 
 	 * Returns false, if both matrices are not based on the same
-	 * Petri net or on the same set of nodes. This check is done
+	 * Petri net or on the same set of entities. This check is done
 	 * when equivalence is determined for the relations of the 
 	 * behavioural profile.
 	 * 
 	 * @param profile that should be compared
 	 * @return true, if the given profile is equivalent to this profile
 	 */
-	public boolean equals (CausalBehaviouralProfile profile) {
+	public boolean equals (CausalBehaviouralProfile<M, N> profile) {
 		boolean equal = super.equals(profile);
 		if (!equal)
 			return equal;
 		
-		for(Node n1 : super.nodes) {
-			for(Node n2 : super.nodes) {
+		for(N n1 : super.entities) {
+			for(N n2 : super.entities) {
 				equal &= (this.areCooccurring(n1, n2) == profile.areCooccurring(n1, n2));
 			}
 		}
@@ -104,28 +102,28 @@ public class CausalBehaviouralProfile extends BehaviouralProfile {
 	
 	/**
 	 * Checks equality for two causal behavioural profiles only for the
-	 * shared nodes. That is, we assess whether the profiles define
-	 * equal relations (including co-occurrence) for all nodes for 
+	 * shared entities. That is, we assess whether the profiles define
+	 * equal relations (including co-occurrence) for all entities for 
 	 * which both profiles are defined.
 	 * 
 	 * Returns false, if both matrices are not based on the same
-	 * Petri net. This check is done
+	 * model. This check is done
 	 * when equivalence is determined for the relations of the 
 	 * behavioural profile.
 	 * 
 	 * @param profile that should be compared
 	 * @return true, if the given profile is equivalent to this profile
 	 */
-	public boolean equalsForSharedNodes (CausalBehaviouralProfile profile) {
+	public boolean equalsForSharedNodes (CausalBehaviouralProfile<M, N> profile) {
 		boolean equal = super.equals(profile);
 		if (!equal)
 			return equal;
 		
-		HashSet<Node> sharedNodes = new HashSet<Node>(this.getNodes());
-		sharedNodes.retainAll(profile.getNodes()); 
+		HashSet<N> sharedNodes = new HashSet<N>(this.getEntities());
+		sharedNodes.retainAll(profile.getEntities()); 
 		
-		for(Node n1 : sharedNodes) {
-			for(Node n2 : sharedNodes) {
+		for(N n1 : sharedNodes) {
+			for(N n2 : sharedNodes) {
 				equal &= (this.areCooccurring(n1, n2) == profile.areCooccurring(n1, n2));
 			}
 		}

@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.hpi.bpt.process.petri.Node;
+import de.hpi.bpt.process.petri.PetriNet;
 
 
 /**
  * This class implements set-algebraic operations and relations for 
- * behavioural profiles. It comprises only those operations and relations
+ * behavioural profiles. Currently, it is limited to behaviuoral profiles
+ * of Petri nets. It comprises only those operations and relations
  * that are defined for pairs of aligned profiles. The emptiness check and 
  * the complement operation are defined in <code>BehaviouralProfile</code>.
  * 
@@ -37,8 +39,8 @@ public class BehaviouralProfileAlgebra {
 		
 		for (Node v1 : alignment.getAlignedVerticesOfFirstGraph()) {
 			for (Node v2 : alignment.getAlignedVerticesOfFirstGraph()) {
-				RelSetType relation1 = alignment.getFirstRelationSet().getRelationForNodes(v1, v2);
-				RelSetType relation2 = alignment.getSecondRelationSet().getRelationForNodes(
+				RelSetType relation1 = alignment.getFirstRelationSet().getRelationForEntities(v1, v2);
+				RelSetType relation2 = alignment.getSecondRelationSet().getRelationForEntities(
 						alignment.getCorrespondingVerticesForVertexOfFirstGraph(v1).iterator().next(),
 						alignment.getCorrespondingVerticesForVertexOfFirstGraph(v2).iterator().next());
 
@@ -66,8 +68,8 @@ public class BehaviouralProfileAlgebra {
 		
 		for (Node v1 : alignment.getAlignedVerticesOfSecondGraph()) {
 			for (Node v2 : alignment.getAlignedVerticesOfSecondGraph()) {
-				RelSetType relation1 = alignment.getSecondRelationSet().getRelationForNodes(v1, v2);
-				RelSetType relation2 = alignment.getFirstRelationSet().getRelationForNodes(
+				RelSetType relation1 = alignment.getSecondRelationSet().getRelationForEntities(v1, v2);
+				RelSetType relation2 = alignment.getFirstRelationSet().getRelationForEntities(
 						alignment.getCorrespondingVerticesForVertexOfSecondGraph(v1).iterator().next(),
 						alignment.getCorrespondingVerticesForVertexOfSecondGraph(v2).iterator().next());
 
@@ -103,8 +105,8 @@ public class BehaviouralProfileAlgebra {
 		
 		for (Node v1 : alignment.getAlignedVerticesOfFirstGraph()) {
 			for (Node v2 : alignment.getAlignedVerticesOfFirstGraph()) {
-				RelSetType relation1 = alignment.getFirstRelationSet().getRelationForNodes(v1, v2);
-				RelSetType relation2 = alignment.getSecondRelationSet().getRelationForNodes(
+				RelSetType relation1 = alignment.getFirstRelationSet().getRelationForEntities(v1, v2);
+				RelSetType relation2 = alignment.getSecondRelationSet().getRelationForEntities(
 						alignment.getCorrespondingVerticesForVertexOfFirstGraph(v1).iterator().next(),
 						alignment.getCorrespondingVerticesForVertexOfFirstGraph(v2).iterator().next());
 
@@ -134,18 +136,18 @@ public class BehaviouralProfileAlgebra {
 	 * @return behavioural profile that represents the intersection of the two profiles given as input
 	 * @throws IllegalArgumentException, if alignment is overlapping, not functional, or not injective 
 	 */
-	public static BehaviouralProfile intersection(RelSetAlignment alignment) throws IllegalArgumentException {
+	public static BehaviouralProfile<PetriNet, Node> intersection(RelSetAlignment alignment) throws IllegalArgumentException {
 		if (alignment.isOverlapping() || !alignment.isFunctional() || !alignment.isInjective())
 			throw new IllegalArgumentException("Alignment does not satisfy assumptions of set algebra.");
 
 		List<Node> nodeList = new ArrayList<Node>(alignment.getAlignedVerticesOfFirstGraph());
-		BehaviouralProfile profile = new BehaviouralProfile(alignment.getFirstRelationSet().getNet(),nodeList);
+		BehaviouralProfile<PetriNet, Node> profile = new BehaviouralProfile<PetriNet, Node>(alignment.getFirstRelationSet().getModel(),nodeList);
 		RelSetType[][] matrix = profile.getMatrix();
 		
 		for(Node v1 : nodeList) {
-			int index1 = profile.getNodes().indexOf(v1);
+			int index1 = profile.getEntities().indexOf(v1);
 			for(Node v2 : nodeList) {
-				int index2 = profile.getNodes().indexOf(v2);
+				int index2 = profile.getEntities().indexOf(v2);
 				
 				/*
 				 * The behavioural profile matrix is symmetric. Therefore, we 
@@ -154,8 +156,8 @@ public class BehaviouralProfileAlgebra {
 				if (index2 > index1)
 					continue;
 				
-				RelSetType relation1 = alignment.getFirstRelationSet().getRelationForNodes(v1, v2);
-				RelSetType relation2 = alignment.getSecondRelationSet().getRelationForNodes(
+				RelSetType relation1 = alignment.getFirstRelationSet().getRelationForEntities(v1, v2);
+				RelSetType relation2 = alignment.getSecondRelationSet().getRelationForEntities(
 						alignment.getCorrespondingVerticesForVertexOfFirstGraph(v1).iterator().next(),
 						alignment.getCorrespondingVerticesForVertexOfFirstGraph(v2).iterator().next());
 				
@@ -198,18 +200,18 @@ public class BehaviouralProfileAlgebra {
 	 * @return behavioural profile that represents the union of the two profiles given as input
 	 * @throws IllegalArgumentException, if alignment is overlapping, not functional, or not injective 
 	 */
-	public static BehaviouralProfile union(RelSetAlignment alignment) throws IllegalArgumentException {
+	public static BehaviouralProfile<PetriNet, Node> union(RelSetAlignment alignment) throws IllegalArgumentException {
 		if (alignment.isOverlapping() || !alignment.isFunctional() || !alignment.isInjective())
 			throw new IllegalArgumentException("Alignment does not satisfy assumptions of set algebra.");
 
 		List<Node> nodeList = new ArrayList<Node>(alignment.getAlignedVerticesOfFirstGraph());
-		BehaviouralProfile profile = new BehaviouralProfile(alignment.getFirstRelationSet().getNet(),nodeList);
+		BehaviouralProfile<PetriNet, Node> profile = new BehaviouralProfile<PetriNet, Node>(alignment.getFirstRelationSet().getModel(),nodeList);
 		RelSetType[][] matrix = profile.getMatrix();
 		
 		for(Node v1 : nodeList) {
-			int index1 = profile.getNodes().indexOf(v1);
+			int index1 = profile.getEntities().indexOf(v1);
 			for(Node v2 : nodeList) {
-				int index2 = profile.getNodes().indexOf(v2);
+				int index2 = profile.getEntities().indexOf(v2);
 				
 				/*
 				 * The behavioural profile matrix is symmetric. Therefore, we 
@@ -218,8 +220,8 @@ public class BehaviouralProfileAlgebra {
 				if (index2 > index1)
 					continue;
 				
-				RelSetType relation1 = alignment.getFirstRelationSet().getRelationForNodes(v1, v2);
-				RelSetType relation2 = alignment.getSecondRelationSet().getRelationForNodes(
+				RelSetType relation1 = alignment.getFirstRelationSet().getRelationForEntities(v1, v2);
+				RelSetType relation2 = alignment.getSecondRelationSet().getRelationForEntities(
 						alignment.getCorrespondingVerticesForVertexOfFirstGraph(v1).iterator().next(),
 						alignment.getCorrespondingVerticesForVertexOfFirstGraph(v2).iterator().next());
 				

@@ -3,21 +3,18 @@ package de.hpi.bpt.process.petri.bp;
 import java.util.Collection;
 import java.util.List;
 
-import de.hpi.bpt.process.petri.Node;
-import de.hpi.bpt.process.petri.PetriNet;
-
 
 /**
- * Captures the behavioural profile of a Petri net for a given
- * set of nodes. 
+ * Captures the behavioural profile of a model (e.g., a Petri net) for a given
+ * set of entities (e.g. nodes of a Petri net). 
  * 
  * @author matthias.weidlich
  *
  */
-public class BehaviouralProfile extends RelSet {
+public class BehaviouralProfile<M, N> extends RelSet<M, N> {
 	
-	public BehaviouralProfile(PetriNet pn, List<Node> nodes) {
-		super(pn, nodes);
+	public BehaviouralProfile(M model, List<N> entities) {
+		super(model, entities);
 		super.lookAhead = RELATION_FAR_LOOKAHEAD;
 	}
 
@@ -26,8 +23,8 @@ public class BehaviouralProfile extends RelSet {
 		super.lookAhead = RELATION_FAR_LOOKAHEAD;
 	}
 
-	public BehaviouralProfile(PetriNet pn, Collection<Node> nodes) {
-		super(pn, nodes);
+	public BehaviouralProfile(M model, Collection<N> entities) {
+		super(model, entities);
 		super.lookAhead = RELATION_FAR_LOOKAHEAD;
 	}
 

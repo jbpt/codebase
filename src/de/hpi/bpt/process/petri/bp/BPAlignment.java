@@ -14,24 +14,24 @@ import de.hpi.bpt.process.petri.PetriNet;
  */
 public class BPAlignment extends Alignment<Flow, Node> {
 	
-	protected BehaviouralProfile bp1;
-	protected BehaviouralProfile bp2;
+	protected BehaviouralProfile<PetriNet, Node> bp1;
+	protected BehaviouralProfile<PetriNet, Node> bp2;
 	
 	public BPAlignment(PetriNet net1, PetriNet net2) {
 		super(net1,net2);
 	}
 
-	public BPAlignment(BehaviouralProfile bp1, BehaviouralProfile bp2) {
-		super(bp1.getNet(),bp2.getNet());
+	public BPAlignment(BehaviouralProfile<PetriNet, Node> bp1, BehaviouralProfile<PetriNet, Node> bp2) {
+		super(bp1.getModel(),bp2.getModel());
 		this.bp1 = bp1;
 		this.bp2 = bp2;
 	}
 	
-	public BehaviouralProfile getFirstProfile() {
+	public BehaviouralProfile<PetriNet, Node> getFirstProfile() {
 		return this.bp1;
 	}
 	
-	public BehaviouralProfile getSecondProfile() {
+	public BehaviouralProfile<PetriNet, Node> getSecondProfile() {
 		return this.bp2;
 	}
 	

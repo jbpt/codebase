@@ -38,9 +38,9 @@ public class WFTree {
 	
 	private Map<Node, RPSTNode<Flow, Node>> node2ptnode = new HashMap<Node, RPSTNode<Flow, Node>>();
 	
-	private Map<RPSTNode<Flow, Node>,BehaviouralProfile> node2bp = new HashMap<RPSTNode<Flow, Node>, BehaviouralProfile>();
-	private Map<RPSTNode<Flow, Node>,CausalBehaviouralProfile> node2cbp = new HashMap<RPSTNode<Flow, Node>, CausalBehaviouralProfile>();
-	private Map<BehaviouralProfile,Map<Node,Node>> bp2nodemapping = new HashMap<BehaviouralProfile, Map<Node,Node>>();
+	private Map<RPSTNode<Flow, Node>,BehaviouralProfile<PetriNet, Node>> node2bp = new HashMap<RPSTNode<Flow, Node>, BehaviouralProfile<PetriNet, Node>>();
+	private Map<RPSTNode<Flow, Node>,CausalBehaviouralProfile<PetriNet, Node>> node2cbp = new HashMap<RPSTNode<Flow, Node>, CausalBehaviouralProfile<PetriNet, Node>>();
+	private Map<BehaviouralProfile<PetriNet, Node>,Map<Node,Node>> bp2nodemapping = new HashMap<BehaviouralProfile<PetriNet, Node>, Map<Node,Node>>();
 	
 	private Set<RPSTNode<Flow, Node>> tNodes = new HashSet<RPSTNode<Flow, Node>>();
 	private Set<RPSTNode<Flow, Node>> pNodes = new HashSet<RPSTNode<Flow, Node>>();
@@ -487,7 +487,7 @@ public class WFTree {
 		return false;
 	}
 	
-	private BehaviouralProfile getBPForFragment(RPSTNode<Flow, Node> treeNode) {
+	private BehaviouralProfile<PetriNet, Node> getBPForFragment(RPSTNode<Flow, Node> treeNode) {
 
 		/*
 		 * The subnet we are interested in. It represents the fragment.
@@ -560,7 +560,7 @@ public class WFTree {
 		
 		
 
-		BehaviouralProfile bp = BPCreatorNet.getInstance().deriveRelationSet(net);
+		BehaviouralProfile<PetriNet, Node> bp = BPCreatorNet.getInstance().deriveRelationSet(net);
 		bp2nodemapping.put(bp, nodeCopies);
 		
 		return bp;
@@ -579,7 +579,7 @@ public class WFTree {
 		if (!this.node2bp.containsKey(fragment))
 			this.node2bp.put(fragment, getBPForFragment(fragment));
 		
-		BehaviouralProfile bp = this.node2bp.get(fragment);
+		BehaviouralProfile<PetriNet, Node> bp = this.node2bp.get(fragment);
 		return bp.areExclusive(this.bp2nodemapping.get(bp).get(t1), this.bp2nodemapping.get(bp).get(t2));
 	}
 	
@@ -596,7 +596,7 @@ public class WFTree {
 		if (!this.node2bp.containsKey(fragment))
 			this.node2bp.put(fragment, getBPForFragment(fragment));
 
-		BehaviouralProfile bp = this.node2bp.get(fragment);
+		BehaviouralProfile<PetriNet, Node> bp = this.node2bp.get(fragment);
 		return bp.areInterleaving(this.bp2nodemapping.get(bp).get(t1), this.bp2nodemapping.get(bp).get(t2));
 	}
 	
@@ -613,7 +613,7 @@ public class WFTree {
 		if (!this.node2bp.containsKey(fragment))
 			this.node2bp.put(fragment, getBPForFragment(fragment));
 
-		BehaviouralProfile bp = this.node2bp.get(fragment);
+		BehaviouralProfile<PetriNet, Node> bp = this.node2bp.get(fragment);
 		return bp.areInOrder(this.bp2nodemapping.get(bp).get(t1), this.bp2nodemapping.get(bp).get(t2));
 	}
 	
@@ -624,9 +624,9 @@ public class WFTree {
 	 * @param treeNode representing the fragment
 	 * @return the complete behavioural profile for the fragment
 	 */
-	private CausalBehaviouralProfile getCBPForFragment(RPSTNode<Flow, Node> treeNode) {
-		BehaviouralProfile bp = this.getBPForFragment(treeNode);
-		CausalBehaviouralProfile cbp = CBPCreatorNet.getInstance().deriveCausalBehaviouralProfile(bp);
+	private CausalBehaviouralProfile<PetriNet, Node> getCBPForFragment(RPSTNode<Flow, Node> treeNode) {
+		BehaviouralProfile<PetriNet, Node> bp = this.getBPForFragment(treeNode);
+		CausalBehaviouralProfile<PetriNet, Node> cbp = CBPCreatorNet.getInstance().deriveCausalBehaviouralProfile(bp);
 		this.bp2nodemapping.put(cbp,this.bp2nodemapping.get(bp));
 		return cbp;
 	}
@@ -643,7 +643,7 @@ public class WFTree {
 	private boolean areCooccurringUType(Node t1, Node t2, RPSTNode<Flow, Node> fragment) {
 		if (!this.node2cbp.containsKey(fragment))
 			this.node2cbp.put(fragment, getCBPForFragment(fragment));
-		CausalBehaviouralProfile cbp = this.node2cbp.get(fragment);
+		CausalBehaviouralProfile<PetriNet, Node> cbp = this.node2cbp.get(fragment);
 		return cbp.areCooccurring(this.bp2nodemapping.get(cbp).get(t1), this.bp2nodemapping.get(cbp).get(t2));
 	}
 

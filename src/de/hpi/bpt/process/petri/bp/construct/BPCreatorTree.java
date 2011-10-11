@@ -26,7 +26,7 @@ import de.hpi.bpt.process.petri.wft.WFTree;
  * @author matthias.weidlich
  *
  */
-public class BPCreatorTree extends AbstractRelSetCreator implements RelSetCreator {
+public class BPCreatorTree extends AbstractRelSetCreator implements RelSetCreator<PetriNet, Node> {
 	
 	private static BPCreatorTree eInstance;
 	
@@ -40,11 +40,11 @@ public class BPCreatorTree extends AbstractRelSetCreator implements RelSetCreato
 		
 	}
 	
-	public BehaviouralProfile deriveRelationSet(PetriNet pn) {
+	public BehaviouralProfile<PetriNet, Node> deriveRelationSet(PetriNet pn) {
 		return deriveRelationSet(pn, new ArrayList<Node>(pn.getTransitions()));
 	}
 	
-	public BehaviouralProfile deriveRelationSet(PetriNet pn, Collection<Node> nodes) {
+	public BehaviouralProfile<PetriNet, Node> deriveRelationSet(PetriNet pn, Collection<Node> nodes) {
 
 		/*
 		 * The construction of the WF-tree may augment the original net. Therefore,
@@ -69,13 +69,13 @@ public class BPCreatorTree extends AbstractRelSetCreator implements RelSetCreato
 		
 		WFTree wfTree = new WFTree(netClone);
 		
-		BehaviouralProfile profile = new BehaviouralProfile(pn,nodes);
+		BehaviouralProfile<PetriNet, Node> profile = new BehaviouralProfile<PetriNet, Node>(pn,nodes);
 		RelSetType[][] matrix = profile.getMatrix();
 
-		for(Node t1 : profile.getNodes()) {
-			int index1 = profile.getNodes().indexOf(t1);
-			for(Node t2 : profile.getNodes()) {
-				int index2 = profile.getNodes().indexOf(t2);
+		for(Node t1 : profile.getEntities()) {
+			int index1 = profile.getEntities().indexOf(t1);
+			for(Node t2 : profile.getEntities()) {
+				int index2 = profile.getEntities().indexOf(t2);
 				/*
 				 * The matrix is symmetric. Therefore, we need to traverse only 
 				 * half of the entries.

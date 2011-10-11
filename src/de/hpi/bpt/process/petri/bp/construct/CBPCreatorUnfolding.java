@@ -18,7 +18,7 @@ import de.hpi.bpt.process.petri.bp.BehaviouralProfile;
 import de.hpi.bpt.process.petri.bp.CausalBehaviouralProfile;
 
 public class CBPCreatorUnfolding extends AbstractRelSetCreator implements
-		CBPCreator {
+		CBPCreator<PetriNet, Node> {
 	
 	
 	private static CBPCreatorUnfolding eInstance;
@@ -45,7 +45,7 @@ public class CBPCreatorUnfolding extends AbstractRelSetCreator implements
 	
 	protected Map<DNode,Set<Node>> cutOfLocalConfContainsAugmentedPlaceForTransition;
 
-	public CausalBehaviouralProfile deriveCausalBehaviouralProfile(PetriNet pn) {
+	public CausalBehaviouralProfile<PetriNet, Node> deriveCausalBehaviouralProfile(PetriNet pn) {
 		return deriveCausalBehaviouralProfile(pn, new ArrayList<Node>(pn.getTransitions()));
 	}
 
@@ -66,10 +66,10 @@ public class CBPCreatorUnfolding extends AbstractRelSetCreator implements
 
 
 	@Override
-	public CausalBehaviouralProfile deriveCausalBehaviouralProfile(PetriNet pn,
+	public CausalBehaviouralProfile<PetriNet, Node> deriveCausalBehaviouralProfile(PetriNet pn,
 			Collection<Node> nodes) {
 		
-		CausalBehaviouralProfile profile = new CausalBehaviouralProfile(pn,nodes);
+		CausalBehaviouralProfile<PetriNet, Node> profile = new CausalBehaviouralProfile<PetriNet, Node>(pn,nodes);
 		profile.setMatrix(BPCreatorUnfolding.getInstance().deriveRelationSet(pn, nodes).getMatrix());
 
 		boolean[][] cooccurrenceMatrix = profile.getCooccurrenceMatrix();
@@ -111,10 +111,10 @@ public class CBPCreatorUnfolding extends AbstractRelSetCreator implements
 
 		this.derivecutOfLocalConfContainsAugmentedPlaceForTransition(nodes);
 
-		for(Node t1 : profile.getNodes()) {
-			int index1 = profile.getNodes().indexOf(t1);
-			for(Node t2 : profile.getNodes()) {
-				int index2 = profile.getNodes().indexOf(t2);
+		for(Node t1 : profile.getEntities()) {
+			int index1 = profile.getEntities().indexOf(t1);
+			for(Node t2 : profile.getEntities()) {
+				int index2 = profile.getEntities().indexOf(t2);
 	
 				if (t1.equals(t2)) {
 					cooccurrenceMatrix[index1][index2] = true;
@@ -164,8 +164,8 @@ public class CBPCreatorUnfolding extends AbstractRelSetCreator implements
 	}	
 	
 	@Override
-	public CausalBehaviouralProfile deriveCausalBehaviouralProfile(
-			BehaviouralProfile profile) {
+	public CausalBehaviouralProfile<PetriNet, Node> deriveCausalBehaviouralProfile(
+			BehaviouralProfile<PetriNet, Node> profile) {
 		// TODO Auto-generated method stub
 		return null;
 	}

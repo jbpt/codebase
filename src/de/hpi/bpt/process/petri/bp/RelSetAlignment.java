@@ -14,24 +14,24 @@ import de.hpi.bpt.process.petri.PetriNet;
  */
 public class RelSetAlignment extends Alignment<Flow, Node> {
 	
-	protected RelSet rel1;
-	protected RelSet rel2;
+	protected RelSet<PetriNet, Node> rel1;
+	protected RelSet<PetriNet, Node> rel2;
 	
 	public RelSetAlignment(PetriNet net1, PetriNet net2) {
 		super(net1,net2);
 	}
 
-	public RelSetAlignment(RelSet bp1, RelSet bp2) {
-		super(bp1.getNet(),bp2.getNet());
+	public RelSetAlignment(RelSet<PetriNet, Node> bp1, RelSet<PetriNet, Node> bp2) {
+		super(bp1.getModel(),bp2.getModel());
 		this.rel1 = bp1;
 		this.rel2 = bp2;
 	}
 	
-	public RelSet getFirstRelationSet() {
+	public RelSet<PetriNet, Node> getFirstRelationSet() {
 		return this.rel1;
 	}
 	
-	public RelSet getSecondRelationSet() {
+	public RelSet<PetriNet, Node> getSecondRelationSet() {
 		return this.rel2;
 	}
 	
