@@ -7,10 +7,10 @@ import org.junit.Test;
 import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.Place;
 import de.hpi.bpt.process.petri.Transition;
-import de.hpi.bpt.process.petri.bp.BPAlignment;
+import de.hpi.bpt.process.petri.bp.RelSetAlignment;
 import de.hpi.bpt.process.petri.bp.BehaviouralProfile;
-import de.hpi.bpt.process.petri.bp.BehaviouralProfile.CharacteristicRelationType;
 import de.hpi.bpt.process.petri.bp.BehaviouralProfileAlgebra;
+import de.hpi.bpt.process.petri.bp.RelSetType;
 import de.hpi.bpt.process.petri.bp.construct.BPCreatorUnfolding;
 
 
@@ -84,10 +84,10 @@ public class BPAlgebraTest extends TestCase {
 		net2.addFlow(y, p23);
 		net2.addFlow(z, p24);
 		
-		BehaviouralProfile bp1 = BPCreatorUnfolding.getInstance().deriveBehaviouralProfile(net1);
-		BehaviouralProfile bp2 = BPCreatorUnfolding.getInstance().deriveBehaviouralProfile(net2);
+		BehaviouralProfile bp1 = BPCreatorUnfolding.getInstance().deriveRelationSet(net1);
+		BehaviouralProfile bp2 = BPCreatorUnfolding.getInstance().deriveRelationSet(net2);
 		
-		BPAlignment al = new BPAlignment(bp1, bp2);
+		RelSetAlignment al = new RelSetAlignment(bp1, bp2);
 		
 		al.addElementaryCorrespondence(a, x);
 		al.addElementaryCorrespondence(b, y);
@@ -100,12 +100,12 @@ public class BPAlgebraTest extends TestCase {
 		assertTrue(BehaviouralProfileAlgebra.firstSubsumesSecond(al));
 		
 		BehaviouralProfile intersection = BehaviouralProfileAlgebra.intersection(al);
-		assertTrue(intersection.getRelationForNodes(b, c).equals(CharacteristicRelationType.Exclusive));
-		assertTrue(intersection.getRelationForNodes(a, b).equals(CharacteristicRelationType.StrictOrder));
+		assertTrue(intersection.getRelationForNodes(b, c).equals(RelSetType.Exclusive));
+		assertTrue(intersection.getRelationForNodes(a, b).equals(RelSetType.Order));
 		
 		BehaviouralProfile union = BehaviouralProfileAlgebra.union(al);
-		assertTrue(union.getRelationForNodes(b, c).equals(CharacteristicRelationType.InterleavingOrder));
-		assertTrue(union.getRelationForNodes(a, b).equals(CharacteristicRelationType.StrictOrder));
+		assertTrue(union.getRelationForNodes(b, c).equals(RelSetType.Interleaving));
+		assertTrue(union.getRelationForNodes(a, b).equals(RelSetType.Order));
 		
 		
 	}

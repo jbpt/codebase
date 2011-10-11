@@ -5,7 +5,7 @@ import java.util.Collection;
 import de.hpi.bpt.process.petri.Node;
 import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.bp.BehaviouralProfile;
-import de.hpi.bpt.process.petri.bp.BehaviouralProfile.CharacteristicRelationType;
+import de.hpi.bpt.process.petri.bp.RelSetType;
 import de.hpi.bpt.process.petri.util.ConcurrencyRelation;
 
 /**
@@ -19,7 +19,7 @@ import de.hpi.bpt.process.petri.util.ConcurrencyRelation;
  * @author matthias.weidlich
  *
  */
-public class BPCreatorNet extends AbstractBPCreator implements BPCreator {
+public class BPCreatorNet extends AbstractRelSetCreator implements RelSetCreator {
 	
 	private static BPCreatorNet eInstance;
 	
@@ -33,11 +33,11 @@ public class BPCreatorNet extends AbstractBPCreator implements BPCreator {
 		
 	}
 
-	public BehaviouralProfile deriveBehaviouralProfile(PetriNet pn) {
-		return deriveBehaviouralProfile(pn, pn.getNodes());
+	public BehaviouralProfile deriveRelationSet(PetriNet pn) {
+		return deriveRelationSet(pn, pn.getNodes());
 	}
 	
-	public BehaviouralProfile deriveBehaviouralProfile(PetriNet pn, Collection<Node> nodes) {
+	public BehaviouralProfile deriveRelationSet(PetriNet pn, Collection<Node> nodes) {
 		
 		/*
 		 * Check some of the assumptions.
@@ -46,7 +46,7 @@ public class BPCreatorNet extends AbstractBPCreator implements BPCreator {
 		if (!pn.isWFNet()) throw new IllegalArgumentException();
 
 		BehaviouralProfile profile = new BehaviouralProfile(pn,nodes);
-		CharacteristicRelationType[][] matrix = profile.getMatrix();
+		RelSetType[][] matrix = profile.getMatrix();
 		
 		ConcurrencyRelation concurrencyRelation = new ConcurrencyRelation(pn);
 		
@@ -65,21 +65,21 @@ public class BPCreatorNet extends AbstractBPCreator implements BPCreator {
 				 */
 				if (index1 == index2) {
 					if (pn.hasPath(n1,n2))
-						matrix[index1][index1] = CharacteristicRelationType.InterleavingOrder;
+						matrix[index1][index1] = RelSetType.Interleaving;
 					else
-						matrix[index1][index1] = CharacteristicRelationType.Exclusive;
+						matrix[index1][index1] = RelSetType.Exclusive;
 				}
 				/*
 				 * Check all cases for two distinct nodes of the net
 				 */
 				else if (pn.hasPath(n1,n2) && pn.hasPath(n2,n1)) {
-					super.setMatrixEntry(matrix,index1,index2,CharacteristicRelationType.InterleavingOrder);
+					super.setMatrixEntry(matrix,index1,index2,RelSetType.Interleaving);
 				}
 				else if (concurrencyRelation.areConcurrent(index1,index2)) {
-					super.setMatrixEntry(matrix,index1,index2,CharacteristicRelationType.InterleavingOrder);
+					super.setMatrixEntry(matrix,index1,index2,RelSetType.Interleaving);
 				}
 				else if (!concurrencyRelation.areConcurrent(index1,index2) && !pn.hasPath(n1,n2) && !pn.hasPath(n2,n1)) {
-					super.setMatrixEntry(matrix,index1,index2,CharacteristicRelationType.Exclusive);
+					super.setMatrixEntry(matrix,index1,index2,RelSetType.Exclusive);
 				}
 				else if (pn.hasPath(n1,n2) && !pn.hasPath(n2,n1)) {
 					super.setMatrixEntryOrder(matrix,index1,index2);

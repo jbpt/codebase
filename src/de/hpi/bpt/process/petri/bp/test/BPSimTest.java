@@ -7,15 +7,15 @@ import org.junit.Test;
 import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.Place;
 import de.hpi.bpt.process.petri.Transition;
-import de.hpi.bpt.process.petri.bp.BPAlignment;
+import de.hpi.bpt.process.petri.bp.RelSetAlignment;
 import de.hpi.bpt.process.petri.bp.BehaviouralProfile;
 import de.hpi.bpt.process.petri.bp.construct.BPCreatorUnfolding;
 import de.hpi.bpt.process.petri.bp.sim.AggregatedSimilarity;
 import de.hpi.bpt.process.petri.bp.sim.ExclusivenessSimilarity;
-import de.hpi.bpt.process.petri.bp.sim.ExtendedInterleavingOrderSimilarity;
-import de.hpi.bpt.process.petri.bp.sim.ExtendedStrictOrderSimilarity;
-import de.hpi.bpt.process.petri.bp.sim.InterleavingOrderSimilarity;
-import de.hpi.bpt.process.petri.bp.sim.StrictOrderSimilarity;
+import de.hpi.bpt.process.petri.bp.sim.ExtendedInterleavingSimilarity;
+import de.hpi.bpt.process.petri.bp.sim.ExtendedOrderSimilarity;
+import de.hpi.bpt.process.petri.bp.sim.InterleavingSimilarity;
+import de.hpi.bpt.process.petri.bp.sim.OrderSimilarity;
 
 public class BPSimTest extends TestCase {
 	
@@ -91,17 +91,17 @@ public class BPSimTest extends TestCase {
 		net2.addFlow(y, p23);
 		net2.addFlow(z, p24);
 		
-		BehaviouralProfile bp1 = BPCreatorUnfolding.getInstance().deriveBehaviouralProfile(net1);
-		BehaviouralProfile bp2 = BPCreatorUnfolding.getInstance().deriveBehaviouralProfile(net2);
+		BehaviouralProfile bp1 = BPCreatorUnfolding.getInstance().deriveRelationSet(net1);
+		BehaviouralProfile bp2 = BPCreatorUnfolding.getInstance().deriveRelationSet(net2);
 		
-		BPAlignment al = new BPAlignment(bp1, bp2);
+		RelSetAlignment al = new RelSetAlignment(bp1, bp2);
 		
-		ExclusivenessSimilarity              ex = new ExclusivenessSimilarity();
-		StrictOrderSimilarity                so = new StrictOrderSimilarity();
-		InterleavingOrderSimilarity          io = new InterleavingOrderSimilarity();
-		ExtendedStrictOrderSimilarity       eso = new ExtendedStrictOrderSimilarity();
-		ExtendedInterleavingOrderSimilarity eio = new ExtendedInterleavingOrderSimilarity();
-		AggregatedSimilarity                agg = new AggregatedSimilarity();
+		ExclusivenessSimilarity         ex = new ExclusivenessSimilarity();
+		OrderSimilarity                 so = new OrderSimilarity();
+		InterleavingSimilarity          io = new InterleavingSimilarity();
+		ExtendedOrderSimilarity        eso = new ExtendedOrderSimilarity();
+		ExtendedInterleavingSimilarity eio = new ExtendedInterleavingSimilarity();
+		AggregatedSimilarity           agg = new AggregatedSimilarity();
 		
 		agg.weightExSim = 1;
 		agg.weightSoSim = 1;
@@ -140,7 +140,7 @@ public class BPSimTest extends TestCase {
 		assertTrue(Math.round(eso.score(al)*1000) == 286);
 		assertTrue(Math.round(eio.score(al)*1000) == 222);
 
-		//al.removeElementaryCorrespondence(b, y);
+		al.removeElementaryCorrespondence(b, y);
 		al.addElementaryCorrespondence(d, y);
 		
 		assertTrue(Math.round(ex.score(al)*1000) == 714);

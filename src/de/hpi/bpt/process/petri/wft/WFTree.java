@@ -24,7 +24,7 @@ import de.hpi.bpt.process.petri.Place;
 import de.hpi.bpt.process.petri.Transition;
 import de.hpi.bpt.process.petri.bp.BehaviouralProfile;
 import de.hpi.bpt.process.petri.bp.CausalBehaviouralProfile;
-import de.hpi.bpt.process.petri.bp.BehaviouralProfile.CharacteristicRelationType;
+import de.hpi.bpt.process.petri.bp.RelSetType;
 import de.hpi.bpt.process.petri.bp.construct.BPCreatorNet;
 import de.hpi.bpt.process.petri.bp.construct.CBPCreatorNet;
 
@@ -560,7 +560,7 @@ public class WFTree {
 		
 		
 
-		BehaviouralProfile bp = BPCreatorNet.getInstance().deriveBehaviouralProfile(net);
+		BehaviouralProfile bp = BPCreatorNet.getInstance().deriveRelationSet(net);
 		bp2nodemapping.put(bp, nodeCopies);
 		
 		return bp;
@@ -614,7 +614,7 @@ public class WFTree {
 			this.node2bp.put(fragment, getBPForFragment(fragment));
 
 		BehaviouralProfile bp = this.node2bp.get(fragment);
-		return bp.areInStrictOrder(this.bp2nodemapping.get(bp).get(t1), this.bp2nodemapping.get(bp).get(t2));
+		return bp.areInOrder(this.bp2nodemapping.get(bp).get(t1), this.bp2nodemapping.get(bp).get(t2));
 	}
 	
 	/**
@@ -647,16 +647,16 @@ public class WFTree {
 		return cbp.areCooccurring(this.bp2nodemapping.get(cbp).get(t1), this.bp2nodemapping.get(cbp).get(t2));
 	}
 
-	public CharacteristicRelationType getRelationForNodes(Node t1, Node t2) {
+	public RelSetType getRelationForNodes(Node t1, Node t2) {
 		if (areExclusive(t1, t2))
-			return CharacteristicRelationType.Exclusive;
+			return RelSetType.Exclusive;
 		if (areInterleaving(t1, t2))
-			return CharacteristicRelationType.InterleavingOrder;
+			return RelSetType.Interleaving;
 		if (areInStrictOrder(t1, t2))
-			return CharacteristicRelationType.StrictOrder;
+			return RelSetType.Order;
 		if (areInStrictOrder(t2, t1))
-			return CharacteristicRelationType.ReverseStrictOrder;
-		return CharacteristicRelationType.None;
+			return RelSetType.ReverseOrder;
+		return RelSetType.None;
 	}
 
 }

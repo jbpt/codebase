@@ -12,7 +12,7 @@ import de.hpi.bpt.process.petri.Node;
 import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.Transition;
 import de.hpi.bpt.process.petri.bp.BehaviouralProfile;
-import de.hpi.bpt.process.petri.bp.BehaviouralProfile.CharacteristicRelationType;
+import de.hpi.bpt.process.petri.bp.RelSetType;
 import de.hpi.bpt.process.petri.rels.UnfoldingRelationType;
 
 /**
@@ -34,7 +34,7 @@ import de.hpi.bpt.process.petri.rels.UnfoldingRelationType;
  * @author matthias.weidlich
  *
  */
-public class BPCreatorUnfolding extends AbstractBPCreator implements BPCreator {
+public class BPCreatorUnfolding extends AbstractRelSetCreator implements RelSetCreator {
 
 	private static BPCreatorUnfolding eInstance;
 	
@@ -68,12 +68,12 @@ public class BPCreatorUnfolding extends AbstractBPCreator implements BPCreator {
 	}
 
 	@Override
-	public BehaviouralProfile deriveBehaviouralProfile(PetriNet pn) {
-		return deriveBehaviouralProfile(pn, new ArrayList<Node>(pn.getTransitions()));
+	public BehaviouralProfile deriveRelationSet(PetriNet pn) {
+		return deriveRelationSet(pn, new ArrayList<Node>(pn.getTransitions()));
 	}
 	
 	@Override
-	public BehaviouralProfile deriveBehaviouralProfile(PetriNet pn,
+	public BehaviouralProfile deriveRelationSet(PetriNet pn,
 			Collection<Node> nodes) {
 		
 		clear();
@@ -81,7 +81,7 @@ public class BPCreatorUnfolding extends AbstractBPCreator implements BPCreator {
 		this.eventContinuationProfiler = new EventContinuationProfiler(pn);
 		
 		BehaviouralProfile profile = new BehaviouralProfile(pn,nodes);
-		CharacteristicRelationType[][] matrix = profile.getMatrix();
+		RelSetType[][] matrix = profile.getMatrix();
 		
 		for (Node t : nodes)
 			if (t instanceof Transition)
@@ -107,13 +107,13 @@ public class BPCreatorUnfolding extends AbstractBPCreator implements BPCreator {
 					continue;
 				
 				if (this.isWeakOrder(t1,t2) && this.isWeakOrder(t2,t1))
-					super.setMatrixEntry(matrix, index1, index2, CharacteristicRelationType.InterleavingOrder);
+					super.setMatrixEntry(matrix, index1, index2, RelSetType.Interleaving);
 				else if (this.isWeakOrder(t1,t2))
 					super.setMatrixEntryOrder(matrix, index1, index2);
 				else if (this.isWeakOrder(t2,t1))
 					super.setMatrixEntryOrder(matrix, index2, index1);
 				else
-					super.setMatrixEntry(matrix, index1, index2, CharacteristicRelationType.Exclusive);
+					super.setMatrixEntry(matrix, index1, index2, RelSetType.Exclusive);
 			}
 		}		
 		

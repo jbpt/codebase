@@ -4,9 +4,7 @@ import hub.top.uma.DNode;
 import hub.top.uma.DNodeBP;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,7 +25,6 @@ public class EventContinuationProfiler {
 
 	protected Map<DNode,DNode> cutOffEventsToCorrespondingEvents = new HashMap<DNode, DNode>();
 
-	public Map<DNode, Set<DNode>> cutOfLocalConf = new HashMap<DNode, Set<DNode>>();
 	protected Map<DNode, Set<DNode>> causalOfCutOfLocalConf = new HashMap<DNode, Set<DNode>>();
 
 	protected boolean[][] transitiveCausalityMatrixUnfolding; 
@@ -47,7 +44,6 @@ public class EventContinuationProfiler {
 			}
 		}
 				
-		this.deriveCutOfLocalConfiguration();
 		this.deriveTransitiveCutoffRelation();
 
 	}
@@ -90,31 +86,8 @@ public class EventContinuationProfiler {
 		return this.profiler.areConcurrent(n1, n2);
 	}
 	
-	public Set<DNode> getCutOfLocalConf(DNode e) {
-		return this.cutOfLocalConf.get(e);
-	}
-	
-
 	protected boolean isPathInTransitiveCausalityMatrix(DNode node1, DNode node2) {
 		return transitiveCausalityMatrixUnfolding[this.nodesForTransitiveCausalityMatrixUnfolding.indexOf(node1)][this.nodesForTransitiveCausalityMatrixUnfolding.indexOf(node2)];
-	}
-	
-	protected void deriveCutOfLocalConfiguration() {
-		
-		for (DNode e : this.unfolding.getBranchingProcess().getAllEvents()) {
-			cutOfLocalConf.put(e,new HashSet<DNode>());
-			
-			for (DNode c : this.unfolding.getBranchingProcess().getAllConditions()) {
-				if (Arrays.asList(e.post).contains(c))
-					cutOfLocalConf.get(e).add(c);
-				else if (this.profiler.getRelation(e,c).equals(UnfoldingRelationType.CONCURRENCY)) {
-					if (c.pre.length == 0)
-						cutOfLocalConf.get(e).add(c);
-					else if (this.profiler.getRelation(c.pre[0],e).equals(UnfoldingRelationType.CAUSAL))
-						cutOfLocalConf.get(e).add(c);
-				}
-			}
-		}
 	}
 	
 	protected void deriveTransitiveCutoffRelation() {
@@ -129,16 +102,27 @@ public class EventContinuationProfiler {
 			transitiveCausalityMatrixUnfolding[source][target] = true;
 		}
 
+//		for (DNode eCut : this.cutOffEventsToCorrespondingEvents.keySet()) {
+//			DNode eCor = this.cutOffEventsToCorrespondingEvents.get(eCut);
+//			for (DNode c : cutOfLocalConf.get(eCor)) {
+//				for (DNode eCut2 : this.cutOffEventsToCorrespondingEvents.keySet()) {
+//					if (this.profiler.getRelation(c,eCut2).equals(UnfoldingRelationType.CAUSAL) &&
+//							!this.profiler.getRelation(c,eCut).equals(UnfoldingRelationType.CONCURRENCY)) {
+//						int source = nodesForTransitiveCausalityMatrixUnfolding.indexOf(eCor);
+//						int target = nodesForTransitiveCausalityMatrixUnfolding.indexOf(eCut2);
+//						transitiveCausalityMatrixUnfolding[source][target] = true;
+//					}
+//				}
+//			}
+//		}
+		
 		for (DNode eCut : this.cutOffEventsToCorrespondingEvents.keySet()) {
 			DNode eCor = this.cutOffEventsToCorrespondingEvents.get(eCut);
-			for (DNode c : cutOfLocalConf.get(eCor)) {
-				for (DNode eCut2 : this.cutOffEventsToCorrespondingEvents.keySet()) {
-					if (this.profiler.getRelation(c,eCut2).equals(UnfoldingRelationType.CAUSAL) &&
-							!this.profiler.getRelation(c,eCut).equals(UnfoldingRelationType.CONCURRENCY)) {
-						int source = nodesForTransitiveCausalityMatrixUnfolding.indexOf(eCor);
-						int target = nodesForTransitiveCausalityMatrixUnfolding.indexOf(eCut2);
-						transitiveCausalityMatrixUnfolding[source][target] = true;
-					}
+			for (DNode eCut2 : this.cutOffEventsToCorrespondingEvents.keySet()) {
+				if (this.profiler.getRelation(eCor,eCut2).equals(UnfoldingRelationType.CAUSAL)) {
+					int source = nodesForTransitiveCausalityMatrixUnfolding.indexOf(eCor);
+					int target = nodesForTransitiveCausalityMatrixUnfolding.indexOf(eCut2);
+					transitiveCausalityMatrixUnfolding[source][target] = true;
 				}
 			}
 		}

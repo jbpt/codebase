@@ -9,11 +9,11 @@ import de.hpi.bpt.process.petri.Node;
 import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.bp.BehaviouralProfile;
 import de.hpi.bpt.process.petri.bp.CausalBehaviouralProfile;
-import de.hpi.bpt.process.petri.bp.BehaviouralProfile.CharacteristicRelationType;
+import de.hpi.bpt.process.petri.bp.RelSetType;
 import de.hpi.bpt.process.petri.wft.WFTree;
 
 
-public class CBPCreatorTree extends AbstractBPCreator implements CBPCreator {
+public class CBPCreatorTree extends AbstractRelSetCreator implements CBPCreator {
 	
 	private static CBPCreatorTree eInstance;
 	
@@ -57,7 +57,7 @@ public class CBPCreatorTree extends AbstractBPCreator implements CBPCreator {
 		WFTree wfTree = new WFTree(netClone);
 		
 		CausalBehaviouralProfile profile = new CausalBehaviouralProfile(pn,nodes);
-		CharacteristicRelationType[][] matrix = profile.getMatrix();
+		RelSetType[][] matrix = profile.getMatrix();
 		boolean[][] cooccurrenceMatrix = profile.getCooccurrenceMatrix();
 
 		for(Node t1 : profile.getNodes()) {
@@ -76,10 +76,10 @@ public class CBPCreatorTree extends AbstractBPCreator implements CBPCreator {
 					continue;
 				
 				if (wfTree.areExclusive(nodeMapping.get(t1), nodeMapping.get(t2))) {
-					super.setMatrixEntry(matrix, index1, index2, CharacteristicRelationType.Exclusive);
+					super.setMatrixEntry(matrix, index1, index2, RelSetType.Exclusive);
 				}
 				else if (wfTree.areInterleaving(nodeMapping.get(t1), nodeMapping.get(t2))) {
-					super.setMatrixEntry(matrix, index1, index2, CharacteristicRelationType.InterleavingOrder);
+					super.setMatrixEntry(matrix, index1, index2, RelSetType.Interleaving);
 				}
 				else if (wfTree.areInOrder(nodeMapping.get(t1), nodeMapping.get(t2))) {
 					if (wfTree.areInStrictOrder(nodeMapping.get(t1), nodeMapping.get(t2)))
