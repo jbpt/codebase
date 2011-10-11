@@ -8,7 +8,7 @@ import java.util.Map;
 import de.hpi.bpt.process.petri.Node;
 import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.bp.BehaviouralProfile;
-import de.hpi.bpt.process.petri.bp.BehaviouralProfile.CharacteristicRelationType;
+import de.hpi.bpt.process.petri.bp.RelSetType;
 import de.hpi.bpt.process.petri.wft.WFTree;
 
 /**
@@ -26,7 +26,7 @@ import de.hpi.bpt.process.petri.wft.WFTree;
  * @author matthias.weidlich
  *
  */
-public class BPCreatorTree extends AbstractBPCreator implements BPCreator {
+public class BPCreatorTree extends AbstractRelSetCreator implements RelSetCreator {
 	
 	private static BPCreatorTree eInstance;
 	
@@ -40,11 +40,11 @@ public class BPCreatorTree extends AbstractBPCreator implements BPCreator {
 		
 	}
 	
-	public BehaviouralProfile deriveBehaviouralProfile(PetriNet pn) {
-		return deriveBehaviouralProfile(pn, new ArrayList<Node>(pn.getTransitions()));
+	public BehaviouralProfile deriveRelationSet(PetriNet pn) {
+		return deriveRelationSet(pn, new ArrayList<Node>(pn.getTransitions()));
 	}
 	
-	public BehaviouralProfile deriveBehaviouralProfile(PetriNet pn, Collection<Node> nodes) {
+	public BehaviouralProfile deriveRelationSet(PetriNet pn, Collection<Node> nodes) {
 
 		/*
 		 * The construction of the WF-tree may augment the original net. Therefore,
@@ -70,7 +70,7 @@ public class BPCreatorTree extends AbstractBPCreator implements BPCreator {
 		WFTree wfTree = new WFTree(netClone);
 		
 		BehaviouralProfile profile = new BehaviouralProfile(pn,nodes);
-		CharacteristicRelationType[][] matrix = profile.getMatrix();
+		RelSetType[][] matrix = profile.getMatrix();
 
 		for(Node t1 : profile.getNodes()) {
 			int index1 = profile.getNodes().indexOf(t1);
@@ -84,10 +84,10 @@ public class BPCreatorTree extends AbstractBPCreator implements BPCreator {
 					continue;
 				
 				if (wfTree.areExclusive(nodeMapping.get(t1), nodeMapping.get(t2))) {
-					super.setMatrixEntry(matrix, index1, index2, CharacteristicRelationType.Exclusive);
+					super.setMatrixEntry(matrix, index1, index2, RelSetType.Exclusive);
 				}
 				else if (wfTree.areInterleaving(nodeMapping.get(t1), nodeMapping.get(t2))) {
-					super.setMatrixEntry(matrix, index1, index2, CharacteristicRelationType.InterleavingOrder);
+					super.setMatrixEntry(matrix, index1, index2, RelSetType.Interleaving);
 				}
 				else if (wfTree.areInOrder(nodeMapping.get(t1), nodeMapping.get(t2))) {
 					if (wfTree.areInStrictOrder(nodeMapping.get(t1), nodeMapping.get(t2)))

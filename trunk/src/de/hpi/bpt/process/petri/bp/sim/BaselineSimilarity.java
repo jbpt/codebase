@@ -4,7 +4,7 @@ import de.hpi.bpt.process.petri.Node;
 import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.Place;
 import de.hpi.bpt.process.petri.Transition;
-import de.hpi.bpt.process.petri.bp.BPAlignment;
+import de.hpi.bpt.process.petri.bp.RelSetAlignment;
 
 /**
  * Scores two models by only assessing the overlap of nodes.
@@ -12,18 +12,18 @@ import de.hpi.bpt.process.petri.bp.BPAlignment;
  * @author matthias.weidlich
  *
  */
-public class BaselineSimilarity extends AbstractBPSimilarity {
+public class BaselineSimilarity extends AbstractRelSetSimilarity {
 
 	@Override
-	public double score(BPAlignment alignment) {
+	public double score(RelSetAlignment alignment) {
 		double in1 = 0;
-		for (Node n : alignment.getFirstProfile().getNodes()) {
+		for (Node n : alignment.getFirstRelationSet().getNodes()) {
 			if (n instanceof Place) continue;
 			if (((Transition)n).equals(PetriNet.SILENT_LABEL)) continue;
 			in1++;
 		}
 		double in2 = 0;
-		for (Node n : alignment.getSecondProfile().getNodes()) {
+		for (Node n : alignment.getSecondRelationSet().getNodes()) {
 			if (n instanceof Place) continue;
 			if (((Transition)n).equals(PetriNet.SILENT_LABEL)) continue;
 			in2++;

@@ -17,7 +17,7 @@ import de.hpi.bpt.process.petri.Transition;
 import de.hpi.bpt.process.petri.bp.BehaviouralProfile;
 import de.hpi.bpt.process.petri.bp.CausalBehaviouralProfile;
 
-public class CBPCreatorUnfolding extends AbstractBPCreator implements
+public class CBPCreatorUnfolding extends AbstractRelSetCreator implements
 		CBPCreator {
 	
 	
@@ -33,7 +33,7 @@ public class CBPCreatorUnfolding extends AbstractBPCreator implements
 		
 	}
 	
-	protected EventContinuationProfiler eventContinuationProfiler;
+	protected EventContinuationProfilerInclCuts eventContinuationProfiler;
 	
 	protected Map<DNode, Node> unfoldingNodesToNetNodes = new HashMap<DNode, Node>(); 
 
@@ -70,7 +70,7 @@ public class CBPCreatorUnfolding extends AbstractBPCreator implements
 			Collection<Node> nodes) {
 		
 		CausalBehaviouralProfile profile = new CausalBehaviouralProfile(pn,nodes);
-		profile.setMatrix(BPCreatorUnfolding.getInstance().deriveBehaviouralProfile(pn, nodes).getMatrix());
+		profile.setMatrix(BPCreatorUnfolding.getInstance().deriveRelationSet(pn, nodes).getMatrix());
 
 		boolean[][] cooccurrenceMatrix = profile.getCooccurrenceMatrix();
 
@@ -97,7 +97,7 @@ public class CBPCreatorUnfolding extends AbstractBPCreator implements
 		}
 
 		this.createAugmentedNet(netClone);
-		this.eventContinuationProfiler = new EventContinuationProfiler(this.augmentedNet);
+		this.eventContinuationProfiler = new EventContinuationProfilerInclCuts(this.augmentedNet);
 		this.allEvents = new ArrayList<DNode>(this.eventContinuationProfiler.getUnfolding().getBranchingProcess().getAllEvents());				
 				
 //		System.out.println(this.eventContinuationProfiler.getUnfolding().toDot());

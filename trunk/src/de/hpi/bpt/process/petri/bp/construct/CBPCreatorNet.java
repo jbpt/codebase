@@ -8,10 +8,10 @@ import de.hpi.bpt.process.petri.Node;
 import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.bp.BehaviouralProfile;
 import de.hpi.bpt.process.petri.bp.CausalBehaviouralProfile;
-import de.hpi.bpt.process.petri.bp.BehaviouralProfile.CharacteristicRelationType;
+import de.hpi.bpt.process.petri.bp.RelSetType;
 
 
-public class CBPCreatorNet extends AbstractBPCreator implements CBPCreator {
+public class CBPCreatorNet extends AbstractRelSetCreator implements CBPCreator {
 
 	private static CBPCreatorNet eInstance;
 	
@@ -42,7 +42,7 @@ public class CBPCreatorNet extends AbstractBPCreator implements CBPCreator {
 		 * Compute the behavioural profile using BPCreatorNet
 		 */
 		CausalBehaviouralProfile profile = new CausalBehaviouralProfile(pn, nodes);
-		profile.setMatrix(BPCreatorNet.getInstance().deriveBehaviouralProfile(pn).getMatrix());	
+		profile.setMatrix(BPCreatorNet.getInstance().deriveRelationSet(pn).getMatrix());	
 
 		/*
 		 * Fill the co-occurrence relation
@@ -103,7 +103,7 @@ public class CBPCreatorNet extends AbstractBPCreator implements CBPCreator {
 						 * Check whether all nodes exclusive to n2 are also exclusive to n1
 						 */
 						boolean allExclusive = true;
-						for(Node n3 : profile.getNodesInRelation(n2, CharacteristicRelationType.Exclusive)) {
+						for(Node n3 : profile.getNodesInRelation(n2, RelSetType.Exclusive)) {
 							allExclusive &= profile.areExclusive(n1, n3);
 						}
 						if (allExclusive)

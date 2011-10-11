@@ -6,7 +6,7 @@ import de.hpi.bpt.process.petri.Place;
 import de.hpi.bpt.process.petri.Transition;
 import de.hpi.bpt.process.petri.bp.BehaviouralProfile;
 import de.hpi.bpt.process.petri.bp.CausalBehaviouralProfile;
-import de.hpi.bpt.process.petri.bp.BehaviouralProfile.CharacteristicRelationType;
+import de.hpi.bpt.process.petri.bp.RelSetType;
 import de.hpi.bpt.process.petri.bp.construct.BPCreatorNet;
 import de.hpi.bpt.process.petri.bp.construct.BPCreatorTree;
 import de.hpi.bpt.process.petri.bp.construct.BPCreatorUnfolding;
@@ -14,7 +14,6 @@ import de.hpi.bpt.process.petri.bp.construct.CBPCreatorTree;
 import de.hpi.bpt.process.petri.bp.construct.CBPCreatorUnfolding;
 
 public class CBPComputationTest extends TestCase {
-
 
 	public void testCBPComputation1(){
 		PetriNet net = new PetriNet();
@@ -301,30 +300,30 @@ public class CBPComputationTest extends TestCase {
 		/*
 		 * Tests for behavioural profile
 		 */
-		BehaviouralProfile bp = BPCreatorNet.getInstance().deriveBehaviouralProfile(net);
+		BehaviouralProfile bp = BPCreatorNet.getInstance().deriveRelationSet(net);
 
-		assertEquals(CharacteristicRelationType.StrictOrder, bp.getRelationForNodes(a, f));
-		assertEquals(CharacteristicRelationType.StrictOrder, bp.getRelationForNodes(c, f));
-		assertEquals(CharacteristicRelationType.StrictOrder, bp.getRelationForNodes(a, f));
-		assertEquals(CharacteristicRelationType.ReverseStrictOrder, bp.getRelationForNodes(i, a));
-		assertEquals(CharacteristicRelationType.ReverseStrictOrder, bp.getRelationForNodes(j, a));
+		assertEquals(RelSetType.Order, bp.getRelationForNodes(a, f));
+		assertEquals(RelSetType.Order, bp.getRelationForNodes(c, f));
+		assertEquals(RelSetType.Order, bp.getRelationForNodes(a, f));
+		assertEquals(RelSetType.ReverseOrder, bp.getRelationForNodes(i, a));
+		assertEquals(RelSetType.ReverseOrder, bp.getRelationForNodes(j, a));
 		
-		assertEquals(CharacteristicRelationType.Exclusive, bp.getRelationForNodes(d, e));
-		assertEquals(CharacteristicRelationType.Exclusive, bp.getRelationForNodes(e, d));
-		assertEquals(CharacteristicRelationType.Exclusive, bp.getRelationForNodes(a, a));
-		assertEquals(CharacteristicRelationType.Exclusive, bp.getRelationForNodes(e, e));
+		assertEquals(RelSetType.Exclusive, bp.getRelationForNodes(d, e));
+		assertEquals(RelSetType.Exclusive, bp.getRelationForNodes(e, d));
+		assertEquals(RelSetType.Exclusive, bp.getRelationForNodes(a, a));
+		assertEquals(RelSetType.Exclusive, bp.getRelationForNodes(e, e));
 		
-		assertEquals(CharacteristicRelationType.InterleavingOrder, bp.getRelationForNodes(h, h));
-		assertEquals(CharacteristicRelationType.InterleavingOrder, bp.getRelationForNodes(i, i));
-		assertEquals(CharacteristicRelationType.InterleavingOrder, bp.getRelationForNodes(i, h));
-		assertEquals(CharacteristicRelationType.InterleavingOrder, bp.getRelationForNodes(b, e));
-		assertEquals(CharacteristicRelationType.InterleavingOrder, bp.getRelationForNodes(d, b));
+		assertEquals(RelSetType.Interleaving, bp.getRelationForNodes(h, h));
+		assertEquals(RelSetType.Interleaving, bp.getRelationForNodes(i, i));
+		assertEquals(RelSetType.Interleaving, bp.getRelationForNodes(i, h));
+		assertEquals(RelSetType.Interleaving, bp.getRelationForNodes(b, e));
+		assertEquals(RelSetType.Interleaving, bp.getRelationForNodes(d, b));
 		
-		BehaviouralProfile bp2 = BPCreatorTree.getInstance().deriveBehaviouralProfile(net);
+		BehaviouralProfile bp2 = BPCreatorTree.getInstance().deriveRelationSet(net);
 		
 		assertTrue(bp2.equalsForSharedNodes(bp));
 		
-		BehaviouralProfile bp3 = BPCreatorUnfolding.getInstance().deriveBehaviouralProfile(net);
+		BehaviouralProfile bp3 = BPCreatorUnfolding.getInstance().deriveRelationSet(net);
 		
 		assertTrue(bp3.equalsForSharedNodes(bp));
 		

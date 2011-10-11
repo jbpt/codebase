@@ -1,6 +1,6 @@
 package de.hpi.bpt.process.petri.bp.sim;
 
-import de.hpi.bpt.process.petri.bp.BPAlignment;
+import de.hpi.bpt.process.petri.bp.RelSetAlignment;
 
 /**
  * Scores two models by the weighted sum of the single similarities.
@@ -8,7 +8,7 @@ import de.hpi.bpt.process.petri.bp.BPAlignment;
  * @author matthias.weidlich
  *
  */
-public class AggregatedSimilarity extends AbstractBPSimilarity {
+public class AggregatedSimilarity extends AbstractRelSetSimilarity {
 
 	public double weightExSim = 0; //1.0/6.0; // 1
 	public double weightSoSim = 0; //3.0/6.0; // 3
@@ -17,13 +17,13 @@ public class AggregatedSimilarity extends AbstractBPSimilarity {
 	public double weightEISim = 0;
 	
 	private ExclusivenessSimilarity ex = new ExclusivenessSimilarity();
-	private StrictOrderSimilarity so = new StrictOrderSimilarity();
-	private InterleavingOrderSimilarity in = new InterleavingOrderSimilarity();
-	private ExtendedStrictOrderSimilarity eso = new ExtendedStrictOrderSimilarity();
-	private ExtendedInterleavingOrderSimilarity ein = new ExtendedInterleavingOrderSimilarity();
+	private OrderSimilarity so = new OrderSimilarity();
+	private InterleavingSimilarity in = new InterleavingSimilarity();
+	private ExtendedOrderSimilarity eso = new ExtendedOrderSimilarity();
+	private ExtendedInterleavingSimilarity ein = new ExtendedInterleavingSimilarity();
 	
 	@Override
-	public double score(BPAlignment alignment) {
+	public double score(RelSetAlignment alignment) {
 		return (
 		(weightExSim > 0 ? weightExSim * ex.score(alignment) : 0) + 
 		(weightSoSim > 0 ? weightSoSim * so.score(alignment) : 0) + 

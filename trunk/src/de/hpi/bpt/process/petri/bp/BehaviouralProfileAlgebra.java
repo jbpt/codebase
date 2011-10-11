@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.hpi.bpt.process.petri.Node;
-import de.hpi.bpt.process.petri.bp.BehaviouralProfile.CharacteristicRelationType;
 
 
 /**
@@ -32,14 +31,14 @@ public class BehaviouralProfileAlgebra {
 	 * @return true, if the aligned profiles show equal relations
 	 * @throws IllegalArgumentException, if alignment is overlapping, not functional, or not injective 
 	 */
-	public static boolean isEqual(BPAlignment alignment) throws IllegalArgumentException {
+	public static boolean isEqual(RelSetAlignment alignment) throws IllegalArgumentException {
 		if (alignment.isOverlapping() || !alignment.isFunctional() || !alignment.isInjective())
 			throw new IllegalArgumentException("Alignment does not satisfy assumptions of set algebra.");
 		
 		for (Node v1 : alignment.getAlignedVerticesOfFirstGraph()) {
 			for (Node v2 : alignment.getAlignedVerticesOfFirstGraph()) {
-				CharacteristicRelationType relation1 = alignment.getFirstProfile().getRelationForNodes(v1, v2);
-				CharacteristicRelationType relation2 = alignment.getSecondProfile().getRelationForNodes(
+				RelSetType relation1 = alignment.getFirstRelationSet().getRelationForNodes(v1, v2);
+				RelSetType relation2 = alignment.getSecondRelationSet().getRelationForNodes(
 						alignment.getCorrespondingVerticesForVertexOfFirstGraph(v1).iterator().next(),
 						alignment.getCorrespondingVerticesForVertexOfFirstGraph(v2).iterator().next());
 
@@ -61,24 +60,24 @@ public class BehaviouralProfileAlgebra {
 	 * @return true, if the second profile subsumes the first profile
 	 * @throws IllegalArgumentException, if alignment is overlapping, not functional, or not injective 
 	 */
-	public static boolean secondSubsumesFirst(BPAlignment alignment) throws IllegalArgumentException {
+	public static boolean secondSubsumesFirst(RelSetAlignment alignment) throws IllegalArgumentException {
 		if (alignment.isOverlapping() || !alignment.isFunctional() || !alignment.isInjective())
 			throw new IllegalArgumentException("Alignment does not satisfy assumptions of set algebra.");
 		
 		for (Node v1 : alignment.getAlignedVerticesOfSecondGraph()) {
 			for (Node v2 : alignment.getAlignedVerticesOfSecondGraph()) {
-				CharacteristicRelationType relation1 = alignment.getSecondProfile().getRelationForNodes(v1, v2);
-				CharacteristicRelationType relation2 = alignment.getFirstProfile().getRelationForNodes(
+				RelSetType relation1 = alignment.getSecondRelationSet().getRelationForNodes(v1, v2);
+				RelSetType relation2 = alignment.getFirstRelationSet().getRelationForNodes(
 						alignment.getCorrespondingVerticesForVertexOfSecondGraph(v1).iterator().next(),
 						alignment.getCorrespondingVerticesForVertexOfSecondGraph(v2).iterator().next());
 
-				if (relation1.equals(CharacteristicRelationType.Exclusive) && !(relation2.equals(CharacteristicRelationType.Exclusive)))
+				if (relation1.equals(RelSetType.Exclusive) && !(relation2.equals(RelSetType.Exclusive)))
 					return false;
 				
-				if (relation1.equals(CharacteristicRelationType.StrictOrder) && !(relation2.equals(CharacteristicRelationType.Exclusive) || relation2.equals(CharacteristicRelationType.StrictOrder)))
+				if (relation1.equals(RelSetType.Order) && !(relation2.equals(RelSetType.Exclusive) || relation2.equals(RelSetType.Order)))
 					return false;
 
-				if (relation1.equals(CharacteristicRelationType.ReverseStrictOrder) && !(relation2.equals(CharacteristicRelationType.Exclusive) || relation2.equals(CharacteristicRelationType.ReverseStrictOrder)))
+				if (relation1.equals(RelSetType.ReverseOrder) && !(relation2.equals(RelSetType.Exclusive) || relation2.equals(RelSetType.ReverseOrder)))
 					return false;
 
 			}
@@ -98,24 +97,24 @@ public class BehaviouralProfileAlgebra {
 	 * @return true, if the first profile subsumes the second profile
 	 * @throws IllegalArgumentException, if alignment is overlapping, not functional, or not injective 
 	 */
-	public static boolean firstSubsumesSecond(BPAlignment alignment) throws IllegalArgumentException {
+	public static boolean firstSubsumesSecond(RelSetAlignment alignment) throws IllegalArgumentException {
 		if (alignment.isOverlapping() || !alignment.isFunctional() || !alignment.isInjective())
 			throw new IllegalArgumentException("Alignment does not satisfy assumptions of set algebra.");
 		
 		for (Node v1 : alignment.getAlignedVerticesOfFirstGraph()) {
 			for (Node v2 : alignment.getAlignedVerticesOfFirstGraph()) {
-				CharacteristicRelationType relation1 = alignment.getFirstProfile().getRelationForNodes(v1, v2);
-				CharacteristicRelationType relation2 = alignment.getSecondProfile().getRelationForNodes(
+				RelSetType relation1 = alignment.getFirstRelationSet().getRelationForNodes(v1, v2);
+				RelSetType relation2 = alignment.getSecondRelationSet().getRelationForNodes(
 						alignment.getCorrespondingVerticesForVertexOfFirstGraph(v1).iterator().next(),
 						alignment.getCorrespondingVerticesForVertexOfFirstGraph(v2).iterator().next());
 
-				if (relation1.equals(CharacteristicRelationType.Exclusive) && !(relation2.equals(CharacteristicRelationType.Exclusive)))
+				if (relation1.equals(RelSetType.Exclusive) && !(relation2.equals(RelSetType.Exclusive)))
 					return false;
 				
-				if (relation1.equals(CharacteristicRelationType.StrictOrder) && !(relation2.equals(CharacteristicRelationType.Exclusive) || relation2.equals(CharacteristicRelationType.StrictOrder)))
+				if (relation1.equals(RelSetType.Order) && !(relation2.equals(RelSetType.Exclusive) || relation2.equals(RelSetType.Order)))
 					return false;
 
-				if (relation1.equals(CharacteristicRelationType.ReverseStrictOrder) && !(relation2.equals(CharacteristicRelationType.Exclusive) || relation2.equals(CharacteristicRelationType.ReverseStrictOrder)))
+				if (relation1.equals(RelSetType.ReverseOrder) && !(relation2.equals(RelSetType.Exclusive) || relation2.equals(RelSetType.ReverseOrder)))
 					return false;
 
 			}
@@ -135,13 +134,13 @@ public class BehaviouralProfileAlgebra {
 	 * @return behavioural profile that represents the intersection of the two profiles given as input
 	 * @throws IllegalArgumentException, if alignment is overlapping, not functional, or not injective 
 	 */
-	public static BehaviouralProfile intersection(BPAlignment alignment) throws IllegalArgumentException {
+	public static BehaviouralProfile intersection(RelSetAlignment alignment) throws IllegalArgumentException {
 		if (alignment.isOverlapping() || !alignment.isFunctional() || !alignment.isInjective())
 			throw new IllegalArgumentException("Alignment does not satisfy assumptions of set algebra.");
 
 		List<Node> nodeList = new ArrayList<Node>(alignment.getAlignedVerticesOfFirstGraph());
-		BehaviouralProfile profile = new BehaviouralProfile(alignment.getFirstProfile().getNet(),nodeList);
-		CharacteristicRelationType[][] matrix = profile.getMatrix();
+		BehaviouralProfile profile = new BehaviouralProfile(alignment.getFirstRelationSet().getNet(),nodeList);
+		RelSetType[][] matrix = profile.getMatrix();
 		
 		for(Node v1 : nodeList) {
 			int index1 = profile.getNodes().indexOf(v1);
@@ -155,33 +154,33 @@ public class BehaviouralProfileAlgebra {
 				if (index2 > index1)
 					continue;
 				
-				CharacteristicRelationType relation1 = alignment.getFirstProfile().getRelationForNodes(v1, v2);
-				CharacteristicRelationType relation2 = alignment.getSecondProfile().getRelationForNodes(
+				RelSetType relation1 = alignment.getFirstRelationSet().getRelationForNodes(v1, v2);
+				RelSetType relation2 = alignment.getSecondRelationSet().getRelationForNodes(
 						alignment.getCorrespondingVerticesForVertexOfFirstGraph(v1).iterator().next(),
 						alignment.getCorrespondingVerticesForVertexOfFirstGraph(v2).iterator().next());
 				
 				
-				if (relation1.equals(CharacteristicRelationType.Exclusive) ||
-						relation2.equals(CharacteristicRelationType.Exclusive) ||
-						(relation1.equals(CharacteristicRelationType.StrictOrder) && relation2.equals(CharacteristicRelationType.ReverseStrictOrder)) ||
-						(relation1.equals(CharacteristicRelationType.ReverseStrictOrder) && relation2.equals(CharacteristicRelationType.StrictOrder))) {
+				if (relation1.equals(RelSetType.Exclusive) ||
+						relation2.equals(RelSetType.Exclusive) ||
+						(relation1.equals(RelSetType.Order) && relation2.equals(RelSetType.ReverseOrder)) ||
+						(relation1.equals(RelSetType.ReverseOrder) && relation2.equals(RelSetType.Order))) {
 					
-					matrix[index1][index2] = CharacteristicRelationType.Exclusive;
-					matrix[index2][index1] = CharacteristicRelationType.Exclusive;
+					matrix[index1][index2] = RelSetType.Exclusive;
+					matrix[index2][index1] = RelSetType.Exclusive;
 				}
-				else if ((relation1.equals(CharacteristicRelationType.StrictOrder) && (relation2.equals(CharacteristicRelationType.StrictOrder) || relation2.equals(CharacteristicRelationType.InterleavingOrder))) ||
-						(relation2.equals(CharacteristicRelationType.StrictOrder) && (relation1.equals(CharacteristicRelationType.StrictOrder) || relation1.equals(CharacteristicRelationType.InterleavingOrder)))) {
+				else if ((relation1.equals(RelSetType.Order) && (relation2.equals(RelSetType.Order) || relation2.equals(RelSetType.Interleaving))) ||
+						(relation2.equals(RelSetType.Order) && (relation1.equals(RelSetType.Order) || relation1.equals(RelSetType.Interleaving)))) {
 					
-					matrix[index1][index2] = CharacteristicRelationType.StrictOrder;
-					matrix[index2][index1] = CharacteristicRelationType.ReverseStrictOrder;
+					matrix[index1][index2] = RelSetType.Order;
+					matrix[index2][index1] = RelSetType.ReverseOrder;
 				}
-				else if (relation1.equals(CharacteristicRelationType.InterleavingOrder) && relation2.equals(CharacteristicRelationType.InterleavingOrder)) {
-					matrix[index1][index2] = CharacteristicRelationType.InterleavingOrder;
-					matrix[index2][index1] = CharacteristicRelationType.InterleavingOrder;
+				else if (relation1.equals(RelSetType.Interleaving) && relation2.equals(RelSetType.Interleaving)) {
+					matrix[index1][index2] = RelSetType.Interleaving;
+					matrix[index2][index1] = RelSetType.Interleaving;
 				}
 				else {
-					matrix[index1][index2] = CharacteristicRelationType.ReverseStrictOrder;
-					matrix[index2][index1] = CharacteristicRelationType.StrictOrder;
+					matrix[index1][index2] = RelSetType.ReverseOrder;
+					matrix[index2][index1] = RelSetType.Order;
 				}
 			}
 		}
@@ -199,13 +198,13 @@ public class BehaviouralProfileAlgebra {
 	 * @return behavioural profile that represents the union of the two profiles given as input
 	 * @throws IllegalArgumentException, if alignment is overlapping, not functional, or not injective 
 	 */
-	public static BehaviouralProfile union(BPAlignment alignment) throws IllegalArgumentException {
+	public static BehaviouralProfile union(RelSetAlignment alignment) throws IllegalArgumentException {
 		if (alignment.isOverlapping() || !alignment.isFunctional() || !alignment.isInjective())
 			throw new IllegalArgumentException("Alignment does not satisfy assumptions of set algebra.");
 
 		List<Node> nodeList = new ArrayList<Node>(alignment.getAlignedVerticesOfFirstGraph());
-		BehaviouralProfile profile = new BehaviouralProfile(alignment.getFirstProfile().getNet(),nodeList);
-		CharacteristicRelationType[][] matrix = profile.getMatrix();
+		BehaviouralProfile profile = new BehaviouralProfile(alignment.getFirstRelationSet().getNet(),nodeList);
+		RelSetType[][] matrix = profile.getMatrix();
 		
 		for(Node v1 : nodeList) {
 			int index1 = profile.getNodes().indexOf(v1);
@@ -219,33 +218,33 @@ public class BehaviouralProfileAlgebra {
 				if (index2 > index1)
 					continue;
 				
-				CharacteristicRelationType relation1 = alignment.getFirstProfile().getRelationForNodes(v1, v2);
-				CharacteristicRelationType relation2 = alignment.getSecondProfile().getRelationForNodes(
+				RelSetType relation1 = alignment.getFirstRelationSet().getRelationForNodes(v1, v2);
+				RelSetType relation2 = alignment.getSecondRelationSet().getRelationForNodes(
 						alignment.getCorrespondingVerticesForVertexOfFirstGraph(v1).iterator().next(),
 						alignment.getCorrespondingVerticesForVertexOfFirstGraph(v2).iterator().next());
 				
 				
-				if (relation1.equals(CharacteristicRelationType.InterleavingOrder) ||
-						relation2.equals(CharacteristicRelationType.InterleavingOrder) ||
-						(relation1.equals(CharacteristicRelationType.StrictOrder) && relation2.equals(CharacteristicRelationType.ReverseStrictOrder)) ||
-						(relation1.equals(CharacteristicRelationType.ReverseStrictOrder) && relation2.equals(CharacteristicRelationType.StrictOrder))) {
+				if (relation1.equals(RelSetType.Interleaving) ||
+						relation2.equals(RelSetType.Interleaving) ||
+						(relation1.equals(RelSetType.Order) && relation2.equals(RelSetType.ReverseOrder)) ||
+						(relation1.equals(RelSetType.ReverseOrder) && relation2.equals(RelSetType.Order))) {
 					
-					matrix[index1][index2] = CharacteristicRelationType.InterleavingOrder;
-					matrix[index2][index1] = CharacteristicRelationType.InterleavingOrder;
+					matrix[index1][index2] = RelSetType.Interleaving;
+					matrix[index2][index1] = RelSetType.Interleaving;
 				}
-				else if ((relation1.equals(CharacteristicRelationType.StrictOrder) && (relation2.equals(CharacteristicRelationType.StrictOrder) || relation2.equals(CharacteristicRelationType.Exclusive))) ||
-						(relation2.equals(CharacteristicRelationType.StrictOrder) && (relation1.equals(CharacteristicRelationType.StrictOrder) || relation1.equals(CharacteristicRelationType.Exclusive)))) {
+				else if ((relation1.equals(RelSetType.Order) && (relation2.equals(RelSetType.Order) || relation2.equals(RelSetType.Exclusive))) ||
+						(relation2.equals(RelSetType.Order) && (relation1.equals(RelSetType.Order) || relation1.equals(RelSetType.Exclusive)))) {
 					
-					matrix[index1][index2] = CharacteristicRelationType.StrictOrder;
-					matrix[index2][index1] = CharacteristicRelationType.ReverseStrictOrder;
+					matrix[index1][index2] = RelSetType.Order;
+					matrix[index2][index1] = RelSetType.ReverseOrder;
 				}
-				else if (relation1.equals(CharacteristicRelationType.Exclusive) && relation2.equals(CharacteristicRelationType.Exclusive)) {
-					matrix[index1][index2] = CharacteristicRelationType.Exclusive;
-					matrix[index2][index1] = CharacteristicRelationType.Exclusive;
+				else if (relation1.equals(RelSetType.Exclusive) && relation2.equals(RelSetType.Exclusive)) {
+					matrix[index1][index2] = RelSetType.Exclusive;
+					matrix[index2][index1] = RelSetType.Exclusive;
 				}
 				else {
-					matrix[index1][index2] = CharacteristicRelationType.ReverseStrictOrder;
-					matrix[index2][index1] = CharacteristicRelationType.StrictOrder;
+					matrix[index1][index2] = RelSetType.ReverseOrder;
+					matrix[index2][index1] = RelSetType.Order;
 				}
 			}
 		}

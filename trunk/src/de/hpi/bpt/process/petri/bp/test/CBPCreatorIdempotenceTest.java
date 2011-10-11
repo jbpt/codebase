@@ -137,9 +137,9 @@ public class CBPCreatorIdempotenceTest extends TestCase {
 		 * Invoke all creator classes on net, except for CBPCreatorNet since
 		 * the net does not meet the respective requirements 
 		 */
-		BPCreatorNet.getInstance().deriveBehaviouralProfile(net);
-		BPCreatorTree.getInstance().deriveBehaviouralProfile(net);
-		BPCreatorUnfolding.getInstance().deriveBehaviouralProfile(net);
+		BPCreatorNet.getInstance().deriveRelationSet(net);
+		BPCreatorTree.getInstance().deriveRelationSet(net);
+		BPCreatorUnfolding.getInstance().deriveRelationSet(net);
 		CBPCreatorTree.getInstance().deriveCausalBehaviouralProfile(net);
 		CBPCreatorUnfolding.getInstance().deriveCausalBehaviouralProfile(net);
 

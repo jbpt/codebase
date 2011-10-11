@@ -72,7 +72,7 @@ public class CausalBehaviouralProfile extends BehaviouralProfile {
 	 * @param a relation of the causal behavioural profile
 	 * @return a string representation of the relation
 	 */
-	public static String getSymbolForRelation(CharacteristicRelationType rel) {
+	public static String getSymbolForRelation(RelSetType rel) {
 		String s = BehaviouralProfile.getSymbolForRelation(rel);
 		return (s.isEmpty()) ? ">>" : s;
 	}
