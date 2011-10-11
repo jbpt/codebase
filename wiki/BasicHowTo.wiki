@@ -225,7 +225,7 @@ The classes for behavioural profiles and causal behavioural profiles offers the 
  * are nodes of a Petri net over which the behavioural profiles has been defined.
  */
 System.out.println("X and Y are exclusive: " + bp.areExclusive(x,y));
-System.out.println("X and Y are in strict order: " + bp.areInStrictOrder(x,y));
+System.out.println("X and Y are in strict order: " + bp.areInOrder(x,y));
 System.out.println("X and Y are interleaving: " + bp.areInterleaving(x,y));
 
 System.out.println("X and Y has the following relation: " + bp.getRelationForNodes(x,y));
