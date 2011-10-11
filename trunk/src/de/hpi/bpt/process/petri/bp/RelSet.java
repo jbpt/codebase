@@ -6,31 +6,30 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
-import de.hpi.bpt.process.petri.Node;
-import de.hpi.bpt.process.petri.PetriNet;
 
-public class RelSet {
+public class RelSet<M,N> {
 	
 	public static final int RELATION_FAR_LOOKAHEAD = 1000000000;
 	
 	protected int lookAhead = RELATION_FAR_LOOKAHEAD;
 	
 	/**
-	 * The Petri net for which this class captures 
+	 * The model (e.g., Petri net) for which this class captures 
 	 * the set of behavioural relations.
 	 */
-	protected PetriNet pn;
+	protected M model;
 	
 	/** 
-	 * The relations are defined over a dedicated set of nodes
-	 * of the Petri net, e.g., only transitions or only labelled transitions.
-	 * This list defines the respective nodes.
+	 * The relations are defined over a dedicated set of entities
+	 * of the model, e.g., only transitions of a Petri net or only 
+	 * labelled transitions of a Petri net.
+	 * This list defines the respective entities.
 	 */
-	protected List<Node> nodes;
+	protected List<N> entities;
 
 	/**
 	 * The matrix that captures the actual relations 
-	 * for the Cartesian product of the respective nodes.
+	 * for the Cartesian product of the respective entities.
 	 */
 	protected RelSetType[][] matrix;
 	
@@ -85,12 +84,12 @@ public class RelSet {
 		this.matrix = matrix;
 	}
 
-	public List<Node> getNodes() {
-		return this.nodes;
+	public List<N> getEntities() {
+		return this.entities;
 	}
 	
-	public PetriNet getNet() {
-		return this.pn;
+	public M getModel() {
+		return this.model;
 	}
 
 	public int getLookAhead() {
@@ -112,43 +111,43 @@ public class RelSet {
 	}
 	
 	/**
-	 * Creates a relation set for a given Petri net and 
-	 * a dedicated list of nodes of the Petri net.
+	 * Creates a relation set for a given model and 
+	 * a dedicated list of entities of the model.
 	 * 
-	 * @param the Petri net
-	 * @param a list of nodes of the Petri net
+	 * @param model, a model
+	 * @param entities, a list of entities of the model
 	 */
-	public RelSet(PetriNet pn, List<Node> nodes) {
-		this.pn = pn;
-		this.nodes = nodes;
-		this.matrix = new RelSetType[this.nodes.size()][this.nodes.size()];
+	public RelSet(M model, List<N> entities) {
+		this.model = model;
+		this.entities = entities;
+		this.matrix = new RelSetType[this.entities.size()][this.entities.size()];
 	}
 	
 	/**
-	 * Creates a relation set for a given Petri net and 
-	 * a dedicated collection of nodes of the Petri net.
+	 * Creates a relation set for a given model and 
+	 * a dedicated collection of entities of the model.
 	 * 
 	 * Wrapper method that creates a list from the given collection.
 	 * 
-	 * @param the Petri net
-	 * @param a collection of nodes of the Petri net
+	 * @param model, a model
+	 * @param entities, a list of entities of the model
 	 */
-	public RelSet(PetriNet pn, Collection<Node> nodes) {
-		this(pn,new ArrayList<Node>(nodes));
+	public RelSet(M model, Collection<N> entities) {
+		this(model,new ArrayList<N>(entities));
 	}
 
-	public RelSet(PetriNet pn, Collection<Node> nodes, int lookAhead) {
-		this(pn,new ArrayList<Node>(nodes));
+	public RelSet(M model, Collection<N> entities, int lookAhead) {
+		this(model,new ArrayList<N>(entities));
 		this.lookAhead = lookAhead;
 	}
 
 	
 	/**
-	 * Creates a relation set for a given number of nodes. Use this 
+	 * Creates a relation set for a given number of entities. Use this 
 	 * constructor solely in case a relation set that is not related 
-	 * to a specific Petri net is needed. 
+	 * to a specific model is needed. 
 	 * 
-	 * @param size, i.e., number of nodes over which the relations are defined
+	 * @param size, i.e., number of entities over which the relations are defined
 	 */
 	public RelSet(int size) {
 		this.matrix = new RelSetType[size][size];
@@ -156,106 +155,106 @@ public class RelSet {
 	
 	
 	/**
-	 * Checks whether two given nodes are interleaving.
+	 * Checks whether two given entities are interleaving.
 	 * 
 	 * @param n1
 	 * @param n2
-	 * @return true, if both nodes are interleaving 
+	 * @return true, if both entities are interleaving 
 	 */
-	public boolean areInterleaving(Node n1, Node n2) {
-		int index1 = this.nodes.indexOf(n1);
-		int index2 = this.nodes.indexOf(n2);
+	public boolean areInterleaving(N n1, N n2) {
+		int index1 = this.entities.indexOf(n1);
+		int index2 = this.entities.indexOf(n2);
 		if (index1 == -1 || index2 == -1)
-			throw new InvalidParameterException("The structure is not defined for the respective nodes.");
+			throw new InvalidParameterException("The structure is not defined for the respective entities.");
 		return matrix[index1][index2].equals(RelSetType.Interleaving);
 	}
 
 	/**
-	 * Checks whether two given nodes are exclusive.
+	 * Checks whether two given entities are exclusive.
 	 * 
 	 * @param n1
 	 * @param n2
-	 * @return true, if both nodes are exclusive
+	 * @return true, if both entities are exclusive
 	 */
-	public boolean areExclusive(Node n1, Node n2) {
-		int index1 = this.nodes.indexOf(n1);
-		int index2 = this.nodes.indexOf(n2);
+	public boolean areExclusive(N n1, N n2) {
+		int index1 = this.entities.indexOf(n1);
+		int index2 = this.entities.indexOf(n2);
 		if (index1 == -1 || index2 == -1)
-			throw new InvalidParameterException("The structure is not defined for the respective nodes.");
+			throw new InvalidParameterException("The structure is not defined for the respective entities.");
 		return matrix[index1][index2].equals(RelSetType.Exclusive);
 	}
 
 	/**
-	 * Checks whether two given nodes are ordered.
+	 * Checks whether two given entities are ordered.
 	 * 
 	 * @param n1
 	 * @param n2
-	 * @return true, if both nodes are ordered
+	 * @return true, if both entities are ordered
 	 */
-	public boolean areInOrder(Node n1, Node n2) {
-		int index1 = this.nodes.indexOf(n1);
-		int index2 = this.nodes.indexOf(n2);
+	public boolean areInOrder(N n1, N n2) {
+		int index1 = this.entities.indexOf(n1);
+		int index2 = this.entities.indexOf(n2);
 		if (index1 == -1 || index2 == -1)
-			throw new InvalidParameterException("The structure is not defined for the respective nodes.");
+			throw new InvalidParameterException("The structure is not defined for the respective entities.");
 		return matrix[index1][index2].equals(RelSetType.Order);
 	}
 
 	/**
-	 * Returns the behavioural relation for two given nodes.
+	 * Returns the behavioural relation for two given entities.
 	 * 
 	 * @param n1
 	 * @param n2
-	 * @return the relation of the behavioural profile for the nodes
+	 * @return the relation of the behavioural profile for the entities
 	 */
-	public RelSetType getRelationForNodes(Node n1, Node n2) {
-		int index1 = this.nodes.indexOf(n1);
-		int index2 = this.nodes.indexOf(n2);
+	public RelSetType getRelationForEntities(N n1, N n2) {
+		int index1 = this.entities.indexOf(n1);
+		int index2 = this.entities.indexOf(n2);
 		if (index1 == -1 || index2 == -1)
-			throw new InvalidParameterException("The structure is not defined for the respective nodes.");
+			throw new InvalidParameterException("The structure is not defined for the respective entities.");
 		return matrix[index1][index2];
 	}
 	
 	/**
-	 * Returns the type of the behavioural relation for the two nodes that are identified 
-	 * by their index in the list of nodes for which the relation set is defined.
+	 * Returns the type of the behavioural relation for the two entities that are identified 
+	 * by their index in the list of entities for which the relation set is defined.
 	 * 
 	 * @param index1
 	 * @param index2
-	 * @return the relation type of the relation set for the nodes identified by the indices
+	 * @return the relation type of the relation set for the entities identified by the indices
 	 */
 	public RelSetType getRelationForIndex(int index1, int index2) {
 		return matrix[index1][index2];
 	}
 
 	/**
-	 * Returns all nodes that are in a given behavioural relation with a given node.
+	 * Returns all entities that are in a given behavioural relation with a given entity.
 	 * 
-	 * @param a node
+	 * @param an entity
 	 * @param a behavioural relation type
-	 * @return all nodes in the respective behavioural relation with the given node
+	 * @return all entities in the respective behavioural relation with the given entity
 	 */
-	public Collection<Node> getNodesInRelation(Node n, RelSetType relationType) {
-		Collection<Node> nodes = new ArrayList<Node>();
-		int index = this.nodes.indexOf(n);
+	public Collection<N> getEntitiesInRelation(N n, RelSetType relationType) {
+		Collection<N> entities = new ArrayList<N>();
+		int index = this.entities.indexOf(n);
 		
 		for (int i = 0; i < matrix.length; i++) {
 			if (matrix[index][i].equals(relationType)) {
-				nodes.add(this.nodes.get(i));
+				entities.add(this.entities.get(i));
 			}
 		}
-		return nodes;
+		return entities;
 	}
 	
 	/**
-	 * Dumps all nodes in a given behavioural relation to the standard output.
+	 * Dumps all entities in a given behavioural relation to the standard output.
 	 * 
 	 * @param a behavioural relation type
 	 */
-	public void printAllNodes(RelSetType relationType) {
-		for(Node n1 : this.nodes) {
-			int index1 = this.nodes.indexOf(n1);
-			for(Node n2 : this.nodes) {
-				int index2 = this.nodes.indexOf(n2);
+	public void printAllEntities(RelSetType relationType) {
+		for(N n1 : this.entities) {
+			int index1 = this.entities.indexOf(n1);
+			for(N n2 : this.entities) {
+				int index2 = this.entities.indexOf(n2);
 				if (index2 > index1)
 					continue;
 				if (matrix[index1][index2].equals(relationType))
@@ -283,23 +282,23 @@ public class RelSet {
 	 * Checks equality for two relation sets.
 	 * 
 	 * Returns false, if both matrices are not based on the same
-	 * Petri net or on the same set of nodes.
+	 * model or on the same set of entities.
 	 * 
 	 * @param profile that should be compared
 	 * @return true, if the given relation set is equivalent to this relation set 
 	 */
-	public boolean equals(RelSet relationSet) {
-		if (!this.pn.equals(relationSet.getNet()))
+	public boolean equals(RelSet<M, N> relationSet) {
+		if (!this.model.equals(relationSet.getModel()))
 			return false;
 		
-		if (!this.getNodes().containsAll(relationSet.getNodes()) || !relationSet.getNodes().containsAll(this.getNodes()))
+		if (!this.getEntities().containsAll(relationSet.getEntities()) || !relationSet.getEntities().containsAll(this.getEntities()))
 			return false;
 		
 		boolean equal = true;
 		
-		for(Node n1 : this.nodes) {
-			for(Node n2 : this.nodes) {
-				equal &= this.getRelationForNodes(n1, n2).equals(relationSet.getRelationForNodes(n1, n2));
+		for(N n1 : this.entities) {
+			for(N n2 : this.entities) {
+				equal &= this.getRelationForEntities(n1, n2).equals(relationSet.getRelationForEntities(n1, n2));
 			}
 		}
 		return equal;
@@ -307,33 +306,33 @@ public class RelSet {
 	
 	/**
 	 * Checks equality for two relation sets only for the
-	 * shared nodes. That is, we assess whether the structures define
-	 * equal relations for all nodes for which both structures are
+	 * shared entities. That is, we assess whether the structures define
+	 * equal relations for all entities for which both structures are
 	 * defined.
 	 * 
 	 * Returns false, if both matrices are not based on the same
-	 * Petri net.
+	 * model.
 	 * 
 	 * @param profile that should be compared
-	 * @return true, if the given relation set is equivalent to this relation set for shared nodes
+	 * @return true, if the given relation set is equivalent to this relation set for shared entities
 	 */
-	public boolean equalsForSharedNodes(RelSet relationSet) {
-		if (!this.pn.equals(relationSet.getNet()))
+	public boolean equalsForSharedEntities(RelSet<M, N> relationSet) {
+		if (!this.model.equals(relationSet.getModel()))
 			return false;
 		
 		boolean equal = true;
 		
-		HashSet<Node> sharedNodes = new HashSet<Node>(this.getNodes());
-		sharedNodes.retainAll(relationSet.getNodes()); 
+		HashSet<N> sharedEntities = new HashSet<N>(this.getEntities());
+		sharedEntities.retainAll(relationSet.getEntities()); 
 		
-		for(Node n1 : sharedNodes) {
-			for(Node n2 : sharedNodes) {
-				equal &= this.getRelationForNodes(n1, n2).equals(relationSet.getRelationForNodes(n1, n2));
-//				if (!this.getRelationForNodes(n1, n2).equals(profile.getRelationForNodes(n1, n2))) {
+		for(N n1 : sharedEntities) {
+			for(N n2 : sharedEntities) {
+				equal &= this.getRelationForEntities(n1, n2).equals(relationSet.getRelationForEntities(n1, n2));
+//				if (!this.getRelationForEntities(n1, n2).equals(profile.getRelationForEntities(n1, n2))) {
 //					System.out.println(n1);
 //					System.out.println(n2);
-//					System.out.println(this.getRelationForNodes(n1, n2));
-//					System.out.println(profile.getRelationForNodes(n1, n2));
+//					System.out.println(this.getRelationForEntities(n1, n2));
+//					System.out.println(profile.getRelationForEntities(n1, n2));
 //					
 //				}
 			}
@@ -343,14 +342,14 @@ public class RelSet {
 	
 	/**
 	 * Checks emptiness of a relation set. It is empty, if it defines 
-	 * exclusiveness for all pairs of nodes.
+	 * exclusiveness for all pairs of entities.
 	 * 
 	 * @return true, if the relation set is empty
 	 */
 	public boolean isEmpty() {
-		for (Node n1 : getNodes()) 
-			for (Node n2 : getNodes()) 
-				if (!getRelationForNodes(n1, n2).equals(RelSetType.Exclusive))
+		for (N n1 : getEntities()) 
+			for (N n2 : getEntities()) 
+				if (!getRelationForEntities(n1, n2).equals(RelSetType.Exclusive))
 						return false;
 		
 		return true;
@@ -358,12 +357,12 @@ public class RelSet {
 
 	/**
 	 * Returns the complement of the relation set . It is defined as the relation set
-	 * that comprises the complement relations for all pairs of nodes.
+	 * that comprises the complement relations for all pairs of entities.
 	 * 
 	 * @return 
 	 */
-	public RelSet getComplement() {
-		RelSet cProfile = new RelSet(getNet(),getNodes());
+	public RelSet<M, N> getComplement() {
+		RelSet<M, N> cProfile = new RelSet<M, N>(getModel(),getEntities());
 		RelSetType[][] cMatrix = cProfile.getMatrix();
 		
 		for (int i = 0; i < matrix.length; i++) 

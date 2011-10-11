@@ -11,7 +11,7 @@ import de.hpi.bpt.process.petri.bp.CausalBehaviouralProfile;
 import de.hpi.bpt.process.petri.bp.RelSetType;
 
 
-public class CBPCreatorNet extends AbstractRelSetCreator implements CBPCreator {
+public class CBPCreatorNet extends AbstractRelSetCreator implements CBPCreator<PetriNet, Node> {
 
 	private static CBPCreatorNet eInstance;
 	
@@ -25,11 +25,11 @@ public class CBPCreatorNet extends AbstractRelSetCreator implements CBPCreator {
 		
 	}
 		
-	public CausalBehaviouralProfile deriveCausalBehaviouralProfile(PetriNet pn) {
+	public CausalBehaviouralProfile<PetriNet, Node> deriveCausalBehaviouralProfile(PetriNet pn) {
 		return deriveCausalBehaviouralProfile(pn, pn.getNodes());
 	}
 	
-	public CausalBehaviouralProfile deriveCausalBehaviouralProfile(PetriNet pn, Collection<Node> nodes) {
+	public CausalBehaviouralProfile<PetriNet, Node> deriveCausalBehaviouralProfile(PetriNet pn, Collection<Node> nodes) {
 		
 		/*
 		 * Check assumptions for the net
@@ -41,7 +41,7 @@ public class CBPCreatorNet extends AbstractRelSetCreator implements CBPCreator {
 		/*
 		 * Compute the behavioural profile using BPCreatorNet
 		 */
-		CausalBehaviouralProfile profile = new CausalBehaviouralProfile(pn, nodes);
+		CausalBehaviouralProfile<PetriNet, Node> profile = new CausalBehaviouralProfile<PetriNet, Node>(pn, nodes);
 		profile.setMatrix(BPCreatorNet.getInstance().deriveRelationSet(pn).getMatrix());	
 
 		/*
@@ -52,15 +52,15 @@ public class CBPCreatorNet extends AbstractRelSetCreator implements CBPCreator {
 		return profile;
 	}
 	
-	protected void fillCooccurrence(PetriNet pn, CausalBehaviouralProfile profile) {
+	protected void fillCooccurrence(PetriNet pn, CausalBehaviouralProfile<PetriNet, Node> profile) {
 		/*
 		 * Compute co-occurrence if net is T-net
 		 */
 		if (pn.isTNet()) {
-			for(Node n1 : profile.getNodes()) {
-				int index1 = profile.getNodes().indexOf(n1);
-				for(Node n2 : profile.getNodes()) {
-					int index2 = profile.getNodes().indexOf(n2);
+			for(Node n1 : profile.getEntities()) {
+				int index1 = profile.getEntities().indexOf(n1);
+				for(Node n2 : profile.getEntities()) {
+					int index2 = profile.getEntities().indexOf(n2);
 					profile.getCooccurrenceMatrix()[index1][index2] = true;
 				}
 			}
@@ -72,10 +72,10 @@ public class CBPCreatorNet extends AbstractRelSetCreator implements CBPCreator {
 			Map<Node,Set<Node>> dominators = pn.getDominators();
 			Map<Node,Set<Node>> postdominators = pn.getPostDominators();
 			
-			for(Node n1 : profile.getNodes()) {
-				int index1 = profile.getNodes().indexOf(n1);
-				for(Node n2 : profile.getNodes()) {
-					int index2 = profile.getNodes().indexOf(n2);
+			for(Node n1 : profile.getEntities()) {
+				int index1 = profile.getEntities().indexOf(n1);
+				for(Node n2 : profile.getEntities()) {
+					int index2 = profile.getEntities().indexOf(n2);
 					if (dominators.get(n1).contains(n2) || postdominators.get(n1).contains(n2))
 						profile.getCooccurrenceMatrix()[index1][index2] = true;
 				}
@@ -85,10 +85,10 @@ public class CBPCreatorNet extends AbstractRelSetCreator implements CBPCreator {
 		 * Compute co-occurrence if net is acyclic.
 		 */
 		else if (!pn.hasCycle()) {
-			for(Node n1 : profile.getNodes()) {
-				int index1 = profile.getNodes().indexOf(n1);
-				for(Node n2 : profile.getNodes()) {
-					int index2 = profile.getNodes().indexOf(n2);
+			for(Node n1 : profile.getEntities()) {
+				int index1 = profile.getEntities().indexOf(n1);
+				for(Node n2 : profile.getEntities()) {
+					int index2 = profile.getEntities().indexOf(n2);
 					/*
 					 * Trivial case, a node is co-occurring with itself
 					 */
@@ -103,7 +103,7 @@ public class CBPCreatorNet extends AbstractRelSetCreator implements CBPCreator {
 						 * Check whether all nodes exclusive to n2 are also exclusive to n1
 						 */
 						boolean allExclusive = true;
-						for(Node n3 : profile.getNodesInRelation(n2, RelSetType.Exclusive)) {
+						for(Node n3 : profile.getEntitiesInRelation(n2, RelSetType.Exclusive)) {
 							allExclusive &= profile.areExclusive(n1, n3);
 						}
 						if (allExclusive)
@@ -114,14 +114,14 @@ public class CBPCreatorNet extends AbstractRelSetCreator implements CBPCreator {
 		}
 	}
 
-	public CausalBehaviouralProfile deriveCausalBehaviouralProfile(BehaviouralProfile bp) {
+	public CausalBehaviouralProfile<PetriNet, Node> deriveCausalBehaviouralProfile(BehaviouralProfile<PetriNet, Node> bp) {
 		
-		PetriNet pn = bp.getNet();
+		PetriNet pn = bp.getModel();
 
 		/*
 		 * Get the behavioural profile
 		 */
-		CausalBehaviouralProfile profile = new CausalBehaviouralProfile(pn, bp.getNodes());
+		CausalBehaviouralProfile<PetriNet, Node> profile = new CausalBehaviouralProfile<PetriNet, Node>(pn, bp.getEntities());
 		profile.setMatrix(bp.getMatrix());	
 			
 		fillCooccurrence(pn, profile);

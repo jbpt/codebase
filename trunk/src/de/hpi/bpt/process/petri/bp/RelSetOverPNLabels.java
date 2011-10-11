@@ -4,6 +4,8 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hpi.bpt.process.petri.Node;
+import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.Transition;
 
 /**
@@ -17,12 +19,12 @@ import de.hpi.bpt.process.petri.Transition;
  * @author matthias.weidlich
  *
  */
-public class RelSetOverLabels {
+public class RelSetOverPNLabels {
 
 	/**
 	 * The base relation set over transitions.
 	 */
-	protected RelSet rs;
+	protected RelSet<PetriNet, Node> rs;
 	
 	/**
 	 * The labels considered for the relation set over labels.
@@ -40,10 +42,10 @@ public class RelSetOverLabels {
 	 * 
 	 * @param rs, the relation set used as basis
 	 */
-	public RelSetOverLabels(RelSet rs) {
+	public RelSetOverPNLabels(RelSet<PetriNet, Node> rs) {
 		this.rs = rs;
 		this.labels = new ArrayList<String>();
-		for (Transition t : this.rs.getNet().getTransitions())
+		for (Transition t : this.rs.getModel().getTransitions())
 			if (!this.labels.contains(t.getName()))
 				this.labels.add(t.getName());
 		
@@ -55,7 +57,7 @@ public class RelSetOverLabels {
 	 * 
 	 * @param s1, a label
 	 * @param s2, a label
-	 * @return the type fo the behavioural relation for both labels
+	 * @return the type of the behavioural relation for both labels
 	 */
 	public RelSetType getRelationForLabels(String s1, String s2) {
 		int index1 = this.labels.indexOf(s1);
@@ -72,14 +74,14 @@ public class RelSetOverLabels {
 	protected void deriveLabelMatrix() {
 		this.labelMatrix = new RelSetType[this.labels.size()][this.labels.size()];
 		
-		for (Transition t1 : this.rs.getNet().getTransitions()) {
+		for (Transition t1 : this.rs.getModel().getTransitions()) {
 			String s1 = t1.getName();
 			int index1 = this.labels.indexOf(s1);
-			for (Transition t2 : this.rs.getNet().getTransitions()) {
+			for (Transition t2 : this.rs.getModel().getTransitions()) {
 				String s2 = t2.getName();
 				int index2 = this.labels.indexOf(s2);
 				
-				RelSetType rel = rs.getRelationForNodes(t1, t2);
+				RelSetType rel = rs.getRelationForEntities(t1, t2);
 				
 				if (this.labelMatrix[index1][index2] == null) {
 					this.labelMatrix[index1][index2] = rel;

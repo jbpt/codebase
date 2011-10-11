@@ -2,40 +2,38 @@ package de.hpi.bpt.process.petri.bp.construct;
 
 import java.util.Collection;
 
-import de.hpi.bpt.process.petri.Node;
-import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.bp.BehaviouralProfile;
 import de.hpi.bpt.process.petri.bp.CausalBehaviouralProfile;
 
 /**
  * Interface for all computations that derive a causal behavioural 
- * profile for a Petri net.
+ * profile for a model.
  * 
  * @author matthias.weidlich
  *
  */
-public interface CBPCreator {
+public interface CBPCreator<M, N> {
 
 	/**
-	 * Returns the causal behavioural profile for all transitions or all nodes of 
-	 * the given Petri net. Whether the profile is computed for all transitions or all 
-	 * nodes depends on the actual implementation of the creator.
+	 * Returns the causal behavioural profile for all entities of the given model.
+	 * Whether the profile is computed for all entities or only a subset of entities 
+	 * depends on the actual implementation of the creator.
 	 * 
-	 * @param Petri net
-	 * @return the causal behavioural profile for the Petri net
+	 * @param model, a model
+	 * @return the causal behavioural profile of the model
 	 */
-	public CausalBehaviouralProfile deriveCausalBehaviouralProfile(PetriNet pn);
+	public CausalBehaviouralProfile<M, N> deriveCausalBehaviouralProfile(M model);
 
 	/**
-	 * Returns the causal behavioural profile for the given collection of nodes of the 
-	 * Petri net. Whether this collection must comprise solely transitions or is allowed to 
-	 * comprise places depends on the implementation of the creator.
+	 * Returns the causal behavioural profile for the given collection of entities of the 
+	 * model. Whether this collection must comprise solely entities of a certain type 
+	 * depends on the implementation of the creator.
 	 * 
-	 * @param Petri net
-	 * @param collection of nodes of the Petri net
-	 * @return the causal behavioural profile for the Petri net
+	 * @param model, a model
+	 * @param collection of entities of the model
+	 * @return the causal behavioural profile of the model
 	 */
-	public CausalBehaviouralProfile deriveCausalBehaviouralProfile(PetriNet pn, Collection<Node> nodes);
+	public CausalBehaviouralProfile<M, N> deriveCausalBehaviouralProfile(M model, Collection<N> entities);
 
 	/**
 	 * Returns the causal behavioural profile for the given behavioural profile. This method
@@ -44,8 +42,8 @@ public interface CBPCreator {
 	 * profile.
 	 * 
 	 * @param profile the behavioural profile 
-	 * @return the causal behavioural profile for the Petri net to which the given behavioural profile belongs
+	 * @return the causal behavioural profile for the model to which the given behavioural profile belongs
 	 */
-	public CausalBehaviouralProfile deriveCausalBehaviouralProfile(BehaviouralProfile profile);
+	public CausalBehaviouralProfile<M, N> deriveCausalBehaviouralProfile(BehaviouralProfile<M, N> profile);
 
 }

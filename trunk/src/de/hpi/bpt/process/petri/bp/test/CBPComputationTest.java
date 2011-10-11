@@ -1,6 +1,7 @@
 package de.hpi.bpt.process.petri.bp.test;
 
 import junit.framework.TestCase;
+import de.hpi.bpt.process.petri.Node;
 import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.Place;
 import de.hpi.bpt.process.petri.Transition;
@@ -52,7 +53,7 @@ public class CBPComputationTest extends TestCase {
 		net.addFlow(p3, e);
 		net.addFlow(e, p4);
 		
-		CausalBehaviouralProfile cbp = CBPCreatorUnfolding.getInstance().deriveCausalBehaviouralProfile(net);
+		CausalBehaviouralProfile<PetriNet, Node> cbp = CBPCreatorUnfolding.getInstance().deriveCausalBehaviouralProfile(net);
 
 		assertTrue(cbp.areCooccurring(a, a));
 		assertFalse(cbp.areCooccurring(a, b));
@@ -156,7 +157,7 @@ public class CBPComputationTest extends TestCase {
 		net.addFlow(p9, j);
 		net.addFlow(j, p10);
 		
-		CausalBehaviouralProfile cbp = CBPCreatorUnfolding.getInstance().deriveCausalBehaviouralProfile(net);
+		CausalBehaviouralProfile<PetriNet, Node> cbp = CBPCreatorUnfolding.getInstance().deriveCausalBehaviouralProfile(net);
 
 		assertTrue(cbp.areCooccurring(a, a));
 		assertTrue(cbp.areCooccurring(b, b));
@@ -300,37 +301,37 @@ public class CBPComputationTest extends TestCase {
 		/*
 		 * Tests for behavioural profile
 		 */
-		BehaviouralProfile bp = BPCreatorNet.getInstance().deriveRelationSet(net);
+		BehaviouralProfile<PetriNet, Node> bp = BPCreatorNet.getInstance().deriveRelationSet(net);
 
-		assertEquals(RelSetType.Order, bp.getRelationForNodes(a, f));
-		assertEquals(RelSetType.Order, bp.getRelationForNodes(c, f));
-		assertEquals(RelSetType.Order, bp.getRelationForNodes(a, f));
-		assertEquals(RelSetType.ReverseOrder, bp.getRelationForNodes(i, a));
-		assertEquals(RelSetType.ReverseOrder, bp.getRelationForNodes(j, a));
+		assertEquals(RelSetType.Order, bp.getRelationForEntities(a, f));
+		assertEquals(RelSetType.Order, bp.getRelationForEntities(c, f));
+		assertEquals(RelSetType.Order, bp.getRelationForEntities(a, f));
+		assertEquals(RelSetType.ReverseOrder, bp.getRelationForEntities(i, a));
+		assertEquals(RelSetType.ReverseOrder, bp.getRelationForEntities(j, a));
 		
-		assertEquals(RelSetType.Exclusive, bp.getRelationForNodes(d, e));
-		assertEquals(RelSetType.Exclusive, bp.getRelationForNodes(e, d));
-		assertEquals(RelSetType.Exclusive, bp.getRelationForNodes(a, a));
-		assertEquals(RelSetType.Exclusive, bp.getRelationForNodes(e, e));
+		assertEquals(RelSetType.Exclusive, bp.getRelationForEntities(d, e));
+		assertEquals(RelSetType.Exclusive, bp.getRelationForEntities(e, d));
+		assertEquals(RelSetType.Exclusive, bp.getRelationForEntities(a, a));
+		assertEquals(RelSetType.Exclusive, bp.getRelationForEntities(e, e));
 		
-		assertEquals(RelSetType.Interleaving, bp.getRelationForNodes(h, h));
-		assertEquals(RelSetType.Interleaving, bp.getRelationForNodes(i, i));
-		assertEquals(RelSetType.Interleaving, bp.getRelationForNodes(i, h));
-		assertEquals(RelSetType.Interleaving, bp.getRelationForNodes(b, e));
-		assertEquals(RelSetType.Interleaving, bp.getRelationForNodes(d, b));
+		assertEquals(RelSetType.Interleaving, bp.getRelationForEntities(h, h));
+		assertEquals(RelSetType.Interleaving, bp.getRelationForEntities(i, i));
+		assertEquals(RelSetType.Interleaving, bp.getRelationForEntities(i, h));
+		assertEquals(RelSetType.Interleaving, bp.getRelationForEntities(b, e));
+		assertEquals(RelSetType.Interleaving, bp.getRelationForEntities(d, b));
 		
-		BehaviouralProfile bp2 = BPCreatorTree.getInstance().deriveRelationSet(net);
+		BehaviouralProfile<PetriNet, Node> bp2 = BPCreatorTree.getInstance().deriveRelationSet(net);
 		
-		assertTrue(bp2.equalsForSharedNodes(bp));
+		assertTrue(bp2.equalsForSharedEntities(bp));
 		
-		BehaviouralProfile bp3 = BPCreatorUnfolding.getInstance().deriveRelationSet(net);
+		BehaviouralProfile<PetriNet, Node> bp3 = BPCreatorUnfolding.getInstance().deriveRelationSet(net);
 		
-		assertTrue(bp3.equalsForSharedNodes(bp));
+		assertTrue(bp3.equalsForSharedEntities(bp));
 		
 		/*
 		 * Tests for co-occurrence relation of the causal behavioural profile
 		 */
-		CausalBehaviouralProfile cbp = CBPCreatorTree.getInstance().deriveCausalBehaviouralProfile(net);
+		CausalBehaviouralProfile<PetriNet, Node> cbp = CBPCreatorTree.getInstance().deriveCausalBehaviouralProfile(net);
 		assertTrue(cbp.areCooccurring(a, a));
 		assertTrue(cbp.areCooccurring(d, d));
 		assertTrue(cbp.areCooccurring(i, i));

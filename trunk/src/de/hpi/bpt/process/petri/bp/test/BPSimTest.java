@@ -4,6 +4,7 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 
+import de.hpi.bpt.process.petri.Node;
 import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.Place;
 import de.hpi.bpt.process.petri.Transition;
@@ -91,8 +92,8 @@ public class BPSimTest extends TestCase {
 		net2.addFlow(y, p23);
 		net2.addFlow(z, p24);
 		
-		BehaviouralProfile bp1 = BPCreatorUnfolding.getInstance().deriveRelationSet(net1);
-		BehaviouralProfile bp2 = BPCreatorUnfolding.getInstance().deriveRelationSet(net2);
+		BehaviouralProfile<PetriNet, Node> bp1 = BPCreatorUnfolding.getInstance().deriveRelationSet(net1);
+		BehaviouralProfile<PetriNet, Node> bp2 = BPCreatorUnfolding.getInstance().deriveRelationSet(net2);
 		
 		RelSetAlignment al = new RelSetAlignment(bp1, bp2);
 		

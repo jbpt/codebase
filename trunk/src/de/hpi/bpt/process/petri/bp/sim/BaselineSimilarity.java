@@ -17,13 +17,13 @@ public class BaselineSimilarity extends AbstractRelSetSimilarity {
 	@Override
 	public double score(RelSetAlignment alignment) {
 		double in1 = 0;
-		for (Node n : alignment.getFirstRelationSet().getNodes()) {
+		for (Node n : alignment.getFirstRelationSet().getEntities()) {
 			if (n instanceof Place) continue;
 			if (((Transition)n).equals(PetriNet.SILENT_LABEL)) continue;
 			in1++;
 		}
 		double in2 = 0;
-		for (Node n : alignment.getSecondRelationSet().getNodes()) {
+		for (Node n : alignment.getSecondRelationSet().getEntities()) {
 			if (n instanceof Place) continue;
 			if (((Transition)n).equals(PetriNet.SILENT_LABEL)) continue;
 			in2++;

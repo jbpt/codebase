@@ -19,7 +19,7 @@ import de.hpi.bpt.process.petri.util.ConcurrencyRelation;
  * @author matthias.weidlich
  *
  */
-public class BPCreatorNet extends AbstractRelSetCreator implements RelSetCreator {
+public class BPCreatorNet extends AbstractRelSetCreator implements RelSetCreator<PetriNet, Node> {
 	
 	private static BPCreatorNet eInstance;
 	
@@ -33,11 +33,11 @@ public class BPCreatorNet extends AbstractRelSetCreator implements RelSetCreator
 		
 	}
 
-	public BehaviouralProfile deriveRelationSet(PetriNet pn) {
+	public BehaviouralProfile<PetriNet, Node> deriveRelationSet(PetriNet pn) {
 		return deriveRelationSet(pn, pn.getNodes());
 	}
 	
-	public BehaviouralProfile deriveRelationSet(PetriNet pn, Collection<Node> nodes) {
+	public BehaviouralProfile<PetriNet, Node> deriveRelationSet(PetriNet pn, Collection<Node> nodes) {
 		
 		/*
 		 * Check some of the assumptions.
@@ -45,15 +45,15 @@ public class BPCreatorNet extends AbstractRelSetCreator implements RelSetCreator
 		if (!pn.isExtendedFreeChoice()) throw new IllegalArgumentException();
 		if (!pn.isWFNet()) throw new IllegalArgumentException();
 
-		BehaviouralProfile profile = new BehaviouralProfile(pn,nodes);
+		BehaviouralProfile<PetriNet, Node> profile = new BehaviouralProfile<PetriNet, Node>(pn,nodes);
 		RelSetType[][] matrix = profile.getMatrix();
 		
 		ConcurrencyRelation concurrencyRelation = new ConcurrencyRelation(pn);
 		
-		for(Node n1 : profile.getNodes()) {
-			int index1 = profile.getNodes().indexOf(n1);
-			for(Node n2 : profile.getNodes()) {
-				int index2 = profile.getNodes().indexOf(n2);
+		for(Node n1 : profile.getEntities()) {
+			int index1 = profile.getEntities().indexOf(n1);
+			for(Node n2 : profile.getEntities()) {
+				int index2 = profile.getEntities().indexOf(n2);
 				/*
 				 * The matrix is symmetric. Therefore, we need to traverse only 
 				 * half of the entries.

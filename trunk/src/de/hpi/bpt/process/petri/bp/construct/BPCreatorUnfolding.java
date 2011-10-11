@@ -34,7 +34,7 @@ import de.hpi.bpt.process.petri.rels.UnfoldingRelationType;
  * @author matthias.weidlich
  *
  */
-public class BPCreatorUnfolding extends AbstractRelSetCreator implements RelSetCreator {
+public class BPCreatorUnfolding extends AbstractRelSetCreator implements RelSetCreator<PetriNet, Node> {
 
 	private static BPCreatorUnfolding eInstance;
 	
@@ -68,19 +68,19 @@ public class BPCreatorUnfolding extends AbstractRelSetCreator implements RelSetC
 	}
 
 	@Override
-	public BehaviouralProfile deriveRelationSet(PetriNet pn) {
+	public BehaviouralProfile<PetriNet, Node> deriveRelationSet(PetriNet pn) {
 		return deriveRelationSet(pn, new ArrayList<Node>(pn.getTransitions()));
 	}
 	
 	@Override
-	public BehaviouralProfile deriveRelationSet(PetriNet pn,
+	public BehaviouralProfile<PetriNet, Node> deriveRelationSet(PetriNet pn,
 			Collection<Node> nodes) {
 		
 		clear();
 		
 		this.eventContinuationProfiler = new EventContinuationProfiler(pn);
 		
-		BehaviouralProfile profile = new BehaviouralProfile(pn,nodes);
+		BehaviouralProfile<PetriNet, Node> profile = new BehaviouralProfile<PetriNet, Node>(pn,nodes);
 		RelSetType[][] matrix = profile.getMatrix();
 		
 		for (Node t : nodes)
@@ -94,10 +94,10 @@ public class BPCreatorUnfolding extends AbstractRelSetCreator implements RelSetC
 
 		this.deriveWeakOrderRelation();
 
-		for(Node t1 : profile.getNodes()) {
-			int index1 = profile.getNodes().indexOf(t1);
-			for(Node t2 : profile.getNodes()) {
-				int index2 = profile.getNodes().indexOf(t2);
+		for(Node t1 : profile.getEntities()) {
+			int index1 = profile.getEntities().indexOf(t1);
+			for(Node t2 : profile.getEntities()) {
+				int index2 = profile.getEntities().indexOf(t2);
 				
 				/*
 				 * The behavioural profile matrix is symmetric. Therefore, we 

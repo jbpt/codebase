@@ -13,7 +13,7 @@ import de.hpi.bpt.process.petri.bp.RelSetType;
 import de.hpi.bpt.process.petri.wft.WFTree;
 
 
-public class CBPCreatorTree extends AbstractRelSetCreator implements CBPCreator {
+public class CBPCreatorTree extends AbstractRelSetCreator implements CBPCreator<PetriNet, Node> {
 	
 	private static CBPCreatorTree eInstance;
 	
@@ -27,11 +27,11 @@ public class CBPCreatorTree extends AbstractRelSetCreator implements CBPCreator 
 		
 	}
 	
-	public CausalBehaviouralProfile deriveCausalBehaviouralProfile(PetriNet pn) {
+	public CausalBehaviouralProfile<PetriNet, Node> deriveCausalBehaviouralProfile(PetriNet pn) {
 		return deriveCausalBehaviouralProfile(pn, new ArrayList<Node>(pn.getTransitions()));
 	}
 	
-	public CausalBehaviouralProfile deriveCausalBehaviouralProfile(PetriNet pn, Collection<Node> nodes) {
+	public CausalBehaviouralProfile<PetriNet, Node> deriveCausalBehaviouralProfile(PetriNet pn, Collection<Node> nodes) {
 
 		/*
 		 * The construction of the WF-tree may augment the original net. Therefore,
@@ -56,14 +56,14 @@ public class CBPCreatorTree extends AbstractRelSetCreator implements CBPCreator 
 		
 		WFTree wfTree = new WFTree(netClone);
 		
-		CausalBehaviouralProfile profile = new CausalBehaviouralProfile(pn,nodes);
+		CausalBehaviouralProfile<PetriNet, Node> profile = new CausalBehaviouralProfile<PetriNet, Node>(pn,nodes);
 		RelSetType[][] matrix = profile.getMatrix();
 		boolean[][] cooccurrenceMatrix = profile.getCooccurrenceMatrix();
 
-		for(Node t1 : profile.getNodes()) {
-			int index1 = profile.getNodes().indexOf(t1);
-			for(Node t2 : profile.getNodes()) {
-				int index2 = profile.getNodes().indexOf(t2);
+		for(Node t1 : profile.getEntities()) {
+			int index1 = profile.getEntities().indexOf(t1);
+			for(Node t2 : profile.getEntities()) {
+				int index2 = profile.getEntities().indexOf(t2);
 				
 				if (wfTree.areCooccurring(nodeMapping.get(t1), nodeMapping.get(t2)))
 					cooccurrenceMatrix[index1][index2] = true;
@@ -94,9 +94,9 @@ public class CBPCreatorTree extends AbstractRelSetCreator implements CBPCreator 
 		return profile;
 	}
 
-	public CausalBehaviouralProfile deriveCausalBehaviouralProfile(BehaviouralProfile bp) {
+	public CausalBehaviouralProfile<PetriNet, Node> deriveCausalBehaviouralProfile(BehaviouralProfile<PetriNet, Node> bp) {
 		
-		PetriNet pn = bp.getNet();
+		PetriNet pn = bp.getModel();
 		
 		/*
 		 * The construction of the WF-tree may augment the original net. Therefore,
@@ -120,15 +120,15 @@ public class CBPCreatorTree extends AbstractRelSetCreator implements CBPCreator 
 		/*
 		 * Get the behavioural profile
 		 */
-		CausalBehaviouralProfile profile = new CausalBehaviouralProfile(pn, bp.getNodes());
+		CausalBehaviouralProfile<PetriNet, Node> profile = new CausalBehaviouralProfile<PetriNet, Node>(pn, bp.getEntities());
 		profile.setMatrix(bp.getMatrix());	
 
 		boolean[][] cooccurrenceMatrix = profile.getCooccurrenceMatrix();
 
-		for(Node t1 : profile.getNodes()) {
-			int index1 = profile.getNodes().indexOf(t1);
-			for(Node t2 : profile.getNodes()) {
-				int index2 = profile.getNodes().indexOf(t2);
+		for(Node t1 : profile.getEntities()) {
+			int index1 = profile.getEntities().indexOf(t1);
+			for(Node t2 : profile.getEntities()) {
+				int index2 = profile.getEntities().indexOf(t2);
 				
 				if (wfTree.areCooccurring(nodeMapping.get(t1), nodeMapping.get(t2)))
 					cooccurrenceMatrix[index1][index2] = true;
