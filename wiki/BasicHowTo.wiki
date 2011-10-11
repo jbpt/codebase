@@ -195,8 +195,8 @@ There are different methods for the computation of behavioural profiles of a Pet
  * Then, we compute the (causal) behavioural profile with a methods that leverages the 
  * RPST of the Petri net as follows.
  */
-BehaviouralProfile bp = BPCreatorTree.getInstance().deriveBehaviouralProfile(n);
-CausalBehaviouralProfile cbp = CBPCreatorTree.getInstance().deriveCausalBehaviouralProfile(n);
+BehaviouralProfile<PetriNet, Node> bp = BPCreatorTree.getInstance().deriveBehaviouralProfile(n);
+CausalBehaviouralProfile<PetriNet, Node> cbp = CBPCreatorTree.getInstance().deriveCausalBehaviouralProfile(n);
 
 /*
  * Assume that n is an object of class Petri net that is free-choice, sound, and has workflow structure.
@@ -205,16 +205,16 @@ CausalBehaviouralProfile cbp = CBPCreatorTree.getInstance().deriveCausalBehaviou
  * is acyclic or an S-net. This assumption is not required if only the (non-causal) behavioural profile
  * is computed.
  */
-BehaviouralProfile bp2 = BPCreatorNet.getInstance().deriveBehaviouralProfile(n);
-CausalBehaviouralProfile cbp2 = CBPCreatorNet.getInstance().deriveCausalBehaviouralProfile(n);
+BehaviouralProfile<PetriNet, Node> bp2 = BPCreatorNet.getInstance().deriveBehaviouralProfile(n);
+CausalBehaviouralProfile<PetriNet, Node> cbp2 = CBPCreatorNet.getInstance().deriveCausalBehaviouralProfile(n);
 
 /*
  * Finally, if n is an object of class Petri net that is bounded, we may use a methods based on 
  * Petri net unfolding. It is way more costly than the aforementioned approaches, but assumes only
  * boundedness.
  */
-BehaviouralProfile bp3 = BPCreatorUnfolding.getInstance().deriveBehaviouralProfile(n);
-CausalBehaviouralProfile cbp3 = CBPCreatorUnfolding.getInstance().deriveCausalBehaviouralProfile(n);
+BehaviouralProfile<PetriNet, Node> bp3 = BPCreatorUnfolding.getInstance().deriveBehaviouralProfile(n);
+CausalBehaviouralProfile<PetriNet, Node> cbp3 = CBPCreatorUnfolding.getInstance().deriveCausalBehaviouralProfile(n);
 }}}
 
 The classes for behavioural profiles and causal behavioural profiles offers the following methods as an API. 
