@@ -193,12 +193,15 @@ public class EPMLParser {
 		name = name.replace(")", "");
 		name = name.replace("[", "");
 		name = name.replace("]", "");
-		name = name.replace("\\", " ");
 		name = name.replace(",", " ");
 		name = name.replace(";", " ");
 		name = name.replace("\n", " ");
 		name = name.replace("\r", " ");
 		name = name.replace("\t", " ");
+		name = name.replace("\\n", " ");
+		name = name.replace("\\r", " ");
+		name = name.replace("\\t", " ");
+		name = name.replace("\\", " ");
 		return name;
 	}
 	protected Node getChild(Node n, String name) {
