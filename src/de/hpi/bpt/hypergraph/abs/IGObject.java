@@ -1,11 +1,13 @@
 package de.hpi.bpt.hypergraph.abs;
 
+import de.hpi.bpt.alignment.IEntity;
+
 /**
  * Basic graph object interface
  * 
  * @author Artem Polyvyanyy
  */
-public interface IGObject extends Comparable<IGObject> {
+public interface IGObject extends Comparable<IGObject>, IEntity {
 	/**
 	 * Get unique identifier
 	 * @return

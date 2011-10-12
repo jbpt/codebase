@@ -6,57 +6,53 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import de.hpi.bpt.graph.abs.IEdge;
-import de.hpi.bpt.graph.abs.IGraph;
-import de.hpi.bpt.hypergraph.abs.IVertex;
-
 /**
- * Class that stores an alignment between two graphs using a
+ * Class that stores an alignment between two entity models using a
  * correspondence relation.
  * 
  * See <code>initCorrespondenceRelation</code> for a simple method 
  * that initialises the alignment with elementary 1:1 
  * correspondences that are derived based on the names of the 
- * vertices (string equality).
+ * entities(string equality).
  * 
  * @author matthias.weidlich
  *
- * @param <E>, an edge type
- * @param <V>, a vertex type
+ * @param <M>, a model type
+ * @param <N>, an entity type
  */
-public class Alignment<E extends IEdge<V>,V extends IVertex>  {
+public class Alignment<M extends IEntityModel<N>, N extends IEntity>  {
 
 		/**
-		 * The first graph of the alignment.
+		 * The first model of the alignment.
 		 */
-		protected IGraph<E,V> graph1;
+		protected M model1;
 		
 		/**
-		 * The decond graph of the alignment.
+		 * The second model of the alignment.
 		 */
-		protected IGraph<E,V> graph2;
+		protected M model2;
 
 		/**
 		 * Correspondence relation to capture elementary and complex correspondences
-		 * between the first and the second graph.
+		 * between the first and the second model.
 		 */
-		protected Map<V,Set<V>> correspondenceRelation = new HashMap<V, Set<V>>();
+		protected Map<N,Set<N>> correspondenceRelation = new HashMap<N, Set<N>>();
 		
 		/**
 		 * The reverse correspondence relation is maintained as well.
 		 */
-		protected Map<V,Set<V>> reversedCorrespondenceRelation = new HashMap<V, Set<V>>();
+		protected Map<N,Set<N>> reversedCorrespondenceRelation = new HashMap<N, Set<N>>();
 
 		/**
-		 * Constructor that takes just the two graphs as input, for which
+		 * Constructor that takes just the two models as input, for which
 		 * we want to define correspondences.
 		 * 
-		 * @param graph1, the first graph of the correspondences
-		 * @param graph2, the second graph of the correspondences
+		 * @param model1, the first model of the correspondences
+		 * @param model2, the second model of the correspondences
 		 */
-		public Alignment(IGraph<E,V> graph1, IGraph<E,V> graph2){
-			this.graph1 = graph1;
-			this.graph2 = graph2;
+		public Alignment(M model1, M model2){
+			this.model1 = model1;
+			this.model2 = model2;
 		}
 		
 		/**
@@ -64,41 +60,41 @@ public class Alignment<E extends IEdge<V>,V extends IVertex>  {
 		 * 
 		 * @param alignment, the alignment that shall be copied
 		 */
-		public Alignment(Alignment<E,V> alignment) {
-			this.graph1 = alignment.getFirstGraph();
-			this.graph2 = alignment.getSecondGraph();
+		public Alignment(Alignment<M,N> alignment) {
+			this.model1 = alignment.getFirstModel();
+			this.model2 = alignment.getSecondModel();
 			
-			for (V v1 : alignment.getAlignedVerticesOfFirstGraph())
-				for (V v2 : alignment.getCorrespondingVerticesForVertexOfFirstGraph(v1))
+			for (N v1 : alignment.getAlignedEntitiesOfFirstModel())
+				for (N v2 : alignment.getCorrespondingEntitiesForEntityOfFirstModel(v1))
 					this.addElementaryCorrespondence(v1, v2);
 		}
 		
-		public void addElementaryCorrespondence(V n1, V n2) {
+		public void addElementaryCorrespondence(N n1, N n2) {
 			if (!this.correspondenceRelation.containsKey(n1))
-				this.correspondenceRelation.put(n1,new HashSet<V>());
+				this.correspondenceRelation.put(n1,new HashSet<N>());
 			if (!this.reversedCorrespondenceRelation.containsKey(n2))
-				this.reversedCorrespondenceRelation.put(n2,new HashSet<V>());
+				this.reversedCorrespondenceRelation.put(n2,new HashSet<N>());
 			
 			this.correspondenceRelation.get(n1).add(n2);
 			this.reversedCorrespondenceRelation.get(n2).add(n1);
 		}
 		
-		public void addComplexCorrespondence(Set<V> n1, V n2) {
-			for (V n : n1)
+		public void addComplexCorrespondence(Set<N> n1, N n2) {
+			for (N n : n1)
 				addElementaryCorrespondence(n, n2);
 		}
 		
-		public void addComplexCorrespondence(V n1, Set<V> n2) {
-			for (V n : n2)
+		public void addComplexCorrespondence(N n1, Set<N> n2) {
+			for (N n : n2)
 				addElementaryCorrespondence(n1, n);
 		}
 		
-		public void addComplexCorrespondence(Set<V> n1, Set<V> n2) {
-			for (V n : n1)
+		public void addComplexCorrespondence(Set<N> n1, Set<N> n2) {
+			for (N n : n1)
 				addComplexCorrespondence(n,n2);
 		}
 		
-		public void removeElementaryCorrespondence(V n1, V n2) {
+		public void removeElementaryCorrespondence(N n1, N n2) {
 			if (this.correspondenceRelation.containsKey(n1))
 				this.correspondenceRelation.get(n1).remove(n2);
 			if (this.correspondenceRelation.get(n1).isEmpty())
@@ -110,54 +106,54 @@ public class Alignment<E extends IEdge<V>,V extends IVertex>  {
 				this.reversedCorrespondenceRelation.remove(n2);
 		}
 		
-		public void removeComplexCorrespondence(Set<V> n1, V n2) {
-			for (V n : n1)
+		public void removeComplexCorrespondence(Set<N> n1, N n2) {
+			for (N n : n1)
 				removeElementaryCorrespondence(n, n2);
 		}
 		
-		public void removeComplexCorrespondence(V n1, Set<V> n2) {
-			for (V n : n2)
+		public void removeComplexCorrespondence(N n1, Set<N> n2) {
+			for (N n : n2)
 				removeElementaryCorrespondence(n1, n);
 		}
 		
-		public void removeComplexCorrespondence(Set<V> n1, Set<V> n2) {
-			for (V n : n1)
+		public void removeComplexCorrespondence(Set<N> n1, Set<N> n2) {
+			for (N n : n1)
 				removeComplexCorrespondence(n,n2);
 		}
 		
-		public IGraph<E,V> getFirstGraph() {
-			return this.graph1;
+		public M getFirstModel() {
+			return this.model1;
 		}
 
-		public IGraph<E,V> getSecondGraph() {
-			return this.graph2;
+		public M getSecondModel() {
+			return this.model2;
 		}
 
-		public Collection<V> getAlignedVerticesOfFirstGraph() {
-			return new HashSet<V>(this.correspondenceRelation.keySet());
+		public Collection<N> getAlignedEntitiesOfFirstModel() {
+			return new HashSet<N>(this.correspondenceRelation.keySet());
 		}
 
-		public Collection<V> getAlignedVerticesOfSecondGraph() {
-			return new HashSet<V>(this.reversedCorrespondenceRelation.keySet());
+		public Collection<N> getAlignedEntitiesOfSecondModel() {
+			return new HashSet<N>(this.reversedCorrespondenceRelation.keySet());
 		}
 
-		public Collection<V> getCorrespondingVerticesForVertexOfFirstGraph(V n) {
-			return new HashSet<V>(this.correspondenceRelation.get(n));
+		public Collection<N> getCorrespondingEntitiesForEntityOfFirstModel(N n) {
+			return new HashSet<N>(this.correspondenceRelation.get(n));
 		}
 		
-		public Collection<V> getCorrespondingVerticesForVertexOfSecondGraph(V n) {
-			return new HashSet<V>(this.reversedCorrespondenceRelation.get(n));
+		public Collection<N> getCorrespondingEntitiesForEntityOfSecondModel(N n) {
+			return new HashSet<N>(this.reversedCorrespondenceRelation.get(n));
 		}
 		
 		public boolean isOverlapping(){
-			for (V n1 : this.correspondenceRelation.keySet()) {
-				for (V n2 : this.correspondenceRelation.keySet()) {
+			for (N n1 : this.correspondenceRelation.keySet()) {
+				for (N n2 : this.correspondenceRelation.keySet()) {
 					/* 
 					 * not using apache java collections to avoid 
 					 * yet another dependency
 					 */
 					boolean containsAny = false;
-					for (V c1 : this.correspondenceRelation.get(n1))
+					for (N c1 : this.correspondenceRelation.get(n1))
 						containsAny |= this.correspondenceRelation.get(n2).contains(c1);
 					
 					if (containsAny)
@@ -170,15 +166,15 @@ public class Alignment<E extends IEdge<V>,V extends IVertex>  {
 		}
 		
 		public boolean isLeftTotal() {
-			return (this.correspondenceRelation.keySet().containsAll(this.graph1.getVertices()));
+			return (this.correspondenceRelation.keySet().containsAll(this.model1.getEntities()));
 		}
 		
 		public boolean isRightTotal() {
-			return (this.reversedCorrespondenceRelation.keySet().containsAll(this.graph2.getVertices()));
+			return (this.reversedCorrespondenceRelation.keySet().containsAll(this.model2.getEntities()));
 		}
 		
 		public boolean isFunctional() {
-			for (V n : this.correspondenceRelation.keySet())
+			for (N n : this.correspondenceRelation.keySet())
 				if (this.correspondenceRelation.get(n).size() > 1)
 					return false;
 			
@@ -186,7 +182,7 @@ public class Alignment<E extends IEdge<V>,V extends IVertex>  {
 		}
 		
 		public boolean isInjective() {
-			for (V n : this.reversedCorrespondenceRelation.keySet())
+			for (N n : this.reversedCorrespondenceRelation.keySet())
 				if (this.reversedCorrespondenceRelation.get(n).size() > 1)
 					return false;
 			
@@ -210,15 +206,15 @@ public class Alignment<E extends IEdge<V>,V extends IVertex>  {
 		}
 		
 		/**
-		 * Init the alignment with correspondences between nodes that
+		 * Init the alignment with correspondences between entities that
 		 * carry equal labels.
 		 */
 		public void initCorrespondenceRelation() {
-			for (V v1 : getFirstGraph().getVertices()) {
-				for (V v2 : getSecondGraph().getVertices()) {
+			for (N v1 : getFirstModel().getEntities()) {
+				for (N v2 : getSecondModel().getEntities()) {
 					
-					String s1 = normaliseLabel(v1.getName());
-					String s2 = normaliseLabel(v2.getName());
+					String s1 = normaliseLabel(v1.getLabel());
+					String s2 = normaliseLabel(v2.getLabel());
 					
 					if (s1.equals(s2))
 						addElementaryCorrespondence(v1,v2);

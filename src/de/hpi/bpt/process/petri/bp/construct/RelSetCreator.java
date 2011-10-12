@@ -2,6 +2,8 @@ package de.hpi.bpt.process.petri.bp.construct;
 
 import java.util.Collection;
 
+import de.hpi.bpt.alignment.IEntity;
+import de.hpi.bpt.alignment.IEntityModel;
 import de.hpi.bpt.process.petri.bp.RelSet;
 
 /**
@@ -11,7 +13,7 @@ import de.hpi.bpt.process.petri.bp.RelSet;
  * @author matthias.weidlich
  *
  */
-public interface RelSetCreator<M, N> {
+public interface RelSetCreator<M extends IEntityModel<N>,N extends IEntity> {
 
 	/**
 	 * Returns the relation set for the given model. Depending on 

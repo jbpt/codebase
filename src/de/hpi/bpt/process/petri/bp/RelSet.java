@@ -6,8 +6,11 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
+import de.hpi.bpt.alignment.IEntity;
+import de.hpi.bpt.alignment.IEntityModel;
 
-public class RelSet<M,N> {
+
+public class RelSet<M,N extends IEntity> implements IEntityModel<N> {
 	
 	public static final int RELATION_FAR_LOOKAHEAD = 1000000000;
 	
@@ -153,7 +156,7 @@ public class RelSet<M,N> {
 		this.matrix = new RelSetType[size][size];
 	}
 	
-	
+
 	/**
 	 * Checks whether two given entities are interleaving.
 	 * 

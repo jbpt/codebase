@@ -1,5 +1,6 @@
 package de.hpi.bpt.process.petri.log;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -13,9 +14,9 @@ import java.util.Set;
 public class Trace {
 
 	/**
-	 * The trace as a list of strings.
+	 * The trace as a list of trace entries.
 	 */
-	protected List<String> trace;
+	protected List<TraceEntry> trace;
 
 	/**
 	 * A set of all labels in the trace.
@@ -27,17 +28,27 @@ public class Trace {
 	 * 
 	 * @param trace, a list of strings to represent the trace
 	 */
-	public Trace(List<String> trace) {
+	public Trace(List<TraceEntry> trace) {
 		this.trace = trace;
 		this.labels = new HashSet<String>();
-		this.labels.addAll(trace);
+		for (TraceEntry t : trace)
+			this.labels.add(t.getLabel());
+	}
+	
+	public Trace(String[] trace) {
+		this.labels = new HashSet<String>();
+		this.trace = new ArrayList<TraceEntry>();
+		for (int i = 0; i < trace.length; i++) {
+			this.trace.add(new TraceEntry(trace[i]));
+			this.labels.add(trace[i]);
+		}
 	}
 	
 	/**
 	 * Returns the trace as a list of strings
 	 * @return the trace as a list of strings
 	 */
-	public List<String> getTraceAsList() {
+	public List<TraceEntry> getTraceAsList() {
 		return trace;
 	}
 	
@@ -47,13 +58,6 @@ public class Trace {
 	 */	
 	public Set<String> getLabelsOfTrace() {
 		return labels;
-	}
-	
-	@Override
-	public boolean equals(Object t) {
-		if (!(t instanceof Trace))
-			return false;
-		return getTraceAsList().equals(((Trace)t).getTraceAsList());
 	}
 	
 	/**

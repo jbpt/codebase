@@ -53,32 +53,32 @@ public class AlignmentTest {
 		DirectedEdge e21 = g1.addEdge(v21, v22);
 		DirectedEdge e22 = g1.addEdge(v21, v23);
 		
-		Alignment<DirectedEdge, Vertex> a = new Alignment<DirectedEdge, Vertex>(g1,g2);
+		Alignment<DirectedGraph, Vertex> a = new Alignment<DirectedGraph, Vertex>(g1,g2);
 		
-		assertTrue(a.getFirstGraph().equals(g1));
-		assertTrue(a.getSecondGraph().equals(g2));
+		assertTrue(a.getFirstModel().equals(g1));
+		assertTrue(a.getSecondModel().equals(g2));
 
 		a.addElementaryCorrespondence(v2, v22);
 		
-		assertTrue(a.getAlignedVerticesOfFirstGraph().size() == 1);
-		assertTrue(a.getAlignedVerticesOfFirstGraph().contains(v2));
+		assertTrue(a.getAlignedEntitiesOfFirstModel().size() == 1);
+		assertTrue(a.getAlignedEntitiesOfFirstModel().contains(v2));
 
-		assertTrue(a.getAlignedVerticesOfSecondGraph().size() == 1);
-		assertTrue(a.getAlignedVerticesOfSecondGraph().contains(v22));
+		assertTrue(a.getAlignedEntitiesOfSecondModel().size() == 1);
+		assertTrue(a.getAlignedEntitiesOfSecondModel().contains(v22));
 
 		a.addElementaryCorrespondence(v2, v22);
 
-		assertTrue(a.getAlignedVerticesOfFirstGraph().size() == 1);
-		assertTrue(a.getAlignedVerticesOfFirstGraph().contains(v2));
+		assertTrue(a.getAlignedEntitiesOfFirstModel().size() == 1);
+		assertTrue(a.getAlignedEntitiesOfFirstModel().contains(v2));
 
-		assertTrue(a.getAlignedVerticesOfSecondGraph().size() == 1);
-		assertTrue(a.getAlignedVerticesOfSecondGraph().contains(v22));
+		assertTrue(a.getAlignedEntitiesOfSecondModel().size() == 1);
+		assertTrue(a.getAlignedEntitiesOfSecondModel().contains(v22));
 		
-		assertTrue(a.getCorrespondingVerticesForVertexOfFirstGraph(v2).size() == 1);
-		assertTrue(a.getCorrespondingVerticesForVertexOfFirstGraph(v2).contains(v22));
+		assertTrue(a.getCorrespondingEntitiesForEntityOfFirstModel(v2).size() == 1);
+		assertTrue(a.getCorrespondingEntitiesForEntityOfFirstModel(v2).contains(v22));
 
-		assertTrue(a.getCorrespondingVerticesForVertexOfSecondGraph(v22).size() == 1);
-		assertTrue(a.getCorrespondingVerticesForVertexOfSecondGraph(v22).contains(v2));
+		assertTrue(a.getCorrespondingEntitiesForEntityOfSecondModel(v22).size() == 1);
+		assertTrue(a.getCorrespondingEntitiesForEntityOfSecondModel(v22).contains(v2));
 
 		assertTrue(a.isFunctional());
 		assertTrue(a.isInjective());
@@ -92,23 +92,23 @@ public class AlignmentTest {
 		
 		a.addComplexCorrespondence(s1,s2);
 		
-		assertTrue(a.getAlignedVerticesOfFirstGraph().size() == 3);
-		assertTrue(a.getAlignedVerticesOfFirstGraph().contains(v1));
-		assertTrue(a.getAlignedVerticesOfFirstGraph().contains(v2));
-		assertTrue(a.getAlignedVerticesOfFirstGraph().contains(v3));
+		assertTrue(a.getAlignedEntitiesOfFirstModel().size() == 3);
+		assertTrue(a.getAlignedEntitiesOfFirstModel().contains(v1));
+		assertTrue(a.getAlignedEntitiesOfFirstModel().contains(v2));
+		assertTrue(a.getAlignedEntitiesOfFirstModel().contains(v3));
 
-		assertTrue(a.getAlignedVerticesOfSecondGraph().size() == 3);
-		assertTrue(a.getAlignedVerticesOfSecondGraph().contains(v21));
-		assertTrue(a.getAlignedVerticesOfSecondGraph().contains(v22));
-		assertTrue(a.getAlignedVerticesOfSecondGraph().contains(v23));
+		assertTrue(a.getAlignedEntitiesOfSecondModel().size() == 3);
+		assertTrue(a.getAlignedEntitiesOfSecondModel().contains(v21));
+		assertTrue(a.getAlignedEntitiesOfSecondModel().contains(v22));
+		assertTrue(a.getAlignedEntitiesOfSecondModel().contains(v23));
 
-		assertTrue(a.getCorrespondingVerticesForVertexOfFirstGraph(v1).size() == 2);
-		assertTrue(a.getCorrespondingVerticesForVertexOfFirstGraph(v1).contains(v21));
-		assertTrue(a.getCorrespondingVerticesForVertexOfFirstGraph(v1).contains(v23));
+		assertTrue(a.getCorrespondingEntitiesForEntityOfFirstModel(v1).size() == 2);
+		assertTrue(a.getCorrespondingEntitiesForEntityOfFirstModel(v1).contains(v21));
+		assertTrue(a.getCorrespondingEntitiesForEntityOfFirstModel(v1).contains(v23));
 
-		assertTrue(a.getCorrespondingVerticesForVertexOfSecondGraph(v21).size() == 2);
-		assertTrue(a.getCorrespondingVerticesForVertexOfSecondGraph(v21).contains(v1));
-		assertTrue(a.getCorrespondingVerticesForVertexOfSecondGraph(v21).contains(v3));
+		assertTrue(a.getCorrespondingEntitiesForEntityOfSecondModel(v21).size() == 2);
+		assertTrue(a.getCorrespondingEntitiesForEntityOfSecondModel(v21).contains(v1));
+		assertTrue(a.getCorrespondingEntitiesForEntityOfSecondModel(v21).contains(v3));
 		
 		assertTrue(a.isRightTotal());
 		assertFalse(a.isLeftTotal());

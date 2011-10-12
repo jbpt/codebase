@@ -4,27 +4,26 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.hpi.bpt.process.petri.Node;
-import de.hpi.bpt.process.petri.PetriNet;
-import de.hpi.bpt.process.petri.Transition;
+import de.hpi.bpt.alignment.IEntity;
+import de.hpi.bpt.alignment.IEntityModel;
 
 /**
- * Captures a relation set over labels of a Petri net. It is 
- * derived directly from a relation set and considers all labels
- * of all transitions of the Petri net.
+ * Captures a relation set over labels of a model (e.g., a Petri net). 
+ * It is derived directly from a relation set and considers all labels
+ * of entities of the model.
  * 
  *  Note that the relation set used as the basis for computation
- *  is assumed to be defined over all transitions (or all nodes).
+ *  is assumed to be defined over all entities.
  * 
  * @author matthias.weidlich
  *
  */
-public class RelSetOverPNLabels {
+public class RelSetOverLabels<M extends IEntityModel<N>, N extends IEntity> {
 
 	/**
 	 * The base relation set over transitions.
 	 */
-	protected RelSet<PetriNet, Node> rs;
+	protected RelSet<M, N> rs;
 	
 	/**
 	 * The labels considered for the relation set over labels.
@@ -42,12 +41,12 @@ public class RelSetOverPNLabels {
 	 * 
 	 * @param rs, the relation set used as basis
 	 */
-	public RelSetOverPNLabels(RelSet<PetriNet, Node> rs) {
+	public RelSetOverLabels(RelSet<M, N> rs) {
 		this.rs = rs;
 		this.labels = new ArrayList<String>();
-		for (Transition t : this.rs.getModel().getTransitions())
-			if (!this.labels.contains(t.getName()))
-				this.labels.add(t.getName());
+		for (N t : this.rs.getModel().getEntities())
+			if (!this.labels.contains(t.getLabel()))
+				this.labels.add(t.getLabel());
 		
 		deriveLabelMatrix();
 	}
@@ -69,16 +68,16 @@ public class RelSetOverPNLabels {
 	
 	/**
 	 * Derive the relation set over labels from the relations
-	 * over transitions.
+	 * over entities.
 	 */
 	protected void deriveLabelMatrix() {
 		this.labelMatrix = new RelSetType[this.labels.size()][this.labels.size()];
 		
-		for (Transition t1 : this.rs.getModel().getTransitions()) {
-			String s1 = t1.getName();
+		for (N t1 : this.rs.getModel().getEntities()) {
+			String s1 = t1.getLabel();
 			int index1 = this.labels.indexOf(s1);
-			for (Transition t2 : this.rs.getModel().getTransitions()) {
-				String s2 = t2.getName();
+			for (N t2 : this.rs.getModel().getEntities()) {
+				String s2 = t2.getLabel();
 				int index2 = this.labels.indexOf(s2);
 				
 				RelSetType rel = rs.getRelationForEntities(t1, t2);
@@ -108,7 +107,7 @@ public class RelSetOverPNLabels {
 	/**
 	 * Get all considered labels.
 	 * 
-	 * @return the set of labels over which the relalation set is defined
+	 * @return the set of labels over which the relation set is defined
 	 */
 	public List<String> getLabels() {
 		return this.labels;

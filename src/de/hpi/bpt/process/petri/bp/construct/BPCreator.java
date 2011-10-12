@@ -2,6 +2,8 @@ package de.hpi.bpt.process.petri.bp.construct;
 
 import java.util.Collection;
 
+import de.hpi.bpt.alignment.IEntity;
+import de.hpi.bpt.alignment.IEntityModel;
 import de.hpi.bpt.process.petri.bp.BehaviouralProfile;
 
 /**
@@ -11,7 +13,7 @@ import de.hpi.bpt.process.petri.bp.BehaviouralProfile;
  * @author matthias.weidlich
  *
  */
-public interface BPCreator<M, N> {
+public interface BPCreator<M extends IEntityModel<N>,N extends IEntity> {
 
 	/**
 	 * Returns the behavioural profile for the given model. Depending on 

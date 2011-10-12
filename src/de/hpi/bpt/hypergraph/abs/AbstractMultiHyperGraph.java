@@ -337,4 +337,9 @@ public class AbstractMultiHyperGraph <E extends IHyperEdge<V>,V extends IVertex>
 		
 		return true;
 	}
+
+	@Override
+	public Collection<V> getEntities() {
+		return this.getVertices();
+	}
 }

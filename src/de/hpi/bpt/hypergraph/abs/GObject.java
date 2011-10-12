@@ -152,5 +152,10 @@ public abstract class GObject implements IGObject, Cloneable {
 		
 		return clone;
 	}
+	
+	@Override
+	public String getLabel() {
+		return this.name;
+	}
 
 }
