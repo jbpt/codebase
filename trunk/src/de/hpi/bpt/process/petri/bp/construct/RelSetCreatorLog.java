@@ -8,8 +8,9 @@ import de.hpi.bpt.process.petri.bp.RelSet;
 import de.hpi.bpt.process.petri.bp.RelSetType;
 import de.hpi.bpt.process.petri.log.Log;
 import de.hpi.bpt.process.petri.log.Trace;
+import de.hpi.bpt.process.petri.log.TraceEntry;
 
-public class RelSetCreatorLog extends AbstractRelSetCreator implements RelSetCreator<Log,String> {
+public class RelSetCreatorLog extends AbstractRelSetCreator implements RelSetCreator<Log,TraceEntry> {
 
 	private static RelSetCreatorLog eInstance;
 	
@@ -27,36 +28,36 @@ public class RelSetCreatorLog extends AbstractRelSetCreator implements RelSetCre
 	protected boolean[][] baseOrderMatrix; 
 	
 	// list to have identifiers for the labels in the matrix
-	protected List<String> labelsForBaseOrderMatrix;
+	protected List<TraceEntry> entriesForBaseOrderMatrix;
 	
 	@Override
-	public RelSet<Log,String> deriveRelationSet(Log log) {
-		return deriveRelationSet(log, new ArrayList<String>(log.getLabelsOfLog()));
+	public RelSet<Log,TraceEntry> deriveRelationSet(Log log) {
+		return deriveRelationSet(log, new ArrayList<TraceEntry>(log.getEntities()));
 	}
 	
-	public RelSet<Log,String> deriveRelationSet(Log log, int lookAhead) {
-		return deriveRelationSet(log, new ArrayList<String>(log.getLabelsOfLog()),lookAhead);
+	public RelSet<Log,TraceEntry> deriveRelationSet(Log log, int lookAhead) {
+		return deriveRelationSet(log, new ArrayList<TraceEntry>(log.getEntities()),lookAhead);
 	}
 
 	@Override
-	public RelSet<Log, String> deriveRelationSet(Log log,
-			Collection<String> labels) {
-		return deriveRelationSet(log, labels, RelSet.RELATION_FAR_LOOKAHEAD);
+	public RelSet<Log, TraceEntry> deriveRelationSet(Log log,
+			Collection<TraceEntry> entries) {
+		return deriveRelationSet(log, entries, RelSet.RELATION_FAR_LOOKAHEAD);
 	}
 	
-	public RelSet<Log, String> deriveRelationSet(Log log,
-			Collection<String> labels, int lookAhead) {
+	public RelSet<Log, TraceEntry> deriveRelationSet(Log log,
+			Collection<TraceEntry> entries, int lookAhead) {
 		
-		this.labelsForBaseOrderMatrix = new ArrayList<String>(labels);
+		this.entriesForBaseOrderMatrix = new ArrayList<TraceEntry>(entries);
 		
-		RelSet<Log, String> rs = new RelSet<Log, String>(log,labels,lookAhead);
+		RelSet<Log, TraceEntry> rs = new RelSet<Log, TraceEntry>(log,entries,lookAhead);
 		RelSetType[][] matrix = rs.getMatrix();
 		
 		this.deriveBaseOrderRelation(rs);
 
-		for(String s1 : rs.getEntities()) {
+		for(TraceEntry s1 : rs.getEntities()) {
 			int index1 = rs.getEntities().indexOf(s1);
-			for(String s2 : rs.getEntities()) {
+			for(TraceEntry s2 : rs.getEntities()) {
 				int index2 = rs.getEntities().indexOf(s2);
 				
 				/*
@@ -80,15 +81,15 @@ public class RelSetCreatorLog extends AbstractRelSetCreator implements RelSetCre
 		return rs;
 	}
 		
-	protected void deriveBaseOrderRelation(RelSet<Log, String> rs) {
+	protected void deriveBaseOrderRelation(RelSet<Log, TraceEntry> rs) {
 		
-		this.baseOrderMatrix = new boolean[this.labelsForBaseOrderMatrix.size()][this.labelsForBaseOrderMatrix.size()];
+		this.baseOrderMatrix = new boolean[this.entriesForBaseOrderMatrix.size()][this.entriesForBaseOrderMatrix.size()];
 
 		for (Trace t1 : rs.getModel().getTraces()) {
 			for (int i = 0; i < t1.getLength(); i++) {
-				String s1 = t1.getTraceAsList().get(i);
+				TraceEntry s1 = t1.getTraceAsList().get(i);
 				for (int j = i + 1; j < t1.getLength(); j++) {
-					String s2 = t1.getTraceAsList().get(j);
+					TraceEntry s2 = t1.getTraceAsList().get(j);
 					if ((j - i) <= rs.getLookAhead())
 						addToRelation(this.baseOrderMatrix,s1,s2);
 				}
@@ -96,12 +97,12 @@ public class RelSetCreatorLog extends AbstractRelSetCreator implements RelSetCre
 		}
 	}
 	
-	private boolean isBaseOrder(String s1, String s2) {
-		return this.baseOrderMatrix[this.labelsForBaseOrderMatrix.indexOf(s1)][this.labelsForBaseOrderMatrix.indexOf(s2)];
+	private boolean isBaseOrder(TraceEntry s1, TraceEntry s2) {
+		return this.baseOrderMatrix[this.entriesForBaseOrderMatrix.indexOf(s1)][this.entriesForBaseOrderMatrix.indexOf(s2)];
 	}
 
-	private void addToRelation(boolean[][] matrix, String s1, String s2) {
-		matrix[this.labelsForBaseOrderMatrix.indexOf(s1)][this.labelsForBaseOrderMatrix.indexOf(s2)] = true;
+	private void addToRelation(boolean[][] matrix, TraceEntry s1, TraceEntry s2) {
+		matrix[this.entriesForBaseOrderMatrix.indexOf(s1)][this.entriesForBaseOrderMatrix.indexOf(s2)] = true;
 	}
 
 

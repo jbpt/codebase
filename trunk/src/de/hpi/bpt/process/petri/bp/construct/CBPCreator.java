@@ -2,6 +2,8 @@ package de.hpi.bpt.process.petri.bp.construct;
 
 import java.util.Collection;
 
+import de.hpi.bpt.alignment.IEntity;
+import de.hpi.bpt.alignment.IEntityModel;
 import de.hpi.bpt.process.petri.bp.BehaviouralProfile;
 import de.hpi.bpt.process.petri.bp.CausalBehaviouralProfile;
 
@@ -12,7 +14,7 @@ import de.hpi.bpt.process.petri.bp.CausalBehaviouralProfile;
  * @author matthias.weidlich
  *
  */
-public interface CBPCreator<M, N> {
+public interface CBPCreator<M extends IEntityModel<N>,N extends IEntity> {
 
 	/**
 	 * Returns the causal behavioural profile for all entities of the given model.

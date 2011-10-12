@@ -3,11 +3,12 @@ package de.hpi.bpt.process.petri.bp.sim;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.hpi.bpt.process.petri.Node;
+import de.hpi.bpt.alignment.Alignment;
+import de.hpi.bpt.alignment.IEntity;
+import de.hpi.bpt.alignment.IEntityModel;
 import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.Place;
 import de.hpi.bpt.process.petri.Transition;
-import de.hpi.bpt.process.petri.bp.RelSetAlignment;
 import de.hpi.bpt.process.petri.bp.RelSet;
 import de.hpi.bpt.process.petri.bp.RelSetType;
 
@@ -24,13 +25,13 @@ import de.hpi.bpt.process.petri.bp.RelSetType;
  * @author matthias.weidlich
  *
  */
-public abstract class AbstractRelSetSimilarity implements RelSetSimilarity {
+public abstract class AbstractRelSetSimilarity<R extends RelSet<M, N>, M extends IEntityModel<N>, N extends IEntity> implements RelSetSimilarity<R,M,N> {
 	
 	/**
 	 * The cache for the size of a certain relation of a certain 
 	 * relation set.
 	 */
-	private Map<RelSet<PetriNet, Node>,Map<RelSetType,Integer>> relationChache = new HashMap<RelSet<PetriNet, Node>,Map<RelSetType,Integer>>();
+	private Map<R,Map<RelSetType,Integer>> relationChache = new HashMap<R,Map<RelSetType,Integer>>();
 	
 	/**
 	 * Standard method for the name of a similarity. Simply returns the class name.
@@ -46,7 +47,7 @@ public abstract class AbstractRelSetSimilarity implements RelSetSimilarity {
 	 * @param relation, the type of the relation for which the size of the intersection is determined
 	 * @return the size of the intersection of the relations of given type 
 	 */
-	protected int getSizeOfIntersectionOfRelation(RelSetAlignment alignment, RelSetType relation) {
+	protected int getSizeOfIntersectionOfRelation(Alignment<R,N> alignment, RelSetType relation) {
 		return getSizeOfIntersectionOfTwoRelations(alignment,relation,relation);
 	}
 
@@ -58,21 +59,21 @@ public abstract class AbstractRelSetSimilarity implements RelSetSimilarity {
 	 * @param relation2, the type fo the considered relation in the second model
 	 * @return the size of the intersection of the two relations of given type 
 	 */
-	protected int getSizeOfIntersectionOfTwoRelations(RelSetAlignment alignment, RelSetType relation1, RelSetType relation2) {
+	protected int getSizeOfIntersectionOfTwoRelations(Alignment<R,N> alignment, RelSetType relation1, RelSetType relation2) {
 		int sizeOfIntersection = 0;
 		
-		for (Node n1 : alignment.getFirstRelationSet().getEntities()) {
+		for (N n1 : alignment.getFirstModel().getEntities()) {
 			if (n1 instanceof Place) continue;
 			if (((Transition)n1).equals(PetriNet.SILENT_LABEL)) continue;
 			
-			for (Node n2 : alignment.getFirstRelationSet().getEntities()) {
+			for (N n2 : alignment.getFirstModel().getEntities()) {
 				if (n1 instanceof Place) continue;
 				if (((Transition)n1).equals(PetriNet.SILENT_LABEL)) continue;
 				
-				if (!alignment.getFirstRelationSet().getRelationForEntities(n1, n2).equals(relation1)) continue;
+				if (!alignment.getFirstModel().getRelationForEntities(n1, n2).equals(relation1)) continue;
 				
-				if (alignment.getAlignedVerticesOfFirstGraph().contains(n1) && alignment.getAlignedVerticesOfFirstGraph().contains(n2)) {
-					if (alignment.getSecondRelationSet().getRelationForEntities(alignment.getCorrespondingVerticesForVertexOfFirstGraph(n1).iterator().next(), alignment.getCorrespondingVerticesForVertexOfFirstGraph(n2).iterator().next()).equals(relation2)) {
+				if (alignment.getAlignedEntitiesOfFirstModel().contains(n1) && alignment.getAlignedEntitiesOfFirstModel().contains(n2)) {
+					if (alignment.getSecondModel().getRelationForEntities(alignment.getCorrespondingEntitiesForEntityOfFirstModel(n1).iterator().next(), alignment.getCorrespondingEntitiesForEntityOfFirstModel(n2).iterator().next()).equals(relation2)) {
 						sizeOfIntersection++;
 					}
 				}
@@ -88,7 +89,7 @@ public abstract class AbstractRelSetSimilarity implements RelSetSimilarity {
 	 * @param relation, the type of the respective relation
 	 * @return the size of the relation in the given relation set
 	 */
-	protected int getSizeOfRelation(RelSet<PetriNet, Node> rs, RelSetType relation) {
+	protected int getSizeOfRelation(R rs, RelSetType relation) {
 		if (!relationChache.containsKey(rs))
 			relationChache.put(rs,new HashMap<RelSetType, Integer>());
 
@@ -97,11 +98,11 @@ public abstract class AbstractRelSetSimilarity implements RelSetSimilarity {
 
 		int sizeOfRelation = 0;
 		
-		for (Node n1 : rs.getEntities()) {
+		for (N n1 : rs.getEntities()) {
 			if (n1 instanceof Place) continue;
 			if (((Transition)n1).equals(PetriNet.SILENT_LABEL)) continue;
 			
-			for (Node n2 : rs.getEntities()) {
+			for (N n2 : rs.getEntities()) {
 				if (n1 instanceof Place) continue;
 				if (((Transition)n1).equals(PetriNet.SILENT_LABEL)) continue;
 
@@ -125,7 +126,7 @@ public abstract class AbstractRelSetSimilarity implements RelSetSimilarity {
 	 * Resets the internal cache that stores the sizes of relations for relation sets.
 	 */
 	public void invalidateCache() {
-		relationChache = new HashMap<RelSet<PetriNet, Node>,Map<RelSetType,Integer>>();		
+		relationChache = new HashMap<R,Map<RelSetType,Integer>>();		
 	}
 	
 }

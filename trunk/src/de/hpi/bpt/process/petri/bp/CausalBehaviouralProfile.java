@@ -6,6 +6,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
+import de.hpi.bpt.alignment.IEntity;
+import de.hpi.bpt.alignment.IEntityModel;
+
 /**
  * Captures the causal behavioural profile for a model (e.g., a Petri net). 
  * The causal behavioural profile adds the co-occurrence relation to the 
@@ -14,7 +17,7 @@ import java.util.List;
  * @author matthias.weidlich
  *
  */
-public class CausalBehaviouralProfile<M, N> extends BehaviouralProfile<M, N> {
+public class CausalBehaviouralProfile<M extends IEntityModel<N>, N extends IEntity> extends BehaviouralProfile<M, N> {
 
 	/**
 	 * Matrix that captures co-occurrence for the Cartesian product of entities 

@@ -1,21 +1,23 @@
 package de.hpi.bpt.process.petri.bp.test;
 
+import java.util.ArrayList;
+
 import junit.framework.TestCase;
 
 import org.junit.Test;
 
+import de.hpi.bpt.alignment.Alignment;
 import de.hpi.bpt.process.petri.Node;
 import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.Place;
 import de.hpi.bpt.process.petri.Transition;
-import de.hpi.bpt.process.petri.bp.RelSetAlignment;
 import de.hpi.bpt.process.petri.bp.BehaviouralProfile;
-import de.hpi.bpt.process.petri.bp.BehaviouralProfileAlgebra;
+import de.hpi.bpt.process.petri.bp.RelSetAlgebra;
 import de.hpi.bpt.process.petri.bp.RelSetType;
 import de.hpi.bpt.process.petri.bp.construct.BPCreatorUnfolding;
 
 
-public class BPAlgebraTest extends TestCase {
+public class RelSetAlgebraTest extends TestCase {
 
 	@Test
 	public void testAlgebra() {
@@ -88,23 +90,25 @@ public class BPAlgebraTest extends TestCase {
 		BehaviouralProfile<PetriNet, Node> bp1 = BPCreatorUnfolding.getInstance().deriveRelationSet(net1);
 		BehaviouralProfile<PetriNet, Node> bp2 = BPCreatorUnfolding.getInstance().deriveRelationSet(net2);
 		
-		RelSetAlignment al = new RelSetAlignment(bp1, bp2);
+		Alignment<BehaviouralProfile<PetriNet, Node>, Node> al = new Alignment<BehaviouralProfile<PetriNet, Node>, Node>(bp1, bp2);
 		
 		al.addElementaryCorrespondence(a, x);
 		al.addElementaryCorrespondence(b, y);
-		
-		assertTrue(BehaviouralProfileAlgebra.isEqual(al));
+
+		assertTrue(RelSetAlgebra.isEqual(al));
 		
 		al.addElementaryCorrespondence(c, z);
 		
-		assertFalse(BehaviouralProfileAlgebra.isEqual(al));
-		assertTrue(BehaviouralProfileAlgebra.firstSubsumesSecond(al));
+		assertFalse(RelSetAlgebra.isEqual(al));
+		assertTrue(RelSetAlgebra.firstSubsumesSecond(al));
 		
-		BehaviouralProfile<PetriNet, Node> intersection = BehaviouralProfileAlgebra.intersection(al);
+		BehaviouralProfile<PetriNet, Node>  intersection = new BehaviouralProfile<PetriNet,Node>(al.getFirstModel().getModel(),new ArrayList<Node>(al.getAlignedEntitiesOfFirstModel()));
+		RelSetAlgebra.fillIntersection(al, intersection);
 		assertTrue(intersection.getRelationForEntities(b, c).equals(RelSetType.Exclusive));
 		assertTrue(intersection.getRelationForEntities(a, b).equals(RelSetType.Order));
 		
-		BehaviouralProfile<PetriNet, Node> union = BehaviouralProfileAlgebra.union(al);
+		BehaviouralProfile<PetriNet, Node> union = new BehaviouralProfile<PetriNet,Node>(al.getFirstModel().getModel(),new ArrayList<Node>(al.getAlignedEntitiesOfFirstModel()));
+		RelSetAlgebra.fillUnion(al, union);
 		assertTrue(union.getRelationForEntities(b, c).equals(RelSetType.Interleaving));
 		assertTrue(union.getRelationForEntities(a, b).equals(RelSetType.Order));
 		

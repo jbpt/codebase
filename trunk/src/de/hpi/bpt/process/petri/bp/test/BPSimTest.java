@@ -4,11 +4,11 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 
+import de.hpi.bpt.alignment.Alignment;
 import de.hpi.bpt.process.petri.Node;
 import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.Place;
 import de.hpi.bpt.process.petri.Transition;
-import de.hpi.bpt.process.petri.bp.RelSetAlignment;
 import de.hpi.bpt.process.petri.bp.BehaviouralProfile;
 import de.hpi.bpt.process.petri.bp.construct.BPCreatorUnfolding;
 import de.hpi.bpt.process.petri.bp.sim.AggregatedSimilarity;
@@ -95,14 +95,14 @@ public class BPSimTest extends TestCase {
 		BehaviouralProfile<PetriNet, Node> bp1 = BPCreatorUnfolding.getInstance().deriveRelationSet(net1);
 		BehaviouralProfile<PetriNet, Node> bp2 = BPCreatorUnfolding.getInstance().deriveRelationSet(net2);
 		
-		RelSetAlignment al = new RelSetAlignment(bp1, bp2);
+		Alignment<BehaviouralProfile<PetriNet,Node>, Node> al = new Alignment<BehaviouralProfile<PetriNet,Node>, Node>(bp1, bp2);
 		
-		ExclusivenessSimilarity         ex = new ExclusivenessSimilarity();
-		OrderSimilarity                 so = new OrderSimilarity();
-		InterleavingSimilarity          io = new InterleavingSimilarity();
-		ExtendedOrderSimilarity        eso = new ExtendedOrderSimilarity();
-		ExtendedInterleavingSimilarity eio = new ExtendedInterleavingSimilarity();
-		AggregatedSimilarity           agg = new AggregatedSimilarity();
+		ExclusivenessSimilarity<BehaviouralProfile<PetriNet,Node>, PetriNet, Node>         ex = new ExclusivenessSimilarity<BehaviouralProfile<PetriNet,Node>, PetriNet, Node> ();
+		OrderSimilarity<BehaviouralProfile<PetriNet,Node>, PetriNet, Node>                 so = new OrderSimilarity<BehaviouralProfile<PetriNet,Node>, PetriNet, Node>();
+		InterleavingSimilarity<BehaviouralProfile<PetriNet,Node>, PetriNet, Node>          io = new InterleavingSimilarity<BehaviouralProfile<PetriNet,Node>, PetriNet, Node>();
+		ExtendedOrderSimilarity<BehaviouralProfile<PetriNet,Node>, PetriNet, Node>        eso = new ExtendedOrderSimilarity<BehaviouralProfile<PetriNet,Node>, PetriNet, Node>();
+		ExtendedInterleavingSimilarity<BehaviouralProfile<PetriNet,Node>, PetriNet, Node> eio = new ExtendedInterleavingSimilarity<BehaviouralProfile<PetriNet,Node>, PetriNet, Node>();
+		AggregatedSimilarity<BehaviouralProfile<PetriNet,Node>, PetriNet, Node>           agg = new AggregatedSimilarity<BehaviouralProfile<PetriNet,Node>, PetriNet, Node>();
 		
 		agg.weightExSim = 1;
 		agg.weightSoSim = 1;

@@ -1,6 +1,9 @@
 package de.hpi.bpt.process.petri.bp.sim;
 
-import de.hpi.bpt.process.petri.bp.RelSetAlignment;
+import de.hpi.bpt.alignment.Alignment;
+import de.hpi.bpt.alignment.IEntity;
+import de.hpi.bpt.alignment.IEntityModel;
+import de.hpi.bpt.process.petri.bp.RelSet;
 import de.hpi.bpt.process.petri.bp.RelSetType;
 
 /**
@@ -10,14 +13,14 @@ import de.hpi.bpt.process.petri.bp.RelSetType;
  * @author matthias.weidlich
  *
  */
-public class ExtendedInterleavingSimilarity extends AbstractRelSetSimilarity {
+public class ExtendedInterleavingSimilarity<R extends RelSet<M, N>, M extends IEntityModel<N>, N extends IEntity> extends AbstractRelSetSimilarity<R,M,N> {
 		
-	public double score(RelSetAlignment alignment) {
+	public double score(Alignment<R,N> alignment) {
 
-		double soIn1 = super.getSizeOfRelation(alignment.getFirstRelationSet(), RelSetType.Order);
-		double soIn2 = super.getSizeOfRelation(alignment.getSecondRelationSet(), RelSetType.Order);
-		double inIn1 = super.getSizeOfRelation(alignment.getFirstRelationSet(), RelSetType.Interleaving);
-		double inIn2 = super.getSizeOfRelation(alignment.getSecondRelationSet(), RelSetType.Interleaving);
+		double soIn1 = super.getSizeOfRelation(alignment.getFirstModel(), RelSetType.Order);
+		double soIn2 = super.getSizeOfRelation(alignment.getSecondModel(), RelSetType.Order);
+		double inIn1 = super.getSizeOfRelation(alignment.getFirstModel(), RelSetType.Interleaving);
+		double inIn2 = super.getSizeOfRelation(alignment.getSecondModel(), RelSetType.Interleaving);
 		
 		double intersectionSo1So2  = super.getSizeOfIntersectionOfTwoRelations(alignment, RelSetType.Order,RelSetType.Order);
 		double intersectionSo1Rso2 = super.getSizeOfIntersectionOfTwoRelations(alignment, RelSetType.Order,RelSetType.ReverseOrder);

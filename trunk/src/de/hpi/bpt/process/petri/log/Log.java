@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import de.hpi.bpt.alignment.IEntityModel;
+
 /**
  * Class to represent a log of a Petri net, i.e., a set
  * of traces.
@@ -13,7 +15,7 @@ import java.util.Set;
  * @author matthias.weidlich
  *
  */
-public class Log {
+public class Log implements IEntityModel<TraceEntry> {
 	
 	/**
 	 * The traces of the log along with their number of occurrence 
@@ -25,6 +27,11 @@ public class Log {
 	 * A set of all labels of the traces in the log.
 	 */
 	protected Set<String> labels;
+
+	/**
+	 * A set of all trace entries of the traces in the log.
+	 */
+	protected Set<TraceEntry> traceEntries;
 	
 	/**
 	 * The length of the longest trace.
@@ -34,6 +41,7 @@ public class Log {
 	public Log() {
 		this.traces = new HashMap<Trace, Integer>();
 		this.labels = new HashSet<String>();
+		this.traceEntries = new HashSet<TraceEntry>();
 	}
 
 	/**
@@ -42,13 +50,23 @@ public class Log {
 	 * @param trace, the trace that should be added to the log
 	 */
 	public void addTrace(Trace trace) {
-		if (!this.traces.containsKey(trace))
-			this.traces.put(trace, 1);
-		else
-			this.traces.put(trace, this.traces.get(trace)+1);
 		
-		this.labels.addAll(trace.getLabelsOfTrace());
-		this.lengthLongestTrace = Math.max(this.lengthLongestTrace, trace.getLength());
+		boolean found = false;
+		for (Trace t : this.traces.keySet()) {
+			if (tracesShowSameSequenceOfLabels(t,trace)) {
+				this.traces.put(t, this.traces.get(t)+1);
+				found = true;
+				break;
+			}
+		}
+		
+		if (!found) {
+			this.traces.put(trace, 1);
+			this.labels.addAll(trace.getLabelsOfTrace());
+			this.lengthLongestTrace = Math.max(this.lengthLongestTrace, trace.getLength());
+		}
+		for (TraceEntry t : trace.getTraceAsList())
+			this.traceEntries.add(t);
 	}
 	
 	public Collection<String> getLabelsOfLog() {
@@ -62,7 +80,21 @@ public class Log {
 	public int getLengthLongestTrace() {
 		return lengthLongestTrace;
 	}
+
+	@Override
+	public Collection<TraceEntry> getEntities() {
+		return this.traceEntries;
+	}
 	
-	
+	protected boolean tracesShowSameSequenceOfLabels(Trace t1, Trace t2) {
+		if (t1.getLength() != t2.getLength())
+			return false;
+		for (int i = 0; i < t1.getTraceAsList().size(); i++)
+			if (!t1.getTraceAsList().get(i).getLabel().equals(t2.getTraceAsList().get(i).getLabel()))
+				return false;
+		
+		return true;
+		
+	}
 	
 }

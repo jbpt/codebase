@@ -2,6 +2,8 @@ package de.hpi.bpt.hypergraph.abs;
 
 import java.util.Collection;
 
+import de.hpi.bpt.alignment.IEntityModel;
+
 /**
  * Interface describing hyper graph behavior
  * Hyper graph is collection of hyper edges and disconnected vertices
@@ -11,7 +13,7 @@ import java.util.Collection;
  * @param <E> Edge type employed in the graph
  * @param <V> Vertex type employed in the graph
  */
-public interface IHyperGraph <E extends IHyperEdge<V>,V extends IVertex> extends IGObject
+public interface IHyperGraph <E extends IHyperEdge<V>,V extends IVertex> extends IGObject, IEntityModel<V>
 {
 	/**
 	 * Add edge to the graph

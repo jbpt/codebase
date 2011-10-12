@@ -3,46 +3,46 @@ package de.hpi.bpt.process.petri.bp;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.hpi.bpt.process.petri.Node;
-import de.hpi.bpt.process.petri.PetriNet;
+import de.hpi.bpt.alignment.Alignment;
+import de.hpi.bpt.alignment.IEntity;
+import de.hpi.bpt.alignment.IEntityModel;
 
 
 /**
  * This class implements set-algebraic operations and relations for 
- * behavioural profiles. Currently, it is limited to behaviuoral profiles
- * of Petri nets. It comprises only those operations and relations
- * that are defined for pairs of aligned profiles. The emptiness check and 
- * the complement operation are defined in <code>BehaviouralProfile</code>.
+ * relation sets. It comprises only those operations and relations
+ * that are defined for pairs of aligned relation sets. The emptiness check and 
+ * the complement operation are defined in <code>RelSet</code>.
  * 
  * All methods are implemented for an alignment that is captured by 
- * <code>BPAlignment</code>. All methods require the alignment to be 
+ * <code>RelSetAlignment</code>. All methods require the alignment to be 
  * non-overlapping, functional, and injective. If this is not the case,
  * an <code>IllegalArgumentException</code> is thrown.
  * 
  * @author matthias.weidlich
  *
  */
-public class BehaviouralProfileAlgebra {
+public class RelSetAlgebra {
 	
 	/**
-	 * Checks equivalence of the behavioural profiles under the given alignment. That is,
-	 * it checks whether all behavioural relations coincide for pairs of aligned nodes. The 
+	 * Checks equivalence of the relation sets under the given alignment. That is,
+	 * it checks whether all relations coincide for pairs of aligned nodes. The 
 	 * alignment is required to comprise only non-overlapping, functional, and injective.
 	 * 
-	 * @param alignment, defined between two Petri nets and their behavioural profiles
-	 * @return true, if the aligned profiles show equal relations
+	 * @param alignment, defined between two models and their relation sets
+	 * @return true, if the aligned relation sets show equal relations
 	 * @throws IllegalArgumentException, if alignment is overlapping, not functional, or not injective 
 	 */
-	public static boolean isEqual(RelSetAlignment alignment) throws IllegalArgumentException {
+	public static <R extends RelSet<M, N>, M extends IEntityModel<N>, N extends IEntity> boolean isEqual(Alignment<R,N> alignment) throws IllegalArgumentException {
 		if (alignment.isOverlapping() || !alignment.isFunctional() || !alignment.isInjective())
 			throw new IllegalArgumentException("Alignment does not satisfy assumptions of set algebra.");
 		
-		for (Node v1 : alignment.getAlignedVerticesOfFirstGraph()) {
-			for (Node v2 : alignment.getAlignedVerticesOfFirstGraph()) {
-				RelSetType relation1 = alignment.getFirstRelationSet().getRelationForEntities(v1, v2);
-				RelSetType relation2 = alignment.getSecondRelationSet().getRelationForEntities(
-						alignment.getCorrespondingVerticesForVertexOfFirstGraph(v1).iterator().next(),
-						alignment.getCorrespondingVerticesForVertexOfFirstGraph(v2).iterator().next());
+		for (N v1 : alignment.getAlignedEntitiesOfFirstModel()) {
+			for (N v2 : alignment.getAlignedEntitiesOfFirstModel()) {
+				RelSetType relation1 = alignment.getFirstModel().getRelationForEntities(v1, v2);
+				RelSetType relation2 = alignment.getSecondModel().getRelationForEntities(
+						alignment.getCorrespondingEntitiesForEntityOfFirstModel(v1).iterator().next(),
+						alignment.getCorrespondingEntitiesForEntityOfFirstModel(v2).iterator().next());
 
 				if (!relation1.equals(relation2))
 					return false;
@@ -53,25 +53,25 @@ public class BehaviouralProfileAlgebra {
 	}
 
 	/**
-	 * Checks subsumption between the second and the first behavioural profile of the 
-	 * given alignment. That is, it checks whether all behavioural relations of the second
-	 * profile subsume those of the first profile. The alignment is required to comprise 
+	 * Checks subsumption between the second and the first relation set of the 
+	 * given alignment. That is, it checks whether all relations of the second
+	 * relation set subsume those of the first set. The alignment is required to comprise 
 	 * only non-overlapping, functional, and injective.
 	 * 
-	 * @param alignment, defined between two Petri nets and their behavioural profiles
-	 * @return true, if the second profile subsumes the first profile
+	 * @param alignment, defined between two models and their relation sets
+	 * @return true, if the second relation set subsumes the first set
 	 * @throws IllegalArgumentException, if alignment is overlapping, not functional, or not injective 
 	 */
-	public static boolean secondSubsumesFirst(RelSetAlignment alignment) throws IllegalArgumentException {
+	public static <R extends RelSet<M, N>, M extends IEntityModel<N>, N extends IEntity> boolean secondSubsumesFirst(Alignment<R,N> alignment) throws IllegalArgumentException {
 		if (alignment.isOverlapping() || !alignment.isFunctional() || !alignment.isInjective())
 			throw new IllegalArgumentException("Alignment does not satisfy assumptions of set algebra.");
 		
-		for (Node v1 : alignment.getAlignedVerticesOfSecondGraph()) {
-			for (Node v2 : alignment.getAlignedVerticesOfSecondGraph()) {
-				RelSetType relation1 = alignment.getSecondRelationSet().getRelationForEntities(v1, v2);
-				RelSetType relation2 = alignment.getFirstRelationSet().getRelationForEntities(
-						alignment.getCorrespondingVerticesForVertexOfSecondGraph(v1).iterator().next(),
-						alignment.getCorrespondingVerticesForVertexOfSecondGraph(v2).iterator().next());
+		for (N v1 : alignment.getAlignedEntitiesOfSecondModel()) {
+			for (N v2 : alignment.getAlignedEntitiesOfSecondModel()) {
+				RelSetType relation1 = alignment.getSecondModel().getRelationForEntities(v1, v2);
+				RelSetType relation2 = alignment.getFirstModel().getRelationForEntities(
+						alignment.getCorrespondingEntitiesForEntityOfSecondModel(v1).iterator().next(),
+						alignment.getCorrespondingEntitiesForEntityOfSecondModel(v2).iterator().next());
 
 				if (relation1.equals(RelSetType.Exclusive) && !(relation2.equals(RelSetType.Exclusive)))
 					return false;
@@ -90,25 +90,25 @@ public class BehaviouralProfileAlgebra {
 	}	
 
 	/**
-	 * Checks subsumption between the first and the second behavioural profile of the 
-	 * given alignment. That is, it checks whether all behavioural relations of the first
-	 * profile subsume those of the second profile. The alignment is required to comprise 
+	 * Checks subsumption between the first and the second relation set of the 
+	 * given alignment. That is, it checks whether all relations of the first
+	 * relation set subsume those of the second set. The alignment is required to comprise 
 	 * only non-overlapping, functional, and injective.
 	 * 
-	 * @param alignment, defined between two Petri nets and their behavioural profiles
-	 * @return true, if the first profile subsumes the second profile
+	 * @param alignment, defined between two models and their relation sets
+	 * @return true, if the first relation set subsumes the second relation set
 	 * @throws IllegalArgumentException, if alignment is overlapping, not functional, or not injective 
 	 */
-	public static boolean firstSubsumesSecond(RelSetAlignment alignment) throws IllegalArgumentException {
+	public static <R extends RelSet<M, N>, M extends IEntityModel<N>, N extends IEntity> boolean firstSubsumesSecond(Alignment<R,N> alignment) throws IllegalArgumentException {
 		if (alignment.isOverlapping() || !alignment.isFunctional() || !alignment.isInjective())
 			throw new IllegalArgumentException("Alignment does not satisfy assumptions of set algebra.");
 		
-		for (Node v1 : alignment.getAlignedVerticesOfFirstGraph()) {
-			for (Node v2 : alignment.getAlignedVerticesOfFirstGraph()) {
-				RelSetType relation1 = alignment.getFirstRelationSet().getRelationForEntities(v1, v2);
-				RelSetType relation2 = alignment.getSecondRelationSet().getRelationForEntities(
-						alignment.getCorrespondingVerticesForVertexOfFirstGraph(v1).iterator().next(),
-						alignment.getCorrespondingVerticesForVertexOfFirstGraph(v2).iterator().next());
+		for (N v1 : alignment.getAlignedEntitiesOfFirstModel()) {
+			for (N v2 : alignment.getAlignedEntitiesOfFirstModel()) {
+				RelSetType relation1 = alignment.getFirstModel().getRelationForEntities(v1, v2);
+				RelSetType relation2 = alignment.getSecondModel().getRelationForEntities(
+						alignment.getCorrespondingEntitiesForEntityOfFirstModel(v1).iterator().next(),
+						alignment.getCorrespondingEntitiesForEntityOfFirstModel(v2).iterator().next());
 
 				if (relation1.equals(RelSetType.Exclusive) && !(relation2.equals(RelSetType.Exclusive)))
 					return false;
@@ -126,28 +126,26 @@ public class BehaviouralProfileAlgebra {
 	}
 
 	/**
-	 * Constructs the intersection of the behavioural profiles under the 
-	 * given alignment. That is, it returns a profile that combines the strictest
-	 * relations of both profiles used as input for all pairs of aligned nodes. 
+	 * Constructs the intersection of the relation sets under the 
+	 * given alignment. That is, it returns a relation set that combines the strictest
+	 * relations of both sets used as input for all pairs of aligned entities. 
 	 * The alignment is required to comprise only non-overlapping, functional, 
 	 * and injective.
 	 * 
-	 * @param alignment, defined between two Petri nets and their behavioural profiles
-	 * @return behavioural profile that represents the intersection of the two profiles given as input
+	 * @param alignment, defined between two models and their relation sets
 	 * @throws IllegalArgumentException, if alignment is overlapping, not functional, or not injective 
 	 */
-	public static BehaviouralProfile<PetriNet, Node> intersection(RelSetAlignment alignment) throws IllegalArgumentException {
+	public static <R extends RelSet<M, N>, M extends IEntityModel<N>, N extends IEntity> void fillIntersection(Alignment<R,N> alignment, R relSet) throws IllegalArgumentException {
 		if (alignment.isOverlapping() || !alignment.isFunctional() || !alignment.isInjective())
 			throw new IllegalArgumentException("Alignment does not satisfy assumptions of set algebra.");
 
-		List<Node> nodeList = new ArrayList<Node>(alignment.getAlignedVerticesOfFirstGraph());
-		BehaviouralProfile<PetriNet, Node> profile = new BehaviouralProfile<PetriNet, Node>(alignment.getFirstRelationSet().getModel(),nodeList);
-		RelSetType[][] matrix = profile.getMatrix();
+		List<N> entityList = new ArrayList<N>(alignment.getAlignedEntitiesOfFirstModel());
+		RelSetType[][] matrix = relSet.getMatrix();
 		
-		for(Node v1 : nodeList) {
-			int index1 = profile.getEntities().indexOf(v1);
-			for(Node v2 : nodeList) {
-				int index2 = profile.getEntities().indexOf(v2);
+		for(N v1 : entityList) {
+			int index1 = relSet.getEntities().indexOf(v1);
+			for(N v2 : entityList) {
+				int index2 = relSet.getEntities().indexOf(v2);
 				
 				/*
 				 * The behavioural profile matrix is symmetric. Therefore, we 
@@ -156,10 +154,10 @@ public class BehaviouralProfileAlgebra {
 				if (index2 > index1)
 					continue;
 				
-				RelSetType relation1 = alignment.getFirstRelationSet().getRelationForEntities(v1, v2);
-				RelSetType relation2 = alignment.getSecondRelationSet().getRelationForEntities(
-						alignment.getCorrespondingVerticesForVertexOfFirstGraph(v1).iterator().next(),
-						alignment.getCorrespondingVerticesForVertexOfFirstGraph(v2).iterator().next());
+				RelSetType relation1 = alignment.getFirstModel().getRelationForEntities(v1, v2);
+				RelSetType relation2 = alignment.getSecondModel().getRelationForEntities(
+						alignment.getCorrespondingEntitiesForEntityOfFirstModel(v1).iterator().next(),
+						alignment.getCorrespondingEntitiesForEntityOfFirstModel(v2).iterator().next());
 				
 				
 				if (relation1.equals(RelSetType.Exclusive) ||
@@ -186,32 +184,29 @@ public class BehaviouralProfileAlgebra {
 				}
 			}
 		}
-		return profile;
 	}
 	
 	/**
-	 * Constructs the union of the behavioural profiles under the 
-	 * given alignment. That is, it returns a profile that combines the weakest
-	 * relations of both profiles used as input for all pairs of aligned nodes. 
+	 * Constructs the union of the relation sets under the 
+	 * given alignment. That is, it returns a relation set that combines the weakest
+	 * relations of both sets used as input for all pairs of aligned entities. 
 	 * The alignment is required to comprise only non-overlapping, functional, 
 	 * and injective.
 	 * 
-	 * @param alignment, defined between two Petri nets and their behavioural profiles
-	 * @return behavioural profile that represents the union of the two profiles given as input
+	 * @param alignment, defined between two models and their relation sets
 	 * @throws IllegalArgumentException, if alignment is overlapping, not functional, or not injective 
 	 */
-	public static BehaviouralProfile<PetriNet, Node> union(RelSetAlignment alignment) throws IllegalArgumentException {
+	public static <R extends RelSet<M, N>, M extends IEntityModel<N>, N extends IEntity> void fillUnion(Alignment<R,N> alignment, R relSet) throws IllegalArgumentException {
 		if (alignment.isOverlapping() || !alignment.isFunctional() || !alignment.isInjective())
 			throw new IllegalArgumentException("Alignment does not satisfy assumptions of set algebra.");
 
-		List<Node> nodeList = new ArrayList<Node>(alignment.getAlignedVerticesOfFirstGraph());
-		BehaviouralProfile<PetriNet, Node> profile = new BehaviouralProfile<PetriNet, Node>(alignment.getFirstRelationSet().getModel(),nodeList);
-		RelSetType[][] matrix = profile.getMatrix();
+		List<N> entityList = new ArrayList<N>(alignment.getAlignedEntitiesOfFirstModel());
+		RelSetType[][] matrix = relSet.getMatrix();
 		
-		for(Node v1 : nodeList) {
-			int index1 = profile.getEntities().indexOf(v1);
-			for(Node v2 : nodeList) {
-				int index2 = profile.getEntities().indexOf(v2);
+		for(N v1 : entityList) {
+			int index1 = relSet.getEntities().indexOf(v1);
+			for(N v2 : entityList) {
+				int index2 = relSet.getEntities().indexOf(v2);
 				
 				/*
 				 * The behavioural profile matrix is symmetric. Therefore, we 
@@ -220,10 +215,10 @@ public class BehaviouralProfileAlgebra {
 				if (index2 > index1)
 					continue;
 				
-				RelSetType relation1 = alignment.getFirstRelationSet().getRelationForEntities(v1, v2);
-				RelSetType relation2 = alignment.getSecondRelationSet().getRelationForEntities(
-						alignment.getCorrespondingVerticesForVertexOfFirstGraph(v1).iterator().next(),
-						alignment.getCorrespondingVerticesForVertexOfFirstGraph(v2).iterator().next());
+				RelSetType relation1 = alignment.getFirstModel().getRelationForEntities(v1, v2);
+				RelSetType relation2 = alignment.getSecondModel().getRelationForEntities(
+						alignment.getCorrespondingEntitiesForEntityOfFirstModel(v1).iterator().next(),
+						alignment.getCorrespondingEntitiesForEntityOfFirstModel(v2).iterator().next());
 				
 				
 				if (relation1.equals(RelSetType.Interleaving) ||
@@ -250,7 +245,6 @@ public class BehaviouralProfileAlgebra {
 				}
 			}
 		}
-		return profile;
 	}
 	
 }
