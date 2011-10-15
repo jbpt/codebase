@@ -34,7 +34,17 @@ public class AggregatedSimilarity<R extends RelSet<M, N>, M extends IEntityModel
 		(weightESSim > 0 ? weightESSim * eso.score(alignment) : 0) + 
 		(weightEISim > 0 ? weightEISim * ein.score(alignment) : 0) );
 	}
-	
+
+	@Override
+	public double scoreDice(Alignment<R,N> alignment) {
+		return (
+		(weightExSim > 0 ? weightExSim * ex.scoreDice(alignment) : 0) + 
+		(weightSoSim > 0 ? weightSoSim * so.scoreDice(alignment) : 0) + 
+		(weightInSim > 0 ? weightInSim * in.scoreDice(alignment) : 0) + 
+		(weightESSim > 0 ? weightESSim * eso.scoreDice(alignment) : 0) + 
+		(weightEISim > 0 ? weightEISim * ein.scoreDice(alignment) : 0) );
+	}
+
 	@Override
 	public String getName() {
 		return this.getClass().getName() 
