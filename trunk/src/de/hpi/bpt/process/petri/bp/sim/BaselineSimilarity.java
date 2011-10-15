@@ -35,4 +35,24 @@ public class BaselineSimilarity<R extends RelSet<M, N>, M extends IEntityModel<N
 
 		return (intersection > 0) ? (intersection / (in1 + in2 - intersection)) : 0;
 	}	
+	
+	@Override
+	public double scoreDice(Alignment<R,N> alignment) {
+		double in1 = 0;
+		for (N n : alignment.getFirstModel().getEntities()) {
+			if (n instanceof Place) continue;
+			if (((Transition)n).equals(PetriNet.SILENT_LABEL)) continue;
+			in1++;
+		}
+		double in2 = 0;
+		for (N n : alignment.getSecondModel().getEntities()) {
+			if (n instanceof Place) continue;
+			if (((Transition)n).equals(PetriNet.SILENT_LABEL)) continue;
+			in2++;
+		}
+		
+		double intersection = alignment.getAlignedEntitiesOfFirstModel().size();
+
+		return (in1 + in2 > 0) ? (2*intersection / (in1 + in2)) : 0;
+	}	
 }

@@ -23,4 +23,13 @@ public class ExclusivenessSimilarity<R extends RelSet<M, N>, M extends IEntityMo
 		
 		return (intersection > 0) ? (intersection / (in1 + in2 - intersection)) : 0;
 	}
+	
+	public double scoreDice(Alignment<R,N> alignment) {
+		double in1 = super.getSizeOfRelation(alignment.getFirstModel(), RelSetType.Exclusive);
+		double in2 = super.getSizeOfRelation(alignment.getSecondModel(), RelSetType.Exclusive);
+		
+		double intersection = super.getSizeOfIntersectionOfRelation(alignment, RelSetType.Exclusive);
+		
+		return (in1 + in2 > 0) ? (2*intersection / (in1 + in2)) : 0;
+	}
 }
