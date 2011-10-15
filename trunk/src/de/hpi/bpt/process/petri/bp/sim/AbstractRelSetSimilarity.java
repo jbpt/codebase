@@ -56,7 +56,7 @@ public abstract class AbstractRelSetSimilarity<R extends RelSet<M, N>, M extends
 	 * 
 	 * @param alignment, establishes the relation between two relation sets
 	 * @param relation1, the type of the considered relation in the first model
-	 * @param relation2, the type fo the considered relation in the second model
+	 * @param relation2, the type of the considered relation in the second model
 	 * @return the size of the intersection of the two relations of given type 
 	 */
 	protected int getSizeOfIntersectionOfTwoRelations(Alignment<R,N> alignment, RelSetType relation1, RelSetType relation2) {
@@ -67,8 +67,8 @@ public abstract class AbstractRelSetSimilarity<R extends RelSet<M, N>, M extends
 			if (((Transition)n1).equals(PetriNet.SILENT_LABEL)) continue;
 			
 			for (N n2 : alignment.getFirstModel().getEntities()) {
-				if (n1 instanceof Place) continue;
-				if (((Transition)n1).equals(PetriNet.SILENT_LABEL)) continue;
+				if (n2 instanceof Place) continue;
+				if (((Transition)n2).equals(PetriNet.SILENT_LABEL)) continue;
 				
 				if (!alignment.getFirstModel().getRelationForEntities(n1, n2).equals(relation1)) continue;
 				
@@ -103,8 +103,8 @@ public abstract class AbstractRelSetSimilarity<R extends RelSet<M, N>, M extends
 			if (((Transition)n1).equals(PetriNet.SILENT_LABEL)) continue;
 			
 			for (N n2 : rs.getEntities()) {
-				if (n1 instanceof Place) continue;
-				if (((Transition)n1).equals(PetriNet.SILENT_LABEL)) continue;
+				if (n2 instanceof Place) continue;
+				if (((Transition)n2).equals(PetriNet.SILENT_LABEL)) continue;
 
 				if (rs.getRelationForEntities(n1,n2).equals(relation))
 					sizeOfRelation++;
