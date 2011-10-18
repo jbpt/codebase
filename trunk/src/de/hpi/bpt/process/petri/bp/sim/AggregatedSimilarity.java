@@ -27,22 +27,28 @@ public class AggregatedSimilarity<R extends RelSet<M, N>, M extends IEntityModel
 	
 	@Override
 	public double score(Alignment<R,N> alignment) {
+		
+		double weightSum = weightExSim + weightSoSim + weightInSim + weightESSim + weightEISim;
+		
 		return (
-		(weightExSim > 0 ? weightExSim * ex.score(alignment) : 0) + 
-		(weightSoSim > 0 ? weightSoSim * so.score(alignment) : 0) + 
-		(weightInSim > 0 ? weightInSim * in.score(alignment) : 0) + 
-		(weightESSim > 0 ? weightESSim * eso.score(alignment) : 0) + 
-		(weightEISim > 0 ? weightEISim * ein.score(alignment) : 0) );
+		(weightExSim > 0 ? weightExSim/weightSum * ex.score(alignment) : 0) + 
+		(weightSoSim > 0 ? weightSoSim/weightSum * so.score(alignment) : 0) + 
+		(weightInSim > 0 ? weightInSim/weightSum * in.score(alignment) : 0) + 
+		(weightESSim > 0 ? weightESSim/weightSum * eso.score(alignment) : 0) + 
+		(weightEISim > 0 ? weightEISim/weightSum * ein.score(alignment) : 0) );
 	}
 
 	@Override
 	public double scoreDice(Alignment<R,N> alignment) {
+		
+		double weightSum = weightExSim + weightSoSim + weightInSim + weightESSim + weightEISim;
+		
 		return (
-		(weightExSim > 0 ? weightExSim * ex.scoreDice(alignment) : 0) + 
-		(weightSoSim > 0 ? weightSoSim * so.scoreDice(alignment) : 0) + 
-		(weightInSim > 0 ? weightInSim * in.scoreDice(alignment) : 0) + 
-		(weightESSim > 0 ? weightESSim * eso.scoreDice(alignment) : 0) + 
-		(weightEISim > 0 ? weightEISim * ein.scoreDice(alignment) : 0) );
+		(weightExSim > 0 ? weightExSim/weightSum * ex.scoreDice(alignment) : 0) + 
+		(weightSoSim > 0 ? weightSoSim/weightSum * so.scoreDice(alignment) : 0) + 
+		(weightInSim > 0 ? weightInSim/weightSum * in.scoreDice(alignment) : 0) + 
+		(weightESSim > 0 ? weightESSim/weightSum * eso.scoreDice(alignment) : 0) + 
+		(weightEISim > 0 ? weightEISim/weightSum * ein.scoreDice(alignment) : 0) );
 	}
 
 	@Override
@@ -54,4 +60,13 @@ public class AggregatedSimilarity<R extends RelSet<M, N>, M extends IEntityModel
 		+ "ES:" + weightESSim + "-" 
 		+ "EI:" + weightEISim + "-";
 	}
+	
+	public void setWeights(double weightExSim, double weightSoSim, double weightInSim, double weightESSim, double weightEISim) {
+		this.weightExSim = weightExSim;
+		this.weightSoSim = weightSoSim;
+		this.weightInSim = weightInSim;
+		this.weightESSim = weightESSim;
+		this.weightEISim = weightEISim;
+	}
+
 }
