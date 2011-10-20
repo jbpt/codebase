@@ -61,6 +61,15 @@ public class AggregatedSimilarity<R extends RelSet<M, N>, M extends IEntityModel
 		+ "EI:" + weightEISim + "-";
 	}
 	
+	/**
+	 * Set weights for aggregation of similarities.
+	 * 
+	 * @param weightExSim weight for @ExclusivenessSimilarity
+	 * @param weightSoSim weight for @OrderSimilarity
+	 * @param weightInSim weight for @InterleavingSimilarity
+	 * @param weightESSim weight for @ExtendedOrderSimilarity
+	 * @param weightEISim weight for @ExtendedInterleavingSimilarity
+	 */
 	public void setWeights(double weightExSim, double weightSoSim, double weightInSim, double weightESSim, double weightEISim) {
 		this.weightExSim = weightExSim;
 		this.weightSoSim = weightSoSim;
@@ -68,5 +77,18 @@ public class AggregatedSimilarity<R extends RelSet<M, N>, M extends IEntityModel
 		this.weightESSim = weightESSim;
 		this.weightEISim = weightEISim;
 	}
+
+	@Override
+	public void invalidateCache() {
+		// TODO Auto-generated method stub
+		super.invalidateCache();
+		ex.invalidateCache();
+		so.invalidateCache();
+		in.invalidateCache();
+		eso.invalidateCache();
+		ein.invalidateCache();
+	}
+	
+	
 
 }
