@@ -20,4 +20,5 @@ public class ControlFlow extends AbstractDirectedEdge<Node> {
 	public void setLabel(String label) {
 		this.label = label;
 	}
+	
 }

@@ -45,6 +45,11 @@ public class Process extends AbstractDirectedGraph<ControlFlow, Node> {
 		return new ControlFlow(this, from, to);
 	}
 	
+	@Override
+	public ControlFlow addEdge(Node from, Node to) {
+		return addControlFlow(from, to);
+	}
+	
 	/**
 	 * Remove control flow from the process
 	 * @param flow Control flow to remove

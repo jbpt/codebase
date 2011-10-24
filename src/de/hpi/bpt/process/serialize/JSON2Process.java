@@ -43,6 +43,8 @@ public class JSON2Process {
 			for (int i = 0; i < gateways.length(); i++) {
 				Gateway gate = new Gateway(determineGatewayType(gateways.getJSONObject(i)));
 				gate.setId(gateways.getJSONObject(i).getString("id"));
+				if (gateways.getJSONObject(i).has("label"))
+					gate.setName(gateways.getJSONObject(i).getString("label"));
 				nodes.put(gate.getId(), gate);
 			}
 			process.addVertices(nodes.values());
