@@ -28,6 +28,8 @@ public class Process2JSON {
 			for (Gateway gate:process.getGateways()) {
 				JSONObject jGate = new JSONObject();
 				jGate.put("id", gate.getId());
+				if (!gate.getName().equals(""))
+					jGate.put("label", gate.getName());
 				jGate.put("type", determineGatewayType(gate.getGatewayType()));
 				gateways.put(jGate);
 			}

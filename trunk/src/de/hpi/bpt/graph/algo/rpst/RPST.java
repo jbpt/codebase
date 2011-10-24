@@ -19,8 +19,8 @@ import de.hpi.bpt.graph.algo.tctree.TCTree;
 import de.hpi.bpt.graph.algo.tctree.TCTreeEdge;
 import de.hpi.bpt.graph.algo.tctree.TCTreeNode;
 import de.hpi.bpt.graph.algo.tctree.TCType;
+import de.hpi.bpt.graph.algo.tctree.VertexFactory;
 import de.hpi.bpt.hypergraph.abs.IVertex;
-import de.hpi.bpt.hypergraph.abs.Vertex;
 
 /**
  * The Refined Process Structure Tree
@@ -74,13 +74,17 @@ public class RPST <E extends IDirectedEdge<V>, V extends IVertex>
 		
 		this.backEdge = this.graph.addEdge(snk, src);
 		
+		VertexFactory<V> factory = new VertexFactory<V>(src.getClass());
+		
 		// expand mixed vertices
 		this.extraEdges = new ArrayList<E>();
 		Map<V,V> map = new HashMap<V,V>();
 		for (V v : this.graph.getVertices()) {
 			if (this.graph.getIncomingEdges(v).size()>1 &&
 					this.graph.getOutgoingEdges(v).size()>1) {
-				V newV = (V) (new Vertex());
+				// changed to a factory, for testing purpose
+				//V newV = (V) (new Vertex());
+				V newV = factory.createInstance();
 				newV.setName(v.getName()+"*");
 				map.put(newV, v);
 				this.graph.addVertex(newV);
