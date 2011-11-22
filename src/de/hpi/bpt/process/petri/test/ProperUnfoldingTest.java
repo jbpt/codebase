@@ -155,4 +155,121 @@ public class ProperUnfoldingTest extends TestCase {
 		OccurrenceNet bpnet = unf.getOccurrenceNet();
 		IOUtils.toFile("unf2.dot", bpnet.toDOT());
 	}
+	
+	public void test3() throws TransformationException, FileNotFoundException {
+		Process p = new Process();
+		
+		Task ti = new Task("I");
+		Task to = new Task("O");
+		Task ta = new Task("A");
+		Task tb = new Task("B");
+		Task tc = new Task("C");
+		Task td = new Task("D");
+		Task te = new Task("E");
+		Task tf = new Task("F");
+		Task tg = new Task("G");
+		
+		Gateway gq = new Gateway(GatewayType.AND);
+		Gateway gr = new Gateway(GatewayType.XOR);
+		Gateway gs = new Gateway(GatewayType.XOR);
+		Gateway gt = new Gateway(GatewayType.XOR);
+		Gateway gu = new Gateway(GatewayType.AND);
+		Gateway gv = new Gateway(GatewayType.AND);
+		Gateway gw = new Gateway(GatewayType.XOR);
+		Gateway gx = new Gateway(GatewayType.XOR);
+		Gateway gy = new Gateway(GatewayType.AND);
+		Gateway gz = new Gateway(GatewayType.AND);
+		
+		p.addControlFlow(ti,gq);
+		p.addControlFlow(gq,gr);
+		p.addControlFlow(gr,ta);
+		p.addControlFlow(ta,gs);
+		p.addControlFlow(gs,tb);
+		p.addControlFlow(tb,gt);
+		p.addControlFlow(gt,tc);
+		p.addControlFlow(tc,gr);
+		p.addControlFlow(gs,gu);
+		p.addControlFlow(gu,td);
+		p.addControlFlow(td,gw);
+		p.addControlFlow(gw,te);
+		p.addControlFlow(te,gz);
+		p.addControlFlow(gz,to);
+		p.addControlFlow(gt,gv);
+		p.addControlFlow(gv,gx);
+		p.addControlFlow(gx,tf);
+		p.addControlFlow(tf,gy);
+		p.addControlFlow(gy,tg);
+		p.addControlFlow(tg,gz);
+		p.addControlFlow(gu,gx);
+		p.addControlFlow(gv,gw);
+		p.addControlFlow(gq,gy);
+		
+		Utils.toFile("model3.dot", Process2DOT.convert(p));
+		
+		PetriNet net = Utils.process2net(p);
+		int cp = 1; int ct = 1;
+		for (Place place : net.getPlaces()) place.setName("p"+cp++);
+		for (Transition trans : net.getTransitions()) trans.setName("t"+ct++);
+		Utils.addInitialMarking(net);
+		IOUtils.toFile("net3.dot", net.toDOT());
+		
+		ProperUnfolding unf = new ProperUnfolding(net);
+		OccurrenceNet bpnet = unf.getOccurrenceNet();
+		IOUtils.toFile("unf3.dot", bpnet.toDOT());
+	}
+	
+	public void test4() throws TransformationException, FileNotFoundException {
+		Process p = new Process();
+		
+		Task ti = new Task("I");
+		Task to = new Task("O");
+		Task td = new Task("D");
+		Task te = new Task("E");
+		Task tf = new Task("F");
+		Task tg = new Task("G");
+		Task tst = new Task("ST");
+		Task ttv = new Task("TV");
+		
+		Gateway gq = new Gateway(GatewayType.AND);
+		Gateway grst = new Gateway(GatewayType.XOR);
+		Gateway gu = new Gateway(GatewayType.AND);
+		Gateway gv = new Gateway(GatewayType.AND);
+		Gateway gw = new Gateway(GatewayType.XOR);
+		Gateway gx = new Gateway(GatewayType.XOR);
+		Gateway gy = new Gateway(GatewayType.AND);
+		Gateway gz = new Gateway(GatewayType.AND);
+		
+		p.addControlFlow(ti,gq);
+		p.addControlFlow(gq,grst);
+		p.addControlFlow(grst,tst);
+		p.addControlFlow(grst,ttv);
+		p.addControlFlow(tst,gu);
+		p.addControlFlow(ttv,gv);
+		p.addControlFlow(gu,td);
+		p.addControlFlow(td,gw);
+		p.addControlFlow(gw,te);
+		p.addControlFlow(te,gz);
+		p.addControlFlow(gz,to);
+		p.addControlFlow(gv,gx);
+		p.addControlFlow(gx,tf);
+		p.addControlFlow(tf,gy);
+		p.addControlFlow(gy,tg);
+		p.addControlFlow(tg,gz);
+		p.addControlFlow(gu,gx);
+		p.addControlFlow(gv,gw);
+		p.addControlFlow(gq,gy);
+		
+		Utils.toFile("model4.dot", Process2DOT.convert(p));
+		
+		PetriNet net = Utils.process2net(p);
+		int cp = 1; int ct = 1;
+		for (Place place : net.getPlaces()) place.setName("p"+cp++);
+		for (Transition trans : net.getTransitions()) trans.setName("t"+ct++);
+		Utils.addInitialMarking(net);
+		IOUtils.toFile("net4.dot", net.toDOT());
+		
+		ProperUnfolding unf = new ProperUnfolding(net);
+		OccurrenceNet bpnet = unf.getOccurrenceNet();
+		IOUtils.toFile("unf4.dot", bpnet.toDOT());
+	}
 }
