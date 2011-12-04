@@ -128,10 +128,12 @@ public class BPCreatorUnfolding extends AbstractRelSetCreator implements RelSetC
 			for (DNode e2 : this.eventContinuationProfiler.getUnfolding().getBranchingProcess().getAllEvents()) {
 				if (this.eventContinuationProfiler.getRelation(e1,e2).equals(UnfoldingRelationType.CAUSAL)
 						|| (!e1.equals(e2) && this.eventContinuationProfiler.getRelation(e1,e2).equals(UnfoldingRelationType.CONCURRENCY))) {
-					addToRelation(weakOrderMatrixForTransitions, unfoldingNodesToNetTransitions.get(e1), unfoldingNodesToNetTransitions.get(e2));
+					if (unfoldingNodesToNetTransitions.containsKey(e1) && unfoldingNodesToNetTransitions.containsKey(e2))
+						addToRelation(weakOrderMatrixForTransitions, unfoldingNodesToNetTransitions.get(e1), unfoldingNodesToNetTransitions.get(e2));
 				}
 				else if (this.eventContinuationProfiler.isCausalViaSequenceOfCutOffs(e1,e2)){
-					addToRelation(weakOrderMatrixForTransitions, unfoldingNodesToNetTransitions.get(e1), unfoldingNodesToNetTransitions.get(e2));
+					if (unfoldingNodesToNetTransitions.containsKey(e1) && unfoldingNodesToNetTransitions.containsKey(e2))
+						addToRelation(weakOrderMatrixForTransitions, unfoldingNodesToNetTransitions.get(e1), unfoldingNodesToNetTransitions.get(e2));
 				}
 			}
 		}
