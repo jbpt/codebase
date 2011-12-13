@@ -18,11 +18,16 @@ import de.hpi.bpt.process.petri.Transition;
 
 public class WoflanUtils {
 
-	static int counter = 0;
+	protected static int counter = 0;
 	
 	public static String formatId(String id) {
 		id = id.replace(" ", "_");
 		return id;
+	}
+	
+	protected static String getId() {
+		counter++;
+		return String.valueOf(counter);
 	}
 	
 	public static PetriNet parse(File file) throws IOException {
@@ -51,7 +56,7 @@ public class WoflanUtils {
 					}
 					else label = line.substring(7, line.length()-2);
 					
-					p.setId(label);
+					p.setId(getId());
 					p.setName(label);
 					net.getPlaces().add(p);
 					s2p.put(label,p);
@@ -60,7 +65,7 @@ public class WoflanUtils {
 				if (line.startsWith("trans")) { // create place
 					Transition t = new Transition();
 					String label = line.substring(7, line.length()-1);
-					t.setId(label);
+					t.setId(getId());
 					t.setName(label);
 					net.getTransitions().add(t);
 					
