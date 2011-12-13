@@ -2,10 +2,12 @@ package de.hpi.bpt.process.petri.bp;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import de.hpi.bpt.alignment.IEntity;
 import de.hpi.bpt.alignment.IEntityModel;
+import de.hpi.bpt.alignment.LabelEntity;
 
 /**
  * Captures a relation set over labels of a model (e.g., a Petri net). 
@@ -18,7 +20,7 @@ import de.hpi.bpt.alignment.IEntityModel;
  * @author matthias.weidlich
  *
  */
-public class RelSetOverLabels<M extends IEntityModel<N>, N extends IEntity> {
+public class RelSetOverLabels<M extends IEntityModel<N>,N extends IEntity> implements IEntityModel<LabelEntity> {
 
 	/**
 	 * The base relation set over transitions.
@@ -28,7 +30,7 @@ public class RelSetOverLabels<M extends IEntityModel<N>, N extends IEntity> {
 	/**
 	 * The labels considered for the relation set over labels.
 	 */
-	protected List<String> labels;
+	protected List<LabelEntity> labels;
 	
 	/**
 	 * The matrix to capture the relation set over labels.
@@ -43,10 +45,10 @@ public class RelSetOverLabels<M extends IEntityModel<N>, N extends IEntity> {
 	 */
 	public RelSetOverLabels(RelSet<M, N> rs) {
 		this.rs = rs;
-		this.labels = new ArrayList<String>();
+		this.labels = new ArrayList<LabelEntity>();
 		for (N t : this.rs.getModel().getEntities())
 			if (!this.labels.contains(t.getLabel()))
-				this.labels.add(t.getLabel());
+				this.labels.add(new LabelEntity(t.getLabel()));
 		
 		deriveLabelMatrix();
 	}
@@ -104,15 +106,6 @@ public class RelSetOverLabels<M extends IEntityModel<N>, N extends IEntity> {
 		}
 	}
 	
-	/**
-	 * Get all considered labels.
-	 * 
-	 * @return the set of labels over which the relation set is defined
-	 */
-	public List<String> getLabels() {
-		return this.labels;
-	}
-
 	@Override
 	public String toString(){
 		StringBuilder sb = new StringBuilder();
@@ -127,6 +120,11 @@ public class RelSetOverLabels<M extends IEntityModel<N>, N extends IEntity> {
 		}
 		sb.append("------------------------------------------\n");
 		return sb.toString();
+	}
+
+	@Override
+	public Collection<LabelEntity> getEntities() {
+		return this.labels;
 	}
 
 	
