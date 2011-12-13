@@ -216,7 +216,7 @@ public class Alignment<M extends IEntityModel<N>, N extends IEntity>  {
 					String s1 = normaliseLabel(v1.getLabel());
 					String s2 = normaliseLabel(v2.getLabel());
 					
-					if (s1.equals(s2))
+					if (s1.equals(s2) && !s1.equals(""))
 						addElementaryCorrespondence(v1,v2);
 				}
 			}
