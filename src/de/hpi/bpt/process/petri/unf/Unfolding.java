@@ -12,6 +12,7 @@ import de.hpi.bpt.process.petri.Marking;
 import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.Place;
 import de.hpi.bpt.process.petri.Transition;
+import de.hpi.bpt.utils.IOUtils;
 
 /**
  * Unfolding (complete prefix unfolding) of a net system
@@ -108,8 +109,8 @@ public class Unfolding {
 		// get possible extensions of initial branching process
 		Collection<Event> pe = getPossibleExtensions();
 		while (pe.size()>0) { 											// while extensions exist
-			if (this.countEvents>=this.setup.MAX_EVENTS) return;			// track number of events in unfolding
-			Event e = this.setup.ADEQUATE_ORDER.getMininmal(pe);		// event to use for extending unfolding
+			if (this.countEvents>=this.setup.MAX_EVENTS) return;		// track number of events in unfolding
+			Event e = this.setup.ADEQUATE_ORDER.getMinimal(pe);		// event to use for extending unfolding
 			
 			if (!this.overlap(cutoff2corr.keySet(),e.getLocalConfiguration())) {
 				if (!this.addEvent(e)) return;							// add event to unfolding
@@ -123,7 +124,7 @@ public class Unfolding {
 				
 				// The following functionality is not captured by Esparza's algorithm !!!
 				// The code handles situation when there exist a cutoff event which induces initial marking
-				// The identification of such cutoff is postponed to the point until second event which induces initial marking is identified
+				// The identification of such cutoff was postponed to the point until second event which induces initial marking is identified
 				if (corrIni == null) {
 					boolean isCutoffIni = e.getLocalConfiguration().getMarking().equals(this.net.getMarking());
 					if (cutoffIni == null && isCutoffIni) cutoffIni = e;
@@ -135,7 +136,9 @@ public class Unfolding {
 			}
 			else pe.remove(e);
 			
-			if (pe.size() == 0) pe = this.getPossibleExtensionsExt();	// !extension point for finding more possible extensions
+			if (pe.size() == 0) { 
+				pe = this.getPossibleExtensionsExt();	// !extension point for finding more possible extensions
+			}
 		}
 	}
 	
@@ -383,7 +386,9 @@ public class Unfolding {
 		
 		for (Event e1 : es1) {
 			for (Event e2 : es2) {
-				if (e1.equals(e2)) return true;
+				if (e1.equals(e2))
+					IOUtils.toFile("unftmp.dot", this.getOccurrenceNet().toDOT());
+					return true;
 			}
 		}
 		
@@ -591,9 +596,7 @@ public class Unfolding {
 	 * @return occurrence net
 	 */
 	public OccurrenceNet getOccurrenceNet() {
-		if (this.occNet == null)
-			this.occNet = new OccurrenceNet(this); 
-		
+		this.occNet = new OccurrenceNet(this); 
 		return this.occNet; 
 	}
 	

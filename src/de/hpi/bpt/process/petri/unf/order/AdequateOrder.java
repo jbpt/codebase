@@ -17,7 +17,7 @@ public abstract class AdequateOrder {
 	 * @param es events
 	 * @return minimal event (according to the adequate order) from the collection of events
 	 */
-	public Event getMininmal(Collection<Event> es) {
+	public Event getMinimal(Collection<Event> es) {
 		Event min = es.iterator().next();
 		LocalConfiguration lcMin = min.getLocalConfiguration();
 		
