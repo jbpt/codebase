@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import de.hpi.bpt.graph.util.DotSerializer;
 import de.hpi.bpt.hypergraph.abs.AbstractMultiDirectedHyperGraph;
 import de.hpi.bpt.hypergraph.abs.IVertex;
 
@@ -129,7 +130,6 @@ public class AbstractMultiDirectedGraph<E extends IDirectedEdge<V>, V extends IV
 
 	@Override
 	public String toDOT() {
-		// TODO Auto-generated method stub
-		return "";
+		return new DotSerializer().serialize(this);
 	}
 }
