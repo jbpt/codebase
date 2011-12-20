@@ -16,4 +16,22 @@ public class LabelEntity implements IEntity {
 	public void setLabel(String label) {
 		this.label = label;
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof LabelEntity))
+			return false;
+		return ((LabelEntity)o).getLabel().equals(this.getLabel());
+	}
+	
+	@Override
+	public int hashCode() {
+		return this.getLabel().hashCode();
+	}
+	
+	@Override
+	public String toString() {
+		return this.getLabel();
+	}
+	
 }

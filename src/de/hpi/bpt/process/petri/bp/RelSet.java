@@ -12,7 +12,7 @@ import de.hpi.bpt.alignment.IEntityModel;
 
 public class RelSet<M,N extends IEntity> implements IEntityModel<N> {
 	
-	public static final int RELATION_FAR_LOOKAHEAD = 1000000000;
+	public static final int RELATION_FAR_LOOKAHEAD = 1000000;
 	
 	protected int lookAhead = RELATION_FAR_LOOKAHEAD;
 	
