@@ -199,7 +199,7 @@ public class Alignment<M extends IEntityModel<N>, N extends IEntity>  {
 		 * @param s, the label that shall be normalised
 		 * @return the normalised label
 		 */
-		protected static String normaliseLabel(String s) {
+		public static String normaliseLabel(String s) {
 			String result = s.toLowerCase();
 			result = result.trim();
 			return result;

@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.List;
 
 import de.hpi.bpt.alignment.IEntity;
-import de.hpi.bpt.alignment.IEntityModel;
 
 
 /**
@@ -14,7 +13,7 @@ import de.hpi.bpt.alignment.IEntityModel;
  * @author matthias.weidlich
  *
  */
-public class BehaviouralProfile<M extends IEntityModel<N>, N extends IEntity> extends RelSet<M, N> {
+public class BehaviouralProfile<M,N extends IEntity> extends RelSet<M, N> {
 	
 	public BehaviouralProfile(M model, List<N> entities) {
 		super(model, entities);

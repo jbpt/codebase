@@ -1,8 +1,9 @@
 package de.hpi.bpt.process.petri.bp.test;
 
 import junit.framework.TestCase;
+import de.hpi.bpt.alignment.LabelEntity;
 import de.hpi.bpt.process.petri.bp.RelSet;
-import de.hpi.bpt.process.petri.bp.RelSetOverLabels;
+import de.hpi.bpt.process.petri.bp.RelSetLabelAbstractor;
 import de.hpi.bpt.process.petri.bp.RelSetType;
 import de.hpi.bpt.process.petri.bp.construct.RelSetCreatorLog;
 import de.hpi.bpt.process.petri.log.Log;
@@ -29,60 +30,60 @@ public class RelSetLogCreatorTest extends TestCase {
 		 * Look ahead of one: alpha relations
 		 */
 		RelSet<Log, TraceEntry> rs = RelSetCreatorLog.getInstance().deriveRelationSet(log,1);
-		RelSetOverLabels<Log, TraceEntry> relSet = new RelSetOverLabels<Log, TraceEntry>(rs);
+		RelSet<Log, LabelEntity> relSet = RelSetLabelAbstractor.abstractRelSetToLabels(rs);
 			
-		assertEquals(RelSetType.Interleaving, relSet.getRelationForLabels("a","a"));
-		assertEquals(RelSetType.Interleaving, relSet.getRelationForLabels("k","j"));
-		assertEquals(RelSetType.Interleaving, relSet.getRelationForLabels("j","k"));
+		assertEquals(RelSetType.Interleaving, relSet.getRelationForEntities(new LabelEntity("a"),new LabelEntity("a")));
+		assertEquals(RelSetType.Interleaving, relSet.getRelationForEntities(new LabelEntity("k"),new LabelEntity("j")));
+		assertEquals(RelSetType.Interleaving, relSet.getRelationForEntities(new LabelEntity("j"),new LabelEntity("k")));
 		
-		assertEquals(RelSetType.Exclusive, relSet.getRelationForLabels("a","d"));
-		assertEquals(RelSetType.Exclusive, relSet.getRelationForLabels("a","k"));
-		assertEquals(RelSetType.Exclusive, relSet.getRelationForLabels("a","j"));
-		assertEquals(RelSetType.Exclusive, relSet.getRelationForLabels("c","b"));
-		assertEquals(RelSetType.Exclusive, relSet.getRelationForLabels("c","j"));
+		assertEquals(RelSetType.Exclusive, relSet.getRelationForEntities(new LabelEntity("a"),new LabelEntity("d")));
+		assertEquals(RelSetType.Exclusive, relSet.getRelationForEntities(new LabelEntity("a"),new LabelEntity("k")));
+		assertEquals(RelSetType.Exclusive, relSet.getRelationForEntities(new LabelEntity("a"),new LabelEntity("j")));
+		assertEquals(RelSetType.Exclusive, relSet.getRelationForEntities(new LabelEntity("c"),new LabelEntity("b")));
+		assertEquals(RelSetType.Exclusive, relSet.getRelationForEntities(new LabelEntity("c"),new LabelEntity("j")));
 
-		assertEquals(RelSetType.Order, relSet.getRelationForLabels("b","d"));
-		assertEquals(RelSetType.Order, relSet.getRelationForLabels("d","k"));
-		assertEquals(RelSetType.Order, relSet.getRelationForLabels("d","e"));
+		assertEquals(RelSetType.Order, relSet.getRelationForEntities(new LabelEntity("b"),new LabelEntity("d")));
+		assertEquals(RelSetType.Order, relSet.getRelationForEntities(new LabelEntity("d"),new LabelEntity("k")));
+		assertEquals(RelSetType.Order, relSet.getRelationForEntities(new LabelEntity("d"),new LabelEntity("e")));
 
 		/*
 		 * Look ahead of three
 		 */
 		rs = RelSetCreatorLog.getInstance().deriveRelationSet(log,3);
-		relSet = new RelSetOverLabels<Log, TraceEntry>(rs);
+		relSet = RelSetLabelAbstractor.abstractRelSetToLabels(rs);
 
-		assertEquals(RelSetType.Interleaving, relSet.getRelationForLabels("a","a"));
-		assertEquals(RelSetType.Interleaving, relSet.getRelationForLabels("k","j"));
-		assertEquals(RelSetType.Interleaving, relSet.getRelationForLabels("j","k"));
+		assertEquals(RelSetType.Interleaving, relSet.getRelationForEntities(new LabelEntity("a"),new LabelEntity("a")));
+		assertEquals(RelSetType.Interleaving, relSet.getRelationForEntities(new LabelEntity("k"),new LabelEntity("j")));
+		assertEquals(RelSetType.Interleaving, relSet.getRelationForEntities(new LabelEntity("j"),new LabelEntity("k")));
 		
-		assertEquals(RelSetType.Exclusive, relSet.getRelationForLabels("a","j"));
-		assertEquals(RelSetType.Exclusive, relSet.getRelationForLabels("c","b"));
-		assertEquals(RelSetType.Exclusive, relSet.getRelationForLabels("a","g"));
+		assertEquals(RelSetType.Exclusive, relSet.getRelationForEntities(new LabelEntity("a"),new LabelEntity("j")));
+		assertEquals(RelSetType.Exclusive, relSet.getRelationForEntities(new LabelEntity("c"),new LabelEntity("b")));
+		assertEquals(RelSetType.Exclusive, relSet.getRelationForEntities(new LabelEntity("a"),new LabelEntity("g")));
 
-		assertEquals(RelSetType.Order, relSet.getRelationForLabels("b","d"));
-		assertEquals(RelSetType.Order, relSet.getRelationForLabels("d","k"));
-		assertEquals(RelSetType.Order, relSet.getRelationForLabels("d","e"));
+		assertEquals(RelSetType.Order, relSet.getRelationForEntities(new LabelEntity("b"),new LabelEntity("d")));
+		assertEquals(RelSetType.Order, relSet.getRelationForEntities(new LabelEntity("d"),new LabelEntity("k")));
+		assertEquals(RelSetType.Order, relSet.getRelationForEntities(new LabelEntity("d"),new LabelEntity("e")));
 
-		assertEquals(RelSetType.Order, relSet.getRelationForLabels("b","e"));
-		assertEquals(RelSetType.Order, relSet.getRelationForLabels("d","j"));
-		assertEquals(RelSetType.Order, relSet.getRelationForLabels("c","k"));
+		assertEquals(RelSetType.Order, relSet.getRelationForEntities(new LabelEntity("b"),new LabelEntity("e")));
+		assertEquals(RelSetType.Order, relSet.getRelationForEntities(new LabelEntity("d"),new LabelEntity("j")));
+		assertEquals(RelSetType.Order, relSet.getRelationForEntities(new LabelEntity("c"),new LabelEntity("k")));
 
 		/*
 		 * Far look ahead: behavioural profile
 		 */
 		rs = RelSetCreatorLog.getInstance().deriveRelationSet(log,log.getLengthLongestTrace());
-		relSet = new RelSetOverLabels<Log, TraceEntry>(rs);
+		relSet = RelSetLabelAbstractor.abstractRelSetToLabels(rs);
 		
-		assertEquals(RelSetType.Interleaving, relSet.getRelationForLabels("a","a"));
-		assertEquals(RelSetType.Interleaving, relSet.getRelationForLabels("k","j"));
-		assertEquals(RelSetType.Interleaving, relSet.getRelationForLabels("j","k"));
+		assertEquals(RelSetType.Interleaving, relSet.getRelationForEntities(new LabelEntity("a"),new LabelEntity("a")));
+		assertEquals(RelSetType.Interleaving, relSet.getRelationForEntities(new LabelEntity("k"),new LabelEntity("j")));
+		assertEquals(RelSetType.Interleaving, relSet.getRelationForEntities(new LabelEntity("j"),new LabelEntity("k")));
 
-		assertEquals(RelSetType.Exclusive, relSet.getRelationForLabels("c","b"));
-		assertEquals(RelSetType.Exclusive, relSet.getRelationForLabels("c","g"));
+		assertEquals(RelSetType.Exclusive, relSet.getRelationForEntities(new LabelEntity("c"),new LabelEntity("b")));
+		assertEquals(RelSetType.Exclusive, relSet.getRelationForEntities(new LabelEntity("c"),new LabelEntity("g")));
 
-		assertEquals(RelSetType.Order, relSet.getRelationForLabels("a","j"));
-		assertEquals(RelSetType.Order, relSet.getRelationForLabels("a","g"));
-		assertEquals(RelSetType.Order, relSet.getRelationForLabels("e","k"));
+		assertEquals(RelSetType.Order, relSet.getRelationForEntities(new LabelEntity("a"),new LabelEntity("j")));
+		assertEquals(RelSetType.Order, relSet.getRelationForEntities(new LabelEntity("a"),new LabelEntity("g")));
+		assertEquals(RelSetType.Order, relSet.getRelationForEntities(new LabelEntity("e"),new LabelEntity("k")));
 
 	}
 
