@@ -12,20 +12,18 @@ import de.hpi.bpt.graph.abs.AbstractDirectedGraph;
  * @author Artem Polyvyanyy
  */
 public class Process extends AbstractDirectedGraph<ControlFlow, Node> {
-	private String name;
 	
 	/**
 	 * Construct an empty process
 	 */
 	public Process() {
-		this.name = "";
 	}
 	
 	/**
 	 * Construct an empty process with name
 	 */
 	public Process(String name) {
-		this.name = name;
+		setName(name);
 	}
 
 	/**
@@ -177,20 +175,5 @@ public class Process extends AbstractDirectedGraph<ControlFlow, Node> {
 	 */
 	public Collection<ControlFlow> getControlFlow() {
 		return this.getEdges();
-	}
-	
-	/**
-	 * Get process name
-	 */
-	public String getName() {
-		return this.name;
-	}
-	
-	/**
-	 * Set process name
-	 * @param name Process name
-	 */
-	public void setName(String name) {
-		this.name = name;
 	}
 }
