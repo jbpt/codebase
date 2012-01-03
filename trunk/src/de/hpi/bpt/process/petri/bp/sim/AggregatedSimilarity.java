@@ -78,17 +78,4 @@ public class AggregatedSimilarity<R extends RelSet<M, N>, M extends IEntityModel
 		this.weightEISim = weightEISim;
 	}
 
-	@Override
-	public void invalidateCache() {
-		// TODO Auto-generated method stub
-		super.invalidateCache();
-		ex.invalidateCache();
-		so.invalidateCache();
-		in.invalidateCache();
-		eso.invalidateCache();
-		ein.invalidateCache();
-	}
-	
-	
-
 }
