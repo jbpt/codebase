@@ -1,8 +1,5 @@
 package de.hpi.bpt.process.petri.bp.sim;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import de.hpi.bpt.alignment.Alignment;
 import de.hpi.bpt.alignment.IEntity;
 import de.hpi.bpt.alignment.IEntityModel;
@@ -19,19 +16,10 @@ import de.hpi.bpt.process.petri.bp.RelSetType;
  * the size of a behavioural relation and the computation
  * of the intersection of two behavioural relations.
  * 
- * Note that these computations are cached for relation sets. 
- * Cache may be emptied by calling <code>invalidateCache()</code>.
- * 
  * @author matthias.weidlich
  *
  */
 public abstract class AbstractRelSetSimilarity<R extends RelSet<M, N>, M extends IEntityModel<N>, N extends IEntity> implements RelSetSimilarity<R,M,N> {
-	
-	/**
-	 * The cache for the size of a certain relation of a certain 
-	 * relation set.
-	 */
-	private Map<R,Map<RelSetType,Integer>> relationChache = new HashMap<R,Map<RelSetType,Integer>>();
 	
 	/**
 	 * Standard method for the name of a similarity. Simply returns the class name.
@@ -90,11 +78,9 @@ public abstract class AbstractRelSetSimilarity<R extends RelSet<M, N>, M extends
 	 * @return the size of the relation in the given relation set
 	 */
 	protected int getSizeOfRelation(R rs, RelSetType relation) {
-		if (!relationChache.containsKey(rs))
-			relationChache.put(rs,new HashMap<RelSetType, Integer>());
 
-		if (relationChache.get(rs).containsKey(relation))
-			return relationChache.get(rs).get(relation);
+		if (RelSetSizeCache.getInstance().containsEntry(rs,relation))
+			return RelSetSizeCache.getInstance().getRelationSize(rs,relation);
 
 		int sizeOfRelation = 0;
 		
@@ -111,22 +97,16 @@ public abstract class AbstractRelSetSimilarity<R extends RelSet<M, N>, M extends
 			}
 		}
 		// put into cache
-		relationChache.get(rs).put(relation,sizeOfRelation);
+		RelSetSizeCache.getInstance().addEntry(rs,relation,sizeOfRelation);
 		
 		// leverage symmetries to fill more details into the cache 
 		if (relation.equals(RelSetType.Order))
-			relationChache.get(rs).put(RelSetType.ReverseOrder,sizeOfRelation);
+			RelSetSizeCache.getInstance().addEntry(rs,RelSetType.ReverseOrder,sizeOfRelation);
 		if (relation.equals(RelSetType.ReverseOrder))
-			relationChache.get(rs).put(RelSetType.Order,sizeOfRelation);
+			RelSetSizeCache.getInstance().addEntry(rs,RelSetType.Order,sizeOfRelation);
 		
 		return sizeOfRelation;
 	}
 	
-	/**
-	 * Resets the internal cache that stores the sizes of relations for relation sets.
-	 */
-	public void invalidateCache() {
-		relationChache = new HashMap<R,Map<RelSetType,Integer>>();		
-	}
 	
 }
