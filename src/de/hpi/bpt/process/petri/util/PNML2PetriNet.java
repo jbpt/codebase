@@ -32,7 +32,6 @@ public class PNML2PetriNet extends DefaultHandler
 	private boolean place, placetext;
 	private boolean arc;
 	private boolean transition, transitiontext;
-	private boolean initialPlaceSet = false;
 
 	private PetriNet pn;
 	
@@ -74,6 +73,11 @@ public class PNML2PetriNet extends DefaultHandler
 		{
 			System.out.println("SAX Exception: " + e.getMessage());
 		}
+		
+		// add an initial token to each source place
+		for (Place p : pn.getSourcePlaces())
+			p.setTokens(1);
+		
 		return pn;
 	}
 	
@@ -101,10 +105,6 @@ public class PNML2PetriNet extends DefaultHandler
 		else if (localName.equals("place")){
 			place = true;
 			Place p = new Place(attributes.getValue(0));
-			if (!initialPlaceSet) {
-				p.setTokens(1);
-				initialPlaceSet = true;
-			}
 			nodes.put(p.getName(), p);
 		}
 		else if (localName.equals("transition")){
