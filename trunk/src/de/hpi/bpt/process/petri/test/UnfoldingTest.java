@@ -31,7 +31,7 @@ import de.hpi.bpt.utils.IOUtils;
 
 
 public class UnfoldingTest extends TestCase {
-	public void test1() throws TransformationException, FileNotFoundException {
+	/*public void test1() throws TransformationException, FileNotFoundException {
 		Process p = new Process();
 		
 		Task ti = new Task("I");
@@ -407,7 +407,7 @@ public class UnfoldingTest extends TestCase {
 		unf = new ProperUnfolding(net,setup);
 		bpnet = unf.getOccurrenceNet();
 		IOUtils.toFile("unfEspSafe.dot", bpnet.toDOT());
-	}
+	}*/
 	
 	public void testPhilosophers() throws TransformationException, FileNotFoundException {
 		PetriNet net = new PetriNet();
@@ -465,6 +465,7 @@ public class UnfoldingTest extends TestCase {
 		IOUtils.toFile("netPhilosophers.dot", net.toDOT());
 		
 		UnfoldingSetup setup = new UnfoldingSetup();
+		setup.MAX_EVENTS = 10;
 		setup.ADEQUATE_ORDER = new EsparzaAdequateTotalOrderForSafeSystems();
 		
 		Unfolding unf = new Unfolding(net,setup);
