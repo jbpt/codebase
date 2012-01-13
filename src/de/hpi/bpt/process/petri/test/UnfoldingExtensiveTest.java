@@ -74,7 +74,7 @@ public class UnfoldingExtensiveTest extends TestCase {
 				
 				System.out.println(System.nanoTime());
 				System.out.println(count);
-				if (count==20) break;
+				if (count==50) break;
 			}
 		}
 		

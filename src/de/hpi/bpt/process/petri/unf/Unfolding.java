@@ -12,7 +12,6 @@ import de.hpi.bpt.process.petri.Marking;
 import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.Place;
 import de.hpi.bpt.process.petri.Transition;
-import de.hpi.bpt.utils.IOUtils;
 
 /**
  * Unfolding (complete prefix unfolding) of a net system
@@ -108,19 +107,21 @@ public class Unfolding {
 		// CONSTRUCT UNFOLDING
 		// get possible extensions of initial branching process
 		Collection<Event> pe = getPossibleExtensions();
+		int changes = 0;
 		while (pe.size()>0) { 											// while extensions exist
 			if (this.countEvents>=this.setup.MAX_EVENTS) return;		// track number of events in unfolding
-			Event e = this.setup.ADEQUATE_ORDER.getMinimal(pe);		// event to use for extending unfolding
+			Event e = this.setup.ADEQUATE_ORDER.getMinimal(pe);			// event to use for extending unfolding
 			
 			if (!this.overlap(cutoff2corr.keySet(),e.getLocalConfiguration())) {
 				if (!this.addEvent(e)) return;							// add event to unfolding
 				this.countEvents++;
-
-				pe = getPossibleExtensions();							// get possible extensions of unfolding
+				changes++;
 				
 				Event corr = this.checkCutoff(e);						// check for cutoff event
 				if (corr!=null) corr = this.checkCutoffExt(e,corr);		// ! extension point for checking cutoff
 				if (corr!=null) this.cutoff2corr.put(e,corr);			// e is cutoff event
+				
+				pe = getPossibleExtensions();							// get possible extensions of unfolding
 				
 				// The following functionality is not captured by Esparza's algorithm !!!
 				// The code handles situation when there exist a cutoff event which induces initial marking
@@ -136,8 +137,9 @@ public class Unfolding {
 			}
 			else pe.remove(e);
 			
-			if (pe.size() == 0) { 
+			if (pe.size() == 0 && changes!=0) {
 				pe = this.getPossibleExtensionsExt();	// !extension point for finding more possible extensions
+				changes = 0;
 			}
 		}
 	}
@@ -386,9 +388,9 @@ public class Unfolding {
 		
 		for (Event e1 : es1) {
 			for (Event e2 : es2) {
-				if (e1.equals(e2))
-					IOUtils.toFile("unftmp.dot", this.getOccurrenceNet().toDOT());
+				if (e1.equals(e2)) {
 					return true;
+				}
 			}
 		}
 		
