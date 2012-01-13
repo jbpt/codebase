@@ -12,6 +12,7 @@ import de.hpi.bpt.process.petri.Marking;
 import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.Place;
 import de.hpi.bpt.process.petri.Transition;
+import de.hpi.bpt.utils.IOUtils;
 
 /**
  * Unfolding (complete prefix unfolding) of a net system
@@ -53,6 +54,8 @@ public class Unfolding {
 	protected Cut initialBP = new Cut();
 	
 	private OccurrenceNet occNet = null;
+	
+	private int counter = 1;
 	
 	/**
 	 * Dummy constructor
@@ -105,23 +108,19 @@ public class Unfolding {
 		Event cutoffIni = null; Event corrIni = null; // for special handling of events that induce initial markings
 		
 		// CONSTRUCT UNFOLDING
-		// get possible extensions of initial branching process
-		Collection<Event> pe = getPossibleExtensions();
-		int changes = 0;
+		Collection<Event> pe = getPossibleExtensionsA();				// get possible extensions of initial branching process
+		//int changes = 0;												// TODO tmp
 		while (pe.size()>0) { 											// while extensions exist
 			if (this.countEvents>=this.setup.MAX_EVENTS) return;		// track number of events in unfolding
 			Event e = this.setup.ADEQUATE_ORDER.getMinimal(pe);			// event to use for extending unfolding
 			
 			if (!this.overlap(cutoff2corr.keySet(),e.getLocalConfiguration())) {
 				if (!this.addEvent(e)) return;							// add event to unfolding
-				this.countEvents++;
-				changes++;
+				//changes++;											// TODO tmp
 				
-				Event corr = this.checkCutoff(e);						// check for cutoff event
-				if (corr!=null) corr = this.checkCutoffExt(e,corr);		// ! extension point for checking cutoff
-				if (corr!=null) this.cutoff2corr.put(e,corr);			// e is cutoff event
-				
-				pe = getPossibleExtensions();							// get possible extensions of unfolding
+				Event corr = this.checkCutoffA(e);						// check for cutoff event
+				if (corr!=null) 
+					this.addCutoff(e,corr);								// e is cutoff event
 				
 				// The following functionality is not captured by Esparza's algorithm !!!
 				// The code handles situation when there exist a cutoff event which induces initial marking
@@ -134,21 +133,24 @@ public class Unfolding {
 						this.cutoff2corr.put(cutoffIni, corrIni);
 					}
 				}
+				
+				IOUtils.toFile("unf"+(this.counter++)+".dot", this.getOccurrenceNet().toDOT());
+				pe = getPossibleExtensionsA();							// get possible extensions of branching process
 			}
-			else pe.remove(e);
-			
-			if (pe.size() == 0 && changes!=0) {
-				pe = this.getPossibleExtensionsExt();	// !extension point for finding more possible extensions
-				changes = 0;
+			else {
+				pe.remove(e);
+				//if (pe.isEmpty() && changes!=0) pe = this.getPossibleExtensionsB(pe);	// TODO tmp
+				//changes = 0;															// TODO tmp
 			}
+				
 		}
 	}
-	
+
 	/**
-	 * Get possible extensions of the unfolding
+	 * Get possible extensions of the unfolding (classical method)
 	 * @return collection of events suitable to extend unfolding
 	 */
-	protected Collection<Event> getPossibleExtensions() {
+	protected Collection<Event> getPossibleExtensionsA() {
 		Collection<Event> result = new ArrayList<Event>();
 		
 		// iterate over all transitions of the originative net
@@ -184,7 +186,17 @@ public class Unfolding {
 			}
 		}
 		
+		result.addAll(this.getPossibleExtensionsB(result));
 		return result;
+	}
+	
+	/**
+	 * Get possible extensions (extension point)
+	 * @param pe current possible extensions
+	 * @return collection of events suitable to extend unfolding
+	 */
+	protected Collection<Event> getPossibleExtensionsB(Collection<Event> pe) {
+		return new ArrayList<Event>();
 	}
 	
 	/**
@@ -192,25 +204,17 @@ public class Unfolding {
 	 * @param e event
 	 * @return corresponding event; null if event is not cutoff
 	 */
-	protected Event checkCutoff(Event e) {
+	protected Event checkCutoffA(Event e) {
 		LocalConfiguration lce = e.getLocalConfiguration();
 		
 		for (Event f : this.getEvents()) {
 			if (f.equals(e)) continue;
 			LocalConfiguration lcf = f.getLocalConfiguration();	
 			if (lce.getMarking().equals(lcf.getMarking()) && this.setup.ADEQUATE_ORDER.isSmaller(lcf, lce))
-				return f;
+				return this.checkCutoffB(e,f); // check cutoff extended conditions
 		}
 		
 		return null;
-	}
-	
-	/**
-	 * Get possible extensions when unfolding is constructed (extension point)
-	 * @return collection of events suitable to extend unfolding
-	 */
-	protected Collection<Event> getPossibleExtensionsExt() {
-		return new ArrayList<Event>();
 	}
 	
 	/**
@@ -219,7 +223,7 @@ public class Unfolding {
 	 * @param corr corresponding event
 	 * @return corresponding event if e is cutoff; otherwise null
 	 */
-	protected Event checkCutoffExt(Event e, Event corr) {
+	protected Event checkCutoffB(Event e, Event corr) {
 		return corr;
 	}
 	
@@ -450,7 +454,17 @@ public class Unfolding {
 			}
 		}
 		
+		this.countEvents++;
 		return true;
+	}
+	
+	/**
+	 * Add cutoff event
+	 * @param e cutoff event
+	 * @param corr corresponding event
+	 */
+	protected void addCutoff(Event e, Event corr) {
+		this.cutoff2corr.put(e,corr);
 	}
 
 	/**

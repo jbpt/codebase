@@ -28,7 +28,7 @@ public class ProperUnfolding extends Unfolding {
 	 * Check healthy property (check cutoff extension)
 	 */
 	@Override
-	protected Event checkCutoffExt(Event e, Event corr) {
+	protected Event checkCutoffB(Event e, Event corr) {
 		Set<Condition> ecs = new HashSet<Condition>(e.getLocalConfiguration().getCut());
 		Set<Condition> ccs = new HashSet<Condition>(corr.getLocalConfiguration().getCut());
 		
