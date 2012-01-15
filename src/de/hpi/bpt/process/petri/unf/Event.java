@@ -10,7 +10,7 @@ import de.hpi.bpt.process.petri.Transition;
  * @author Artem Polyvyanyy
  */
 public class Event extends BPNode {
-	
+
 	// required to capture unfolding
 	private Transition t = null;		// transition that corresponds to event
 	private Set<Condition> pre = null;	// preconditions of event - *e
@@ -29,8 +29,8 @@ public class Event extends BPNode {
 	 */
 	public Event(Unfolding unf, Transition t, Set<Condition> pre) {
 		this.unf = unf;
-		this.pre = pre;
 		this.t = t;
+		this.pre = pre;
 	}
 	
 	/**
@@ -85,5 +85,27 @@ public class Event extends BPNode {
 	@Override
 	public String getName() {
 		return this.t.getName();
+	}
+	
+	@Override
+	public boolean equals(Object that) {
+		if (that == null || !(that instanceof Event)) return false;
+		if (this == that) return true;
+		
+		Event thatE = (Event) that;
+		if (this.getTransition().equals(thatE.getTransition())
+				&& this.getPreConditions().equals(thatE.getPreConditions()))
+			return true;
+		
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		int hashCode = 7 * this.getTransition().hashCode();
+		for (Condition c : this.getPreConditions())
+			hashCode += 11 * c.getPlace().hashCode();
+		
+		return hashCode;
 	}
 }

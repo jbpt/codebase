@@ -82,6 +82,10 @@ public class UnfoldingExtensiveTest extends TestCase {
 		
 		System.out.println("jBPT time:\t" + jbptTime);
 		System.out.println("UMA time:\t" + umaTime);
+		System.out.println("---------------------------------");
+		if (umaTime < jbptTime) System.out.println("UMA WINS!!!");
+		else System.out.println("jBPT WINS!!!");
+		System.out.println("---------------------------------");
 	}
 	
 	protected Process loadProcess(String filename) throws SerializationException, IOException {
