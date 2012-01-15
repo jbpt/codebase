@@ -12,7 +12,6 @@ import de.hpi.bpt.process.petri.Marking;
 import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.Place;
 import de.hpi.bpt.process.petri.Transition;
-import de.hpi.bpt.utils.IOUtils;
 
 /**
  * Unfolding (complete prefix unfolding) of a net system
@@ -108,19 +107,18 @@ public class Unfolding {
 		Event cutoffIni = null; Event corrIni = null; // for special handling of events that induce initial markings
 		
 		// CONSTRUCT UNFOLDING
-		Collection<Event> pe = getPossibleExtensionsA();				// get possible extensions of initial branching process
-		//int changes = 0;												// TODO tmp
+		Set<Event> pe = getPossibleExtensionsA();				// get possible extensions of initial branching process
+		//int changes = 0;												// TODO tmp (opt 1)
 		while (pe.size()>0) { 											// while extensions exist
 			if (this.countEvents>=this.setup.MAX_EVENTS) return;		// track number of events in unfolding
 			Event e = this.setup.ADEQUATE_ORDER.getMinimal(pe);			// event to use for extending unfolding
 			
 			if (!this.overlap(cutoff2corr.keySet(),e.getLocalConfiguration())) {
 				if (!this.addEvent(e)) return;							// add event to unfolding
-				//changes++;											// TODO tmp
+				//changes++;												// TODO tmp
 				
 				Event corr = this.checkCutoffA(e);						// check for cutoff event
-				if (corr!=null) 
-					this.addCutoff(e,corr);								// e is cutoff event
+				if (corr!=null) this.addCutoff(e,corr);								// e is cutoff event
 				
 				// The following functionality is not captured by Esparza's algorithm !!!
 				// The code handles situation when there exist a cutoff event which induces initial marking
@@ -134,8 +132,13 @@ public class Unfolding {
 					}
 				}
 				
-				IOUtils.toFile("unf"+(this.counter++)+".dot", this.getOccurrenceNet().toDOT());
+				//IOUtils.toFile("unf"+(this.counter++)+".dot", this.getOccurrenceNet().toDOT());
 				pe = getPossibleExtensionsA();							// get possible extensions of branching process
+				
+				/*for (Event e2 : pe) {
+					System.out.println(e2.hashCode());
+				}
+				System.out.println("-------------------");*/
 			}
 			else {
 				pe.remove(e);
@@ -150,37 +153,34 @@ public class Unfolding {
 	 * Get possible extensions of the unfolding (classical method)
 	 * @return collection of events suitable to extend unfolding
 	 */
-	protected Collection<Event> getPossibleExtensionsA() {
-		Collection<Event> result = new ArrayList<Event>();
+	protected Set<Event> getPossibleExtensionsA() {
+		Set<Event> result = new HashSet<Event>();
 		
 		// iterate over all transitions of the originative net
 		for (Transition t : this.net.getTransitions()) {
 			// iterate over all places in the preset
 			Collection<Place> pre = this.net.getPreset(t);
-			for (Place p : pre) {
-				// get cuts that contain conditions that correspond to the place
-				Collection<Cut> cuts = this.getCutsWithPlace(p);
-				// there must be at least one cut
-				if (cuts.size()==0) break;
-				// iterate over cuts
-				for (Cut cut : cuts) {
-					// get co-set of conditions that correspond to places in the preset (contained in the cut)
-					Coset coset = this.containsPlaces(cut,pre);
-					if (coset!=null) { // if there exists such a co-set
-						// check if there already exists an event that corresponds to the transition with the preset of conditions which equals to coset 
-						boolean flag = false;
-						if (t2es.get(t)!=null) {
-							for (Event e : t2es.get(t)) {
-								if (this.areEqual(e.getPreConditions(),coset)) {
-									flag = true;
-									break;
-								}
+			Place p = pre.iterator().next();
+			// get cuts that contain conditions that correspond to the place
+			Collection<Cut> cuts = this.getCutsWithPlace(p);
+			// iterate over cuts
+			for (Cut cut : cuts) {
+				// get co-set of conditions that correspond to places in the preset (contained in the cut)
+				Coset coset = this.containsPlaces(cut,pre);
+				if (coset!=null) { // if there exists such a co-set
+					// check if there already exists an event that corresponds to the transition with the preset of conditions which equals to coset 
+					boolean flag = false;
+					if (t2es.get(t)!=null) {
+						for (Event e : t2es.get(t)) {
+							if (this.areEqual(e.getPreConditions(),coset)) {
+								flag = true;
+								break;
 							}
 						}
-						if (!flag) { // we found possible extension !!!
-							Event e = new Event(this,t,coset);
-							result.add(e);
-						}
+					}
+					if (!flag) { // we found possible extension !!!
+						Event e = new Event(this,t,coset);
+						result.add(e);
 					}
 				}
 			}
@@ -299,14 +299,51 @@ public class Unfolding {
 	 * @param p place
 	 * @return collection of cuts that contain conditions that correspond to the place
 	 */
-	protected Collection<Cut> getCutsWithPlace(Place p) {
-		Collection<Cut> result = new ArrayList<Cut>();
+	protected Set<Cut> getCutsWithPlace(Place p) {
+		Set<Cut> result = new HashSet<Cut>();
 		
 		Collection<Condition> cs = p2cs.get(p);
 		if (cs==null) return result;
 		for (Condition c : cs) {
 			Collection<Cut> cuts = c2cut.get(c);
 			if (cuts!=null) result.addAll(cuts);	
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Get cosets
+	 * @param ps collection of places
+	 * @return set of all cosets which refer to places in ps
+	 * 
+	 * TODO
+	 */
+	protected Set<Coset> getCosets(Collection<Place> ps) {
+		Set<Coset> result = new HashSet<Coset>();
+		
+		Collection<Condition> cs = p2cs.get(ps.iterator().next());
+		
+		for (Condition c : cs) {
+			Collection<Cut> cuts = c2cut.get(c);
+			if (cuts!=null) {
+				for (Cut cut : cuts) {
+					Coset coset = new Coset();
+					for (Place p : ps) {
+						boolean flag = false;
+						for (Condition d : cut) {
+							if (d.getPlace().equals(p)) {
+								flag = true;
+								coset.add(c);
+								break;
+							}
+						}
+						if (!flag) break;
+					}
+					result.add(coset);
+				}
+			}
+			
 		}
 		
 		return result;
