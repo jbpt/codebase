@@ -1,6 +1,7 @@
 package de.hpi.bpt.process.petri.unf.order;
 
 import java.util.Collection;
+import java.util.Iterator;
 
 import de.hpi.bpt.process.petri.unf.Event;
 import de.hpi.bpt.process.petri.unf.LocalConfiguration;
@@ -16,12 +17,15 @@ public abstract class AdequateOrder {
 	 * Get minimal event
 	 * @param es events
 	 * @return minimal event (according to the adequate order) from the collection of events
-	 */
+	 */	
 	public Event getMinimal(Collection<Event> es) {
-		Event min = es.iterator().next();
-		LocalConfiguration lcMin = min.getLocalConfiguration();
+		Iterator<Event> i = es.iterator();
+		Event min = i.next();
+		if (!i.hasNext()) return min;
 		
-		for (Event e : es) {
+		LocalConfiguration lcMin = min.getLocalConfiguration();
+		while (i.hasNext()) {
+			Event e = i.next();
 			LocalConfiguration lce = e.getLocalConfiguration();
 			if (this.isSmaller(lce,lcMin)) {
 				min = e;

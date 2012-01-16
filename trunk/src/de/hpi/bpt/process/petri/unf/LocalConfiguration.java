@@ -52,7 +52,7 @@ public class LocalConfiguration extends HashSet<Event> {
 	 */
 	public Cut getCut() {
 		if (this.C == null) {
-		this.C = new Cut();
+			this.C = new Cut();
 			this.C.addAll(this.unf.initialBP);
 			for (Event e : this) this.C.addAll(e.getPostConditions());
 			for (Event e : this) this.C.removeAll(e.getPreConditions());

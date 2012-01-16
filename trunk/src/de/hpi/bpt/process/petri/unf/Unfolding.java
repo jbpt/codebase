@@ -12,6 +12,7 @@ import de.hpi.bpt.process.petri.Marking;
 import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.Place;
 import de.hpi.bpt.process.petri.Transition;
+import de.hpi.bpt.utils.IOUtils;
 
 /**
  * Unfolding (complete prefix unfolding) of a net system
@@ -22,6 +23,12 @@ import de.hpi.bpt.process.petri.Transition;
  * @author Artem Polyvyanyy
  */
 public class Unfolding {
+	public static long time = 0;
+	public static long time_min = 0;
+	public static long time_add_event = 0;
+	public static long time_extra = 0;
+	public static long time_cutoff = 0;
+	
 	// originative net system
 	protected PetriNet net = null;
 	protected List<Transition> totalOrderTs = null;
@@ -104,35 +111,47 @@ public class Unfolding {
 		}
 		if (!this.addCut(initialBP)) return;
 		
-		Event cutoffIni = null; Event corrIni = null; // for special handling of events that induce initial markings
+		Event cutoffIni = null; Event corrIni = null;					// for special handling of events that induce initial markings
 		
 		// CONSTRUCT UNFOLDING
-		Set<Event> pe = getPossibleExtensionsA();				// get possible extensions of initial branching process
-		//int changes = 0;												// TODO tmp (opt 1)
+		Set<Event> pe = getPossibleExtensionsA();						// get possible extensions of initial branching process
+		int changes = 0;												// TODO tmp (opt 1)
 		while (pe.size()>0) { 											// while extensions exist
 			if (this.countEvents>=this.setup.MAX_EVENTS) return;		// track number of events in unfolding
+			long start = System.nanoTime();
 			Event e = this.setup.ADEQUATE_ORDER.getMinimal(pe);			// event to use for extending unfolding
+			long end = System.nanoTime();
+			time_min += end - start;
 			
 			if (!this.overlap(cutoff2corr.keySet(),e.getLocalConfiguration())) {
+				start = System.nanoTime();
 				if (!this.addEvent(e)) return;							// add event to unfolding
-				//changes++;												// TODO tmp
+				end = System.nanoTime();
+				time_add_event += end - start;
+				changes++;												// TODO tmp
 				
+				start = System.nanoTime();
 				Event corr = this.checkCutoffA(e);						// check for cutoff event
-				if (corr!=null) this.addCutoff(e,corr);								// e is cutoff event
+				if (corr!=null) this.addCutoff(e,corr);					// e is cutoff event
+				end = System.nanoTime();
+				time_cutoff += end - start;
 				
 				// The following functionality is not captured by Esparza's algorithm !!!
 				// The code handles situation when there exist a cutoff event which induces initial marking
 				// The identification of such cutoff was postponed to the point until second event which induces initial marking is identified
-				if (corrIni == null) {
-					boolean isCutoffIni = e.getLocalConfiguration().getMarking().equals(this.net.getMarking());
-					if (cutoffIni == null && isCutoffIni) cutoffIni = e;
-					else if (cutoffIni != null && corrIni == null && isCutoffIni) {
-						corrIni = e;
-						this.cutoff2corr.put(cutoffIni, corrIni);
-					}
-				}
+				//start = System.nanoTime();
+				//if (corrIni == null) {
+					//boolean isCutoffIni = e.getLocalConfiguration().getMarking().equals(this.net.getMarking());
+					//if (cutoffIni == null && isCutoffIni) cutoffIni = e;
+					//else if (cutoffIni != null && corrIni == null && isCutoffIni) {
+						//corrIni = e;
+						//this.cutoff2corr.put(cutoffIni, corrIni);
+					//}
+				//}
+				//end = System.nanoTime();
+				//time_extra += end - start;
 				
-				//IOUtils.toFile("unf"+(this.counter++)+".dot", this.getOccurrenceNet().toDOT());
+				IOUtils.toFile("unf"+(this.counter++)+".dot", this.getOccurrenceNet().toDOT());
 				pe = getPossibleExtensionsA();							// get possible extensions of branching process
 				
 				/*for (Event e2 : pe) {
@@ -142,8 +161,8 @@ public class Unfolding {
 			}
 			else {
 				pe.remove(e);
-				//if (pe.isEmpty() && changes!=0) pe = this.getPossibleExtensionsB(pe);	// TODO tmp
-				//changes = 0;															// TODO tmp
+				if (pe.isEmpty() && changes!=0) pe = this.getPossibleExtensionsB(pe);	// TODO tmp
+				changes = 0;															// TODO tmp
 			}
 				
 		}
@@ -154,6 +173,7 @@ public class Unfolding {
 	 * @return collection of events suitable to extend unfolding
 	 */
 	protected Set<Event> getPossibleExtensionsA() {
+		long start = System.nanoTime();
 		Set<Event> result = new HashSet<Event>();
 		
 		// iterate over all transitions of the originative net
@@ -172,7 +192,8 @@ public class Unfolding {
 					boolean flag = false;
 					if (t2es.get(t)!=null) {
 						for (Event e : t2es.get(t)) {
-							if (this.areEqual(e.getPreConditions(),coset)) {
+							//if (this.areEqual(e.getPreConditions(),coset)) {
+							if (coset.equals(e.getPreConditions())) {
 								flag = true;
 								break;
 							}
@@ -187,6 +208,8 @@ public class Unfolding {
 		}
 		
 		result.addAll(this.getPossibleExtensionsB(result));
+		long end = System.nanoTime();
+		time += (end - start);
 		return result;
 	}
 	
@@ -195,8 +218,8 @@ public class Unfolding {
 	 * @param pe current possible extensions
 	 * @return collection of events suitable to extend unfolding
 	 */
-	protected Collection<Event> getPossibleExtensionsB(Collection<Event> pe) {
-		return new ArrayList<Event>();
+	protected Set<Event> getPossibleExtensionsB(Set<Event> pe) {
+		return new HashSet<Event>();
 	}
 	
 	/**
@@ -316,34 +339,23 @@ public class Unfolding {
 	 * Get cosets
 	 * @param ps collection of places
 	 * @return set of all cosets which refer to places in ps
-	 * 
-	 * TODO
 	 */
 	protected Set<Coset> getCosets(Collection<Place> ps) {
 		Set<Coset> result = new HashSet<Coset>();
-		
 		Collection<Condition> cs = p2cs.get(ps.iterator().next());
-		
+		if (cs==null) return result;
 		for (Condition c : cs) {
 			Collection<Cut> cuts = c2cut.get(c);
-			if (cuts!=null) {
-				for (Cut cut : cuts) {
-					Coset coset = new Coset();
-					for (Place p : ps) {
-						boolean flag = false;
-						for (Condition d : cut) {
-							if (d.getPlace().equals(p)) {
-								flag = true;
-								coset.add(c);
-								break;
-							}
-						}
-						if (!flag) break;
-					}
-					result.add(coset);
+			if (cuts==null) continue;
+			for (Cut cut : cuts) {
+				if (!cut.getPlaces().containsAll(ps)) continue;
+				
+				Coset coset = new Coset();
+				for (Place p : ps) {
+					coset.add(cut.getConditions(p).iterator().next());
 				}
+				result.add(coset);
 			}
-			
 		}
 		
 		return result;
@@ -458,14 +470,13 @@ public class Unfolding {
 	/**
 	 * Add event to all housekeeping data structures 
 	 * @param e event
-	 * @return true if event was added successfuly; otherwise false
+	 * @return true if event was added successfully; otherwise false
 	 */
 	protected boolean addEvent(Event e) {
 		this.events.add(e);
 		this.updateCausalityEvent(e);
 		
-		if (t2es.get(e.getTransition())!=null)
-			t2es.get(e.getTransition()).add(e);
+		if (t2es.get(e.getTransition())!=null) t2es.get(e.getTransition()).add(e);
 		else {
 			Set<Event> es = new HashSet<Event>();
 			es.add(e);
@@ -473,7 +484,7 @@ public class Unfolding {
 		}
 		
 		// add conditions that correspond to post-places of transition that corresponds to new event
-		Set<Condition> postConds = new HashSet<Condition>(); // collection of new conditions
+		Coset postConds = new Coset();								// collection of new post conditions
 		for (Place s : this.net.getPostset(e.getTransition())) {	// iterate over places in the postset
 			Condition c = new Condition(s,e);	 					// construct new condition
 			postConds.add(c);

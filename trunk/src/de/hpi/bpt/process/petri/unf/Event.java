@@ -1,7 +1,5 @@
 package de.hpi.bpt.process.petri.unf;
 
-import java.util.Set;
-
 import de.hpi.bpt.process.petri.Transition;
 
 /**
@@ -12,12 +10,12 @@ import de.hpi.bpt.process.petri.Transition;
 public class Event extends BPNode {
 
 	// required to capture unfolding
-	private Transition t = null;		// transition that corresponds to event
-	private Set<Condition> pre = null;	// preconditions of event - *e
+	private Transition t = null;	// transition that corresponds to event
+	private Coset pre = null;		// preconditions of event - *e
 	
 	// for convenience reasons
 	private Unfolding unf = null;					// reference to unfolding
-	private Set<Condition> post = null;				// postconditions of event - e*
+	private Coset post = null;						// postconditions of event - e*
 	private LocalConfiguration localConf = null;	// local configuration - [e]
 	
 	/**
@@ -27,7 +25,7 @@ public class Event extends BPNode {
 	 * @param t transition which occurrence is represented by this event 
 	 * @param pre preset of conditions which caused event to occur
 	 */
-	public Event(Unfolding unf, Transition t, Set<Condition> pre) {
+	public Event(Unfolding unf, Transition t, Coset pre) {
 		this.unf = unf;
 		this.t = t;
 		this.pre = pre;
@@ -49,7 +47,7 @@ public class Event extends BPNode {
 	 * Set post conditions of event
 	 * @param post post conditions
 	 */
-	protected void setPostConditions(Set<Condition> post) {
+	protected void setPostConditions(Coset post) {
 		this.post = post;
 	}
 	
@@ -57,7 +55,7 @@ public class Event extends BPNode {
 	 * Get post conditions of event
 	 * @return post conditions
 	 */
-	public Set<Condition> getPostConditions() {
+	public Coset getPostConditions() {
 		return this.post;
 	}
 	
@@ -73,7 +71,7 @@ public class Event extends BPNode {
 	 * Get pre conditions of event
 	 * @return pre conditions
 	 */
-	public Set<Condition> getPreConditions() {
+	public Coset getPreConditions() {
 		return this.pre;
 	}
 	
