@@ -38,7 +38,7 @@ public class UnfoldingExtensiveTest extends TestCase {
 		int count = 0;
 		long jbptTime = 0;
 		long umaTime = 0;
-		long start, stop;
+		long start, stop, time=0, time_min = 0, time_add_event = 0, time_extra = 0, time_cutoff = 0;
 		for (String name : modelsDir.list()) {
 			if (name.endsWith(".json")) {
 				count++;
@@ -58,6 +58,12 @@ public class UnfoldingExtensiveTest extends TestCase {
 				Unfolding unf = new Unfolding(net,setup);
 				stop = System.nanoTime();
 				jbptTime += (stop - start);
+				// remember time
+				time = Unfolding.time;
+				time_min = Unfolding.time_min;
+				time_add_event = Unfolding.time_add_event;
+				time_extra = Unfolding.time_extra;
+				time_cutoff = Unfolding.time_cutoff;
 				IOUtils.toFile(name+".dot", unf.getOccurrenceNet().toDOT());
 				
 				// Compute UMA unfolding
@@ -72,16 +78,22 @@ public class UnfoldingExtensiveTest extends TestCase {
 				assertEquals(unf.getEvents().size(), umaunf.getBranchingProcess().getAllEvents().size());
 				assertEquals(unf.getConditions().size(), umaunf.getBranchingProcess().getAllConditions().size());
 				
-				System.out.println(System.nanoTime());
 				System.out.println(count);
-				if (count==50) break;
+				if (count==600) break;
 			}
 		}
 		
 		out.close();
 		
+		System.out.println("---------------------------------");
 		System.out.println("jBPT time:\t" + jbptTime);
 		System.out.println("UMA time:\t" + umaTime);
+		System.out.println("---------------------------------");
+		System.out.println("add:\t\t" + time_add_event);
+		System.out.println("min:\t\t" + time_min);
+		System.out.println("extra:\t\t" + time_extra);
+		System.out.println("cutoff:\t\t" + time_cutoff);
+		System.out.println("PE time:\t" + time);
 		System.out.println("---------------------------------");
 		if (umaTime < jbptTime) System.out.println("UMA WINS!!!");
 		else System.out.println("jBPT WINS!!!");
