@@ -35,11 +35,11 @@ public class Unfolding {
 	protected UnfoldingSetup setup = null;
 
 	// unfolding
-	private Set<Event> events		= new HashSet<Event>();			// events of the unfolding
-	private Set<Condition> conds	= new HashSet<Condition>();	// conditions of the unfolding
+	protected Set<Event> events		= new HashSet<Event>();			// events of the unfolding
+	protected Set<Condition> conds	= new HashSet<Condition>();		// conditions of the unfolding
 	
 	// map a condition to a set of cuts that contain the condition
-	private Map<Condition,Collection<Cut>> c2cut = new HashMap<Condition,Collection<Cut>>();
+	protected Map<Condition,Collection<Cut>> c2cut = new HashMap<Condition,Collection<Cut>>();
 	
 	// maps of transitions/places to sets of events/conditions (occurrences of transitions/places)
 	protected Map<Transition,Set<Event>> t2es	= new HashMap<Transition,Set<Event>>();
@@ -51,7 +51,7 @@ public class Unfolding {
 	protected Map<BPNode,Set<BPNode>> ica	= new HashMap<BPNode,Set<BPNode>>(); // inverse causal
 	
 	// event counter
-	private int countEvents = 0;
+	protected int countEvents = 0;
 	
 	// map of cutoff events to corresponding events
 	protected Map<Event,Event> cutoff2corr = new HashMap<Event,Event>();
@@ -111,11 +111,11 @@ public class Unfolding {
 		}
 		if (!this.addCut(initialBP)) return;
 		
-		Event cutoffIni = null; Event corrIni = null;					// for special handling of events that induce initial markings
+//		Event cutoffIni = null; Event corrIni = null;					// for special handling of events that induce initial markings
 		
 		// CONSTRUCT UNFOLDING
 		Set<Event> pe = getPossibleExtensionsA();						// get possible extensions of initial branching process
-		int changes = 0;												// TODO tmp (opt 1)
+//		int changes = 0;												// TODO tmp (opt 1)
 		while (pe.size()>0) { 											// while extensions exist
 			if (this.countEvents>=this.setup.MAX_EVENTS) return;		// track number of events in unfolding
 			long start = System.nanoTime();
@@ -128,7 +128,7 @@ public class Unfolding {
 				if (!this.addEvent(e)) return;							// add event to unfolding
 				end = System.nanoTime();
 				time_add_event += end - start;
-				changes++;												// TODO tmp
+//				changes++;												// TODO tmp
 				
 				start = System.nanoTime();
 				Event corr = this.checkCutoffA(e);						// check for cutoff event
@@ -161,8 +161,8 @@ public class Unfolding {
 			}
 			else {
 				pe.remove(e);
-				if (pe.isEmpty() && changes!=0) pe = this.getPossibleExtensionsB(pe);	// TODO tmp
-				changes = 0;															// TODO tmp
+//				if (pe.isEmpty() && changes!=0) pe = this.getPossibleExtensionsB(pe);	// TODO tmp
+//				changes = 0;															// TODO tmp
 			}
 				
 		}
@@ -300,7 +300,7 @@ public class Unfolding {
 	 * Update causality relation based on an event
 	 * @param e event
 	 */
-	private void updateCausalityEvent(Event e) {
+	protected void updateCausalityEvent(Event e) {
 		this.ica.put(e, new HashSet<BPNode>());
 		this.ca.put(e, new HashSet<BPNode>());
 		

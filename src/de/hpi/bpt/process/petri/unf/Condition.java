@@ -8,6 +8,10 @@ import de.hpi.bpt.process.petri.Place;
  * @author Artem Polyvyanyy
  */
 public class Condition extends BPNode {
+	
+	static private int count = 0; 
+	private int ID = 0;
+	
 	Place s = null;
 	Event e = null;
 	
@@ -17,6 +21,8 @@ public class Condition extends BPNode {
 	 * @param event the only event in the preset of the condition
 	 */
 	public Condition(Place place, Event event) {
+		this.ID = ++Condition.count;
+		
 		this.s = place;
 		this.e = event;
 	}
@@ -35,12 +41,12 @@ public class Condition extends BPNode {
 	
 	@Override
 	public String toString() {
-		return "["+this.getPlace().getName()+","+( this.getPreEvent()==null ? "null" : this.getPreEvent().getTransition().getName())+"]";
+		return "["+this.getName()+","+( this.getPreEvent()==null ? "null" : this.getPreEvent().getTransition().getName())+"]";
 	}
 	
 	@Override
 	public String getName() {
-		return this.s.getName();
+		return this.s.getName()+"-"+this.ID;
 	}
 	
 	@Override
