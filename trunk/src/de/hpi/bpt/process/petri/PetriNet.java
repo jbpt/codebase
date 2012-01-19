@@ -456,5 +456,49 @@ public class PetriNet extends AbstractDirectedGraph<Flow, Node> implements Clone
 				return n;
 		return null;
 	}
+	
 
+	/***************************************
+	 * Remove methods
+	 **************************************/
+	
+	public Node removeNode(Node n) {
+		return this.removeVertex(n);
+	}
+	
+	public Collection<Node> removeNodes(Collection<Node> ns) {
+		return this.removeVertices(ns);
+	}
+	
+	public Place removePlace(Place p) {
+		return (this.removeVertex(p) == null) ? null : p;
+	}
+	
+	public Collection<Place> removePlaces(Collection<Place> ps) {
+		Collection<Place> result = new ArrayList<Place>();
+		
+		Iterator<Place> i = ps.iterator();
+		while (i.hasNext()) {
+			Place p = i.next();
+			if (this.removePlace(p) != null)
+				result.add(p);
+		}
+		return (result.size()>0) ? result : null;
+	}
+	
+	public Transition removeTransition(Transition t) {
+		return (this.removeVertex(t) == null) ? null : t;
+	}
+	
+	public Collection<Transition> removeTransitions(Collection<Transition> ts) {
+		Collection<Transition> result = new ArrayList<Transition>();
+		
+		Iterator<Transition> i = ts.iterator();
+		while (i.hasNext()) {
+			Transition t = i.next();
+			if (this.removeTransition(t) != null)
+				result.add(t);
+		}
+		return (result.size()>0) ? result : null;
+	}
 }

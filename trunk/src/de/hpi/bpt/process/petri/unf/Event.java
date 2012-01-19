@@ -8,6 +8,9 @@ import de.hpi.bpt.process.petri.Transition;
  * @author Artem Polyvyanyy
  */
 public class Event extends BPNode {
+	
+	static private int count = 0; 
+	private int ID = 0;
 
 	// required to capture unfolding
 	private Transition t = null;	// transition that corresponds to event
@@ -26,6 +29,8 @@ public class Event extends BPNode {
 	 * @param pre preset of conditions which caused event to occur
 	 */
 	public Event(Unfolding unf, Transition t, Coset pre) {
+		this.ID = ++Event.count;
+		
 		this.unf = unf;
 		this.t = t;
 		this.pre = pre;
@@ -47,7 +52,7 @@ public class Event extends BPNode {
 	 * Set post conditions of event
 	 * @param post post conditions
 	 */
-	protected void setPostConditions(Coset post) {
+	public void setPostConditions(Coset post) {
 		this.post = post;
 	}
 	
@@ -82,7 +87,7 @@ public class Event extends BPNode {
 	
 	@Override
 	public String getName() {
-		return this.t.getName();
+		return this.t.getName()+"-"+this.ID;
 	}
 	
 	@Override

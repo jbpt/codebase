@@ -19,13 +19,12 @@ import de.hpi.bpt.process.petri.Transition;
  * @author Artem Polyvyanyy
  */
 public class OccurrenceNet extends PetriNet {
-
 	private Unfolding unf = null;
 	
 	private Map<Transition,Event> t2e = new HashMap<Transition,Event>();
-	private Map<Place,Condition> p2c = new HashMap<Place,Condition>();
+	private Map<Place,Condition>  p2c = new HashMap<Place,Condition>();
 	private Map<Event,Transition> e2t = new HashMap<Event,Transition>();
-	private Map<Condition,Place> c2p = new HashMap<Condition,Place>();
+	private Map<Condition,Place>  c2p = new HashMap<Condition,Place>();
 	
 	protected OccurrenceNet(Unfolding unf) {
 		this.unf = unf;
@@ -68,6 +67,14 @@ public class OccurrenceNet extends PetriNet {
 	
 	public Condition getCondition(Place p) {
 		return this.p2c.get(p);
+	}
+	
+	public Place getPlace(Condition c) {
+		return this.c2p.get(c);
+	}
+	
+	public Transition getTransition(Event e) {
+		return this.e2t.get(e);
 	}
 	
 	private BPNode getUnfNode(Node n) {
@@ -132,9 +139,9 @@ public class OccurrenceNet extends PetriNet {
 		
 		for (Place p : this.getPlaces()) {
 			if (ps.contains(p))
-				result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".3\" fillcolor=red];\n", p.getId().replace("-", ""), p.getName());
+				result += String.format("\tn%s[label=\"%s\" width=\".5\" height=\".5\" fillcolor=red];\n", p.getId().replace("-", ""), p.getName());
 			else
-				result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".3\" fillcolor=white];\n", p.getId().replace("-", ""), p.getName());
+				result += String.format("\tn%s[label=\"%s\" width=\".5\" height=\".5\" fillcolor=white];\n", p.getId().replace("-", ""), p.getName());
 		}
 			
 		
@@ -143,12 +150,12 @@ public class OccurrenceNet extends PetriNet {
 		
 		for (Transition t : this.getTransitions()) {
 			if (this.isCutoffEvent(t)) {
-				if (t.getName()=="") result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".1\" fillcolor=orange];\n", t.getId().replace("-", ""), t.getName());
-				else result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".3\" fillcolor=orange];\n", t.getId().replace("-", ""), t.getName());	
+				if (t.getName()=="") result += String.format("\tn%s[label=\"%s\" width=\".5\" height=\".1\" fillcolor=orange];\n", t.getId().replace("-", ""), t.getName());
+				else result += String.format("\tn%s[label=\"%s\" width=\".5\" height=\".5\" fillcolor=orange];\n", t.getId().replace("-", ""), t.getName());	
 			}
 			else {
-				if (t.getName()=="") result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".1\" fillcolor=white];\n", t.getId().replace("-", ""), t.getName());
-				else result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".3\" fillcolor=white];\n", t.getId().replace("-", ""), t.getName());
+				if (t.getName()=="") result += String.format("\tn%s[label=\"%s\" width=\".5\" height=\".1\" fillcolor=white];\n", t.getId().replace("-", ""), t.getName());
+				else result += String.format("\tn%s[label=\"%s\" width=\".5\" height=\".5\" fillcolor=white];\n", t.getId().replace("-", ""), t.getName());
 			}
 		}
 		
@@ -178,5 +185,34 @@ public class OccurrenceNet extends PetriNet {
 		clone.e2t = new HashMap<Event,Transition>(this.e2t);
 		
 		return clone;
+	}
+	
+	/**
+	 * Re-wire cutoff event
+	 * @param cutoff cutoff event
+	 */
+	public void rewire(Transition cutoff) {
+		Transition corr = this.getCorrespondingEvent(cutoff);
+		if (corr == null) return;
+		
+		if (this.getPostset(cutoff).size()>1) {			
+			Transition t = this.getPreset(this.getPreset(cutoff).iterator().next()).iterator().next();
+			this.removeTransition(cutoff);
+			this.removePlaces(this.getPostset(t));
+			for (Place p : this.getPreset(corr)) this.addFlow(cutoff,p);
+		}
+		else {
+			this.removePlaces(this.getPostset(cutoff));
+			for (Place p : this.getPostset(corr)) this.addFlow(cutoff,p);
+		}
+	}
+	
+	/**
+	 * Re-wire all cutoff events
+	 */
+	public void rewire() {
+		for (Transition t : this.getCutoffEvents()) {
+			this.rewire(t);
+		}
 	}
 }
