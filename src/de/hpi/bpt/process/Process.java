@@ -176,4 +176,34 @@ public class Process extends AbstractDirectedGraph<ControlFlow, Node> {
 	public Collection<ControlFlow> getControlFlow() {
 		return this.getEdges();
 	}
+	
+	@Override
+	public String toDOT() {
+		String result = "";
+		if (this == null) return result;
+		
+		result += "digraph G {\n";
+		for (Task t : this.getTasks())
+			result += String.format("  n%s[shape=box,label=\"%s\"];\n", t.getId().replace("-", ""), t.getName());
+		result+="\n";
+		for (Gateway g : this.getGateways(GatewayType.AND))
+			result += String.format("  n%s[shape=diamond,label=\"%s\"];\n", g.getId().replace("-", ""), "AND");
+		for (Gateway g : this.getGateways(GatewayType.XOR))
+			result += String.format("  n%s[shape=diamond,label=\"%s\"];\n", g.getId().replace("-", ""), "XOR");
+		for (Gateway g : this.getGateways(GatewayType.OR))
+			result += String.format("  n%s[shape=diamond,label=\"%s\"];\n", g.getId().replace("-", ""), "OR");
+		for (Gateway g : this.getGateways(GatewayType.UNDEFINED))
+			result += String.format("  n%s[shape=diamond,label=\"%s\"];\n", g.getId().replace("-", ""), "?");
+		result+="\n";
+		for (ControlFlow cf: this.getControlFlow()) {
+			if (cf.getLabel()!=null || cf.getLabel()!="")
+				result += String.format("  n%s->n%s[label=\"%s\"];\n", cf.getSource().getId().replace("-", ""), cf.getTarget().getId().replace("-", ""), cf.getLabel());
+			else
+				result += String.format("  n%s->n%s;\n", cf.getSource().getId().replace("-", ""), cf.getTarget().getId().replace("-", ""));
+		}
+		result += "}";
+		
+		return result;
+	}
+
 }
