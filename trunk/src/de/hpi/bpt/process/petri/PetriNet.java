@@ -13,10 +13,9 @@ import de.hpi.bpt.graph.algo.DirectedGraphAlgorithms;
 import de.hpi.bpt.hypergraph.abs.Vertex;
 
 /**
- * Petri net
+ * Petri net implementation
  *  
  * @author Artem Polyvyanyy
- *
  */
 public class PetriNet extends AbstractDirectedGraph<Flow, Node> implements Cloneable {
 
@@ -338,12 +337,14 @@ public class PetriNet extends AbstractDirectedGraph<Flow, Node> implements Clone
 	}
 	
 	/**
-	 * Sets the number of tokens of all source places to one and the rest to zero.
+	 * Set natural marking.
+	 * Natural marking is a marking which puts one token at each source place of the net and no tokens elsewhere.
 	 */
-	public void setInitialMarking() {
+	public void setNaturalInitialMarking() {
 		Collection<Place> sources = getSourcePlaces();
-		for (Place p:getPlaces())
-			if (sources.contains(p))
+		
+		for (Place p : getPlaces())
+			if (sources.contains(p)) 
 				p.setTokens(1);
 			else 
 				p.setTokens(0);
@@ -430,8 +431,11 @@ public class PetriNet extends AbstractDirectedGraph<Flow, Node> implements Clone
 		result += "\n";
 		result += "node [shape=circle];\n";
 		
-		for (Place n : this.getPlaces())
-			result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".3\"];\n", n.getId().replace("-", ""), n.getName());
+		for (Place n : this.getPlaces()) {
+			String label = "";
+			label += (n.getTokens()>0) ? n.getTokens() : ""; 
+			result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".3\"];\n", n.getId().replace("-", ""), label);
+		}
 		
 		result += "\n";
 		result += "node [shape=box];\n";

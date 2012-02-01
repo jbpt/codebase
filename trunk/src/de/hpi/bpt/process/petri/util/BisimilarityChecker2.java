@@ -101,7 +101,7 @@ public class BisimilarityChecker2 {
 	 */
 	private Map<BitSet, Set<BitSet>> createStateTransitions(PetriNet net) {
 		Map<BitSet, Set<BitSet>> transitions = new HashMap<BitSet, Set<BitSet>>();
-		net.setInitialMarking();
+		net.setNaturalInitialMarking();
 		dfs(net, transitions, new BitSet(n));
 		return transitions;
 	}

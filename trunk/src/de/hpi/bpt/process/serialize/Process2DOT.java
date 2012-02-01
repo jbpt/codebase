@@ -9,6 +9,8 @@ import de.hpi.bpt.process.Task;
 public class Process2DOT {
 	
 	/**
+	 * @deprecated // To be removed! Use PetriNet.toDOT() instead!
+	 * 
 	 * Convert process to GraphViz DOT string
 	 * @param process A process to serialize
 	 * @return DOT serialization string of the process

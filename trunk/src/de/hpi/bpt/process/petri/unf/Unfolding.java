@@ -12,7 +12,6 @@ import de.hpi.bpt.process.petri.Marking;
 import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.Place;
 import de.hpi.bpt.process.petri.Transition;
-import de.hpi.bpt.utils.IOUtils;
 
 /**
  * Unfolding (complete prefix unfolding) of a net system
@@ -61,7 +60,7 @@ public class Unfolding {
 	
 	private OccurrenceNet occNet = null;
 	
-	private int counter = 1;
+	//private int counter = 1;
 	
 	/**
 	 * Dummy constructor
@@ -151,7 +150,7 @@ public class Unfolding {
 				//end = System.nanoTime();
 				//time_extra += end - start;
 				
-				IOUtils.toFile("unf"+(this.counter++)+".dot", this.getOccurrenceNet().toDOT());
+				//IOUtils.toFile("unf"+(this.counter++)+".dot", this.getOccurrenceNet().toDOT());
 				pe = getPossibleExtensionsA();							// get possible extensions of branching process
 				
 				/*for (Event e2 : pe) {

@@ -40,8 +40,8 @@ public class BisimilarityChecker {
 	 * @return true if both nets behave equally
 	 */
 	public static boolean areBisimilar(PetriNet net1, PetriNet net2) {
-		net1.setInitialMarking();
-		net2.setInitialMarking();
+		net1.setNaturalInitialMarking();
+		net2.setNaturalInitialMarking();
 		Marking marking1 = net1.getMarking();
 		Marking marking2 = net2.getMarking();
 		Set<Vertex> enabled1 = net1.getEnabledElements();
