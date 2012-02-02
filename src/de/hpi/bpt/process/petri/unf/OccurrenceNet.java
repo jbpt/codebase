@@ -175,7 +175,7 @@ public class OccurrenceNet extends PetriNet {
 	}
 	
 	@Override
-	public Object clone() throws CloneNotSupportedException {
+	public OccurrenceNet clone() {
 		OccurrenceNet clone = (OccurrenceNet) super.clone();
 		
 		clone.unf = this.unf;

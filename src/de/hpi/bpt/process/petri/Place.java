@@ -1,9 +1,9 @@
 package de.hpi.bpt.process.petri;
 
 /**
- * Petri net place
- * @author artem.polyvyanyy
- *
+ * Petri net place implementation
+ * 
+ * @author Artem Polyvyanyy
  */
 public class Place extends Node implements Cloneable {
 	private int tokens;
@@ -91,7 +91,7 @@ public class Place extends Node implements Cloneable {
 	 * @throws CloneNotSupportedException 
 	 */
 	@Override
-	public Object clone() throws CloneNotSupportedException {
+	public Place clone() {
 		Place clone = (Place) super.clone();
 		clone.setTokens(this.getTokens());
 		return clone;

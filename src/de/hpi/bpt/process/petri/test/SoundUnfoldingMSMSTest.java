@@ -14,7 +14,6 @@ import de.hpi.bpt.process.petri.unf.OccurrenceNet;
 import de.hpi.bpt.process.petri.unf.SoundUnfoldingMSMS;
 import de.hpi.bpt.process.petri.unf.Utils;
 import de.hpi.bpt.process.petri.util.TransformationException;
-import de.hpi.bpt.process.serialize.Process2DOT;
 import de.hpi.bpt.utils.IOUtils;
 
 
@@ -44,7 +43,7 @@ public class SoundUnfoldingMSMSTest extends TestCase {
 		p.addControlFlow(y,e5);
 		p.addControlFlow(z,e6);
 		
-		Utils.toFile("model.dot", Process2DOT.convert(p));
+		Utils.toFile("model.dot", p.toDOT());
 		
 		PetriNet net = Utils.process2net(p);
 		int cp = 1; int ct = 1;

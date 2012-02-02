@@ -365,7 +365,7 @@ public class PetriNet extends AbstractDirectedGraph<Flow, Node> implements Clone
 	 * @return the clone of the Petri net
 	 */
 	@Override
-	public Object clone() throws CloneNotSupportedException {
+	public PetriNet clone() {
 		PetriNet clone = (PetriNet) super.clone();
 		
 		// clear algorithm class

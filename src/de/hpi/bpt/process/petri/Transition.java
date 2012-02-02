@@ -1,9 +1,9 @@
 package de.hpi.bpt.process.petri;
 
 /**
- * Petri net transition
+ * Petri net transition implementation
+ * 
  * @author artem.polyvyanyy
- *
  */
 public class Transition extends Node {
 	
@@ -32,7 +32,7 @@ public class Transition extends Node {
 	}
 	
 	@Override
-	public Object clone() throws CloneNotSupportedException {
+	public Transition clone() {
 		return (Transition) super.clone();
 	}
 
