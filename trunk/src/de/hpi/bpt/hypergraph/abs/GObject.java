@@ -140,8 +140,13 @@ public abstract class GObject implements IGObject, Cloneable {
 	}
 	
 	@Override
-	public Object clone() throws CloneNotSupportedException {
-		GObject clone = (GObject) super.clone();
+	public GObject clone() {
+		GObject clone = null;
+		try {
+			clone = (GObject) super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
 		
 		if (this.getId() != null)
 			clone.setId(new String(this.getId()));

@@ -3,30 +3,19 @@ package de.hpi.bpt.process.petri.test;
 import hub.top.uma.DNodeBP;
 
 import java.io.FileNotFoundException;
-import java.util.List;
 
 import junit.framework.TestCase;
-import de.hpi.bpt.process.Gateway;
-import de.hpi.bpt.process.GatewayType;
-import de.hpi.bpt.process.Process;
-import de.hpi.bpt.process.Task;
-import de.hpi.bpt.process.checks.structural.ProcessStructureChecker;
 import de.hpi.bpt.process.petri.Marking;
 import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.Place;
 import de.hpi.bpt.process.petri.Transition;
 import de.hpi.bpt.process.petri.unf.OccurrenceNet;
-import de.hpi.bpt.process.petri.unf.ProperUnfolding;
 import de.hpi.bpt.process.petri.unf.Unfolding;
 import de.hpi.bpt.process.petri.unf.UnfoldingSetup;
-import de.hpi.bpt.process.petri.unf.Utils;
-import de.hpi.bpt.process.petri.unf.order.EsparzaAdequateOrderForArbitrarySystems;
 import de.hpi.bpt.process.petri.unf.order.EsparzaAdequateTotalOrderForSafeSystems;
-import de.hpi.bpt.process.petri.unf.order.UnfoldingAdequateOrder;
 import de.hpi.bpt.process.petri.util.PNAPIMapper;
 import de.hpi.bpt.process.petri.util.TransformationException;
 import de.hpi.bpt.process.petri.util.UMAUnfolderWrapper;
-import de.hpi.bpt.process.serialize.Process2DOT;
 import de.hpi.bpt.utils.IOUtils;
 
 

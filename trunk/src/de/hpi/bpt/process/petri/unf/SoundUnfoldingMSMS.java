@@ -57,13 +57,7 @@ public class SoundUnfoldingMSMS extends SoundUnfolding {
 	 * @param net net
 	 */
 	private PetriNet constructAugmentedVersion(PetriNet net) {
-		PetriNet result = null;
-		
-		try { 
-			result = (PetriNet) net.clone(); 
-		} catch (CloneNotSupportedException e) { 
-			return result;
-		}
+		PetriNet result = net.clone();
 		
 		Collection<Place> sources = result.getSourcePlaces();
 		Place s = new Place();

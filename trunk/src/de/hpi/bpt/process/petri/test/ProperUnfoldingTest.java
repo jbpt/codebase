@@ -14,7 +14,6 @@ import de.hpi.bpt.process.petri.unf.OccurrenceNet;
 import de.hpi.bpt.process.petri.unf.ProperUnfolding;
 import de.hpi.bpt.process.petri.unf.Utils;
 import de.hpi.bpt.process.petri.util.TransformationException;
-import de.hpi.bpt.process.serialize.Process2DOT;
 import de.hpi.bpt.utils.IOUtils;
 
 
@@ -74,7 +73,7 @@ public class ProperUnfoldingTest extends TestCase {
 		p.addControlFlow(tf,gx);
 		p.addControlFlow(tg,gy);
 		
-		Utils.toFile("model1.dot", Process2DOT.convert(p));
+		Utils.toFile("model1.dot", p.toDOT());
 		
 		PetriNet net = Utils.process2net(p);
 		int cp = 1; int ct = 1;
@@ -142,7 +141,7 @@ public class ProperUnfoldingTest extends TestCase {
 		p.addControlFlow(tf,gw);
 		p.addControlFlow(tg,gx);
 		
-		Utils.toFile("model2.dot", Process2DOT.convert(p));
+		Utils.toFile("model2.dot", p.toDOT());
 		
 		PetriNet net = Utils.process2net(p);
 		int cp = 1; int ct = 1;
@@ -204,7 +203,7 @@ public class ProperUnfoldingTest extends TestCase {
 		p.addControlFlow(gv,gw);
 		p.addControlFlow(gq,gy);
 		
-		Utils.toFile("model3.dot", Process2DOT.convert(p));
+		Utils.toFile("model3.dot", p.toDOT());
 		
 		PetriNet net = Utils.process2net(p);
 		int cp = 1; int ct = 1;
@@ -259,7 +258,7 @@ public class ProperUnfoldingTest extends TestCase {
 		p.addControlFlow(gv,gw);
 		p.addControlFlow(gq,gy);
 		
-		Utils.toFile("model4.dot", Process2DOT.convert(p));
+		Utils.toFile("model4.dot",p.toDOT());
 		
 		PetriNet net = Utils.process2net(p);
 		int cp = 1; int ct = 1;
