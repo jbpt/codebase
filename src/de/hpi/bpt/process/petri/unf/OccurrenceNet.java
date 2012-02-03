@@ -61,6 +61,10 @@ public class OccurrenceNet extends PetriNet {
 		return this.unf;
 	}
 	
+	public PetriNet getOriginativeNet() {
+		return this.unf.getNet();
+	}
+	
 	public Event getEvent(Transition t) {
 		return this.t2e.get(t);
 	}
@@ -109,6 +113,18 @@ public class OccurrenceNet extends PetriNet {
 	
 	public boolean isCutoffEvent(Transition t) {
 		return this.unf.isCutoffEvent(t2e.get(t));
+	}
+	
+	public Set<Place> getCutInducedByLocalConfiguration(Transition t) {
+		Set<Place> result = new HashSet<Place>();
+		
+		BPNode n = this.getUnfNode(t);
+		Event e = (Event) n;
+		Cut cut = e.getLocalConfiguration().getCut();
+		for (Condition c : cut) result.add(this.getPlace(c));
+		
+		return result;
+		
 	}
 
 	@Override
