@@ -1,5 +1,6 @@
 package de.hpi.bpt.process.petri.unf;
 
+import de.hpi.bpt.process.petri.Node;
 import de.hpi.bpt.process.petri.Transition;
 
 /**
@@ -87,7 +88,8 @@ public class Event extends BPNode {
 	
 	@Override
 	public String getName() {
-		return this.t.getName()+"-"+this.ID;
+		return this.t.getName();
+		//return this.t.getName()+"-"+this.ID;
 	}
 	
 	@Override
@@ -110,5 +112,10 @@ public class Event extends BPNode {
 			hashCode += 11 * c.getPlace().hashCode();
 		
 		return hashCode;
+	}
+
+	@Override
+	public Node getNode() {
+		return this.getTransition();
 	}
 }
