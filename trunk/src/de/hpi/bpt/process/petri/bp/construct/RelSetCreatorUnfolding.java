@@ -201,8 +201,8 @@ public class RelSetCreatorUnfolding extends AbstractRelSetCreator implements Rel
 			int iE1 = this.nodesForStepMatrix.indexOf(e1);
 			for (Transition e2 : this.occurrenceNet.getTransitions()) {				
 				int iE2 = this.nodesForStepMatrix.indexOf(e2);
-				for (Node c : this.occurrenceNet.getPredecessors(e2)) {
-					if (this.occurrenceNet.getPredecessors(c).contains(e1))
+				for (Node c : this.occurrenceNet.getPreset(e2)) {
+					if (this.occurrenceNet.getPreset(c).contains(e1))
 						this.stepMatrix[iE1][iE2] = 1;
 				}
 			}
@@ -216,8 +216,8 @@ public class RelSetCreatorUnfolding extends AbstractRelSetCreator implements Rel
 			Transition corE = this.occurrenceNet.getCorrespondingEvent(cutE);
 			
 			// There may be multiple events following the corresponding condition
-			for (Node c : this.occurrenceNet.getSuccessors(corE)) {
-				for (Node e : this.occurrenceNet.getSuccessors(c)) {
+			for (Node c : this.occurrenceNet.getPostset(corE)) {
+				for (Node e : this.occurrenceNet.getPostset(c)) {
 					int iE = this.nodesForStepMatrix.indexOf(e);
 					this.stepMatrix[iCutE][iE] = 1;
 				}
