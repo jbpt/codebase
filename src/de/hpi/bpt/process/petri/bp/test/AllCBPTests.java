@@ -12,6 +12,7 @@ public class AllCBPTests {
 		suite.addTestSuite(CBPComputationTest.class);
 		suite.addTestSuite(CBPCreatorIdempotenceTest.class);
 		suite.addTestSuite(BPSimTest.class);
+		suite.addTestSuite(RelSetComputationTest.class);
 		suite.addTestSuite(RelSetLogCreatorTest.class);
 		//$JUnit-END$
 		return suite;
