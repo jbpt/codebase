@@ -60,8 +60,8 @@ public class DirectedGraphTest extends TestCase {
 		
 		assertTrue(g.getAdjacent(v1).iterator().next().equals(v2));
 		
-		assertEquals(0, g.getPredecessors(v1).size());
-		assertEquals(1, g.getSuccessors(v1).size());
+		assertEquals(0, g.getDirectPredecessors(v1).size());
+		assertEquals(1, g.getDirectSuccessors(v1).size());
 		
 		DirectedEdge e4 = g.addEdge(v3, v5);
 		DirectedEdge e5 = g.addEdge(v4, v5);

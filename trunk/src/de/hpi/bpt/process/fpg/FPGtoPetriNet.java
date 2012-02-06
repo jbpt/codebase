@@ -31,7 +31,7 @@ public class FPGtoPetriNet {
 		Iterator<Transition> it = pn.getTransitions().iterator();
 		while (it.hasNext()) {
 			Transition t = it.next();
-			if (pn.getSuccessors(t).size()==0) {
+			if (pn.getDirectSuccessors(t).size()==0) {
 				Place place = new Place("P" + (++p));
 				//pn.addFlow(new FlowRelation(t,place));
 			}

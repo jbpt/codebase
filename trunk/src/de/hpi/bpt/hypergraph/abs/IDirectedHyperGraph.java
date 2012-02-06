@@ -74,58 +74,72 @@ public interface IDirectedHyperGraph <E extends IDirectedHyperEdge<V>,V extends 
 	public Collection<E> getEdgesWithSourcesAndTargets(Collection<V> ss, Collection<V> ts);
 	
 	/**
-	 * Get collection of vertices that are predecessors to a given vertex
+	 * Get collection of vertices that are direct predecessors of a given vertex
 	 * @param v Vertex
-	 * @return Collection of predecessor vertices
+	 * @return Collection of predecessor vertices of the given vertex
 	 */
-	public Collection<V> getPredecessors(V v);
+	public Collection<V> getDirectPredecessors(V v);
 	
 	/**
-	 * Get first arbitrary predecessor of the vertex
-	 * @param v Vertex
-	 * @return Arbitrary predecessor of vertex, <code>null</code> if it does not exist
+	 * Get collection of vertices that are direct predecessors of vertices from a given collection
+	 * @param vs Collection of vertices
+	 * @return Collection of direct predecessor vertices of vertices from the given collection
 	 */
-	public V getFirstPredecessor(V v);
+	public Collection<V> getDirectPredecessors(Collection<V> vs);
 	
 	/**
-	 * Get collection of vertices that are successors to a given vertex
+	 * Get first arbitrary direct predecessor of a given vertex
 	 * @param v Vertex
-	 * @return Collection of successor vertices
+	 * @return Arbitrary predecessor of the given vertex, <code>null</code> if it does not exist
 	 */
-	public Collection<V> getSuccessors(V v);
+	public V getFirstDirectPredecessor(V v);
 	
 	/**
-	 * Get first arbitrary successor of the vertex
+	 * Get collection of vertices that are direct successors to a given vertex
 	 * @param v Vertex
-	 * @return Arbitrary successor of vertex, <code>null</code> if it does not exist
+	 * @return Collection of successor vertices of the given vertex
 	 */
-	public V getFirstSuccessor(V v);
+	public Collection<V> getDirectSuccessors(V v);
 	
 	/**
-	 * Get vertex incoming edges
+	 * Get collection of vertices that are direct successors of vertices from a given collection
+	 * @param vs Collection of vertices
+	 * @return Collection of direct successor vertices of vertices from the given collection
+	 */
+	public Collection<V> getDirectSuccessors(Collection<V> vs);
+	
+	/**
+	 * Get first arbitrary direct successor of a given vertex
 	 * @param v Vertex
-	 * @return Vertex incoming edges
+	 * @return Arbitrary successor of the given vertex, <code>null</code> if it does not exist
+	 */
+	public V getFirstDirectSuccessor(V v);
+	
+	/**
+	 * Get incoming edges of a given vertex
+	 * @param v Vertex
+	 * @return Incoming edges of the given vertex
 	 */
 	public Collection<E> getIncomingEdges(V v);
 	
 	/**
-	 * Get first arbitrary incoming edge of the vertex
+	 * Get first arbitrary incoming edge of a given vertex
 	 * @param v Vertex
-	 * @return Arbitrary incoming edge of vertex, <code>null</code> if it does not exist
+	 * @return Arbitrary incoming edge of the given vertex, <code>null</code> if it does not exist
 	 */
 	public E getFirstIncomingEdge(V v);
 	
 	/**
-	 * Get vertex outgoing edges
+	 * Get outgoing edges of a given vertex
 	 * @param v Vertex
-	 * @return Vertex outgoing edges
+	 * @return Outgoing edges of the given vertex
 	 */
 	public Collection<E> getOutgoingEdges(V v);
 	
 	/**
-	 * Get first arbitrary outgoing edge of the vertex
+	 * Get first arbitrary outgoing edge of a given vertex
 	 * @param v Vertex
-	 * @return Arbitrary outgoing edge of vertex, <code>null</code> if it does not exist
+	 * @return Arbitrary outgoing edge of the given vertex, <code>null</code> if it does not exist
 	 */
 	public E getFirstOutgoingEdge(V v);
 }

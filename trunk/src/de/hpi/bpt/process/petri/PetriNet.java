@@ -60,7 +60,7 @@ public class PetriNet extends AbstractDirectedGraph<Flow, Node> implements Clone
 	}
 	
 	public boolean isEnabled(Transition t) {
-		Collection<Node> ps = getPredecessors(t);
+		Collection<Node> ps = getDirectPredecessors(t);
 		Iterator<Node> i = ps.iterator();
 		while (i.hasNext()) {
 			Node n = i.next();
@@ -97,7 +97,7 @@ public class PetriNet extends AbstractDirectedGraph<Flow, Node> implements Clone
 		else return false;
 		
 		if (this.isEnabled(t)) {			
-			Collection<Node> ps = getPredecessors(t);
+			Collection<Node> ps = getDirectPredecessors(t);
 			Iterator<Node> i = ps.iterator();
 			while (i.hasNext()) {
 				Node n = i.next();
@@ -105,7 +105,7 @@ public class PetriNet extends AbstractDirectedGraph<Flow, Node> implements Clone
 				p.takeToken();
 			}
 			
-			Collection<Node> ss = getSuccessors(t);
+			Collection<Node> ss = getDirectSuccessors(t);
 			i = ss.iterator();
 			while (i.hasNext()) {
 				Node n = i.next();
@@ -163,22 +163,29 @@ public class PetriNet extends AbstractDirectedGraph<Flow, Node> implements Clone
 	}
 	
 	public Collection<Place> getPostset(Transition t) {
-		if (!this.contains(t)) return null;
-		
 		Collection<Place> result = new ArrayList<Place>();
-		for (Node n : this.getSuccessors(t)) {
+		for (Node n : this.getDirectSuccessors(t)) {
 			if (n instanceof Place)
 				result.add((Place)n);
 		}
+		
+		return result;
+	}
+	
+	public Collection<Place> getPostsetPlaces(Collection<Transition> ts) {
+		Set<Place> result = new HashSet<Place>();
+		
+		for (Transition t : ts)
+			for (Node n : this.getDirectSuccessors(t))
+				if (n instanceof Place)
+					result.add((Place)n);
 		
 		return result;
 	}
 	
 	public Collection<Transition> getPostset(Place p) {
-		if (!this.contains(p)) return null;
-		
 		Collection<Transition> result = new ArrayList<Transition>();
-		for (Node n : this.getSuccessors(p)) {
+		for (Node n : this.getDirectSuccessors(p)) {
 			if (n instanceof Transition)
 				result.add((Transition)n);
 		}
@@ -186,18 +193,28 @@ public class PetriNet extends AbstractDirectedGraph<Flow, Node> implements Clone
 		return result;
 	}
 	
-	public Collection<Node> getPostset(Node n) {
-		if (!this.contains(n)) return null;
+	public Collection<Transition> getPostsetTransitions(Collection<Place> ps) {
+		Set<Transition> result = new HashSet<Transition>();
 		
-		return this.getSuccessors(n);
+		for (Place p : ps)
+			for (Node n : this.getDirectSuccessors(p))
+				if (n instanceof Transition)
+					result.add((Transition)n);
+		
+		return result;
 	}
 	
+	public Collection<Node> getPostset(Node n) {
+		return this.getDirectSuccessors(n);
+	}
+	
+	public Collection<Node> getPostset(Collection<Node> ns) {
+		return this.getDirectSuccessors(ns);
+	}
 	
 	public Collection<Place> getPreset(Transition t) {
-		if (!this.contains(t)) return null;
-		
 		Collection<Place> result = new ArrayList<Place>();
-		for (Node n : this.getPredecessors(t)) {
+		for (Node n : this.getDirectPredecessors(t)) {
 			if (n instanceof Place)
 				result.add((Place)n);
 		}
@@ -205,11 +222,20 @@ public class PetriNet extends AbstractDirectedGraph<Flow, Node> implements Clone
 		return result;
 	}
 	
-	public Collection<Transition> getPreset(Place p) {
-		if (!this.contains(p)) return null;
+	public Collection<Place> getPresetPlaces(Collection<Transition> ts) {
+		Set<Place> result = new HashSet<Place>();
 		
+		for (Transition t : ts)
+			for (Node n : this.getDirectPredecessors(t))
+				if (n instanceof Place)
+					result.add((Place)n);
+		
+		return result;
+	}
+	
+	public Collection<Transition> getPreset(Place p) {
 		Collection<Transition> result = new ArrayList<Transition>();
-		for (Node n : this.getPredecessors(p)) {
+		for (Node n : this.getDirectPredecessors(p)) {
 			if (n instanceof Transition)
 				result.add((Transition)n);
 		}
@@ -217,10 +243,23 @@ public class PetriNet extends AbstractDirectedGraph<Flow, Node> implements Clone
 		return result;
 	}
 	
-	public Collection<Node> getPreset(Node n) {
-		if (!this.contains(n)) return null;
+	public Collection<Transition> getPresetTransitions(Collection<Place> ps) {
+		Set<Transition> result = new HashSet<Transition>();
 		
-		return this.getPredecessors(n);
+		for (Place p : ps)
+			for (Node n : this.getDirectPredecessors(p))
+				if (n instanceof Transition)
+					result.add((Transition)n);
+		
+		return result;
+	}
+	
+	public Collection<Node> getPreset(Node n) {
+		return this.getDirectPredecessors(n);
+	}
+	
+	public Collection<Node> getPreset(Collection<Node> ns) {
+		return this.getDirectPredecessors(ns);
 	}
 	
 	public Collection<Node> getSourceNodes() {

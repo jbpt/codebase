@@ -209,11 +209,8 @@ public class AbstractMultiDirectedHyperGraph <E extends IDirectedHyperEdge<V>,V 
 		return es.iterator().next();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see de.hpi.bpt.hypergraph.abs.IDirectedHyperGraph#getPredecessors(de.hpi.bpt.hypergraph.abs.IVertex)
-	 */
-	public Collection<V> getPredecessors(V v) {
+	@Override
+	public Collection<V> getDirectPredecessors(V v) {
 		Set<V> result = new HashSet<V>();
 		
 		Collection<E> es = this.getIncomingEdges(v);
@@ -221,15 +218,28 @@ public class AbstractMultiDirectedHyperGraph <E extends IDirectedHyperEdge<V>,V 
 		while (i.hasNext())
 			result.addAll(i.next().getSourceVertices());
 		
-		return new ArrayList<V>(result);
+		return result;
+	}
+	
+	@Override
+	public Collection<V> getDirectPredecessors(Collection<V> vs) {
+		Set<V> result = new HashSet<V>();
+		
+		Collection<E> es = this.getEdgesWithTargets(vs);
+		Iterator<E> i = es.iterator();
+		
+		while (i.hasNext())
+			result.addAll(i.next().getSourceVertices());
+		
+		return result;
 	}
 	
 	/*
 	 * (non-Javadoc)
 	 * @see de.hpi.bpt.hypergraph.abs.IDirectedHyperGraph#getFirstPredecessor(de.hpi.bpt.hypergraph.abs.IVertex)
 	 */
-	public V getFirstPredecessor(V v) {
-		Collection<V> vs = this.getPredecessors(v);
+	public V getFirstDirectPredecessor(V v) {
+		Collection<V> vs = this.getDirectPredecessors(v);
 		if (vs.size() == 0) return null;
 		return vs.iterator().next();
 	}
@@ -238,7 +248,7 @@ public class AbstractMultiDirectedHyperGraph <E extends IDirectedHyperEdge<V>,V 
 	 * (non-Javadoc)
 	 * @see de.hpi.bpt.hypergraph.abs.IDirectedHyperGraph#getSuccessors(de.hpi.bpt.hypergraph.abs.IVertex)
 	 */
-	public Collection<V> getSuccessors(V v) {
+	public Collection<V> getDirectSuccessors(V v) {
 		Set<V> result = new HashSet<V>();
 		
 		Collection<E> es = this.getOutgoingEdges(v);
@@ -249,12 +259,25 @@ public class AbstractMultiDirectedHyperGraph <E extends IDirectedHyperEdge<V>,V 
 		return new ArrayList<V>(result);
 	}
 	
+	@Override
+	public Collection<V> getDirectSuccessors(Collection<V> vs) {
+		Set<V> result = new HashSet<V>();
+		
+		Collection<E> es = this.getEdgesWithSources(vs);
+		Iterator<E> i = es.iterator();
+		
+		while (i.hasNext())
+			result.addAll(i.next().getTargetVertices());
+		
+		return result;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see de.hpi.bpt.hypergraph.abs.IDirectedHyperGraph#getFirstSuccessor(de.hpi.bpt.hypergraph.abs.IVertex)
 	 */
-	public V getFirstSuccessor(V v) {
-		Collection<V> vs = this.getSuccessors(v);
+	public V getFirstDirectSuccessor(V v) {
+		Collection<V> vs = this.getDirectSuccessors(v);
 		if (vs.size() == 0) return null;
 		return vs.iterator().next();
 	}

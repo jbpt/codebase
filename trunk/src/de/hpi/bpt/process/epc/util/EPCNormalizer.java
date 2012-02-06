@@ -53,7 +53,7 @@ public class EPCNormalizer {
 	public Collection<FlowObject> getStartEvents() {
 		Collection<FlowObject> events = new HashSet<FlowObject>();
 		for (FlowObject o : this.epc.getFlowObjects()) {
-			if (o instanceof Event && this.epc.getPredecessors(o).size() == 0)
+			if (o instanceof Event && this.epc.getDirectPredecessors(o).size() == 0)
 				events.add(o);
 		}
 		return events;
@@ -62,7 +62,7 @@ public class EPCNormalizer {
 	public Collection<FlowObject> getEndEvents() {
 		Collection<FlowObject> events = new HashSet<FlowObject>();
 		for (FlowObject o : this.epc.getFlowObjects()) {
-			if (o instanceof Event && this.epc.getSuccessors(o).size() == 0)
+			if (o instanceof Event && this.epc.getDirectSuccessors(o).size() == 0)
 				events.add(o);
 		}
 		return events;
@@ -75,19 +75,19 @@ public class EPCNormalizer {
 
 
 	protected boolean isPureSplit(Connector connector) {
-		return ((this.epc.getPredecessors(connector).size() == 1) && (this.epc.getSuccessors(connector).size() > 1));
+		return ((this.epc.getDirectPredecessors(connector).size() == 1) && (this.epc.getDirectSuccessors(connector).size() > 1));
 	}
 	
 	protected boolean isPureJoin(Connector connector) {
-		return ((this.epc.getSuccessors(connector).size() == 1) && (this.epc.getPredecessors(connector).size() > 1));
+		return ((this.epc.getDirectSuccessors(connector).size() == 1) && (this.epc.getDirectPredecessors(connector).size() > 1));
 	}
 	
 	protected boolean isSplit(Connector connector) {
-		return this.epc.getSuccessors(connector).size() > 1;
+		return this.epc.getDirectSuccessors(connector).size() > 1;
 	}
 	
 	protected boolean isJoin(Connector connector) {
-		return this.epc.getPredecessors(connector).size() > 1;
+		return this.epc.getDirectPredecessors(connector).size() > 1;
 	}
 	
 	protected boolean containsConnector(Collection<FlowObject> objects) {
@@ -119,12 +119,12 @@ public class EPCNormalizer {
 	}
 
 	protected FlowObject getCommonPredecessor(FlowObject object) {
-		List<FlowObject> objects = new ArrayList<FlowObject>(this.epc.getPredecessors(object));
+		List<FlowObject> objects = new ArrayList<FlowObject>(this.epc.getDirectPredecessors(object));
 		return getCommonPredecessor(objects);
 	}
 	
 	protected FlowObject getCommonSuccessor(FlowObject object) {
-		List<FlowObject> objects = new ArrayList<FlowObject>(this.epc.getSuccessors(object));
+		List<FlowObject> objects = new ArrayList<FlowObject>(this.epc.getDirectSuccessors(object));
 		return getCommonSuccessor(objects);
 	}
 
@@ -159,11 +159,11 @@ public class EPCNormalizer {
 				}
 			}
 			else {
-				if (this.epc.getPredecessors(o).size() == 0) {
+				if (this.epc.getDirectPredecessors(o).size() == 0) {
 					noCommonPredecessor = true;
 					break outer;
 				}
-				for (FlowObject p : this.epc.getPredecessors(o)) {
+				for (FlowObject p : this.epc.getDirectPredecessors(o)) {
 					if (!predecessors.contains(p))
 						predecessors.add(p);
 				}
@@ -206,11 +206,11 @@ public class EPCNormalizer {
 				}
 			}
 			else {
-				if (this.epc.getSuccessors(o).size() == 0) {
+				if (this.epc.getDirectSuccessors(o).size() == 0) {
 					noCommonSuccessor = true;
 					break outer;
 				}
-				for (FlowObject p : this.epc.getSuccessors(o)) {
+				for (FlowObject p : this.epc.getDirectSuccessors(o)) {
 					if (!successors.contains(p))
 						successors.add(p);
 				}
@@ -240,17 +240,17 @@ public class EPCNormalizer {
 						followsStartEvents = false;
 						break;
 					}
-					followsStartEvents &= directlyFollowsStartEvents(this.epc.getPredecessors(connector));
+					followsStartEvents &= directlyFollowsStartEvents(this.epc.getDirectPredecessors(connector));
 				}
 				if (isJoin(connector)) {
 					FlowObject cP = getCommonPredecessor(connector);
 					if (cP == null) {
-						followsStartEvents &= directlyFollowsStartEvents(this.epc.getPredecessors(connector));
+						followsStartEvents &= directlyFollowsStartEvents(this.epc.getDirectPredecessors(connector));
 					}
 					else {
 						if (cP instanceof Connector) {
 							if (((Connector)cP).getConnectorType().equals(connector.getConnectorType())) {
-								followsStartEvents &= directlyFollowsStartEvents(this.epc.getPredecessors(cP));
+								followsStartEvents &= directlyFollowsStartEvents(this.epc.getDirectPredecessors(cP));
 							}
 							else {
 								followsStartEvents = false;
@@ -265,7 +265,7 @@ public class EPCNormalizer {
 				}
 			} 
 			else {
-				followsStartEvents &= directlyFollowsStartEvents(this.epc.getPredecessors(o));
+				followsStartEvents &= directlyFollowsStartEvents(this.epc.getDirectPredecessors(o));
 			}
 		}
 		return followsStartEvents;
@@ -286,14 +286,14 @@ public class EPCNormalizer {
 							connector.setConnectorType(((Connector) predecessor).getConnectorType());
 						}
 					}
-					if (directlyFollowsStartEvents(this.epc.getPredecessors(connector))) {
+					if (directlyFollowsStartEvents(this.epc.getDirectPredecessors(connector))) {
 						connector.setConnectorType(ConnectorType.AND);
 					}
 				}
 				/*
 				 * Handle degenerated connectors with one incoming and one outgoing flow
 				 */
-				if (this.epc.getPredecessors(connector).size() == 1 && this.epc.getSuccessors(connector).size() == 1) {
+				if (this.epc.getDirectPredecessors(connector).size() == 1 && this.epc.getDirectSuccessors(connector).size() == 1) {
 					connector.setConnectorType(ConnectorType.AND);
 				}
 			}
@@ -316,7 +316,7 @@ public class EPCNormalizer {
 		start.setId(getIdString());
 		start.setConnectorType(end.getConnectorType());
 
-		for (FlowObject o : this.epc.getPredecessors(end)) {
+		for (FlowObject o : this.epc.getDirectPredecessors(end)) {
 			if (this.closure.hasPath(end, o))
 				continue;
 			FlowObject tmp = getEntryPoint(o);
@@ -331,7 +331,7 @@ public class EPCNormalizer {
 		end.setId(getIdString());
 		end.setConnectorType(start.getConnectorType());
 
-		for (FlowObject o : this.epc.getSuccessors(start)) {
+		for (FlowObject o : this.epc.getDirectSuccessors(start)) {
 			if (this.closure.hasPath(o, start))
 				continue;
 			FlowObject tmp = getExitPoint(o);
@@ -359,8 +359,8 @@ public class EPCNormalizer {
 			/*
 			 * Degenerated connectors
 			 */
-			else if ((this.epc.getPredecessors(connector).size() == 1) && (this.epc.getSuccessors(connector).size() == 1)){
-				return getExitPoint(this.epc.getSuccessors(connector).iterator().next());
+			else if ((this.epc.getDirectPredecessors(connector).size() == 1) && (this.epc.getDirectSuccessors(connector).size() == 1)){
+				return getExitPoint(this.epc.getDirectSuccessors(connector).iterator().next());
 			}
 			else if (isPureJoin(connector)){
 				/*
@@ -368,9 +368,9 @@ public class EPCNormalizer {
 				 * Thus, be sure to call canCreateEndClosure to check this before you call
 				 * createEndClosure, which invokes this method.
 				 */
-				return getExitPoint(this.epc.getSuccessors(connector).iterator().next());
+				return getExitPoint(this.epc.getDirectSuccessors(connector).iterator().next());
 			}
-			else if ((this.epc.getSuccessors(connector).size() == 0)) {
+			else if ((this.epc.getDirectSuccessors(connector).size() == 0)) {
 				/*
 				 * We might have reached an artificial exit point, that was already created
 				 */
@@ -381,7 +381,7 @@ public class EPCNormalizer {
 			}
 		}
 		else {
-			return (this.epc.getSuccessors(object).size() == 0) ? object : getExitPoint(this.epc.getSuccessors(object).iterator().next());
+			return (this.epc.getDirectSuccessors(object).size() == 0) ? object : getExitPoint(this.epc.getDirectSuccessors(object).iterator().next());
 		}
 	}
 	
@@ -399,11 +399,11 @@ public class EPCNormalizer {
 					return createStartClosure(connector);
 				}
 			}
-			else if ((this.epc.getPredecessors(connector).size() == 1) && (this.epc.getSuccessors(connector).size() == 1)){
+			else if ((this.epc.getDirectPredecessors(connector).size() == 1) && (this.epc.getDirectSuccessors(connector).size() == 1)){
 				/*
 				 * Degenerated connectors
 				 */
-				return getEntryPoint(this.epc.getPredecessors(connector).iterator().next());
+				return getEntryPoint(this.epc.getDirectPredecessors(connector).iterator().next());
 			}
 			else if (isPureSplit(connector)){
 				/*
@@ -411,9 +411,9 @@ public class EPCNormalizer {
 				 * Thus, be sure to call canCreateStartClosure to check this before you call
 				 * createStartClosure, which invokes this method.
 				 */
-				return getEntryPoint(this.epc.getPredecessors(connector).iterator().next());
+				return getEntryPoint(this.epc.getDirectPredecessors(connector).iterator().next());
 			}
-			else if ((this.epc.getPredecessors(connector).size() == 0)) {
+			else if ((this.epc.getDirectPredecessors(connector).size() == 0)) {
 				/*
 				 * We might have reached an artificial entry point, that was already created
 				 */
@@ -424,7 +424,7 @@ public class EPCNormalizer {
 			}
 		}
 		else {
-			return (this.epc.getPredecessors(object).size() == 0) ? object : getEntryPoint(this.epc.getPredecessors(object).iterator().next());
+			return (this.epc.getDirectPredecessors(object).size() == 0) ? object : getEntryPoint(this.epc.getDirectPredecessors(object).iterator().next());
 		}
 	}
 
@@ -461,14 +461,14 @@ public class EPCNormalizer {
 		if (to.equals(withoutNode))
 			return false;
 		
-		if (!from.equals(withoutNode) && this.epc.getSuccessors(from).contains(to))
+		if (!from.equals(withoutNode) && this.epc.getDirectSuccessors(from).contains(to))
 			return true;
 
 		if (from.equals(withoutNode))
 			return false;
 		
 		boolean result = false;
-		for (FlowObject o : this.epc.getSuccessors(from)) {
+		for (FlowObject o : this.epc.getDirectSuccessors(from)) {
 			if (!checked.contains(o)) {
 				if (this.closure.hasPath(o, to)) {
 					checked.add(o);
@@ -486,11 +486,11 @@ public class EPCNormalizer {
 		 * node always lead to the current anchor.
 		 */
 		if (!current.equals(startJoin)) {
-			if (this.epc.getSuccessors(current).size() > 1) {
+			if (this.epc.getDirectSuccessors(current).size() > 1) {
 				/*
 				 * Any path not leading to the start join?
 				 */
-				for (FlowObject o : this.epc.getSuccessors(current))
+				for (FlowObject o : this.epc.getDirectSuccessors(current))
 					if (!this.closure.hasPath(o, startJoin))
 						return false;
 				/*
@@ -504,14 +504,14 @@ public class EPCNormalizer {
 		/*
 		 * No predecessor, that is ok (in case the successor are ok as well)
 		 */
-		if (this.epc.getPredecessors(current).size() == 0)
+		if (this.epc.getDirectPredecessors(current).size() == 0)
 			return true;
 		
 		/*
 		 * One predecessor, check this predecessor without changing anchor
 		 */
-		if (this.epc.getPredecessors(current).size() == 1) {
-			FlowObject p = this.epc.getPredecessors(current).iterator().next();
+		if (this.epc.getDirectPredecessors(current).size() == 1) {
+			FlowObject p = this.epc.getDirectPredecessors(current).iterator().next();
 			if (!checked.contains(p)) {
 				checked.add(p);
 				return canCreateStartClosure(checked,startJoin,anchor,p);
@@ -522,7 +522,7 @@ public class EPCNormalizer {
 		 * We have a connector, check each predecessor
 		 */
 		boolean result = true;
-		for (FlowObject o : this.epc.getPredecessors(current)) {
+		for (FlowObject o : this.epc.getDirectPredecessors(current)) {
 			if (!checked.contains(o)) {
 				checked.add(o);
 				result &= canCreateStartClosure(checked,startJoin,(Connector) current,o);
@@ -538,12 +538,12 @@ public class EPCNormalizer {
 		 * always lead to the current anchor.
 		 */
 		if (!current.equals(endSplit)) {
-			if (this.epc.getPredecessors(current).size() > 1) {
+			if (this.epc.getDirectPredecessors(current).size() > 1) {
 
 				/*
 				 * Any path not coming from the end split?
 				 */
-				for (FlowObject o : this.epc.getPredecessors(current))
+				for (FlowObject o : this.epc.getDirectPredecessors(current))
 					if (!this.closure.hasPath(endSplit, o))
 						return false;
 				/*
@@ -557,14 +557,14 @@ public class EPCNormalizer {
 		/*
 		 * No successors, that is ok (in case the predecessors are ok as well)
 		 */
-		if (this.epc.getSuccessors(current).size() == 0)
+		if (this.epc.getDirectSuccessors(current).size() == 0)
 			return true;
 		
 		/*
 		 * One successors, check this successors without changing anchor
 		 */
-		if (this.epc.getSuccessors(current).size() == 1) {
-			FlowObject s = this.epc.getSuccessors(current).iterator().next();
+		if (this.epc.getDirectSuccessors(current).size() == 1) {
+			FlowObject s = this.epc.getDirectSuccessors(current).iterator().next();
 			if (!checked.contains(s)) {
 				checked.add(s);
 				return canCreateEndClosure(checked,endSplit,anchor,s);
@@ -575,7 +575,7 @@ public class EPCNormalizer {
 		 * We have a connector, check each successor
 		 */
 		boolean result = true;
-		for (FlowObject o : this.epc.getSuccessors(current)) {
+		for (FlowObject o : this.epc.getDirectSuccessors(current)) {
 			if (!checked.contains(o)) {
 				checked.add(o);
 				result &= canCreateEndClosure(checked, endSplit,(Connector) current,o);

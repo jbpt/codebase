@@ -191,10 +191,10 @@ public class CBPCreatorUnfolding extends AbstractRelSetCreator implements
 			pn.addFlow(tstar, p_t);
 			pn.addFlow(tstar, p_aug);
 			
-			for (Node pre : pn.getPredecessors(t))
+			for (Node pre : pn.getDirectPredecessors(t))
 				pn.addFlow(pre, tstar);
 			
-			for (Node post : pn.getSuccessors(t))
+			for (Node post : pn.getDirectSuccessors(t))
 				pn.addFlow(tstar, post);
 
 			pn.addFlow(p_t, t);

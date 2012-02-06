@@ -362,7 +362,7 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractDirec
 	 */
 	public TCTreeNode<E,V> getParent(TCTreeNode<E,V> node)
 	{
-		return this.getFirstPredecessor(node);
+		return this.getFirstDirectPredecessor(node);
 	}
 	
 	/**
@@ -372,7 +372,7 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractDirec
 	 */
 	public Collection<TCTreeNode<E,V>> getChildren(TCTreeNode<E,V> node)
 	{
-		return this.getSuccessors(node);
+		return this.getDirectSuccessors(node);
 	}
 	
 	/**

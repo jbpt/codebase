@@ -48,13 +48,13 @@ public class DirectedHyperGraphTest extends TestCase {
 		assertEquals(1,g.getOutgoingEdges(v2).size());
 		assertEquals(0,g.getOutgoingEdges(v3).size());
 		
-		assertEquals(0,g.getPredecessors(v1).size());
-		assertEquals(1,g.getPredecessors(v2).size());
-		assertEquals(1,g.getPredecessors(v3).size());
+		assertEquals(0,g.getDirectPredecessors(v1).size());
+		assertEquals(1,g.getDirectPredecessors(v2).size());
+		assertEquals(1,g.getDirectPredecessors(v3).size());
 		
-		assertEquals(1,g.getSuccessors(v1).size());
-		assertEquals(2,g.getSuccessors(v2).size());
-		assertEquals(0,g.getSuccessors(v3).size());
+		assertEquals(1,g.getDirectSuccessors(v1).size());
+		assertEquals(2,g.getDirectSuccessors(v2).size());
+		assertEquals(0,g.getDirectSuccessors(v3).size());
 		
 		assertEquals(4,g.getVertices().size());
 		g.removeVertex(v2);

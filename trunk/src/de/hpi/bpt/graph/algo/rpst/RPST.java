@@ -281,7 +281,7 @@ public class RPST <E extends IDirectedEdge<V>, V extends IVertex>
 	 * @return children of the node
 	 */
 	public Collection<RPSTNode<E,V>> getChildren(RPSTNode<E,V> node) {
-		return this.getSuccessors(node);
+		return this.getDirectSuccessors(node);
 	}
 	
 	/**
@@ -290,7 +290,7 @@ public class RPST <E extends IDirectedEdge<V>, V extends IVertex>
 	 * @return parent of the node
 	 */
 	public RPSTNode<E,V> getParent(RPSTNode<E,V> node) {
-		return this.getFirstPredecessor(node);
+		return this.getFirstDirectPredecessor(node);
 	}
 	
 	@Override

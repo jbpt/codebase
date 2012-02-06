@@ -42,9 +42,9 @@ public class Process2PetriNetTest extends TestCase {
 			}
 		}
 		assertEquals(Place.class, gPlace.getClass());
-		assertEquals(1, net.getPredecessors(gPlace).size());
-		assertEquals(2, net.getSuccessors(gPlace).size());
-		assertEquals(t1.getId(), net.getFirstPredecessor(gPlace).getId());
+		assertEquals(1, net.getDirectPredecessors(gPlace).size());
+		assertEquals(2, net.getDirectSuccessors(gPlace).size());
+		assertEquals(t1.getId(), net.getFirstDirectPredecessor(gPlace).getId());
 	}
 	
 	public void testANDSplit() {
@@ -74,8 +74,8 @@ public class Process2PetriNetTest extends TestCase {
 			}
 		}
 		assertEquals(Transition.class, gTrans.getClass());
-		assertEquals(1, net.getPredecessors(gTrans).size());
-		assertEquals(2, net.getSuccessors(gTrans).size());
-		assertEquals(t1.getId(), net.getFirstPredecessor(net.getFirstPredecessor(gTrans)).getId());
+		assertEquals(1, net.getDirectPredecessors(gTrans).size());
+		assertEquals(2, net.getDirectSuccessors(gTrans).size());
+		assertEquals(t1.getId(), net.getFirstDirectPredecessor(net.getFirstDirectPredecessor(gTrans)).getId());
 	}
 }
