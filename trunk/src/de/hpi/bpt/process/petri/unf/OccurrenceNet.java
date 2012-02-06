@@ -81,7 +81,7 @@ public class OccurrenceNet extends PetriNet {
 		return this.e2t.get(e);
 	}
 	
-	private BPNode getUnfNode(Node n) {
+	public BPNode getUnfoldingNode(Node n) {
 		if (n instanceof Place)
 			return this.getCondition((Place) n);
 		
@@ -92,8 +92,8 @@ public class OccurrenceNet extends PetriNet {
 	}
 	
 	public OrderingRelation getOrderingRelation(Node n1, Node n2) {
-		BPNode bpn1 = this.getUnfNode(n1);
-		BPNode bpn2 = this.getUnfNode(n2);
+		BPNode bpn1 = this.getUnfoldingNode(n1);
+		BPNode bpn2 = this.getUnfoldingNode(n2);
 		
 		if (bpn1!=null && bpn2!=null) 
 			return this.unf.getOrderingRelation(bpn1,bpn2);
@@ -118,7 +118,7 @@ public class OccurrenceNet extends PetriNet {
 	public Set<Place> getCutInducedByLocalConfiguration(Transition t) {
 		Set<Place> result = new HashSet<Place>();
 		
-		BPNode n = this.getUnfNode(t);
+		BPNode n = this.getUnfoldingNode(t);
 		Event e = (Event) n;
 		Cut cut = e.getLocalConfiguration().getCut();
 		for (Condition c : cut) result.add(this.getPlace(c));

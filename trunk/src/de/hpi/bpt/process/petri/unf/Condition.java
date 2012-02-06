@@ -1,5 +1,6 @@
 package de.hpi.bpt.process.petri.unf;
 
+import de.hpi.bpt.process.petri.Node;
 import de.hpi.bpt.process.petri.Place;
 
 /**
@@ -46,6 +47,7 @@ public class Condition extends BPNode {
 	
 	@Override
 	public String getName() {
+		//return this.s.getName();
 		return this.s.getName()+"-"+this.ID;
 	}
 	
@@ -76,5 +78,10 @@ public class Condition extends BPNode {
 		hashCode += this.getPreEvent()==null ? 0 : 11 * this.getPreEvent().getTransition().hashCode();
 		
 		return hashCode;
+	}
+
+	@Override
+	public Node getNode() {
+		return this.getPlace();
 	}
 }
