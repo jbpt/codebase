@@ -49,7 +49,7 @@ public class PathCheck implements ICheck {
 		visited.add(node);
 		if (sources.contains(node))
 			return true;
-		for (Node pred:process.getPredecessors(node)) {
+		for (Node pred:process.getDirectPredecessors(node)) {
 			if (!visited.contains(pred) && hasSource(process, pred, sources))
 				return true;
 		}
@@ -60,7 +60,7 @@ public class PathCheck implements ICheck {
 		visited.add(node);
 		if (sinks.contains(node))
 			return true;
-		for (Node succ:process.getSuccessors(node)) {
+		for (Node succ:process.getDirectSuccessors(node)) {
 			if (!visited.contains(succ) && hasSink(process, succ, sinks))
 				return true;
 		}

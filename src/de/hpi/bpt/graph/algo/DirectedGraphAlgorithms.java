@@ -54,7 +54,7 @@ public class DirectedGraphAlgorithms<E extends IDirectedEdge<V>,V extends IVerte
 		Iterator<V> i = this.getBoundaryVertices(g).iterator();
 		while (i.hasNext()) {
 			V v = i.next();
-			if (g.getPredecessors(v).size()==0)
+			if (g.getDirectPredecessors(v).size()==0)
 				result.add(v);
 		}
 		
@@ -72,7 +72,7 @@ public class DirectedGraphAlgorithms<E extends IDirectedEdge<V>,V extends IVerte
 		Iterator<V> i = this.getBoundaryVertices(g).iterator();
 		while (i.hasNext()) {
 			V v = i.next();
-			if (g.getSuccessors(v).size()==0)
+			if (g.getDirectSuccessors(v).size()==0)
 				result.add(v);
 		}
 		
@@ -149,7 +149,7 @@ public class DirectedGraphAlgorithms<E extends IDirectedEdge<V>,V extends IVerte
 				final BitSet curDoms = new BitSet(size);
 				curDoms.or(old);
 				
-				Collection<V> predecessors = postDominators ? g.getSuccessors(vList.get(i)) : g.getPredecessors(vList.get(i));
+				Collection<V> predecessors = postDominators ? g.getDirectSuccessors(vList.get(i)) : g.getDirectPredecessors(vList.get(i));
 				for (V v : predecessors)
 					curDoms.and(dom[vList.indexOf(v)]);
 				

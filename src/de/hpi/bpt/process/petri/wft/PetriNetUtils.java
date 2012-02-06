@@ -19,7 +19,7 @@ public class PetriNetUtils {
 		while (transitions.hasNext()) {
 			Transition transition = transitions.next();
 			
-			if (net.getPredecessors(transition).size() > 1) {
+			if (net.getDirectPredecessors(transition).size() > 1) {
 				Place newP = addPlace(net);
 				Transition newT = addTransition(net);
 				relinkIncomingArcs(net, transition, newT);
@@ -27,7 +27,7 @@ public class PetriNetUtils {
 				net.addFlow(newT, newP);
 				net.addFlow(newP, transition);
 			}
-			if (net.getSuccessors(transition).size()>1) {
+			if (net.getDirectSuccessors(transition).size()>1) {
 				Place newP = addPlace(net);
 				Transition newT = addTransition(net);
 				relinkOutgoingArcs(net, transition, newT);
@@ -45,7 +45,7 @@ public class PetriNetUtils {
 		while (places.hasNext()) {
 			Place place = places.next();
 			
-			if (net.getPredecessors(place).size() > 1 && net.getSuccessors(place).size()>1) {
+			if (net.getDirectPredecessors(place).size() > 1 && net.getDirectSuccessors(place).size()>1) {
 				Place newP = addPlace(net);
 				Transition newT = addTransition(net);
 				relinkOutgoingArcs(net, place, newP);

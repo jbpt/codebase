@@ -150,7 +150,7 @@ public class AbstractTree<E extends IDirectedEdge<V>,V extends IVertex> extends 
 	 * @see de.hpi.bpt.graph.abs.ITree#getChildren(de.hpi.bpt.hypergraph.abs.IVertex)
 	 */
 	public Collection<V> getChildren(V v) {
-		return this.getSuccessors(v);
+		return this.getDirectSuccessors(v);
 	}
 
 	/*
@@ -177,7 +177,7 @@ public class AbstractTree<E extends IDirectedEdge<V>,V extends IVertex> extends 
 	 * @see de.hpi.bpt.graph.abs.ITree#getParent(de.hpi.bpt.hypergraph.abs.IVertex)
 	 */
 	public V getParent(V v) {
-		return this.getFirstPredecessor(v);
+		return this.getFirstDirectPredecessor(v);
 	}
 
 	/*

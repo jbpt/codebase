@@ -71,8 +71,8 @@ public class PetriNetCloneTest extends TestCase {
 		for (Place p : clone.getPlaces()) {
 			if (p.getTokens() > 0) {
 				assertEquals(3, p.getTokens());
-				assertEquals(1, clone.getPredecessors(p).size()); 
-				assertEquals(2, clone.getSuccessors(p).size()); 
+				assertEquals(1, clone.getDirectPredecessors(p).size()); 
+				assertEquals(2, clone.getDirectSuccessors(p).size()); 
 			}
 		}
 				

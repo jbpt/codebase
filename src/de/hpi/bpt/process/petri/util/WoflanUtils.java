@@ -114,12 +114,12 @@ public class WoflanUtils {
 			for (Transition t : net.getTransitions()) {
 				bufWriter.write("trans \"" + formatId(t.getId()) + "\"\n");
 				bufWriter.write("in ");
-				for (Node n : net.getPredecessors(t)) {
+				for (Node n : net.getDirectPredecessors(t)) {
 					bufWriter.write("\"" + formatId(n.getId()) + "\" ");
 				}
 				bufWriter.write("\n");
 				bufWriter.write("out ");
-				for (Node n : net.getSuccessors(t)) {
+				for (Node n : net.getDirectSuccessors(t)) {
 					bufWriter.write("\"" + formatId(n.getId()) + "\" ");
 				}
 				bufWriter.write("\n;\n");

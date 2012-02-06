@@ -426,7 +426,7 @@ public class WFTree {
 					boolean allCooccurring = true; 
 					
 					if (entryOfUtype instanceof Place) {
-						for (Node n : wf.getSuccessors(entryOfUtype)) {
+						for (Node n : wf.getDirectSuccessors(entryOfUtype)) {
 							//check only if succeeding node is in the U type fragment!
 							if (getPath(path.get(i),getTreeNode(n)).isEmpty())
 								continue;
@@ -530,7 +530,7 @@ public class WFTree {
 		Node entryNode = treeNode.getEntry();
 		Node exitNode = treeNode.getExit();
 		
-		if (net.getPredecessors(entryNode).size() != 0 || (entryNode instanceof Transition)) {
+		if (net.getDirectPredecessors(entryNode).size() != 0 || (entryNode instanceof Transition)) {
 			Place init = new Place();
 			net.addNode(init);
 			
@@ -544,7 +544,7 @@ public class WFTree {
 				net.addFlow(init, entryNode);
 		}
 		
-		if (net.getSuccessors(exitNode).size() != 0 || (exitNode instanceof Transition)) {
+		if (net.getDirectSuccessors(exitNode).size() != 0 || (exitNode instanceof Transition)) {
 			Place exit = new Place();
 			net.addNode(exit);
 			
