@@ -102,7 +102,7 @@ public class RelSetCreatorUnfolding extends AbstractRelSetCreator implements Rel
 		this.unfolding = new Unfolding(pn,setup);
 		this.occurrenceNet = this.unfolding.getOccurrenceNet();
 		
-		System.out.println(this.occurrenceNet.toDOT());
+//		System.out.println(this.occurrenceNet.toDOT());
 		
 		/*
 		 * Derive step matrix from unfolding
