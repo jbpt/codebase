@@ -197,7 +197,8 @@ public class BCTree<E extends IEdge<V>, V extends IVertex> extends DFS<E,V> {
         components.add(g);
     }
 
-    protected void process(V v) {
+    @SuppressWarnings("unchecked")
+	protected void process(V v) {
         NodeAttrs att = (NodeAttrs)attrs.get(v);
         att.visited = true;
         time++;

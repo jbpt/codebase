@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import de.hpi.bpt.hypergraph.abs.Vertex;
-import de.hpi.bpt.process.Process;
+import de.hpi.bpt.process.ProcessModel;
 import de.hpi.bpt.process.petri.Marking;
 import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.Transition;
@@ -27,7 +27,7 @@ public class BisimilarityChecker2 {
 	private Map<String, BitSet> nameMap;
 	private int n;
 	
-	public BisimilarityChecker2(Process process1, Process process2) throws TransformationException {
+	public BisimilarityChecker2(ProcessModel process1, ProcessModel process2) throws TransformationException {
 		this(Process2PetriNet.convert(process1), Process2PetriNet.convert(process2));
 	}
 	

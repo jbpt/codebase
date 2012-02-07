@@ -16,10 +16,11 @@ public class AbstractDirectedHyperEdge<V extends IVertex> extends AbstractHyperE
 	protected Collection<V> source;
 	protected Collection<V> target;
 	
-	@SuppressWarnings("unchecked")
+
+	@SuppressWarnings("rawtypes")
 	private AbstractMultiDirectedHyperGraph graph = null;
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public AbstractDirectedHyperEdge(AbstractMultiDirectedHyperGraph g) {
 		super(g);
 		this.source = new ArrayList<V>();

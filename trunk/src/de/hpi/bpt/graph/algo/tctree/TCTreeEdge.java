@@ -12,8 +12,7 @@ import de.hpi.bpt.hypergraph.abs.IVertex;
  */
 public class TCTreeEdge<E extends IEdge<V>, V extends IVertex> extends AbstractDirectedEdge<TCTreeNode<E,V>> {
 
-	@SuppressWarnings("unchecked")
-	protected TCTreeEdge(AbstractMultiDirectedGraph g, TCTreeNode source, TCTreeNode target) {
+	protected TCTreeEdge(AbstractMultiDirectedGraph<?, ?> g, TCTreeNode<E, V> source, TCTreeNode<E, V> target) {
 		super(g, source, target);
 	}
 }

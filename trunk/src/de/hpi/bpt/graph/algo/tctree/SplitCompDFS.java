@@ -619,9 +619,9 @@ public class SplitCompDFS<E extends IEdge<V>, V extends IVertex> extends Abstrac
 	 * @param w		the target node of the virtual edge
 	 * @return		the virtual edge
 	 */
-	protected E newVirtualEdge(EdgeList component, V v, V w){
+	protected E newVirtualEdge(EdgeList<E, V> component, V v, V w){
 		// create virtual edge and add edges to component
-		E virtualEdge = (E) ((TCTreeSkeleton) g).addVirtualEdge(v, w);
+		E virtualEdge = (E) ((TCTreeSkeleton<E,V>) g).addVirtualEdge(v, w);
 		updateEdgeCount(v, 1);
 		updateEdgeCount(w, 1);
 		virtualEdge.setId(UUID.randomUUID().toString());

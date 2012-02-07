@@ -11,6 +11,7 @@ public class VertexFactory<V extends IVertex> {
 		this.clazz = clazz;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public V createInstance() {
 		try {
 			return (V) clazz.newInstance();

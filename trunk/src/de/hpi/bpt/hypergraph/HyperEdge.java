@@ -13,8 +13,7 @@ import de.hpi.bpt.hypergraph.abs.Vertex;
  */
 public class HyperEdge extends AbstractHyperEdge<Vertex>
 {
-	@SuppressWarnings("unchecked")
-	protected HyperEdge(AbstractMultiHyperGraph g) {
+	protected HyperEdge(AbstractMultiHyperGraph<?, ?> g) {
 		super(g);
 	}
 }

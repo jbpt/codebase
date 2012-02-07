@@ -1,11 +1,11 @@
 package de.hpi.bpt.process.petri.test;
 
 import junit.framework.TestCase;
-
+import de.hpi.bpt.process.Activity;
+import de.hpi.bpt.process.AndGateway;
 import de.hpi.bpt.process.Gateway;
-import de.hpi.bpt.process.GatewayType;
-import de.hpi.bpt.process.Process;
-import de.hpi.bpt.process.Task;
+import de.hpi.bpt.process.ProcessModel;
+import de.hpi.bpt.process.XorGateway;
 import de.hpi.bpt.process.petri.Node;
 import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.Place;
@@ -16,11 +16,11 @@ import de.hpi.bpt.process.petri.util.TransformationException;
 public class Process2PetriNetTest extends TestCase {
 
 	public void testXORSplit() {
-		Process p = new Process();
-		Task t1 = new Task();
-		Task t2 = new Task();
-		Task t3 = new Task();
-		Gateway g1 = new Gateway(GatewayType.XOR);
+		ProcessModel p = new ProcessModel();
+		Activity t1 = new Activity();
+		Activity t2 = new Activity();
+		Activity t3 = new Activity();
+		Gateway g1 = new XorGateway();
 		p.addControlFlow(t1, g1);
 		p.addControlFlow(g1, t2);
 		p.addControlFlow(g1, t3);
@@ -48,11 +48,11 @@ public class Process2PetriNetTest extends TestCase {
 	}
 	
 	public void testANDSplit() {
-		Process p = new Process();
-		Task t1 = new Task();
-		Task t2 = new Task();
-		Task t3 = new Task();
-		Gateway g1 = new Gateway(GatewayType.AND);
+		ProcessModel p = new ProcessModel();
+		Activity t1 = new Activity();
+		Activity t2 = new Activity();
+		Activity t3 = new Activity();
+		Gateway g1 = new AndGateway();
 		p.addControlFlow(t1, g1);
 		p.addControlFlow(g1, t2);
 		p.addControlFlow(g1, t3);

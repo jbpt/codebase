@@ -13,12 +13,13 @@ import java.util.Iterator;
  */
 public class AbstractHyperEdge<V extends IVertex> extends GObject implements IHyperEdge<V>
 {
-	@SuppressWarnings("unchecked")
+
+	@SuppressWarnings("rawtypes")
 	private AbstractMultiHyperGraph graph = null;
 	
 	protected Collection<V> vertices;
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	protected AbstractHyperEdge(AbstractMultiHyperGraph g) {
 		super();
 		this.vertices = new ArrayList<V>();

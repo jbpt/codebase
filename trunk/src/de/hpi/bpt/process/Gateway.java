@@ -1,36 +1,45 @@
 package de.hpi.bpt.process;
 
+/**
+ * Abstract base class for all {@link Gateway}s of a {@link IProcessModel}.
+ * 
+ * @author Tobias Hoppe
+ *
+ */
+public abstract class Gateway extends FlowNode implements IGateway {	
 
-public class Gateway extends Node {	
+	/**
+	 * Creates a new {@link Gateway} with an empty name.
+	 */
+	public Gateway() {
+		super();
+	}
 	
-	private GatewayType type;
+	/**
+	 * Creates a new {@link Gateway} with the given name.
+	 * @param name of this {@link Gateway}
+	 */
+	public Gateway(String name){
+		super(name);
+	}
+	
+	@Override
+	public boolean isJoin() {
+		ProcessModel model = this.getModel();
+		if (model != null && model.getIncomingControlFlow(this).size() > 1 && model.getOutgoingControlFlow(this).size() == 1){
+			return true;
+		}
+		
+		return false;
+	}
 
-	public Gateway(GatewayType type) {
-		this.type = type;
-	}
-	
-	public Gateway(GatewayType type, String name) {
-		this.type = type;
-		this.setName(name);
-	}
-	
-	public GatewayType getGatewayType() {
-		return type;
-	}
-
-	public void setGatewayType(GatewayType type) {
-		this.type = type;
-	}
-	
-	public boolean isXOR() {
-		return this.type == GatewayType.XOR;
-	}
-	
-	public boolean isAND() {
-		return this.type == GatewayType.AND;
-	}
-	
-	public boolean isOR() {
-		return this.type == GatewayType.OR;
+	@Override
+	public boolean isSplit() {
+		ProcessModel model = this.getModel();
+		if (model != null && model.getIncomingControlFlow(this).size() == 1 && model.getOutgoingControlFlow(this).size() > 1){
+			return true;
+		}
+		
+		return false;
 	}
 }

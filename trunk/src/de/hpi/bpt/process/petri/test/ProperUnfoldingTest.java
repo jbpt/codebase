@@ -3,10 +3,10 @@ package de.hpi.bpt.process.petri.test;
 import java.io.FileNotFoundException;
 
 import junit.framework.TestCase;
-import de.hpi.bpt.process.Gateway;
-import de.hpi.bpt.process.GatewayType;
-import de.hpi.bpt.process.Process;
-import de.hpi.bpt.process.Task;
+import de.hpi.bpt.process.Activity;
+import de.hpi.bpt.process.AndGateway;
+import de.hpi.bpt.process.ProcessModel;
+import de.hpi.bpt.process.XorGateway;
 import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.Place;
 import de.hpi.bpt.process.petri.Transition;
@@ -20,31 +20,31 @@ import de.hpi.bpt.utils.IOUtils;
 public class ProperUnfoldingTest extends TestCase {
 	
 	public void test1() throws TransformationException, FileNotFoundException {
-		Process p = new Process();
+		ProcessModel p = new ProcessModel();
 		
-		Task ti = new Task("I");
-		Task to = new Task("O");
-		Task ta = new Task("A");
-		Task tb = new Task("B");
-		Task tc = new Task("C");
-		Task td = new Task("D");
-		Task te = new Task("E");
-		Task tf = new Task("F");
-		Task tg = new Task("G");
-		Task th = new Task("H");
-		Task tj = new Task("J");
-		Task tk = new Task("K");
+		Activity ti = new Activity("I");
+		Activity to = new Activity("O");
+		Activity ta = new Activity("A");
+		Activity tb = new Activity("B");
+		Activity tc = new Activity("C");
+		Activity td = new Activity("D");
+		Activity te = new Activity("E");
+		Activity tf = new Activity("F");
+		Activity tg = new Activity("G");
+		Activity th = new Activity("H");
+		Activity tj = new Activity("J");
+		Activity tk = new Activity("K");
 	
-		Gateway gq = new Gateway(GatewayType.XOR);
-		Gateway gr = new Gateway(GatewayType.XOR);
-		Gateway gs = new Gateway(GatewayType.XOR);
-		Gateway gt = new Gateway(GatewayType.XOR);
-		Gateway gu = new Gateway(GatewayType.XOR);
-		Gateway gv = new Gateway(GatewayType.AND);
-		Gateway gw = new Gateway(GatewayType.AND);
-		Gateway gx = new Gateway(GatewayType.XOR);
-		Gateway gy = new Gateway(GatewayType.XOR);
-		Gateway gz = new Gateway(GatewayType.AND);
+		XorGateway gq = new XorGateway();
+		XorGateway gr = new XorGateway();
+		XorGateway gs = new XorGateway();
+		XorGateway gt = new XorGateway();
+		XorGateway gu = new XorGateway();
+		AndGateway gv = new AndGateway();
+		AndGateway gw = new AndGateway();
+		XorGateway gx = new XorGateway();
+		XorGateway gy = new XorGateway();
+		AndGateway gz = new AndGateway();
 		
 		p.addControlFlow(ti,gq);
 		p.addControlFlow(gq,gr);
@@ -88,31 +88,31 @@ public class ProperUnfoldingTest extends TestCase {
 	}
 	
 	public void test2() throws TransformationException, FileNotFoundException {
-		Process p = new Process();
+		ProcessModel p = new ProcessModel();
 		
-		Task ti = new Task("I");
-		Task to = new Task("O");
-		Task ta = new Task("A");
-		Task tb = new Task("B");
-		Task tc = new Task("C");
-		Task td = new Task("D");
-		Task te = new Task("E");
-		Task tf = new Task("F");
-		Task tg = new Task("G");
-		Task th = new Task("H");
-		Task tj = new Task("J");
-		Task tk = new Task("K");
+		Activity ti = new Activity("I");
+		Activity to = new Activity("O");
+		Activity ta = new Activity("A");
+		Activity tb = new Activity("B");
+		Activity tc = new Activity("C");
+		Activity td = new Activity("D");
+		Activity te = new Activity("E");
+		Activity tf = new Activity("F");
+		Activity tg = new Activity("G");
+		Activity th = new Activity("H");
+		Activity tj = new Activity("J");
+		Activity tk = new Activity("K");
 	
-		Gateway gq = new Gateway(GatewayType.AND);
-		Gateway gr = new Gateway(GatewayType.XOR);
-		Gateway gs = new Gateway(GatewayType.XOR);
-		Gateway gt = new Gateway(GatewayType.XOR);
-		Gateway gu = new Gateway(GatewayType.AND);
-		Gateway gv = new Gateway(GatewayType.AND);
-		Gateway gw = new Gateway(GatewayType.XOR);
-		Gateway gx = new Gateway(GatewayType.XOR);
-		Gateway gy = new Gateway(GatewayType.AND);
-		Gateway gz = new Gateway(GatewayType.AND);
+		AndGateway gq = new AndGateway();
+		XorGateway gr = new XorGateway();
+		XorGateway gs = new XorGateway();
+		XorGateway gt = new XorGateway();
+		AndGateway gu = new AndGateway();
+		AndGateway gv = new AndGateway();
+		XorGateway gw = new XorGateway();
+		XorGateway gx = new XorGateway();
+		AndGateway gy = new AndGateway();
+		AndGateway gz = new AndGateway();
 		
 		p.addControlFlow(ti,gq);
 		p.addControlFlow(gq,gr);
@@ -156,28 +156,28 @@ public class ProperUnfoldingTest extends TestCase {
 	}
 	
 	public void test3() throws TransformationException, FileNotFoundException {
-		Process p = new Process();
+		ProcessModel p = new ProcessModel();
 		
-		Task ti = new Task("I");
-		Task to = new Task("O");
-		Task ta = new Task("A");
-		Task tb = new Task("B");
-		Task tc = new Task("C");
-		Task td = new Task("D");
-		Task te = new Task("E");
-		Task tf = new Task("F");
-		Task tg = new Task("G");
+		Activity ti = new Activity("I");
+		Activity to = new Activity("O");
+		Activity ta = new Activity("A");
+		Activity tb = new Activity("B");
+		Activity tc = new Activity("C");
+		Activity td = new Activity("D");
+		Activity te = new Activity("E");
+		Activity tf = new Activity("F");
+		Activity tg = new Activity("G");
 		
-		Gateway gq = new Gateway(GatewayType.AND);
-		Gateway gr = new Gateway(GatewayType.XOR);
-		Gateway gs = new Gateway(GatewayType.XOR);
-		Gateway gt = new Gateway(GatewayType.XOR);
-		Gateway gu = new Gateway(GatewayType.AND);
-		Gateway gv = new Gateway(GatewayType.AND);
-		Gateway gw = new Gateway(GatewayType.XOR);
-		Gateway gx = new Gateway(GatewayType.XOR);
-		Gateway gy = new Gateway(GatewayType.AND);
-		Gateway gz = new Gateway(GatewayType.AND);
+		AndGateway gq = new AndGateway();
+		XorGateway gr = new XorGateway();
+		XorGateway gs = new XorGateway();
+		XorGateway gt = new XorGateway();
+		AndGateway gu = new AndGateway();
+		AndGateway gv = new AndGateway();
+		XorGateway gw = new XorGateway();
+		XorGateway gx = new XorGateway();
+		AndGateway gy = new AndGateway();
+		AndGateway gz = new AndGateway();
 		
 		p.addControlFlow(ti,gq);
 		p.addControlFlow(gq,gr);
@@ -218,25 +218,25 @@ public class ProperUnfoldingTest extends TestCase {
 	}
 	
 	public void test4() throws TransformationException, FileNotFoundException {
-		Process p = new Process();
+		ProcessModel p = new ProcessModel();
 		
-		Task ti = new Task("I");
-		Task to = new Task("O");
-		Task td = new Task("D");
-		Task te = new Task("E");
-		Task tf = new Task("F");
-		Task tg = new Task("G");
-		Task tst = new Task("ST");
-		Task ttv = new Task("TV");
+		Activity ti = new Activity("I");
+		Activity to = new Activity("O");
+		Activity td = new Activity("D");
+		Activity te = new Activity("E");
+		Activity tf = new Activity("F");
+		Activity tg = new Activity("G");
+		Activity tst = new Activity("ST");
+		Activity ttv = new Activity("TV");
 		
-		Gateway gq = new Gateway(GatewayType.AND);
-		Gateway grst = new Gateway(GatewayType.XOR);
-		Gateway gu = new Gateway(GatewayType.AND);
-		Gateway gv = new Gateway(GatewayType.AND);
-		Gateway gw = new Gateway(GatewayType.XOR);
-		Gateway gx = new Gateway(GatewayType.XOR);
-		Gateway gy = new Gateway(GatewayType.AND);
-		Gateway gz = new Gateway(GatewayType.AND);
+		AndGateway gq = new AndGateway();
+		XorGateway grst = new XorGateway();
+		AndGateway gu = new AndGateway();
+		AndGateway gv = new AndGateway();
+		XorGateway gw = new XorGateway();
+		XorGateway gx = new XorGateway();
+		AndGateway gy = new AndGateway();
+		AndGateway gz = new AndGateway();
 		
 		p.addControlFlow(ti,gq);
 		p.addControlFlow(gq,grst);

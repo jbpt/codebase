@@ -3,10 +3,11 @@ package de.hpi.bpt.process.petri.test;
 import java.io.FileNotFoundException;
 
 import junit.framework.TestCase;
+import de.hpi.bpt.process.Activity;
+import de.hpi.bpt.process.AndGateway;
 import de.hpi.bpt.process.Gateway;
-import de.hpi.bpt.process.GatewayType;
-import de.hpi.bpt.process.Process;
-import de.hpi.bpt.process.Task;
+import de.hpi.bpt.process.ProcessModel;
+import de.hpi.bpt.process.XorGateway;
 import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.Place;
 import de.hpi.bpt.process.petri.Transition;
@@ -20,22 +21,22 @@ import de.hpi.bpt.utils.IOUtils;
 public class SoundUnfoldingMSMSTest extends TestCase {
 	
 	public void test1() throws TransformationException, FileNotFoundException {
-		Process p = new Process();
+		ProcessModel p = new ProcessModel();
 		
-		Task b1 = new Task("B1");
-		Task b2 = new Task("B2");
-		Task e5 = new Task("e5");
-		Task e6 = new Task("e6");
+		Activity b1 = new Activity("B1");
+		Activity b2 = new Activity("B2");
+		Activity e5 = new Activity("e5");
+		Activity e6 = new Activity("e6");
 	
-		Gateway y = new Gateway(GatewayType.AND);
-		Gateway z = new Gateway(GatewayType.XOR);
+		Gateway y = new AndGateway();
+		Gateway z = new XorGateway();
 		
-		p.addTask(b1);
-		p.addTask(b2);
-		p.addTask(e5);
-		p.addTask(e6);
-		p.addGateway(y);
-		p.addGateway(z);
+		p.addFlowNode(b1);
+		p.addFlowNode(b2);
+		p.addFlowNode(e5);
+		p.addFlowNode(e6);
+		p.addFlowNode(y);
+		p.addFlowNode(z);
 		
 		p.addControlFlow(b1,y);
 		p.addControlFlow(b2,z);

@@ -1,5 +1,7 @@
 package de.hpi.bpt.process.epc;
 
+import de.hpi.bpt.process.IDataNode;
+
 
 /**
  * A document which is read or written by functions in a process model.
@@ -7,5 +9,6 @@ package de.hpi.bpt.process.epc;
  * 
  * @author Artem Polyvyanyy
  */
-public interface IDocument extends INonFlowObject
-{}
+public interface IDocument extends IDataNode{
+	
+}

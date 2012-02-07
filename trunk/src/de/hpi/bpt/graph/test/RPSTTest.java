@@ -8,12 +8,12 @@ import de.hpi.bpt.graph.algo.rpst.RPST;
 import de.hpi.bpt.graph.algo.rpst.RPSTNode;
 import de.hpi.bpt.graph.algo.tctree.TCType;
 import de.hpi.bpt.hypergraph.abs.Vertex;
+import de.hpi.bpt.process.Activity;
 import de.hpi.bpt.process.ControlFlow;
+import de.hpi.bpt.process.FlowNode;
 import de.hpi.bpt.process.Gateway;
-import de.hpi.bpt.process.GatewayType;
-import de.hpi.bpt.process.Node;
-import de.hpi.bpt.process.Process;
-import de.hpi.bpt.process.Task;
+import de.hpi.bpt.process.ProcessModel;
+import de.hpi.bpt.process.XorGateway;
 
 public class RPSTTest extends TestCase {
 	
@@ -162,18 +162,18 @@ public class RPSTTest extends TestCase {
 		// 	.		  |_ t8 _|			.
 		//	............................. 
 		
-		Process p = new Process();
+		ProcessModel p = new ProcessModel();
 		
-		Task t1 = new Task("1");
-		Task t3 = new Task("3");
-		Task t4 = new Task("4");
-		Task t8 = new Task("8");
-		Task t9 = new Task("9");
+		Activity t1 = new Activity("1");
+		Activity t3 = new Activity("3");
+		Activity t4 = new Activity("4");
+		Activity t8 = new Activity("8");
+		Activity t9 = new Activity("9");
 		
-		Gateway s2 = new Gateway(GatewayType.XOR, "2");
-		Gateway s6 = new Gateway(GatewayType.XOR, "6");
-		Gateway j7 = new Gateway(GatewayType.XOR, "7");
-		Gateway j5 = new Gateway(GatewayType.XOR, "5");
+		Gateway s2 = new XorGateway("2");
+		Gateway s6 = new XorGateway("6");
+		Gateway j7 = new XorGateway("7");
+		Gateway j5 = new XorGateway("5");
 		
 		p.addControlFlow(t1, s2);
 		p.addControlFlow(s2, t3);
@@ -187,7 +187,7 @@ public class RPSTTest extends TestCase {
 		p.addControlFlow(j7, j5);
 		p.addControlFlow(j5, t9);
 		
-		RPST<ControlFlow,Node> rpst = new RPST<ControlFlow,Node>(p);
+		RPST<ControlFlow<FlowNode>,FlowNode> rpst = new RPST<ControlFlow<FlowNode>,FlowNode>(p);
 		
 		System.out.println(rpst);
 		

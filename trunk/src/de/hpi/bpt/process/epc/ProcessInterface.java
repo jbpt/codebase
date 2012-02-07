@@ -1,16 +1,23 @@
 package de.hpi.bpt.process.epc;
 
+import de.hpi.bpt.process.ControlFlow;
+import de.hpi.bpt.process.FlowNode;
+import de.hpi.bpt.process.IProcessModel;
+import de.hpi.bpt.process.NonFlowNode;
+import de.hpi.bpt.process.ProcessModel;
+
 
 /**
  * EPC process interface implementation
- * @author Artem Polyvyanyy
+ * @author Artem Polyvyanyy, Cindy Fähnrich, Tobias Hoppe
  *
  */
-public class ProcessInterface extends FlowObject implements IProcessInterface {
+public class ProcessInterface extends FlowNode implements IProcessInterface {
 	
-	@SuppressWarnings("unchecked")
-	private IEPC epc = null;
+	private IEpc<ControlFlow<FlowNode>, FlowNode, NonFlowNode> epc = null;
 
+	private String entry = ""; //the reference to the referred process
+	
 	public ProcessInterface() {
 		super();
 	}
@@ -22,22 +29,21 @@ public class ProcessInterface extends FlowObject implements IProcessInterface {
 	public ProcessInterface(String name) {
 		super(name);
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see de.hpi.bpt.process.epc.flow.FlowObject#getType()
-	 */
+	
+	@SuppressWarnings("unchecked")
 	@Override
-	public FlowObjectType getType() {
-		return FlowObjectType.PROCESS_INTERFACE;
+	public ProcessInterface clone() {
+		ProcessInterface clone = (ProcessInterface) super.clone();
+		clone.epc = (IEpc<ControlFlow<FlowNode>, FlowNode, NonFlowNode>) ((ProcessModel) this.epc).clone();
+		return clone;
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * @see de.hpi.bpt.process.epc.flow.IProcessInterface#getProcess()
 	 */
-	@SuppressWarnings("unchecked")
-	public IEPC getProcess() {
+	@Override
+	public IEpc<ControlFlow<FlowNode>, FlowNode, NonFlowNode> getProcess() {
 		return epc;
 	}
 
@@ -45,8 +51,23 @@ public class ProcessInterface extends FlowObject implements IProcessInterface {
 	 * (non-Javadoc)
 	 * @see de.hpi.bpt.process.epc.flow.IProcessInterface#setProcess(de.hpi.bpt.process.epc.IEPC)
 	 */
-	@SuppressWarnings("unchecked")
-	public void setProcess(IEPC epc) {
+	@Override
+	public void setProcess(IEpc<ControlFlow<FlowNode>, FlowNode, NonFlowNode> epc) {
 		this.epc = epc;
+	}
+	
+	/**
+	 * Sets the reference uri of the referred process.
+	 * @param entry
+	 */
+	public void setEntry(String entry){
+		this.entry = entry;
+	}
+	
+	/**
+	 * @return the reference uri of the referred proccess
+	 */
+	public String getEntry(){
+		return this.entry;
 	}
 }

@@ -21,11 +21,9 @@ public class AbstractEdge<V extends IVertex> extends AbstractHyperEdge<V> implem
 	protected V v1;
 	protected V v2;
 	
-	@SuppressWarnings("unchecked")
-	private AbstractMultiGraph graph = null;
+	private AbstractMultiGraph<?, V> graph = null;
 
-	@SuppressWarnings("unchecked")
-	protected AbstractEdge(AbstractMultiGraph g, V v1, V v2) {
+	protected AbstractEdge(AbstractMultiGraph<?, V> g, V v1, V v2) {
 		super(g);
 		this.graph = g;
 		setVertices(v1, v2);
@@ -64,7 +62,7 @@ public class AbstractEdge<V extends IVertex> extends AbstractHyperEdge<V> implem
 			Collection<V> vs = new ArrayList<V>();
 			vs.add(v1); vs.add(v2);
 			
-			Collection<IDirectedHyperEdge<V>> es = this.graph.getEdges(vs);
+			Collection<IDirectedHyperEdge<V>> es = (Collection<IDirectedHyperEdge<V>>) this.graph.getEdges(vs);
 			if (es.size()>0) {
 				Iterator<IDirectedHyperEdge<V>> i = es.iterator();
 				while (i.hasNext()) {

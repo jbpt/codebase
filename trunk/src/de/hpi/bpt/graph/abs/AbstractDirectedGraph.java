@@ -20,6 +20,7 @@ public class AbstractDirectedGraph<E extends IDirectedEdge<V>, V extends IVertex
 	 * (non-Javadoc)
 	 * @see de.hpi.bpt.hypergraph.abs.AbstractMultiDirectedHyperGraph#addEdge(de.hpi.bpt.hypergraph.abs.IVertex, de.hpi.bpt.hypergraph.abs.IVertex)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public E addEdge(V s, V t) {
 		Collection<V> ss = new ArrayList<V>(); ss.add(s);

@@ -13,6 +13,7 @@ public class RPSTSkeleton<E extends IDirectedEdge<V>, V extends IVertex>
 {
 	private Collection<Collection<V>> vEdges = new ArrayList<Collection<V>>();
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public E addEdge(V from, V to) {
 		if (from == null || to == null) return null;

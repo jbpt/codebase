@@ -21,10 +21,11 @@ public class AbstractDirectedEdge<V extends IVertex> extends AbstractDirectedHyp
 	protected V source;
 	protected V target;
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	private AbstractMultiDirectedGraph graph = null;
 	
-	@SuppressWarnings("unchecked")
+
+	@SuppressWarnings("rawtypes")
 	public AbstractDirectedEdge(AbstractMultiDirectedGraph g, V source, V target) {
 		super(g);
 		this.graph = g;

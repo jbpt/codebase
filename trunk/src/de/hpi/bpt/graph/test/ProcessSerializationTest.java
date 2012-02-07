@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.TestCase;
+import de.hpi.bpt.process.Activity;
 import de.hpi.bpt.process.ControlFlow;
+import de.hpi.bpt.process.FlowNode;
 import de.hpi.bpt.process.Gateway;
-import de.hpi.bpt.process.GatewayType;
-import de.hpi.bpt.process.Process;
-import de.hpi.bpt.process.Task;
+import de.hpi.bpt.process.OrGateway;
+import de.hpi.bpt.process.ProcessModel;
+import de.hpi.bpt.process.XorGateway;
 import de.hpi.bpt.process.checks.structural.ProcessStructureChecker;
 import de.hpi.bpt.process.serialize.JSON2Process;
 import de.hpi.bpt.process.serialize.Process2JSON;
@@ -25,49 +27,49 @@ public class ProcessSerializationTest extends TestCase {
 			"'flows' : [{'src' : 'task1', 'tgt' : 'gate1', 'label' : null}," +
 				"{'src' : 'gate1', 'tgt' : 'task2', 'label' : 'x > 3'}," +
 				"{'src' : 'gate1', 'tgt' : 'task3', 'label' : 'x <= 3'}]}";
-		Process process = null;
+		ProcessModel process = null;
 		try {
 			process = JSON2Process.convert(json);
 		} catch(SerializationException e) {}
 		assertNotNull(process);
 		assertEquals(process.getName(), "test case");
-		ArrayList<Task> tasks = (ArrayList<Task>) process.getTasks(); 
+		ArrayList<Activity> tasks = (ArrayList<Activity>) process.getActivities(); 
 		assertEquals(tasks.size(), 3);
-		for (Task task:tasks) {
+		for (Activity task:tasks) {
 			assertTrue(task.getId().matches("task[123]"));
 			assertTrue(task.getName().matches("Task [123]"));
 		}
 		assertEquals(process.getGateways().size(), 1);
 		Gateway gate = (Gateway) process.getGateways().toArray()[0];
-		assertEquals(gate.getGatewayType(), GatewayType.XOR);
+		assertTrue(gate instanceof XorGateway);
 		assertEquals(gate.getId(), "gate1");
 		assertEquals(process.getControlFlow().size(), 3);
-		ArrayList<ControlFlow> flows = (ArrayList<ControlFlow>) process.getControlFlow();
-		for (ControlFlow flow:flows) {
+		ArrayList<ControlFlow<FlowNode>> flows = (ArrayList<ControlFlow<FlowNode>>) process.getControlFlow();
+		for (ControlFlow<FlowNode> flow:flows) {
 			assertTrue(flow.getSource().getId().matches("(task1|gate1)"));
 			assertTrue(flow.getTarget().getId().matches("(task[23]|gate1)"));
 		}
 	}
 	
 	public void testProcess2JSON() {
-		Process process = new Process("test case");
-		Task task1 = new Task("Task 1");
+		ProcessModel process = new ProcessModel("test case");
+		Activity task1 = new Activity("Task 1");
 		task1.setId("task1");
 		process.addVertex(task1);
-		Task task2 = new Task("Task 2");
+		Activity task2 = new Activity("Task 2");
 		task2.setId("task2");
 		process.addVertex(task2);
-		Task task3 = new Task("Task 3");
+		Activity task3 = new Activity("Task 3");
 		task3.setId("task3");
 		process.addVertex(task3);
-		Gateway gate1 = new Gateway(GatewayType.XOR);
+		Gateway gate1 = new XorGateway();
 		gate1.setId("gate1");
 		process.addVertex(gate1);
-		ControlFlow flow1 = process.addControlFlow(task1, gate1);
+		ControlFlow<FlowNode> flow1 = process.addControlFlow(task1, gate1);
 		flow1.setLabel(null);
-		ControlFlow flow2 = process.addControlFlow(gate1, task2);
+		ControlFlow<FlowNode> flow2 = process.addControlFlow(gate1, task2);
 		flow2.setLabel("x > 3");
-		ControlFlow flow3 = process.addControlFlow(gate1, task3);
+		ControlFlow<FlowNode> flow3 = process.addControlFlow(gate1, task3);
 		flow3.setLabel("x <= 3");
 		String json = null;
 		try {
@@ -108,23 +110,23 @@ public class ProcessSerializationTest extends TestCase {
 	}
 	
 	public void testUnstructuredOr() {
-		Process process = new Process("test case");
-		Task task1 = new Task("Task 1");
+		ProcessModel process = new ProcessModel("test case");
+		Activity task1 = new Activity("Task 1");
 		task1.setId("task1");
 		process.addVertex(task1);
-		Task task2 = new Task("Task 2");
+		Activity task2 = new Activity("Task 2");
 		task2.setId("task2");
 		process.addVertex(task2);
-		Task task3 = new Task("Task 3");
+		Activity task3 = new Activity("Task 3");
 		task3.setId("task3");
 		process.addVertex(task3);
-		Task task4 = new Task("Task 4");
+		Activity task4 = new Activity("Task 4");
 		task4.setId("task4");
 		process.addVertex(task4);
-		Gateway gate1 = new Gateway(GatewayType.OR);
+		Gateway gate1 = new OrGateway();
 		gate1.setId("gate1");
 		process.addVertex(gate1);
-		Gateway gate2 = new Gateway(GatewayType.XOR);
+		Gateway gate2 = new XorGateway();
 		gate2.setId("gate2");
 		process.addVertex(gate2);
 		process.addControlFlow(task1, gate1);

@@ -4,20 +4,23 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import de.hpi.bpt.process.Activity;
+import de.hpi.bpt.process.AndGateway;
 import de.hpi.bpt.process.ControlFlow;
+import de.hpi.bpt.process.FlowNode;
 import de.hpi.bpt.process.Gateway;
-import de.hpi.bpt.process.GatewayType;
-import de.hpi.bpt.process.Process;
-import de.hpi.bpt.process.Task;
+import de.hpi.bpt.process.OrGateway;
+import de.hpi.bpt.process.ProcessModel;
+import de.hpi.bpt.process.XorGateway;
 
 public class Process2JSON {
 
-	public static String convert(Process process) throws SerializationException {
+	public static String convert(ProcessModel process) throws SerializationException {
 		try {
 			JSONObject json = new JSONObject();
 			json.put("name", process.getName());
 			JSONArray tasks = new JSONArray();
-			for (Task task:process.getTasks()) {
+			for (Activity task:process.getActivities()) {
 				JSONObject jTask = new JSONObject();
 				jTask.put("id", task.getId());
 				jTask.put("label", task.getName());
@@ -30,12 +33,12 @@ public class Process2JSON {
 				jGate.put("id", gate.getId());
 				if (!gate.getName().equals(""))
 					jGate.put("label", gate.getName());
-				jGate.put("type", determineGatewayType(gate.getGatewayType()));
+				jGate.put("type", determineGatewayType(gate));
 				gateways.put(jGate);
 			}
 			json.put("gateways", gateways);
 			JSONArray flows = new JSONArray();
-			for (ControlFlow flow:process.getControlFlow()) {
+			for (ControlFlow<FlowNode> flow:process.getControlFlow()) {
 				JSONObject jFlow = new JSONObject();
 				jFlow.put("src", flow.getSource().getId());
 				jFlow.put("tgt", flow.getTarget().getId());
@@ -52,13 +55,13 @@ public class Process2JSON {
 		}
 	}
 	
-	private static String determineGatewayType(GatewayType type) throws SerializationException {
-		if (type == GatewayType.XOR) 	
-			return JSON2Process.XOR;
-		if (type == GatewayType.AND)
-			return JSON2Process.AND;
-		if (type == GatewayType.OR)
-			return JSON2Process.OR;
+	private static String determineGatewayType(Gateway gateway) throws SerializationException {
+		if (gateway instanceof XorGateway) 	
+			return IGatewayType.XOR;
+		if (gateway instanceof AndGateway)
+			return IGatewayType.AND;
+		if (gateway instanceof OrGateway)
+			return IGatewayType.OR;
 		throw new SerializationException("GatewayType is UNDEFINED.");
 	}
 }

@@ -403,7 +403,7 @@ public class ModelDecomposer<E extends IEdge<V>, V extends IVertex> {
 			}
 			// put edges into output list
 			Collection<EdgeList<E, V>> col = map.values();
-			for (EdgeList el : col){
+			for (EdgeList<E, V> el : col){
 				if (el != null){
 					sortedEdges.addAll(el);
 				}

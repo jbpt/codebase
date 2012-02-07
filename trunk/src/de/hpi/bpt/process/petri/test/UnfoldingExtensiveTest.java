@@ -10,16 +10,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import junit.framework.TestCase;
-import de.hpi.bpt.process.Process;
+import de.hpi.bpt.process.ProcessModel;
 import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.Place;
 import de.hpi.bpt.process.petri.Transition;
-
 import de.hpi.bpt.process.petri.unf.Unfolding;
 import de.hpi.bpt.process.petri.unf.UnfoldingSetup;
 import de.hpi.bpt.process.petri.unf.Utils;
 import de.hpi.bpt.process.petri.unf.order.EsparzaAdequateTotalOrderForSafeSystems;
-
 import de.hpi.bpt.process.petri.util.PNAPIMapper;
 import de.hpi.bpt.process.petri.util.TransformationException;
 import de.hpi.bpt.process.petri.util.UMAUnfolderWrapper;
@@ -43,7 +41,7 @@ public class UnfoldingExtensiveTest extends TestCase {
 			if (name.endsWith(".json")) {
 				count++;
 				System.out.println(name);
-				Process p = loadProcess(MODELS_DIR + File.separator + name);
+				ProcessModel p = loadProcess(MODELS_DIR + File.separator + name);
 				
 				PetriNet net = Utils.process2net(p);
 				int cp = 1; int ct = 1;
@@ -100,7 +98,7 @@ public class UnfoldingExtensiveTest extends TestCase {
 		System.out.println("---------------------------------");
 	}
 	
-	protected Process loadProcess(String filename) throws SerializationException, IOException {
+	protected ProcessModel loadProcess(String filename) throws SerializationException, IOException {
 		String line;
 		StringBuilder sb = new StringBuilder();
 		BufferedReader reader = new BufferedReader(new FileReader(filename));

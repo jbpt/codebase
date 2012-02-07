@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.HashSet;
 
 import junit.framework.TestCase;
-import de.hpi.bpt.process.Process;
+import de.hpi.bpt.process.ProcessModel;
 import de.hpi.bpt.process.petri.util.BisimilarityChecker2;
 import de.hpi.bpt.process.serialize.JSON2Process;
 import de.hpi.bpt.process.serialize.SerializationException;
@@ -29,8 +29,8 @@ public class BisimilarityCheckerTest extends TestCase {
 		for (String name:structuredDir.list()) {
 			if (name.endsWith(".json") && files.contains(name))
 				try {
-					Process original = loadProcess(ORIGINAL_DIR + File.separator + name);
-					Process structured = loadProcess(STRUCTURED_DIR + File.separator + name);
+					ProcessModel original = loadProcess(ORIGINAL_DIR + File.separator + name);
+					ProcessModel structured = loadProcess(STRUCTURED_DIR + File.separator + name);
 					BisimilarityChecker2 ec = new BisimilarityChecker2(original, structured);
 					//assertTrue("No bisimilar result for structuring of: " + name, ec.areBisimilar());
 					if (ec.areBisimilar())
@@ -46,7 +46,7 @@ public class BisimilarityCheckerTest extends TestCase {
 		assertTrue("At least one example isn't bisimilar.", result);
 	}
 	
-	protected Process loadProcess(String filename) throws SerializationException, IOException {
+	protected ProcessModel loadProcess(String filename) throws SerializationException, IOException {
 		String line;
 		StringBuilder sb = new StringBuilder();
 		BufferedReader reader = new BufferedReader(new FileReader(filename));

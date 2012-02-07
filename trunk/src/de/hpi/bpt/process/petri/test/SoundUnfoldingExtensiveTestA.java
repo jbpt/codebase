@@ -6,7 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import junit.framework.TestCase;
-import de.hpi.bpt.process.Process;
+import de.hpi.bpt.process.ProcessModel;
 import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.Place;
 import de.hpi.bpt.process.petri.Transition;
@@ -26,7 +26,7 @@ public class SoundUnfoldingExtensiveTestA extends TestCase {
 		int count = 0;
 		for (String name : modelsDir.list()) {
 			if (name.endsWith(".json")) {
-				Process p = loadProcess(MODELS_DIR + File.separator + name);
+				ProcessModel p = loadProcess(MODELS_DIR + File.separator + name);
 				PetriNet net = Utils.process2net(p);
 				int cp = 1; int ct = 1;
 				for (Place place : net.getPlaces()) place.setName("p"+cp++);
@@ -43,7 +43,7 @@ public class SoundUnfoldingExtensiveTestA extends TestCase {
 		}
 	}
 	
-	protected Process loadProcess(String filename) throws SerializationException, IOException {
+	protected ProcessModel loadProcess(String filename) throws SerializationException, IOException {
 		String line;
 		StringBuilder sb = new StringBuilder();
 		BufferedReader reader = new BufferedReader(new FileReader(filename));

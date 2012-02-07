@@ -9,7 +9,6 @@ import java.util.Set;
 import org.junit.Test;
 
 import de.hpi.bpt.alignment.Alignment;
-import de.hpi.bpt.graph.DirectedEdge;
 import de.hpi.bpt.graph.DirectedGraph;
 import de.hpi.bpt.hypergraph.abs.Vertex;
 
@@ -34,12 +33,12 @@ public class AlignmentTest {
 		g1.addVertex(v5);
 		g1.addVertex(v6);
 		
-		DirectedEdge e1 = g1.addEdge(v1, v2);
-		DirectedEdge e2 = g1.addEdge(v2, v3);
-		DirectedEdge e3 = g1.addEdge(v2, v4);
-		DirectedEdge e4 = g1.addEdge(v4, v5);
-		DirectedEdge e5 = g1.addEdge(v3, v5);
-		DirectedEdge e6 = g1.addEdge(v5, v6);
+		g1.addEdge(v1, v2);
+		g1.addEdge(v2, v3);
+		g1.addEdge(v2, v4);
+		g1.addEdge(v4, v5);
+		g1.addEdge(v3, v5);
+		g1.addEdge(v5, v6);
 		
 		g2 = new DirectedGraph();
 		Vertex v21 = new Vertex("V1");
@@ -50,8 +49,8 @@ public class AlignmentTest {
 		g2.addVertex(v22);
 		g2.addVertex(v23);
 		
-		DirectedEdge e21 = g1.addEdge(v21, v22);
-		DirectedEdge e22 = g1.addEdge(v21, v23);
+		g1.addEdge(v21, v22);
+		g1.addEdge(v21, v23);
 		
 		Alignment<DirectedGraph, Vertex> a = new Alignment<DirectedGraph, Vertex>(g1,g2);
 		
