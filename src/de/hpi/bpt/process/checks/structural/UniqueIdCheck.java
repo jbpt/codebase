@@ -4,22 +4,22 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import de.hpi.bpt.process.Node;
-import de.hpi.bpt.process.Process;
+import de.hpi.bpt.process.FlowNode;
+import de.hpi.bpt.process.ProcessModel;
 
 /**
- * Checks whether every {@link Node} in the {@link Process} has a unique identifier. 
+ * Checks whether every {@link FlowNode} in the {@link ProcessModel} has a unique identifier. 
  * @author Christian Wiggert
  *
  */
 public class UniqueIdCheck implements ICheck {
 
 	@Override
-	public List<String> check(Process process) {
+	public List<String> check(ProcessModel process) {
 		List<String> errors = new ArrayList<String>();
 		HashSet<String> ids = new HashSet<String>();
 		HashSet<String> duplicates = new HashSet<String>();
-		for (Node node:process.getNodes()) {
+		for (FlowNode node:process.getVertices()) {
 			if (!ids.contains(node.getId()))
 				ids.add(node.getId());
 			else

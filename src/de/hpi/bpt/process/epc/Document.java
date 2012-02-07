@@ -1,11 +1,13 @@
 package de.hpi.bpt.process.epc;
 
+import de.hpi.bpt.process.DataNode;
+
 /**
  * EPC document implementation
  * 
- * @author Artem Polyvyanyy
+ * @author Artem Polyvyanyy, Cindy Fähnrich, Tobias Hoppe
  */
-public class Document extends NonFlowObject implements IDocument {
+public class Document extends DataNode implements IDocument {
 
 	public Document() {
 		super();
@@ -17,14 +19,5 @@ public class Document extends NonFlowObject implements IDocument {
 
 	public Document(String name) {
 		super(name);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see de.hpi.bpt.process.epc.meta.NonFlowObject#getType()
-	 */
-	@Override
-	public NonFlowObjectType getType() {
-		return NonFlowObjectType.DOCUMENT;
 	}
 }

@@ -3,12 +3,12 @@ package de.hpi.bpt.process.checks.structural;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hpi.bpt.process.Activity;
 import de.hpi.bpt.process.Gateway;
-import de.hpi.bpt.process.Process;
-import de.hpi.bpt.process.Task;
+import de.hpi.bpt.process.ProcessModel;
 
 /**
- * Checks if a {@link Process} has only {@link Task}s with one incoming and one outgoing edge.
+ * Checks if a {@link ProcessModel} has only {@link Task}s with one incoming and one outgoing edge.
  * Furthermore {@link Gateway}s are checked whether they have at least one incoming and one outgoing edge
  * and in sum at least three connected edges. 
  * @author Christian Wiggert
@@ -17,9 +17,9 @@ import de.hpi.bpt.process.Task;
 public class FlowCountCheck implements ICheck {
 
 	@Override
-	public List<String> check(Process process) {
+	public List<String> check(ProcessModel process) {
 		List<String> errors = new ArrayList<String>();
-		for (Task task:process.getTasks()) {
+		for (Activity task:process.getActivities()) {
 			if (process.getEdgesWithSource(task).size() > 1)
 				errors.add("Task " + task.getId() + " has more than one outgoing flow.");
 			if (process.getEdgesWithTarget(task).size() > 1)

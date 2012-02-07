@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import de.hpi.bpt.hypergraph.abs.Vertex;
-import de.hpi.bpt.process.Process;
+import de.hpi.bpt.process.ProcessModel;
 import de.hpi.bpt.process.petri.Marking;
 import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.Transition;
@@ -24,7 +24,7 @@ public class BisimilarityChecker {
 	 * @param process2
 	 * @return
 	 */
-	public static boolean areBisimilar(Process process1, Process process2) {
+	public static boolean areBisimilar(ProcessModel process1, ProcessModel process2) {
 		try {
 			return areBisimilar(Process2PetriNet.convert(process1), Process2PetriNet.convert(process2));
 		} catch (TransformationException e) {

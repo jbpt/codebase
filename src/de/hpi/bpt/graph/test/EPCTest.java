@@ -1,19 +1,18 @@
 package de.hpi.bpt.graph.test;
 
-import java.util.Collection;
-
 import junit.framework.TestCase;
 import de.hpi.bpt.graph.algo.GraphAlgorithms;
-import de.hpi.bpt.process.epc.Connection;
-import de.hpi.bpt.process.epc.Connector;
-import de.hpi.bpt.process.epc.ConnectorType;
-import de.hpi.bpt.process.epc.ControlFlow;
+import de.hpi.bpt.process.ControlFlow;
+import de.hpi.bpt.process.Event;
+import de.hpi.bpt.process.FlowNode;
+import de.hpi.bpt.process.Gateway;
+import de.hpi.bpt.process.OrGateway;
+import de.hpi.bpt.process.Resource;
 import de.hpi.bpt.process.epc.Document;
-import de.hpi.bpt.process.epc.EPC;
-import de.hpi.bpt.process.epc.Event;
-import de.hpi.bpt.process.epc.FlowObject;
+import de.hpi.bpt.process.epc.Epc;
 import de.hpi.bpt.process.epc.Function;
 import de.hpi.bpt.process.epc.ProcessInterface;
+import de.hpi.bpt.process.epc.XorConnector;
 
 /**
  * Let's test EPCs
@@ -21,12 +20,11 @@ import de.hpi.bpt.process.epc.ProcessInterface;
  * @author Artem Polyvyanyy
  */
 public class EPCTest extends TestCase {
-	EPC epc = new EPC();
-	GraphAlgorithms<ControlFlow, FlowObject> ga = new GraphAlgorithms<ControlFlow, FlowObject>();
 	
-	@SuppressWarnings("all")
 	public void testSomeBehavior() {
 		// Basic EPC (events,functions,connectors,process interfaces)
+		Epc epc = new Epc();
+		GraphAlgorithms<ControlFlow<FlowNode>, FlowNode> ga = new GraphAlgorithms<ControlFlow<FlowNode>, FlowNode>();
 		
 		Event e1 = new Event("E1");
 		Event e2 = new Event("E2");
@@ -41,59 +39,59 @@ public class EPCTest extends TestCase {
 		Function f3 = new Function("F3");
 		Function f4 = new Function("F4");
 
-		Connector c1 = new Connector(ConnectorType.XOR);
-		Connector c2 = new Connector(ConnectorType.XOR);
+		Gateway c1 = new XorConnector();
+		Gateway c2 = new XorConnector();
 		
 		ProcessInterface p1 = new ProcessInterface("P1");
 		
-		ControlFlow cf1 = epc.addControlFlow(e1, f1);
-		ControlFlow cf2 = epc.addControlFlow(f1, c1);
-		ControlFlow cf3 = epc.addControlFlow(c1, e2);
-		ControlFlow cf4 = epc.addControlFlow(c1, e3);
-		ControlFlow cf5 = epc.addControlFlow(e2, f2);
-		ControlFlow cf6 = epc.addControlFlow(e3, f3);
-		ControlFlow cf7 = epc.addControlFlow(f2, e4);
-		ControlFlow cf8 = epc.addControlFlow(f3, e5);
-		ControlFlow cf9 = epc.addControlFlow(e4, c2);
-		ControlFlow cf10 = epc.addControlFlow(e5, c2);
-		ControlFlow cf11 = epc.addControlFlow(c2, f4);
-		ControlFlow cf12 = epc.addControlFlow(f4, e6);
-		ControlFlow cf13 = epc.addControlFlow(e6, p1);
+		epc.addControlFlow(e1, f1);
+		epc.addControlFlow(f1, c1);
+		epc.addControlFlow(c1, e2);
+		epc.addControlFlow(c1, e3);
+		epc.addControlFlow(e2, f2);
+		epc.addControlFlow(e3, f3);
+		epc.addControlFlow(f2, e4);
+		epc.addControlFlow(f3, e5);
+		epc.addControlFlow(e4, c2);
+		epc.addControlFlow(e5, c2);
+		epc.addControlFlow(c2, f4);
+		epc.addControlFlow(f4, e6);
+		epc.addControlFlow(e6, p1);
 		
 		assertTrue(ga.isConnected(epc));
 		
-		epc.addFlowObject(e7);
+		epc.addFlowNode(e7);
 		
 		assertFalse(ga.isConnected(epc));
 		
-		ControlFlow cf14 = epc.addControlFlow(p1, e7);
+		epc.addControlFlow(p1, e7);
 		
 		assertTrue(ga.isConnected(epc));
 		
 		// get elements of the EPC
 		assertEquals(4, epc.getFunctions().size());
 		assertEquals(7, epc.getEvents().size());
-		assertEquals(2, epc.getConnectors().size());
+		assertEquals(2, epc.getGateways().size());
 		assertEquals(1, epc.getProcessInterfaces().size());
 		assertEquals(14, epc.getControlFlow().size());
-		assertEquals(14, epc.getFlowObjects().size());
+		assertEquals(14, epc.getFlowNodes().size());
 		
 		assertTrue(epc.getEntries().iterator().next().equals(e1));
 		assertTrue(epc.getExits().iterator().next().equals(e7));
 		
-		assertTrue(epc.isSplit(c1));
-		assertFalse(epc.isJoin(c1));
-		assertFalse(epc.isSplit(c2));
-		assertTrue(epc.isJoin(c2));
+		assertTrue(c1.isSplit());
+		assertFalse(c1.isJoin());
+		assertFalse(c2.isSplit());
+		assertTrue(c2.isJoin());
 		
-		epc.removeFlowObject(f2);
+		epc.removeFlowNode(f2);
 		assertTrue(ga.isConnected(epc));
-		assertEquals(13, epc.getFlowObjects().size());
+		assertEquals(13, epc.getFlowNodes().size());
 		assertEquals(12, epc.countEdges());
 		assertEquals(2, epc.getEntries().size());
 		assertEquals(2, epc.getExits().size());
 		
-		ControlFlow cf15 = epc.addControlFlow(e2, e4);
+		ControlFlow<FlowNode> cf15 = epc.addControlFlow(e2, e4);
 		assertEquals(1, epc.getEntries().size());
 		assertEquals(1, epc.getExits().size());
 		
@@ -104,7 +102,7 @@ public class EPCTest extends TestCase {
 		assertEquals(3, epc.getIncomingControlFlow(c2).size());
 		assertEquals(1, epc.getOutgoingControlFlow(c2).size());
 		
-		Collection<ControlFlow> cf = epc.getOutgoingControlFlow(c2);
+		epc.getOutgoingControlFlow(c2);
 		
 		assertNotNull(cf15.setSource(c1));
 		assertEquals(2, epc.getEntries().size());
@@ -114,16 +112,16 @@ public class EPCTest extends TestCase {
 		assertEquals(3, epc.getOutgoingControlFlow(c1).size());
 		assertTrue(ga.isConnected(epc));
 		
-		assertNotNull(epc.removeFlowObject(f3));
+		assertNotNull(epc.removeFlowNode(f3));
 		assertEquals(3, epc.getEntries().size());
 		assertEquals(3, epc.getExits().size());
 		
 		assertEquals(2, epc.getFunctions().size());
 		assertEquals(7, epc.getEvents().size());
-		assertEquals(2, epc.getConnectors().size());
+		assertEquals(2, epc.getGateways().size());
 		assertEquals(1, epc.getProcessInterfaces().size());
 		assertEquals(11, epc.getControlFlow().size());
-		assertEquals(12, epc.getFlowObjects().size());
+		assertEquals(12, epc.getFlowNodes().size());
 		
 		assertTrue(ga.isConnected(epc));
 		
@@ -137,21 +135,74 @@ public class EPCTest extends TestCase {
 		
 		Document d1 = new Document("D1");
 		Document d2 = new Document("D2");
-		assertNotNull(epc.addNonFlowObject(d1));
-		assertEquals(1, epc.getNonFlowObjects().size());
-		Connection cxn1 = epc.connectNonFlowObject(f1, d1);
-		assertNotNull(cxn1);
-		Connection cxn2 = epc.connectNonFlowObject(d1, f3);
-		Connection cxn3 = epc.connectNonFlowObject(d2, f3);
-		assertEquals(2, epc.getNonFlowObjects().size());
+		assertNotNull(epc.addNonFlowNode(d1));
+		assertEquals(1, epc.getNonFlowNodes().size());
+
+		f1.addWriteDocument(d1);
+		d1.addReadingFlowNode(f3);
+		d2.addReadingFlowNode(f3);
 		
-		assertEquals(2, epc.getInputNonFlowObjects(f3).size());
-		assertEquals(0, epc.getOutputNonFlowObjects(f3).size());
-		assertEquals(0, epc.getInputNonFlowObjects(f1).size());
-		assertEquals(1, epc.getOutputNonFlowObjects(f1).size());
+		assertEquals(2, epc.getNonFlowNodes().size());
 		
-		assertEquals(1, epc.getOutputFlowObjects(d1).size());
-		assertNotNull(epc.removeNonFlowObject(d1));
-		assertEquals(1, epc.getNonFlowObjects().size());
+		assertEquals(2, epc.getInputNonFlowNodes(f3).size());
+		assertEquals(0, epc.getOutputNonFlowNodes(f3).size());
+		assertEquals(0, epc.getInputNonFlowNodes(f1).size());
+		assertEquals(1, epc.getOutputNonFlowNodes(f1).size());
+		
+		assertEquals(1, epc.getOutputFlowNodes(d1).size());
+		assertNotNull(epc.removeNonFlowNode(d1));
+		assertEquals(1, epc.getNonFlowNodes().size());
+	}
+	
+	public void testFiltering(){
+		Epc epc = new Epc();
+		Event e1 = new Event();
+		Event e2 = new Event();
+		Function f1 = new Function();
+		Function f2 = new Function();
+		Function f3 = new Function();
+		Gateway g1 = new OrGateway();
+		
+		epc.addControlFlow(e1, f1);
+		epc.addControlFlow(f1, g1);
+		epc.addControlFlow(g1, f2);
+		epc.addControlFlow(g1, f3);
+		epc.addControlFlow(f2, e2);
+		
+		assertEquals(3, epc.filter(Function.class).size());		
+	}
+	
+	public void testCloning(){
+		Epc epc = new Epc();
+		Event e1 = new Event();
+		Function f1 = new Function();		
+		Gateway g1 = new OrGateway();
+		Document d1 = new Document();
+		Resource r = new Resource();
+		
+		epc.addControlFlow(e1, f1);
+		assertEquals(1, epc.countEdges());
+		assertTrue(epc.getNonFlowNodes().isEmpty());
+		
+		Epc clonedEpc = (Epc) epc.clone();
+		
+		assertEquals(1, clonedEpc.countEdges());
+		assertTrue(clonedEpc.getNonFlowNodes().isEmpty());
+		
+		clonedEpc.addNonFlowNode(d1);
+		assertTrue(epc.getNonFlowNodes().isEmpty());
+		
+		clonedEpc.addControlFlow(f1, g1);
+		assertEquals(1, epc.countEdges());
+		assertEquals(2, clonedEpc.countEdges());
+		
+		f1.addResource(r);
+		for (FlowNode node : clonedEpc.getFlowNodes()){
+			assertTrue(node.getResources().isEmpty());
+		}
+		
+		clonedEpc.getFlowNodes().iterator().next().addReadWriteDocument(d1);
+		assertEquals(1, clonedEpc.getFlowNodes(d1).size());
+		assertTrue(epc.getFlowNodes(d1).isEmpty());
 	}
 }

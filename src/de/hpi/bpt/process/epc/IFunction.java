@@ -1,11 +1,13 @@
 package de.hpi.bpt.process.epc;
 
+import de.hpi.bpt.process.IActivity;
+
 /**
  * EPC function interface
  *
  * @author Artem Polyvyanyy
  */
-public interface IFunction extends IFlowObject {
+public interface IFunction extends IActivity {
 	
 	/**
 	 * Get function duration in milliseconds

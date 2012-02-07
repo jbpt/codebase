@@ -1,11 +1,13 @@
 package de.hpi.bpt.process.epc;
 
+import de.hpi.bpt.process.Activity;
+
 /**
  * EPC function implementation
  * @author Artem Polyvyanyy
  *
  */
-public class Function extends FlowObject implements IFunction {
+public class Function extends Activity implements IFunction {
 
 	private long duration = 0;
 	
@@ -36,14 +38,4 @@ public class Function extends FlowObject implements IFunction {
 	public void setDuration(long d) {
 		this.duration = d;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see de.hpi.bpt.process.epc.flow.FlowObject#getType()
-	 */
-	@Override
-	public FlowObjectType getType() {
-		return FlowObjectType.FUNCTION;
-	}
-
 }

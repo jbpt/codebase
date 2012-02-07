@@ -10,12 +10,14 @@ import java.util.List;
 import java.util.Map;
 
 import de.hpi.bpt.hypergraph.abs.GObject;
+import de.hpi.bpt.process.Activity;
+import de.hpi.bpt.process.AndGateway;
 import de.hpi.bpt.process.ControlFlow;
+import de.hpi.bpt.process.FlowNode;
 import de.hpi.bpt.process.Gateway;
-import de.hpi.bpt.process.GatewayType;
-import de.hpi.bpt.process.Node;
-import de.hpi.bpt.process.Process;
-import de.hpi.bpt.process.Task;
+import de.hpi.bpt.process.OrGateway;
+import de.hpi.bpt.process.ProcessModel;
+import de.hpi.bpt.process.XorGateway;
 import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.Place;
 import de.hpi.bpt.process.petri.Transition;
@@ -35,20 +37,20 @@ public class Utils {
 		}
 	}
 	
-	public static PetriNet process2net(Process process, Collection<Gateway> orJoins, Collection<Transition> orJoinsT) throws TransformationException {
-		if (process.getGateways(GatewayType.OR).size() > 0)
+	public static PetriNet process2net(ProcessModel process, Collection<Gateway> orJoins, Collection<Transition> orJoinsT) throws TransformationException {
+		if (process.getGateways(OrGateway.class).size() > 0)
 			throw new TransformationException();
 		PetriNet net = new PetriNet();
 		copyAttributes(process, net);
 		
-		Map<Node, de.hpi.bpt.process.petri.Node> map = new HashMap<Node, de.hpi.bpt.process.petri.Node>();
+		Map<FlowNode, de.hpi.bpt.process.petri.Node> map = new HashMap<FlowNode, de.hpi.bpt.process.petri.Node>();
 		
 		// the process is transformed edge by edge to a petrinet
-		for (ControlFlow flow : process.getControlFlow()) {
-			Node src = flow.getSource();
-			Node tgt = flow.getTarget();
-			if (src instanceof Task || isANDGateway(src)) {
-				if (tgt instanceof Task || isANDGateway(tgt)) {						
+		for (ControlFlow<FlowNode> flow : process.getControlFlow()) {
+			FlowNode src = flow.getSource();
+			FlowNode tgt = flow.getTarget();
+			if (src instanceof Activity || isANDGateway(src)) {
+				if (tgt instanceof Activity || isANDGateway(tgt)) {						
 					Transition psrc = (Transition) getNode(src, net, map);
 					Transition ptgt = (Transition) getNode(tgt, net, map);
 					
@@ -67,7 +69,7 @@ public class Utils {
 					net.addFlow(psrc, ptgt);
 				}
 			} else if (isXORGateway(src)) {
-				if (tgt instanceof Task || isANDGateway(tgt)) {
+				if (tgt instanceof Activity || isANDGateway(tgt)) {
 					Place psrc = (Place) getNode(src, net, map);
 					Transition ptgt = (Transition) getNode(tgt, net, map);
 	
@@ -92,7 +94,7 @@ public class Utils {
 		List<de.hpi.bpt.process.petri.Node> sources = new ArrayList<de.hpi.bpt.process.petri.Node>();
 		List<de.hpi.bpt.process.petri.Node> sinks = new ArrayList<de.hpi.bpt.process.petri.Node>();
 		
-		for (Node node:process.getNodes()) {
+		for (FlowNode node:process.getVertices()) {
 			if (process.getIncomingEdges(node).size() == 0) {
 				// nodes without an incoming edge
 				if (isXORGateway(node)) {
@@ -129,20 +131,20 @@ public class Utils {
 		return net;
 	}
 	
-	public static PetriNet process2net(Process process) throws TransformationException {
-		if (process.getGateways(GatewayType.OR).size() > 0)
+	public static PetriNet process2net(ProcessModel process) throws TransformationException {
+		if (process.getGateways(OrGateway.class).size() > 0)
 			throw new TransformationException();
 		PetriNet net = new PetriNet();
 		copyAttributes(process, net);
 		
-		Map<Node, de.hpi.bpt.process.petri.Node> map = new HashMap<Node, de.hpi.bpt.process.petri.Node>();
+		Map<FlowNode, de.hpi.bpt.process.petri.Node> map = new HashMap<FlowNode, de.hpi.bpt.process.petri.Node>();
 		
 		// the process is transformed edge by edge to a petrinet
-		for (ControlFlow flow : process.getControlFlow()) {
-			Node src = flow.getSource();
-			Node tgt = flow.getTarget();
-			if (src instanceof Task || isANDGateway(src)) {
-				if (tgt instanceof Task || isANDGateway(tgt)) {						
+		for (ControlFlow<FlowNode> flow : process.getControlFlow()) {
+			FlowNode src = flow.getSource();
+			FlowNode tgt = flow.getTarget();
+			if (src instanceof Activity || isANDGateway(src)) {
+				if (tgt instanceof Activity || isANDGateway(tgt)) {						
 					Transition psrc = (Transition) getNode(src, net, map);
 					Transition ptgt = (Transition) getNode(tgt, net, map);
 					Place p = new Place();
@@ -155,7 +157,7 @@ public class Utils {
 					net.addFlow(psrc, ptgt);
 				}
 			} else if (isXORGateway(src)) {
-				if (tgt instanceof Task || isANDGateway(tgt)) {
+				if (tgt instanceof Activity || isANDGateway(tgt)) {
 					Place psrc = (Place) getNode(src, net, map);
 					Transition ptgt = (Transition) getNode(tgt, net, map);
 	
@@ -180,7 +182,7 @@ public class Utils {
 		List<de.hpi.bpt.process.petri.Node> sources = new ArrayList<de.hpi.bpt.process.petri.Node>();
 		List<de.hpi.bpt.process.petri.Node> sinks = new ArrayList<de.hpi.bpt.process.petri.Node>();
 		
-		for (Node node:process.getNodes()) {
+		for (FlowNode node:process.getVertices()) {
 			if (process.getIncomingEdges(node).size() == 0) {
 				// nodes without an incoming edge
 				if (isXORGateway(node)) {
@@ -224,12 +226,12 @@ public class Utils {
 		to.setTag(from.getTag());
 	}
 	
-	private static boolean isANDGateway(Node node) {
-		return (node instanceof Gateway && ((Gateway) node).getGatewayType() == GatewayType.AND);
+	private static boolean isANDGateway(FlowNode node) {
+		return (node instanceof AndGateway);
 	}
 	
-	private static boolean isXORGateway(Node node) {
-		return (node instanceof Gateway && ((Gateway) node).getGatewayType() == GatewayType.XOR);
+	private static boolean isXORGateway(FlowNode node) {
+		return (node instanceof XorGateway);
 	}
 	
 	public static void addInitialMarking(PetriNet net) {
@@ -239,7 +241,7 @@ public class Utils {
 		}
 	}
 	
-	private static de.hpi.bpt.process.petri.Node getNode(Node node, PetriNet net, Map<Node, de.hpi.bpt.process.petri.Node> map) {
+	private static de.hpi.bpt.process.petri.Node getNode(FlowNode node, PetriNet net, Map<FlowNode, de.hpi.bpt.process.petri.Node> map) {
 		de.hpi.bpt.process.petri.Node res = map.get(node);
 		if (res==null) {
 			if (isXORGateway(node)) 

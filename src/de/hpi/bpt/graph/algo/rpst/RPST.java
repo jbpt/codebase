@@ -14,6 +14,7 @@ import de.hpi.bpt.graph.abs.AbstractDirectedGraph;
 import de.hpi.bpt.graph.abs.IDirectedEdge;
 import de.hpi.bpt.graph.abs.IDirectedGraph;
 import de.hpi.bpt.graph.abs.IEdge;
+import de.hpi.bpt.graph.abs.IGraph;
 import de.hpi.bpt.graph.algo.DirectedGraphAlgorithms;
 import de.hpi.bpt.graph.algo.tctree.TCTree;
 import de.hpi.bpt.graph.algo.tctree.TCTreeEdge;
@@ -100,11 +101,11 @@ public class RPST <E extends IDirectedEdge<V>, V extends IVertex>
 		}
 		
 		// compute TCTree
-		this.tct = new TCTree(this.graph,this.backEdge);
+		this.tct = new TCTree<IEdge<V>, V>((IGraph<IEdge<V>, V>) this.graph,this.backEdge);
 		
 		// remove extra edges
 		Set<TCTreeNode<IEdge<V>,V>> quasi = new HashSet<TCTreeNode<IEdge<V>,V>>();
-		for (TCTreeNode trivial : this.tct.getVertices(TCType.T)) {
+		for (TCTreeNode<IEdge<V>, V> trivial : this.tct.getVertices(TCType.T)) {
 			
 			if (this.isExtraEdge(trivial.getBoundaryNodes())) {
 				quasi.add(tct.getParent(trivial));

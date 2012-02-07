@@ -10,8 +10,8 @@ import java.io.IOException;
 import junit.framework.TestCase;
 import de.hpi.bpt.graph.algo.DirectedGraphAlgorithms;
 import de.hpi.bpt.process.ControlFlow;
-import de.hpi.bpt.process.Node;
-import de.hpi.bpt.process.Process;
+import de.hpi.bpt.process.FlowNode;
+import de.hpi.bpt.process.ProcessModel;
 import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.Place;
 import de.hpi.bpt.process.petri.Transition;
@@ -34,10 +34,10 @@ public class SoundUnfoldingExtensiveTestB extends TestCase {
 		BufferedWriter out = new BufferedWriter(fstream);
 		
 		int count = 0;
-		DirectedGraphAlgorithms<ControlFlow,Node> dga = new DirectedGraphAlgorithms<ControlFlow,Node>();
+		DirectedGraphAlgorithms<ControlFlow<FlowNode>,FlowNode> dga = new DirectedGraphAlgorithms<ControlFlow<FlowNode>,FlowNode>();
 		for (String name : modelsDir.list()) {
 			if (name.endsWith(".json"))	{
-				Process p = loadProcess(MODELS_DIR + File.separator + name);
+				ProcessModel p = loadProcess(MODELS_DIR + File.separator + name);
 				if (dga.hasCycles(p)) continue;
 				
 				count++;
@@ -113,7 +113,7 @@ public class SoundUnfoldingExtensiveTestB extends TestCase {
 		out.close();
 	}
 	
-	protected Process loadProcess(String filename) throws SerializationException, IOException {
+	protected ProcessModel loadProcess(String filename) throws SerializationException, IOException {
 		String line;
 		StringBuilder sb = new StringBuilder();
 		BufferedReader reader = new BufferedReader(new FileReader(filename));

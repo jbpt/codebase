@@ -4,38 +4,38 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import de.hpi.bpt.process.Node;
-import de.hpi.bpt.process.Process;
+import de.hpi.bpt.process.FlowNode;
+import de.hpi.bpt.process.ProcessModel;
 
 /**
- * Checks whether every {@link Node} in a {@link Process} is positioned on a path
+ * Checks whether every {@link FlowNode} in a {@link ProcessModel} is positioned on a path
  * from a source node to a sink node. 
  * @author Christian Wiggert
  *
  */
 public class PathCheck implements ICheck {
 
-	private HashSet<Node> visited;
+	private HashSet<FlowNode> visited;
 	
 	@Override
-	public List<String> check(Process process) {
+	public List<String> check(ProcessModel process) {
 		List<String> errors = new ArrayList<String>();
 		
-		HashSet<Node> sources = new HashSet<Node>();
-		HashSet<Node> sinks = new HashSet<Node>();
-		for (Node node:process.getVertices()) {
+		HashSet<FlowNode> sources = new HashSet<FlowNode>();
+		HashSet<FlowNode> sinks = new HashSet<FlowNode>();
+		for (FlowNode node:process.getVertices()) {
 			if (process.getEdgesWithTarget(node).size() == 0)
 				sources.add(node);
 			if (process.getEdgesWithSource(node).size() == 0)
 				sinks.add(node);
 		}
-		for (Node node:process.getVertices()) {
-			visited = new HashSet<Node>();
+		for (FlowNode node:process.getVertices()) {
+			visited = new HashSet<FlowNode>();
 			boolean isOnPath = true;
 			if (!sources.contains(node)) {
 				isOnPath = hasSource(process, node, sources);
 			}
-			visited = new HashSet<Node>();
+			visited = new HashSet<FlowNode>();
 			if (!sinks.contains(node)) {
 				isOnPath = hasSink(process, node, sinks);
 			}
@@ -45,22 +45,22 @@ public class PathCheck implements ICheck {
 		return errors;
 	}
 	
-	private boolean hasSource(Process process, Node node, HashSet<Node> sources) {
+	private boolean hasSource(ProcessModel process, FlowNode node, HashSet<FlowNode> sources) {
 		visited.add(node);
 		if (sources.contains(node))
 			return true;
-		for (Node pred:process.getDirectPredecessors(node)) {
+		for (FlowNode pred:process.getDirectPredecessors(node)) {
 			if (!visited.contains(pred) && hasSource(process, pred, sources))
 				return true;
 		}
 		return false;
 	}
 	
-	private boolean hasSink(Process process, Node node, HashSet<Node> sinks) {
+	private boolean hasSink(ProcessModel process, FlowNode node, HashSet<FlowNode> sinks) {
 		visited.add(node);
 		if (sinks.contains(node))
 			return true;
-		for (Node succ:process.getDirectSuccessors(node)) {
+		for (FlowNode succ:process.getDirectSuccessors(node)) {
 			if (!visited.contains(succ) && hasSink(process, succ, sinks))
 				return true;
 		}

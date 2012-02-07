@@ -11,8 +11,7 @@ import de.hpi.bpt.hypergraph.abs.Vertex;
  */
 public class DirectedEdge extends AbstractDirectedEdge<Vertex>
 {
-	@SuppressWarnings("unchecked")
-	protected DirectedEdge(AbstractMultiDirectedGraph g, Vertex source, Vertex target) {
+	protected DirectedEdge(AbstractMultiDirectedGraph<?, Vertex> g, Vertex source, Vertex target) {
 		super(g, source, target);
 	}
 }

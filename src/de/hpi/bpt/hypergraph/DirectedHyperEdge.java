@@ -12,8 +12,7 @@ import de.hpi.bpt.hypergraph.abs.Vertex;
  */
 public class DirectedHyperEdge extends AbstractDirectedHyperEdge<Vertex>
 {
-	@SuppressWarnings("unchecked")
-	protected DirectedHyperEdge(AbstractMultiDirectedHyperGraph g) {
+	protected DirectedHyperEdge(AbstractMultiDirectedHyperGraph<?, ?> g) {
 		super(g);
 	}
 }

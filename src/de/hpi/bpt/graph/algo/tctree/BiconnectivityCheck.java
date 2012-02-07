@@ -130,7 +130,8 @@ public class BiconnectivityCheck<E extends IEdge<V>, V extends IVertex> {
         attrs.put(node, new NodeAttrs());
     }
     
-    private boolean visited(V node) {
+    @SuppressWarnings("unused")
+	private boolean visited(V node) {
         return ((NodeAttrs)attrs.get(node)).visited;
     }
 }

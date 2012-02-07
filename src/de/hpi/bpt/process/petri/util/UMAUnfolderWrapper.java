@@ -26,7 +26,8 @@ public class UMAUnfolderWrapper {
 	      // initialize unfolder
 	      bp = new DNodeBP(sys, o);
 	      
-		  int total_steps = 0;
+		  @SuppressWarnings("unused")
+		int total_steps = 0;
 		  int current_steps = 0;
 		  // extend unfolding until no more events can be added
 		  while ((current_steps = bp.step()) > 0) {

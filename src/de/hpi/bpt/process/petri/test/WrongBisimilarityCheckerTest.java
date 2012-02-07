@@ -3,7 +3,7 @@ package de.hpi.bpt.process.petri.test;
 import java.io.File;
 import java.util.HashSet;
 
-import de.hpi.bpt.process.Process;
+import de.hpi.bpt.process.ProcessModel;
 import de.hpi.bpt.process.petri.util.BisimilarityChecker2;
 
 public class WrongBisimilarityCheckerTest extends BisimilarityCheckerTest {
@@ -22,8 +22,8 @@ public class WrongBisimilarityCheckerTest extends BisimilarityCheckerTest {
 		for (String name:wrongDir.list()) {
 			if (name.endsWith(".json") && files.contains(name))
 				try {
-					Process original = loadProcess(ORIGINAL_DIR + File.separator + name);
-					Process wrong = loadProcess(WRONG_DIR + File.separator + name);
+					ProcessModel original = loadProcess(ORIGINAL_DIR + File.separator + name);
+					ProcessModel wrong = loadProcess(WRONG_DIR + File.separator + name);
 					BisimilarityChecker2 ec = new BisimilarityChecker2(original, wrong);
 					assertFalse("The result shouldn't be bisimilar: " + name, ec.areBisimilar());
 					System.out.println(name + " passed");

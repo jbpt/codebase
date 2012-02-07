@@ -8,6 +8,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import junit.framework.TestCase;
+
 import org.w3c.dom.Document;
 
 import de.hpi.bpt.process.petri.PetriNet;
@@ -15,7 +17,6 @@ import de.hpi.bpt.process.petri.Place;
 import de.hpi.bpt.process.petri.Transition;
 import de.hpi.bpt.process.petri.util.PetriNet2PNML;
 import de.hpi.bpt.process.serialize.SerializationException;
-import junit.framework.TestCase;
 
 public class PetriNet2PNMLTest extends TestCase {
 

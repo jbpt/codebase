@@ -7,8 +7,7 @@ import de.hpi.bpt.hypergraph.abs.IVertex;
 
 public class RPSTEdge<E extends IDirectedEdge<V>, V extends IVertex> extends AbstractDirectedEdge<RPSTNode<E,V>> {
 
-	@SuppressWarnings("unchecked")
-	protected RPSTEdge(AbstractMultiDirectedGraph g, RPSTNode source, RPSTNode target) {
+	protected RPSTEdge(AbstractMultiDirectedGraph<?, ?> g, RPSTNode<E, V> source, RPSTNode<E, V> target) {
 		super(g, source, target);
 	}
 }

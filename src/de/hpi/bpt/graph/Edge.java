@@ -11,8 +11,7 @@ import de.hpi.bpt.hypergraph.abs.Vertex;
  */
 public class Edge extends AbstractEdge<Vertex>
 {
-	@SuppressWarnings("unchecked")
-	protected Edge(AbstractMultiGraph g, Vertex v1, Vertex v2) {
+	protected Edge(AbstractMultiGraph<?, Vertex> g, Vertex v1, Vertex v2) {
 		super(g, v1, v2);
 	}	
 }

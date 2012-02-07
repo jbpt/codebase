@@ -21,19 +21,19 @@ import de.hpi.bpt.utils.IOUtils;
 
 public class UnfoldingTest extends TestCase {
 	/*public void test1() throws TransformationException, FileNotFoundException {
-		Process p = new Process();
+		ProcessModel p = new ProcessModel();
 		
-		Task ti = new Task("I");
-		Task to = new Task("O");
-		Task ta = new Task("A");
-		Task tb = new Task("B");
-		Task tc = new Task("C");
-		Task td = new Task("D");
+		Activity ti = new Activity("I");
+		Activity to = new Activity("O");
+		Activity ta = new Activity("A");
+		Activity tb = new Activity("B");
+		Activity tc = new Activity("C");
+		Activity td = new Activity("D");
 	
-		Gateway s1 = new Gateway(GatewayType.AND);
-		Gateway j2 = new Gateway(GatewayType.XOR);
-		Gateway s2 = new Gateway(GatewayType.XOR);
-		Gateway j1 = new Gateway(GatewayType.AND);
+		Gateway s1 = new AndGateway();
+		Gateway j2 = new XorGateway();
+		Gateway s2 = new XorGateway();
+		Gateway j1 = new AndGateway();
 		
 		p.addTask(ti);
 		p.addTask(to);
@@ -80,19 +80,19 @@ public class UnfoldingTest extends TestCase {
 	}
 	
 	public void test1a() throws TransformationException, FileNotFoundException {
-		Process p = new Process();
+		ProcessModel p = new ProcessModel();
 		
-		Task ti = new Task("I");
-		Task to = new Task("O");
-		Task ta = new Task("A");
-		Task tb = new Task("B");
-		Task tc = new Task("C");
-		Task td = new Task("D");
+		Activity ti = new Activity("I");
+		Activity to = new Activity("O");
+		Activity ta = new Activity("A");
+		Activity tb = new Activity("B");
+		Activity tc = new Activity("C");
+		Activity td = new Activity("D");
 	
-		Gateway s1 = new Gateway(GatewayType.AND);
-		Gateway j2 = new Gateway(GatewayType.XOR);
-		Gateway s2 = new Gateway(GatewayType.XOR);
-		Gateway j1 = new Gateway(GatewayType.AND);
+		Gateway s1 = new AndGateway();
+		Gateway j2 = new XorGateway();
+		Gateway s2 = new XorGateway();
+		Gateway j1 = new AndGateway();
 		
 		p.addTask(ti);
 		p.addTask(to);
@@ -139,19 +139,19 @@ public class UnfoldingTest extends TestCase {
 	}
 
 	public void test1b() throws TransformationException, FileNotFoundException {
-		Process p = new Process();
+		ProcessModel p = new ProcessModel();
 		
-		Task ti = new Task("I");
-		Task to = new Task("O");
-		Task ta = new Task("A");
-		Task tb = new Task("B");
-		Task tc = new Task("C");
-		Task td = new Task("D");
+		Activity ti = new Activity("I");
+		Activity to = new Activity("O");
+		Activity ta = new Activity("A");
+		Activity tb = new Activity("B");
+		Activity tc = new Activity("C");
+		Activity td = new Activity("D");
 	
-		Gateway s1 = new Gateway(GatewayType.AND);
-		Gateway j2 = new Gateway(GatewayType.XOR);
-		Gateway s2 = new Gateway(GatewayType.XOR);
-		Gateway j1 = new Gateway(GatewayType.AND);
+		Gateway s1 = new AndGateway();
+		Gateway j2 = new XorGateway();
+		Gateway s2 = new XorGateway();
+		Gateway j1 = new AndGateway();
 		
 		p.addTask(ti);
 		p.addTask(to);
@@ -199,15 +199,15 @@ public class UnfoldingTest extends TestCase {
 
 	
 	public void test2() throws TransformationException, FileNotFoundException {
-		Process p = new Process();
+		ProcessModel p = new ProcessModel();
 		
-		Task ti = new Task("I");
-		Task to = new Task("O");
-		Task ta = new Task("A");
-		Task tb = new Task("B");
+		Activity ti = new Activity("I");
+		Activity to = new Activity("O");
+		Activity ta = new Activity("A");
+		Activity tb = new Activity("B");
 	
-		Gateway s1 = new Gateway(GatewayType.XOR);
-		Gateway j1 = new Gateway(GatewayType.XOR);
+		Gateway s1 = new XorGateway();
+		Gateway j1 = new XorGateway();
 		
 		p.addTask(ti);
 		p.addTask(to);
@@ -243,15 +243,15 @@ public class UnfoldingTest extends TestCase {
 	}
 	
 	public void test2a() throws TransformationException, FileNotFoundException {
-		Process p = new Process();
+		ProcessModel p = new ProcessModel();
 		
-		Task ti = new Task("I");
-		Task to = new Task("O");
-		Task ta = new Task("A");
-		Task tb = new Task("B");
+		Activity ti = new Activity("I");
+		Activity to = new Activity("O");
+		Activity ta = new Activity("A");
+		Activity tb = new Activity("B");
 	
-		Gateway s1 = new Gateway(GatewayType.XOR);
-		Gateway j1 = new Gateway(GatewayType.XOR);
+		Gateway s1 = new XorGateway();
+		Gateway j1 = new XorGateway();
 		
 		p.addTask(ti);
 		p.addTask(to);
@@ -289,15 +289,15 @@ public class UnfoldingTest extends TestCase {
 	}
 	
 	public void test2b() throws TransformationException, FileNotFoundException {
-		Process p = new Process();
+		ProcessModel p = new ProcessModel();
 		
-		Task ti = new Task("I");
-		Task to = new Task("O");
-		Task ta = new Task("A");
-		Task tb = new Task("B");
+		Activity ti = new Activity("I");
+		Activity to = new Activity("O");
+		Activity ta = new Activity("A");
+		Activity tb = new Activity("B");
 	
-		Gateway s1 = new Gateway(GatewayType.XOR);
-		Gateway j1 = new Gateway(GatewayType.XOR);
+		Gateway s1 = new XorGateway();
+		Gateway j1 = new XorGateway();
 		
 		p.addTask(ti);
 		p.addTask(to);
