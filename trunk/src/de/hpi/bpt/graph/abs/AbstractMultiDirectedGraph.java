@@ -2,7 +2,9 @@ package de.hpi.bpt.graph.abs;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import de.hpi.bpt.graph.util.DotSerializer;
 import de.hpi.bpt.hypergraph.abs.AbstractMultiDirectedHyperGraph;
@@ -131,5 +133,36 @@ public class AbstractMultiDirectedGraph<E extends IDirectedEdge<V>, V extends IV
 	@Override
 	public String toDOT() {
 		return new DotSerializer().serialize(this);
+	}
+	
+	@Override
+	public Collection<E> getEdgesWithSourcesAndTargets(Collection<V> ss, Collection<V> ts) {
+		Set<E> result = new HashSet<E>();
+		
+		for (V s : ss)
+			for (V t : ts)
+				result.addAll(this.getEdgesWithSourceAndTarget(s,t));
+		
+		return result;
+	}
+
+	@Override
+	public Collection<E> getEdgesWithSources(Collection<V> vs) {
+		Set<E> result = new HashSet<E>();
+		
+		for (V v : vs) 
+			result.addAll(this.getEdgesWithSource(v));
+		
+		return result;
+	}
+
+	@Override
+	public Collection<E> getEdgesWithTargets(Collection<V> vs) {
+		Set<E> result = new HashSet<E>();
+		
+		for (V v : vs) 
+			result.addAll(this.getEdgesWithTarget(v));
+		
+		return result;
 	}
 }
