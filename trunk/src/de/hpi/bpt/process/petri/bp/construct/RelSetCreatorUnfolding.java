@@ -102,6 +102,8 @@ public class RelSetCreatorUnfolding extends AbstractRelSetCreator implements Rel
 		this.unfolding = new Unfolding(pn,setup);
 		this.occurrenceNet = this.unfolding.getOccurrenceNet();
 		
+		System.out.println(this.occurrenceNet.toDOT());
+		
 		/*
 		 * Derive step matrix from unfolding
 		 */
@@ -214,6 +216,10 @@ public class RelSetCreatorUnfolding extends AbstractRelSetCreator implements Rel
 		for (Transition cutE : this.occurrenceNet.getCutoffEvents()) {
 			int iCutE = this.nodesForStepMatrix.indexOf(cutE);
 			Transition corE = this.occurrenceNet.getCorrespondingEvent(cutE);
+			
+			// Corresponding event may be cut-off either
+			while (this.occurrenceNet.getCutoffEvents().contains(corE))
+				corE = this.occurrenceNet.getCorrespondingEvent(corE);
 			
 			// There may be multiple events following the corresponding condition
 			for (Node c : this.occurrenceNet.getPostset(corE)) {
