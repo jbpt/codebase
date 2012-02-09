@@ -1,4 +1,4 @@
-package de.hpi.bpt.process.petri.rels;
+package de.hpi.bpt.process.petri.bp.construct.uma;
 
 public enum UnfoldingRelationType {
 	CONFLICT, CAUSAL, INVERSE_CAUSAL, CONCURRENCY, NONE;
