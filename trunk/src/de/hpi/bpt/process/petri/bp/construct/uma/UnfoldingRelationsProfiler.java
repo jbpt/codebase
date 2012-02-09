@@ -1,4 +1,4 @@
-package de.hpi.bpt.process.petri.rels;
+package de.hpi.bpt.process.petri.bp.construct.uma;
 
 import hub.top.uma.DNode;
 import hub.top.uma.DNodeBP;

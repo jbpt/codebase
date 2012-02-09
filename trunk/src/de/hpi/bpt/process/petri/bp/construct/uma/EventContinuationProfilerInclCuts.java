@@ -1,4 +1,4 @@
-package de.hpi.bpt.process.petri.bp.construct;
+package de.hpi.bpt.process.petri.bp.construct.uma;
 
 import hub.top.uma.DNode;
 
@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Set;
 
 import de.hpi.bpt.process.petri.PetriNet;
-import de.hpi.bpt.process.petri.rels.UnfoldingRelationType;
 
 public class EventContinuationProfilerInclCuts extends EventContinuationProfiler {
 
