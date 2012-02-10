@@ -35,6 +35,7 @@ public class SoundUnfoldingMSMS extends SoundUnfolding {
 		// initialization
 		this.originalNet = pn;
 		this.net = this.constructAugmentedVersion(this.originalNet);
+		this.initialBP = new Cut(this.net);
 		this.totalOrderTs = new ArrayList<Transition>(this.net.getTransitions());
 		
 		UnfoldingSetup setup = new UnfoldingSetup();

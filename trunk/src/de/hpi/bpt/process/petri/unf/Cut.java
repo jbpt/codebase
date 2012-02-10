@@ -2,6 +2,8 @@ package de.hpi.bpt.process.petri.unf;
 
 import java.util.Collection;
 
+import de.hpi.bpt.process.petri.PetriNet;
+
 /**
  * Cut - maximal set of mutually concurrent conditions
  * 
@@ -10,9 +12,12 @@ import java.util.Collection;
 public class Cut extends Coset {
 	private static final long serialVersionUID = 1L;
 	
-	public Cut() {}
+	public Cut(PetriNet net) {
+		super(net);
+	}
 	
-	public Cut(Collection<Condition> cut) {
+	public Cut(PetriNet net, Collection<Condition> cut) {
+		super(net);
 		this.addAll(cut);
 	}
 }
