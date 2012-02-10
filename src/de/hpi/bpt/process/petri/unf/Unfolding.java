@@ -56,7 +56,7 @@ public class Unfolding {
 	protected Map<Event,Event> cutoff2corr = new HashMap<Event,Event>();
 	
 	// initial branching process
-	protected Cut initialBP = new Cut();
+	protected Cut initialBP = null;
 	
 	private OccurrenceNet occNet = null;
 	
@@ -84,6 +84,7 @@ public class Unfolding {
 	 */
 	public Unfolding(PetriNet pn, UnfoldingSetup setup) {
 		this.net = pn;
+		initialBP = new Cut(this.net);
 		this.totalOrderTs = new ArrayList<Transition>(pn.getTransitions());
 		this.setup = setup;
 		
@@ -349,7 +350,7 @@ public class Unfolding {
 			for (Cut cut : cuts) {
 				if (!cut.getPlaces().containsAll(ps)) continue;
 				
-				Coset coset = new Coset();
+				Coset coset = new Coset(this.net);
 				for (Place p : ps) {
 					coset.add(cut.getConditions(p).iterator().next());
 				}
@@ -391,7 +392,7 @@ public class Unfolding {
 	 * @return co-set of conditions that correspond to places in the collection; null if not every place has a corresponding condition 
 	 */
 	protected Coset containsPlaces(Cut cut, Collection<Place> ps) {
-		Coset result = new Coset();
+		Coset result = new Coset(this.net);
 		
 		for (Place p : ps) {
 			boolean flag = false;
@@ -483,7 +484,7 @@ public class Unfolding {
 		}
 		
 		// add conditions that correspond to post-places of transition that corresponds to new event
-		Coset postConds = new Coset();								// collection of new post conditions
+		Coset postConds = new Coset(this.net);								// collection of new post conditions
 		for (Place s : this.net.getPostset(e.getTransition())) {	// iterate over places in the postset
 			Condition c = new Condition(s,e);	 					// construct new condition
 			postConds.add(c);
@@ -494,7 +495,7 @@ public class Unfolding {
 		// compute new cuts of unfolding
 		for (Cut cut : c2cut.get(e.getPreConditions().iterator().next())) {
 			if (contains(cut,e.getPreConditions())) {
-				Cut newCut = new Cut(cut);
+				Cut newCut = new Cut(this.net,cut);
 				newCut.removeAll(e.getPreConditions());
 				newCut.addAll(postConds);
 				if (!this.addCut(newCut)) return false;

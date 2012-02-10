@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import de.hpi.bpt.process.petri.Marking;
+import de.hpi.bpt.process.petri.PetriNet;
 import de.hpi.bpt.process.petri.Place;
 
 /**
@@ -18,6 +20,12 @@ import de.hpi.bpt.process.petri.Place;
 public class Coset extends TreeSet<Condition> {
 	private static final long serialVersionUID = 1L;
 	private final static CosetComparator coset_comparator = new CosetComparator();
+	
+	private PetriNet net = null;
+	
+	public Coset(PetriNet net) {
+		this.net = net;
+	}
 	
 	private Map<Place,Set<Condition>> p2cs = new HashMap<Place,Set<Condition>>(); 
 	
@@ -75,5 +83,16 @@ public class Coset extends TreeSet<Condition> {
 	
 	public Set<Place> getPlaces() {
 		return this.p2cs.keySet();
+	}
+	
+	public Marking getMarking() {
+		Marking result = new Marking(this.net);
+		
+		for (Condition c : this) {
+			Place p = c.getPlace();
+			result.put(p, result.get(p) + 1);
+		}
+		
+		return result;
 	}
 }

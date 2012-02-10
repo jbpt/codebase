@@ -34,6 +34,7 @@ public class SoundUnfolding extends ProperUnfolding {
 		if (dga.hasCycles(pn)) throw new IllegalArgumentException("Net must be acyclic!");
 		
 		this.net = pn;
+		this.initialBP = new Cut(this.net);
 		this.totalOrderTs = new ArrayList<Transition>(this.net.getTransitions());
 		
 		UnfoldingSetup setup = new UnfoldingSetup();

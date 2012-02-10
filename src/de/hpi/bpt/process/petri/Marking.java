@@ -64,4 +64,13 @@ public class Marking extends HashMap<Place, Integer> {
 		
 		return true;
 	}
+	
+	@Override
+	public int hashCode() {
+		int result = 0;
+		for (Place p : this.net.getPlaces()) {
+			result += 17 * p.hashCode() * this.get(p);
+		}
+		return result;
+	}
 }

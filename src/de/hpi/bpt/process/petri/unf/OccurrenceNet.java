@@ -126,6 +126,10 @@ public class OccurrenceNet extends PetriNet {
 		return result;
 		
 	}
+	
+	public Collection<Cut> getCuts(Place p) {
+		return this.unf.c2cut.get(this.getCondition(p));
+	}
 
 	@Override
 	public String toDOT() {
