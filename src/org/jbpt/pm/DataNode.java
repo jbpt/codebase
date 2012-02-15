@@ -12,7 +12,8 @@ import org.jbpt.hypergraph.abs.IVertex;
 /**
  * Base class for all model elements of a {@link IProcessModel} that represents
  * documents or data nodes or something like this.
- * @author Tobias Hoppe
+ * 
+ * @author Tobias Hoppe, Andreas Meyer
  *
  */
 public class DataNode extends NonFlowNode implements IDataNode {
@@ -120,6 +121,68 @@ public class DataNode extends NonFlowNode implements IDataNode {
 		}
 	}
 	
+	@Override
+	public void removeConnectedFlowNode(IFlowNode connectedFlowNode) {
+		if (this.readingFlowNodes.remove(connectedFlowNode)) {			
+			connectedFlowNode.removeReadDocument(this);
+		}
+		if (this.writingFlowNodes.remove(connectedFlowNode)) {			
+			connectedFlowNode.removeWriteDocument(this);
+		}
+		if (this.unspecifiedFlowNodes.remove(connectedFlowNode)) {			
+			connectedFlowNode.removeUnspecifiedDocument(this);
+		}
+	}
+	
+	@Override
+	public void removeReadFlowNode(IFlowNode readFlowNode) {
+		if (this.readingFlowNodes.remove(readFlowNode)) {			
+			readFlowNode.removeReadDocument(this);
+		}
+	}
+	
+	@Override
+	public void removeReadFlowNodeOnly(IFlowNode readFlowNode) {
+		this.readingFlowNodes.remove(readFlowNode);
+	}
+	
+	@Override
+	public void removeReadWriteFlowNode(IFlowNode readWriteFlowNode) {
+		if (this.readingFlowNodes.remove(readWriteFlowNode)) {			
+			readWriteFlowNode.removeReadDocument(this);
+		}
+	}
+	
+	@Override
+	public void removeReadWriteFlowNodeOnly(IFlowNode readWriteFlowNode) {
+		this.readingFlowNodes.remove(readWriteFlowNode);
+		this.writingFlowNodes.remove(readWriteFlowNode);
+	}
+	
+	@Override
+	public void removeWriteFlowNode(IFlowNode writtenFlowNode) {
+		if (this.writingFlowNodes.remove(writtenFlowNode)) {			
+			writtenFlowNode.removeWriteDocument(this);
+		}
+	}
+	
+	@Override
+	public void removeWriteFlowNodeOnly(IFlowNode writtenFlowNode) {
+		this.writingFlowNodes.remove(writtenFlowNode);
+	}
+	
+	@Override
+	public void removeUnspecifiedFlowNode(IFlowNode unspecifiedFlowNode) {
+		if (this.unspecifiedFlowNodes.remove(unspecifiedFlowNode)) {			
+			unspecifiedFlowNode.removeUnspecifiedDocument(this);
+		}
+	}
+	
+	@Override
+	public void removeUnspecifiedFlowNodeOnly(IFlowNode unspecifiedFlowNode) {
+		this.unspecifiedFlowNodes.remove(unspecifiedFlowNode);
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public DataNode clone() {
@@ -175,5 +238,6 @@ public class DataNode extends NonFlowNode implements IDataNode {
 	public Collection<IDirectedEdge<IVertex>> getWritingFlows() {
 		return this.writingFlows;
 	}
+	
 
 }
