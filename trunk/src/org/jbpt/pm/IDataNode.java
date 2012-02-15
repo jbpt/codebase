@@ -12,7 +12,7 @@ import org.jbpt.hypergraph.abs.IVertex;
 /**
  * Interface for nodes, that represents data objects of a {@link IProcessModel}.
  * 
- * @author Tobias Hoppe
+ * @author Tobias Hoppe, Andreas Meyer
  * 
  */
 public interface IDataNode extends INonFlowNode {
@@ -120,4 +120,80 @@ public interface IDataNode extends INonFlowNode {
 	 * @return all {@link IFlowNode}s writing this {@link IDataNode}.
 	 */
 	public Collection<IDirectedEdge<IVertex>> getWritingFlows();
+
+	/**
+	 * Removes a {@link FlowNode} connecting to this {@link IDataNode}.
+	 * 
+	 * @param connectedFlowNode
+	 *            {@link FlowNode} being somehow connected to this {@link IDataNode}
+	 */
+	public void removeConnectedFlowNode(IFlowNode connectedFlowNode);
+	
+	/**
+	 * Removes a {@link FlowNode} reading this {@link IDataNode}.
+	 * 
+	 * @param readFlowNode
+	 *            {@link FlowNode} reading this {@link IDataNode}
+	 */
+	void removeReadFlowNode(IFlowNode readFlowNode);
+	
+	/**
+	 * Removes a {@link FlowNode} reading this {@link IDataNode}
+	 * without updating the corresponding read list from the {@link FlowNode}.
+	 * 
+	 * @param readFlowNode
+	 *            {@link FlowNode} reading this {@link IDataNode}
+	 */
+	void removeReadFlowNodeOnly(IFlowNode readFlowNode);
+
+	/**
+	 * Removes a {@link FlowNode} reading <b>and</b> writing this {@link IDataNode}.
+	 * 
+	 * @param readingWritingFlowNode
+	 *            {@link FlowNode} reading and writing this {@link IDataNode}
+	 */
+	void removeReadWriteFlowNode(IFlowNode readWriteFlowNode);
+
+	/**
+	 * Removes a {@link FlowNode} reading <b>and</b> writing this {@link IDataNode}
+	 * without updating the corresponding readWrite list from the {@link FlowNode}.
+	 * 
+	 * @param readingWritingFlowNode
+	 *            {@link FlowNode} reading and writing this {@link IDataNode}
+	 */
+	void removeReadWriteFlowNodeOnly(IFlowNode readWriteFlowNode);
+
+	/**
+	 * Removes a {@link FlowNode} writing this {@link IDataNode}.
+	 * 
+	 * @param writtenFlowNode
+	 *            {@link FlowNode} writing this {@link IDataNode}
+	 */
+	void removeWriteFlowNode(IFlowNode writtenFlowNode);
+	
+	/**
+	 * Removes a {@link FlowNode} writing this {@link IDataNode}
+	 * without updating the corresponding write list from the {@link FlowNode}.
+	 * 
+	 * @param writtenFlowNode
+	 *            {@link FlowNode} writing this {@link IDataNode}
+	 */
+	void removeWriteFlowNodeOnly(IFlowNode writtenFlowNode);
+
+	/**
+	 * Removes a {@link FlowNode} with unspecified access to this {@link IDataNode}.
+	 * 
+	 * @param unspecifiedFlowNode
+	 *            {@link FlowNode} with unspecified access to this {@link IDataNode}
+	 */
+	void removeUnspecifiedFlowNode(IFlowNode unspecifiedFlowNode);
+
+	/**
+	 * Removes a {@link FlowNode} with unspecified access to this {@link IDataNode}
+	 * without updating the corresponding access list from the {@link FlowNode}.
+	 * 
+	 * @param unspecifiedFlowNode
+	 *            {@link FlowNode} with unspecified access to this {@link IDataNode}
+	 */
+	void removeUnspecifiedFlowNodeOnly(IFlowNode unspecifiedFlowNode);	
 }

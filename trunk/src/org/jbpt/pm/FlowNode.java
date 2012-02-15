@@ -11,7 +11,7 @@ import org.jbpt.hypergraph.abs.Vertex;
 /**
  * Abstract base class for all model elements that take part in the control flow.
  * 
- * @author Tobias Hoppe
+ * @author Tobias Hoppe, Andreas Meyer
  *
  */
 public abstract class FlowNode extends Vertex implements IFlowNode{
@@ -180,5 +180,117 @@ public abstract class FlowNode extends Vertex implements IFlowNode{
 			clone.resources.add(((Resource) node).clone());
 		}
 		return clone;
+	}
+	
+	@Override
+	public void removeConnectedDocument(DataNode document) {
+		if(this.readDocuments.remove(document)) {
+			document.removeReadFlowNode(this);
+		}
+		if(this.writeDocuments.remove(document)) {
+			document.removeWriteFlowNode(this);
+		}
+		if(this.unspecifiedDocuments.remove(document)) {
+			document.removeUnspecifiedFlowNode(this);
+		}
+	}
+	
+	@Override
+	public void removeReadDocument(DataNode document) {
+		if(this.readDocuments.remove(document)) {
+			document.removeReadFlowNode(this);
+		}
+	}
+	
+	@Override
+	public void removeReadDocumentOnly(DataNode document) {
+		this.readDocuments.remove(document);
+	}
+	
+	@Override
+	public void removeReadWriteDocument(DataNode document) {
+		if(this.readDocuments.remove(document)) {
+			document.removeReadFlowNode(this);
+		}
+		if(this.writeDocuments.remove(document)) {
+			document.removeWriteFlowNode(this);
+		}
+	}
+	
+	@Override
+	public void removeReadWriteDocumentOnly(DataNode document) {
+		this.readDocuments.remove(document);
+		this.writeDocuments.remove(document);
+	}
+	
+	@Override
+	public void removeWriteDocument(DataNode document) {
+		if(this.writeDocuments.remove(document)) {
+			document.removeWriteFlowNode(this);
+		}
+	}
+	
+	@Override
+	public void removeWriteDocumentOnly(DataNode document) {
+		this.writeDocuments.remove(document);
+	}
+	
+	@Override
+	public void removeUnspecifiedDocument(DataNode document) {
+		if(this.unspecifiedDocuments.remove(document)) {
+			document.removeUnspecifiedFlowNode(this);
+		}
+	}
+
+	@Override
+	public void removeAllConnectedDocuments() {
+		for (IDataNode document : this.readDocuments) {
+			document.removeReadFlowNodeOnly(this);
+		}
+		for (IDataNode document : this.writeDocuments) {
+			document.removeWriteFlowNodeOnly(this);
+		}
+		for (IDataNode document : this.unspecifiedDocuments) {
+			document.removeUnspecifiedFlowNodeOnly(this);
+		}
+		this.readDocuments.clear();
+		this.writeDocuments.clear();
+		this.unspecifiedDocuments.clear();
+	}
+	
+	@Override
+	public void removeAllReadDocuments() {
+		for (IDataNode document : this.readDocuments) {
+			document.removeReadFlowNodeOnly(this);
+		}
+		this.readDocuments.clear();
+	}
+	
+	@Override
+	public void removeAllReadWriteDocuments() {
+		for (IDataNode document : this.readDocuments) {
+			document.removeReadFlowNodeOnly(this);
+		}
+		for (IDataNode document : this.writeDocuments) {
+			document.removeWriteFlowNodeOnly(this);
+		}
+		this.readDocuments.clear();
+		this.writeDocuments.clear();
+	}
+	
+	@Override
+	public void removeAllWriteDocuments() {
+		for (IDataNode document : this.writeDocuments) {
+			document.removeWriteFlowNodeOnly(this);
+		}
+		this.writeDocuments.clear();
+	}
+	
+	@Override
+	public void removeAllUnspecifiedDocument() {
+		for (IDataNode document : this.unspecifiedDocuments) {
+			document.removeUnspecifiedFlowNodeOnly(this);
+		}
+		this.unspecifiedDocuments.clear();
 	}
 }
