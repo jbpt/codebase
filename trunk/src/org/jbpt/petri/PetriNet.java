@@ -18,7 +18,7 @@ import org.jbpt.hypergraph.abs.Vertex;
  *  
  * @author Artem Polyvyanyy
  */
-public class PetriNet extends AbstractDirectedGraph<Flow, Node> implements Cloneable {
+public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 
 	/**
 	 * Silent transitions shall carry the following label.
