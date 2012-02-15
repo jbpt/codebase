@@ -6,5 +6,19 @@ package org.jbpt.pm.bpmn;
  *
  */
 public class EndEvent extends BpmnEvent implements IEndEvent{
+	
+	/**
+	 * Constructor
+	 */
+	public EndEvent() {
+		super();
+	}
 
+	/**
+	 * Constructor setting the name/title of this event.
+	 * @param name
+	 */
+	public EndEvent(String name) {
+		super(name);
+	}
 }

@@ -155,12 +155,9 @@ public class DataNode extends NonFlowNode implements IDataNode {
 	@Override
 	public Collection<IFlowNode> getReadWriteFlowNodes() {
 		Collection<IFlowNode> result = new ArrayList<IFlowNode>();
+		result.addAll(this.readingFlowNodes);
+		result.retainAll(this.writingFlowNodes);
 		result.addAll(this.unspecifiedFlowNodes);
-		for (IFlowNode node : this.readingFlowNodes){
-			if (this.writingFlowNodes.contains(node)){
-				result.add(node);
-			}
-		}
 		return result;
 	}
 	
