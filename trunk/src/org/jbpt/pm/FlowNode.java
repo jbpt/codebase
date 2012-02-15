@@ -87,6 +87,14 @@ public abstract class FlowNode extends Vertex implements IFlowNode{
 		result.retainAll(this.writeDocuments);
 		return result;
 	}
+	
+	@Override
+	public Collection<IDataNode> getConnectedDocuments() {
+		Collection<IDataNode> result = new ArrayList<IDataNode>();
+		result.addAll(this.getReadWriteDocuments());
+		result.addAll(this.unspecifiedDocuments);
+		return result;
+	}
 
 	@Override
 	public Collection<IDataNode> getUnspecifiedDocuments() {

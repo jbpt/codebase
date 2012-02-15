@@ -27,6 +27,12 @@ public interface IFlowNode extends IVertex {
 	 */
 	Collection<IDataNode> getReadWriteDocuments();
 	
+	/**	 
+	 * @return a {@link Collection} of all {@link IDataNode}s, that are read and written by this {@link IFlowNode} 
+	 * or with unspecified access by this {@link IFlowNode}.
+	 */
+	Collection<IDataNode> getConnectedDocuments();
+	
 	/**
 	 * @return a {@link Collection} of all {@link IDataNode}s, where read or write access is not specified.
 	 */
