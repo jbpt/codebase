@@ -1,13 +1,9 @@
-package org.jbpt.petri.util;
+package de.hpi.bpt.process.petri.util;
 
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
-import org.jbpt.petri.Node;
-import org.jbpt.petri.PetriNet;
-import org.jbpt.petri.Place;
-import org.jbpt.petri.Transition;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -16,15 +12,17 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
+import de.hpi.bpt.process.petri.Node;
+import de.hpi.bpt.process.petri.PetriNet;
+import de.hpi.bpt.process.petri.Place;
+import de.hpi.bpt.process.petri.Transition;
 
 /**
  * Class of Type DefaultHandler that overrides some methods to extract PNML-Data from given files.
- * How to use this class:
- * 	1. create running instance using default constructor
- * 	2. use getPetriNet(String filename) Method to retrieve an object of type de.hpi.bpt.process.petri.PetriNet
- * 	   from a given PNML-file
  * 
- * @author  johannes...@gmail.com
+ * Main method: <code>getPetriNet(String filename)</code>
+ * 
+ * @author  johannes...@gmail.com, matthias.weidlich
  * @since   09.11.2011
  */
 public class PNML2PetriNet extends DefaultHandler
@@ -36,10 +34,21 @@ public class PNML2PetriNet extends DefaultHandler
 	private PetriNet pn;
 	
 	private HashMap<String, Node> nodes;
+	
+	private String currentTransitionID;
 
-	public PNML2PetriNet() {
-		pn = new PetriNet();
-		nodes = new HashMap<String, Node>();
+	/**
+	 * Clear the internal data structures of the parser
+	 */
+	public void clear() {
+		this.pn = new PetriNet();
+		this.nodes = new HashMap<String, Node>();
+		this.place = false;
+		this.placetext = false;
+		this.arc = false;
+		this.transition = false;
+		this.transitiontext = false;
+		this.currentTransitionID = "";
 	}
 	
 	/**
@@ -49,6 +58,11 @@ public class PNML2PetriNet extends DefaultHandler
 	 */
 	public PetriNet getPetriNet(String file){
 	
+		/*
+		 * Clear internal data structures
+		 */
+		clear();
+		
 		XMLReader xmlReader; //Reader to perform XML parsing
 		try
 		{
@@ -105,19 +119,22 @@ public class PNML2PetriNet extends DefaultHandler
 		else if (localName.equals("place")){
 			place = true;
 			Place p = new Place(attributes.getValue(0));
+			p.setId(attributes.getValue(0));
 			nodes.put(p.getName(), p);
 		}
 		else if (localName.equals("transition")){
 			transition = true;
-			Transition t = new Transition(attributes.getValue(0));
-			nodes.put(t.getName(), t);
+			Transition t = new Transition();
+			t.setId(attributes.getValue(0));
+			nodes.put(t.getId(), t);
+			this.currentTransitionID = t.getId();
 		}
 	}
 	
 	@Override
 	public void characters(char[] ch, int start, int length) throws SAXException {
 		super.characters(ch, start, length);
-		
+				
 		if (placetext)
 		{
 			placetext = false;
@@ -125,6 +142,9 @@ public class PNML2PetriNet extends DefaultHandler
 		}
 		else if (transitiontext)
 		{
+			char[] text = new char[length];
+			System.arraycopy(ch, start, text, 0, length);
+			this.nodes.get(currentTransitionID).setName(normalizeTransitionLabel(new String(text)));
 			transitiontext = false;
 			transition = false;
 		}
@@ -163,5 +183,12 @@ public class PNML2PetriNet extends DefaultHandler
   private String saxMsg( SAXParseException e ) 
   { 
     return "Line: " + e.getLineNumber() + ", Column: " + e.getColumnNumber() + ", Error: " + e.getMessage(); 
+  }
+  
+  private String normalizeTransitionLabel(String label) {
+	  String result = label.replace("\n", " ");
+	  result = result.trim();
+	  return result;
+	  
   }
 }
