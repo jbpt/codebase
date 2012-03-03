@@ -1,9 +1,13 @@
-package de.hpi.bpt.process.petri.util;
+package org.jbpt.petri.util;
 
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
+import org.jbpt.petri.Node;
+import org.jbpt.petri.PetriNet;
+import org.jbpt.petri.Place;
+import org.jbpt.petri.Transition;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -11,11 +15,6 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
-
-import de.hpi.bpt.process.petri.Node;
-import de.hpi.bpt.process.petri.PetriNet;
-import de.hpi.bpt.process.petri.Place;
-import de.hpi.bpt.process.petri.Transition;
 
 /**
  * Class of Type DefaultHandler that overrides some methods to extract PNML-Data from given files.
