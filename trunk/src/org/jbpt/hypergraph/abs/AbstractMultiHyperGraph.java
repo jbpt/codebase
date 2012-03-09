@@ -2,6 +2,7 @@ package org.jbpt.hypergraph.abs;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -146,7 +147,7 @@ public class AbstractMultiHyperGraph <E extends IHyperEdge<V>,V extends IVertex>
 	 */
 	public Collection<V> getVertices() {
 		Collection<V> result = this.vertices.keySet();
-		return (result==null) ? (new ArrayList<V>()) : (new ArrayList<V>(result));
+		return (result==null) ? (Collections.<V>emptyList()) : (new ArrayList<V>(result));
 	}
 
 	/*
@@ -155,7 +156,7 @@ public class AbstractMultiHyperGraph <E extends IHyperEdge<V>,V extends IVertex>
 	 */
 	public Collection<E> getEdges() {
 		Collection<E> result = this.edges.keySet();
-		return (result==null) ? (new ArrayList<E>()) : (new ArrayList<E>(result));
+		return (result==null) ? (Collections.<E>emptyList()) : (new ArrayList<E>(result));
 	}
 	
 	/*
@@ -164,7 +165,7 @@ public class AbstractMultiHyperGraph <E extends IHyperEdge<V>,V extends IVertex>
 	 */
 	public Collection<E> getEdges(V v) {
 		Collection<E> result = this.vertices.get(v);
-		return (result==null) ? (new ArrayList<E>()) : (new ArrayList<E>(result));
+		return (result==null) ? (Collections.<E>emptyList()) : (new ArrayList<E>(result));
 	}
 	
 	/*
@@ -172,10 +173,9 @@ public class AbstractMultiHyperGraph <E extends IHyperEdge<V>,V extends IVertex>
 	 * @see de.hpi.bpt.hypergraph.abs.IHyperGraph#getEdges(java.util.Collection)
 	 */
 	public Collection<E> getEdges(Collection<V> vs) {
-		Collection<E> result = new ArrayList<E>();
-		if (vs == null) return result;
-		if (vs.size() == 0) return result;
+		if (vs == null || vs.size() == 0) return Collections.<E>emptyList();
 		
+		Collection<E> result = new ArrayList<E>();
 		V v = vs.iterator().next();
 		Collection<E> es = this.getEdges(v);
 		Iterator<E> i = es.iterator();
