@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="MacRoman" standalone="no"?>
+<?xml version="1.0" encoding="WINDOWS-1252" standalone="no"?>
 <jardesc>
-    <jar path="/Users/gert/Documents/Uni/Master/bpt/jbpt.jar"/>
+    <jar path="jbpt/jbpt.jar"/>
     <options buildIfNeeded="true" compress="true" descriptionLocation="/jbpt/jbpt.jardesc" exportErrors="false" exportWarnings="true" includeDirectoryEntries="false" overwrite="true" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
     <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
     <selectedProjects/>
@@ -11,10 +11,14 @@
         </sealing>
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
-        <folder path="/jbpt/lib"/>
+        <file path="/jbpt/lib/license/uma"/>
         <file path="/jbpt/LICENSE"/>
         <javaElement handleIdentifier="=jbpt/src"/>
+        <file path="/jbpt/lib/pnapi-java.jar"/>
+        <file path="/jbpt/lib/org.json.jar"/>
         <file path="/jbpt/VERSION"/>
         <file path="/jbpt/AUTHORS"/>
+        <file path="/jbpt/lib/license/org.json"/>
+        <file path="/jbpt/lib/uma.jar"/>
     </selectedElements>
 </jardesc>
