@@ -166,6 +166,9 @@ public class AbstractHyperEdge<V extends IVertex> extends GObject implements IHy
 	 */
 	@SuppressWarnings("unchecked")
 	public void destroy() {
+		if (this.graph == null) {
+			return;
+		}
 		this.graph.removeIndex(this, this.vertices);
 		this.graph.addVertices(this.vertices);
 		this.graph = null;

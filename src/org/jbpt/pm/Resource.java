@@ -7,7 +7,7 @@ package org.jbpt.pm;
  * @author Tobias Hoppe
  *
  */
-public class Resource implements IResource {
+public class Resource implements IResource, Cloneable {
 	
 	private IResource parent = null;
 	private String label = null;

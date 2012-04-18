@@ -11,7 +11,7 @@ import org.jbpt.pm.NonFlowNode;
  * model or directly modeling the subprocess. They can also be event-driven (triggered by a startevent and
  * ended by an end event). 
  * 
- * @author Cindy Fähnrich
+ * @author Cindy Fähnrich, Tobias Hoppe
  *
  */
 public class Subprocess extends BpmnActivity implements ISubprocess {
@@ -180,4 +180,8 @@ public class Subprocess extends BpmnActivity implements ISubprocess {
 		return this.subprocess.addMessageFlow(from, to);
 	}
 
+	@Override
+	public Bpmn<BpmnControlFlow<FlowNode>, FlowNode> getSubProcess() {
+		return this.subprocess;
+	}
 }
