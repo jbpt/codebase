@@ -2,7 +2,6 @@ package org.jbpt.pm.epc;
 
 import org.jbpt.pm.ControlFlow;
 import org.jbpt.pm.FlowNode;
-import org.jbpt.pm.IProcessModel;
 import org.jbpt.pm.NonFlowNode;
 import org.jbpt.pm.ProcessModel;
 
@@ -34,7 +33,9 @@ public class ProcessInterface extends FlowNode implements IProcessInterface {
 	@Override
 	public ProcessInterface clone() {
 		ProcessInterface clone = (ProcessInterface) super.clone();
-		clone.epc = (IEpc<ControlFlow<FlowNode>, FlowNode, NonFlowNode>) ((ProcessModel) this.epc).clone();
+		if (this.epc != null) {
+			clone.epc = (IEpc<ControlFlow<FlowNode>, FlowNode, NonFlowNode>) ((ProcessModel) this.epc).clone();			
+		}
 		return clone;
 	}
 

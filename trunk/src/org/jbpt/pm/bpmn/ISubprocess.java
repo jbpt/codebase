@@ -6,7 +6,7 @@ import org.jbpt.pm.NonFlowNode;
 /**
  * This is the interface class for the BPMN subprocess class.
  * 
- * @author Cindy Fähnrich
+ * @author Cindy FÃ¤hnrich, Tobias Hoppe
  *
  */
 
@@ -102,4 +102,9 @@ public interface ISubprocess extends IBpmnActivity {
 	 * @return TODO
 	 */
 	public BpmnMessageFlow addMessageFlow(Object from, Object to);
+
+	/**
+	 * @return the {@link Bpmn} model of this sub process.
+	 */
+	public Bpmn<BpmnControlFlow<FlowNode>, FlowNode> getSubProcess();
 }
