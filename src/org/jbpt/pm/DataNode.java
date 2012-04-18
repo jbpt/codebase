@@ -7,12 +7,14 @@ import java.util.Set;
 
 import org.jbpt.graph.abs.IDirectedEdge;
 import org.jbpt.hypergraph.abs.IVertex;
+import org.jbpt.pm.data.DataConnection;
+import org.jbpt.pm.data.DataConnectionType;
+import org.jbpt.pm.data.DataModel;
 
 
 /**
  * Base class for all model elements of a {@link IProcessModel} that represents
  * documents or data nodes or something like this.
- * 
  * @author Tobias Hoppe, Andreas Meyer
  *
  */
@@ -28,6 +30,9 @@ public class DataNode extends NonFlowNode implements IDataNode {
 	 */
 	private Set<IFlowNode> writingFlowNodes = new HashSet<IFlowNode>();
 	
+	private DataModel dataModel = null;
+	private String state = null;
+
 	/**
 	 * {@link Set} of {@link IFlowNode}s with unspecified access to this {@link DataNode}.
 	 */
@@ -61,6 +66,19 @@ public class DataNode extends NonFlowNode implements IDataNode {
 	 */
 	public DataNode(String name) {
 		super(name);
+	}
+	
+	public DataNode(String name, String desc, String state) {
+		super(name,desc);
+		setState(state);
+	}
+	
+	public void setState(String state) {
+		this.state = state;
+	}
+	
+	public String getState() {
+		return this.state;
 	}
 
 	/**
@@ -238,6 +256,74 @@ public class DataNode extends NonFlowNode implements IDataNode {
 	public Collection<IDirectedEdge<IVertex>> getWritingFlows() {
 		return this.writingFlows;
 	}
-	
 
+	/**
+	 * @return the data model
+	 */
+	public DataModel getModel() {
+		return dataModel;
+	}
+
+	/**
+	 * @param dm the datamodel to set
+	 */
+	public void setModel(DataModel dm) {
+		this.dataModel = dm;
+	}
+	
+	/**
+	 * @return ArrayList<DataNode> containing all predecessor data nodes considering
+	 * aggregation and generalization data connections only (in the {@link DataModel}).
+	 */
+	public ArrayList<DataNode> getDirectPredecessorsAggG() {
+		ArrayList<DataNode> result = new ArrayList<DataNode>();
+		ArrayList<DataNode> col1 = new ArrayList<DataNode>(this.getModel().getDirectPredecessors(this));
+
+		int counter = 0;
+		
+		for (DataConnection<DataNode> dc : this.getModel().getDataConnections()) {
+			if(dc.getDataConnectionType().equals(DataConnectionType.G) || dc.getDataConnectionType().equals(DataConnectionType.Agg)) {
+				for (DataNode dataNode : col1) {
+					if(dc.getSource().equals(dataNode) && dc.getTarget().equals(this)) {
+						result.add(dataNode);
+						counter++;
+						break;
+					}
+				}
+				if(counter == col1.size()) {
+					break;
+				}
+			}
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * @return ArrayList<DataNode> containing all successor data nodes considering
+	 * aggregation and generalization data connections only (in the {@link DataModel}).
+	 */
+	public ArrayList<DataNode> getDirectSuccessorsAggG() {
+		ArrayList<DataNode> result = new ArrayList<DataNode>();
+		ArrayList<DataNode> col1 = new ArrayList<DataNode>(this.getModel().getDirectSuccessors(this));
+
+		int counter = 0;
+		
+		for (DataConnection<DataNode> dc : this.getModel().getDataConnections()) {
+			if(dc.getDataConnectionType().equals(DataConnectionType.G) || dc.getDataConnectionType().equals(DataConnectionType.Agg)) {
+				for (DataNode dataNode : col1) {
+					if(dc.getSource().equals(this) && dc.getTarget().equals(dataNode)) {
+						result.add(dataNode);
+						counter++;
+						break;
+					}
+				}
+				if(counter == col1.size()) {
+					break;
+				}
+			}
+		}
+		
+		return result;
+	}
 }

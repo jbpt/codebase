@@ -11,7 +11,7 @@ import org.jbpt.hypergraph.abs.Vertex;
 /**
  * Interface for a general business process model.
  * 
- * @author Artem Polyvyanyy, Tobias Hoppe
+ * @author Artem Polyvyanyy, Tobias Hoppe, Andreas Meyer
  *
  * @param <CF> Class for control flow edge.
  * @param <FN> Class for nodes being part of the control flow.
@@ -248,4 +248,22 @@ public interface IProcessModel<CF extends IDirectedEdge<FN>, FN extends IFlowNod
 	 * @return the removed {@link IActivity}, <code>null</code> upon failure
 	 */
 	public Activity removeTask(Activity task);
+
+	/**
+	 * Return all {@link FlowNode} which precede the given {@link FlowNode} in the {@link ControlFlow}.
+	 * 
+	 * @param fn {@link FlowNode} to start from
+	 * 
+	 * @return {@link Collection} containing all predecessors of the given {@link FlowNode}
+	 */
+	public Collection<FlowNode> getAllPredecessors(FlowNode fn);
+
+	/**
+	 * Return all {@link FlowNode} which succeed the given {@link FlowNode} in the {@link ControlFlow}.
+	 * 
+	 * @param fn {@link FlowNode} to start from
+	 * 
+	 * @return {@link Collection} containing all successors of the given {@link FlowNode}
+	 */
+	public Collection<FlowNode> getAllSuccessors(FlowNode fn);
 }

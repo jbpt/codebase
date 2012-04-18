@@ -17,7 +17,7 @@ import org.jbpt.hypergraph.abs.Vertex;
 /**
  * Basic process model implementation
  * 
- * @author Artem Polyvyanyy, Tobias Hoppe, Cindy F�hnrich
+ * @author Artem Polyvyanyy, Tobias Hoppe, Cindy F�hnrich, Andreas Meyer
  */
 public class ProcessModel extends AbstractDirectedGraph<ControlFlow<FlowNode>, FlowNode> implements IProcessModel<ControlFlow<FlowNode>, FlowNode, NonFlowNode> {
 
@@ -360,27 +360,110 @@ public class ProcessModel extends AbstractDirectedGraph<ControlFlow<FlowNode>, F
 		}
 		
 		result += "digraph G {\n";
-		for (Activity t : this.getActivities())
-			result += String.format("  n%s[shape=box,label=\"%s\"];\n", t.getId().replace("-", ""), t.getName());
+		result += "rankdir=LR \n"; //rankdir=LR for left to right graph; rankdir=TD for top to down graph
+		
+		for (Event e : this.getEvents()) {
+			result += String.format("  n%s[shape=ellipse,label=\"%s\"];\n", e.getId().replace("-", ""), e.getName());
+		}
 		result+="\n";
-		for (Gateway g : this.getGateways(AndGateway.class))
+		
+		for (Activity a : this.getActivities()) {
+			result += String.format("  n%s[shape=box,label=\"%s\"];\n", a.getId().replace("-", ""), a.getName());
+		}
+		result+="\n";
+		
+		for (Gateway g : this.getGateways(AndGateway.class)) {
 			result += String.format("  n%s[shape=diamond,label=\"%s\"];\n", g.getId().replace("-", ""), "AND");
-		for (Gateway g : this.getGateways(XorGateway.class))
+		}
+		for (Gateway g : this.getGateways(XorGateway.class)) {
 			result += String.format("  n%s[shape=diamond,label=\"%s\"];\n", g.getId().replace("-", ""), "XOR");
-		for (Gateway g : this.getGateways(OrGateway.class))
+		}
+		for (Gateway g : this.getGateways(OrGateway.class)) {
 			result += String.format("  n%s[shape=diamond,label=\"%s\"];\n", g.getId().replace("-", ""), "OR");
-		for (Gateway g : this.getGateways(AlternativGateway.class))
-			result += String.format("  n%s[shape=diamond,label=\"%s\"];\n", g.getId().replace("-", ""), "?");
+		}
 		result+="\n";
+		
+		for (DataNode d : this.getDataNodes()) {
+			result += String.format("  n%s[shape=note,label=\"%s\"];\n", d.getId().replace("-", ""), d.getName().concat(" [" + d.getState() + "]"));
+		}
+		result+="\n";
+		
 		for (ControlFlow<FlowNode> cf: this.getControlFlow()) {
-			if (cf.getLabel()!=null || cf.getLabel()!="")
+			if (cf.getLabel()!=null && cf.getLabel()!="")
 				result += String.format("  n%s->n%s[label=\"%s\"];\n", cf.getSource().getId().replace("-", ""), cf.getTarget().getId().replace("-", ""), cf.getLabel());
 			else
 				result += String.format("  n%s->n%s;\n", cf.getSource().getId().replace("-", ""), cf.getTarget().getId().replace("-", ""));
+		}
+		result+="\n";
+		
+		for (Activity a : this.getActivities()) {
+			for (IDataNode d : a.getReadDocuments()) {
+				result += String.format("  n%s->n%s;\n", d.getId().replace("-", ""), a.getId().replace("-", ""));
+			}
+			for (IDataNode d : a.getWriteDocuments()) {
+				result += String.format("  n%s->n%s;\n", a.getId().replace("-", ""), d.getId().replace("-", ""));
+			}
 		}
 		result += "}";
 		
 		return result;
 	}
-
+	
+	@Override
+	public Collection<FlowNode> getAllPredecessors(FlowNode fn) {
+		Set<FlowNode> result = new HashSet<FlowNode>();
+		
+		Set<FlowNode> temp = new HashSet<FlowNode>();
+		temp.addAll(getDirectPredecessors(fn));
+		result.addAll(temp);
+		while(!(temp.isEmpty())) {
+			Set<FlowNode> temp2 = new HashSet<FlowNode>();
+			for (FlowNode flowNode : temp) {
+				temp2.addAll(getDirectPredecessors(flowNode));
+			}
+			temp = temp2;
+			Set<FlowNode> temp3 = new HashSet<FlowNode>();
+			for (FlowNode flowNode : temp) {
+				if(!(result.contains(flowNode))) {
+					result.add(flowNode);
+				} else {
+					temp3.add(flowNode);
+				}
+			}
+			for (FlowNode flowNode : temp3) {
+				temp.remove(flowNode);
+			}
+		}
+		
+		return result;
+	}
+	
+	@Override
+	public Collection<FlowNode> getAllSuccessors(FlowNode fn) {
+		Set<FlowNode> result = new HashSet<FlowNode>();
+		
+		Set<FlowNode> temp = new HashSet<FlowNode>();
+		temp.addAll(getDirectSuccessors(fn));
+		result.addAll(temp);
+		while(!(temp.isEmpty())) {
+			Set<FlowNode> temp2 = new HashSet<FlowNode>();
+			for (FlowNode flowNode : temp) {
+				temp2.addAll(getDirectSuccessors(flowNode));
+			}
+			temp = temp2;
+			Set<FlowNode> temp3 = new HashSet<FlowNode>();
+			for (FlowNode flowNode : temp) {
+				if(!(result.contains(flowNode))) {
+					result.add(flowNode);
+				} else {
+					temp3.add(flowNode);
+				}
+			}
+			for (FlowNode flowNode : temp3) {
+				temp.remove(flowNode);
+			}
+		}
+		
+		return result;
+	}
 }
