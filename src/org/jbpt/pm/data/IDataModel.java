@@ -2,7 +2,6 @@ package org.jbpt.pm.data;
 
 import java.util.Collection;
 
-import org.jbpt.graph.abs.IDirectedEdge;
 import org.jbpt.pm.DataNode;
 import org.jbpt.pm.IDataNode;
 
@@ -15,8 +14,7 @@ import org.jbpt.pm.IDataNode;
  * @param <C> Class for data connection edge.
  * @param <D> Class for data nodes being connected by <C>
  */
-public interface IDataModel<C extends IDirectedEdge<D>, D extends IDataNode> {
-//public interface IProcessModel<CF extends IDirectedEdge<FN>, FN extends IFlowNode, NFN extends INonFlowNode> extends IDirectedGraph<CF, FN> {
+public interface IDataModel<C extends IDataConnection<D>, D extends IDataNode> {
 	
 	public String getName();
 	

@@ -16,7 +16,7 @@ import org.jbpt.hypergraph.abs.Vertex;
 /**
  * Petri net implementation
  *  
- * @author Artem Polyvyanyy
+ * @author Artem Polyvyanyy, Andreas Meyer
  */
 public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 
@@ -483,6 +483,37 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 		for (Transition t : this.getTransitions()) {
 			if (t.getName()=="") result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".1\"];\n", t.getId().replace("-", ""), t.getName());
 			else result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".3\"];\n", t.getId().replace("-", ""), t.getName());
+		}
+		
+		result += "\n";
+		for (Flow f: this.getFlowRelation()) {
+			result += String.format("\tn%s->n%s;\n", f.getSource().getId().replace("-", ""), f.getTarget().getId().replace("-", ""));
+		}
+		result += "}\n";
+		
+		return result;
+	}
+	
+	public String toDOTwithLabels() {
+		String result = "digraph G {\n";
+		result += "graph [fontname=\"Helvetica\" fontsize=10 nodesep=0.35 ranksep=\"0.25 equally\"];\n";
+		result += "node [fontname=\"Helvetica\" fontsize=10 style=filled fillcolor=white penwidth=\"2\"];\n";
+		result += "edge [fontname=\"Helvetica\" fontsize=10 arrowhead=normal color=black];\n";
+		result += "\n";
+		result += "node [shape=circle];\n";
+		
+		for (Place n : this.getPlaces()) {
+			String label = "";
+			label += (n.getTokens()>0) ? n.getTokens() : ""; 
+			result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".3\"];\n", n.getId().replace("-", ""), label);
+		}
+		
+		result += "\n";
+		result += "node [shape=box];\n";
+		
+		for (Transition t : this.getTransitions()) {
+			if (t.getName()=="") result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".1\"];\n", t.getId().replace("-", ""), t.getName());
+			else result += String.format("\tn%s[label=\"%s\"];\n", t.getId().replace("-", ""), t.getName());
 		}
 		
 		result += "\n";

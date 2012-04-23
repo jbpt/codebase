@@ -6,6 +6,7 @@ import org.jbpt.graph.abs.IDirectedEdge;
 import org.jbpt.graph.abs.IDirectedGraph;
 import org.jbpt.hypergraph.abs.IVertex;
 import org.jbpt.hypergraph.abs.Vertex;
+import org.jbpt.petri.PetriNet;
 
 
 /**
@@ -266,4 +267,11 @@ public interface IProcessModel<CF extends IDirectedEdge<FN>, FN extends IFlowNod
 	 * @return {@link Collection} containing all successors of the given {@link FlowNode}
 	 */
 	public Collection<FlowNode> getAllSuccessors(FlowNode fn);
+	
+	/**
+	 * Transform a general process model to a Petri net.
+	 * 
+	 * @return {@link PetriNet} 
+	 */
+	public PetriNet toPetriNet();
 }

@@ -3,10 +3,13 @@
  */
 package org.jbpt.pm;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.jbpt.graph.abs.IDirectedEdge;
 import org.jbpt.hypergraph.abs.IVertex;
+import org.jbpt.pm.data.DataModel;
+import org.jbpt.pm.data.DataState;
 
 
 /**
@@ -195,5 +198,32 @@ public interface IDataNode extends INonFlowNode {
 	 * @param unspecifiedFlowNode
 	 *            {@link FlowNode} with unspecified access to this {@link IDataNode}
 	 */
-	void removeUnspecifiedFlowNodeOnly(IFlowNode unspecifiedFlowNode);	
+	void removeUnspecifiedFlowNodeOnly(IFlowNode unspecifiedFlowNode);
+	
+	/**
+	 * @return the data model
+	 */
+	public DataModel getModel();
+
+	/**
+	 * @param dm the datamodel to set
+	 */
+	public void setModel(DataModel dm);
+	
+	/**
+	 * @return ArrayList<DataNode> containing all predecessor data nodes considering
+	 * aggregation and generalization data connections only (in the {@link DataModel}).
+	 */
+	public ArrayList<DataNode> getDirectPredecessorsAggG();
+	
+	/**
+	 * @return ArrayList<DataNode> containing all successor data nodes considering
+	 * aggregation and generalization data connections only (in the {@link DataModel}).
+	 */
+	public ArrayList<DataNode> getDirectSuccessorsAggG();
+	
+	/**
+	 * @return {@link DataState} associated to the data node
+	 */
+	public DataState getDataState();
 }
