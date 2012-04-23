@@ -2,8 +2,6 @@ package org.jbpt.pm.data;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.jbpt.graph.abs.AbstractDirectedGraph;
 import org.jbpt.pm.DataNode;
@@ -15,10 +13,9 @@ import org.jbpt.pm.DataNode;
  * @author Andreas Meyer
  *
  */
-public class DataModel extends AbstractDirectedGraph<DataConnection<DataNode>, DataNode> implements IDataModel<DataConnection<DataNode>, DataNode>{
+public class DataModel extends AbstractDirectedGraph<DataConnection<DataNode>, DataNode> implements IDataModel<DataConnection<DataNode>, DataNode> {
 	
 	private String name;
-	protected Set<DataNode> dataNodes = new HashSet<DataNode>();
 	
 	/**
 	 * Construct an empty data model

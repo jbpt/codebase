@@ -10,6 +10,7 @@ import org.jbpt.hypergraph.abs.IVertex;
 import org.jbpt.pm.data.DataConnection;
 import org.jbpt.pm.data.DataConnectionType;
 import org.jbpt.pm.data.DataModel;
+import org.jbpt.pm.data.DataState;
 
 
 /**
@@ -265,7 +266,7 @@ public class DataNode extends NonFlowNode implements IDataNode {
 	}
 
 	/**
-	 * @param dm the datamodel to set
+	 * @param dm the data model to set
 	 */
 	public void setModel(DataModel dm) {
 		this.dataModel = dm;
@@ -325,5 +326,13 @@ public class DataNode extends NonFlowNode implements IDataNode {
 		}
 		
 		return result;
+	}
+	
+	/**
+	 * @return {@link DataState} as object from this data object
+	 */
+	@Override
+	public DataState getDataState() {
+		return new DataState(this.state);
 	}
 }

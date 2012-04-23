@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -12,12 +13,15 @@ import org.jbpt.graph.algo.DirectedGraphAlgorithms;
 import org.jbpt.graph.algo.GraphAlgorithms;
 import org.jbpt.hypergraph.abs.IVertex;
 import org.jbpt.hypergraph.abs.Vertex;
+import org.jbpt.petri.PetriNet;
+import org.jbpt.petri.Place;
+import org.jbpt.petri.Transition;
 
 
 /**
  * Basic process model implementation
  * 
- * @author Artem Polyvyanyy, Tobias Hoppe, Cindy Fï¿½hnrich, Andreas Meyer
+ * @author Artem Polyvyanyy, Tobias Hoppe, Cindy Fähnrich, Andreas Meyer
  */
 public class ProcessModel extends AbstractDirectedGraph<ControlFlow<FlowNode>, FlowNode> implements IProcessModel<ControlFlow<FlowNode>, FlowNode, NonFlowNode> {
 
@@ -381,6 +385,8 @@ public class ProcessModel extends AbstractDirectedGraph<ControlFlow<FlowNode>, F
 		for (Gateway g : this.getGateways(OrGateway.class)) {
 			result += String.format("  n%s[shape=diamond,label=\"%s\"];\n", g.getId().replace("-", ""), "OR");
 		}
+		for (Gateway g : this.getGateways(AlternativGateway.class))
+			result += String.format("  n%s[shape=diamond,label=\"%s\"];\n", g.getId().replace("-", ""), "?");
 		result+="\n";
 		
 		for (DataNode d : this.getDataNodes()) {
@@ -465,5 +471,332 @@ public class ProcessModel extends AbstractDirectedGraph<ControlFlow<FlowNode>, F
 		}
 		
 		return result;
+	}
+	
+	/**
+	 * assumptions:
+	 * single entry node - single start node
+	 * start with (i) activity or (ii) event followed by activity or and/ xor gateway
+	 * every activity has at most one incoming and at most one outgoing edge
+	 * unique labeling of activities
+	 * control flow nodes: start event, end event, activity, gateway
+	 */
+	@Override
+	public PetriNet toPetriNet() {
+		PetriNet pn = new PetriNet();
+		List<FlowNode> nodes1 = new ArrayList<FlowNode>();
+		List<FlowNode> nodes2 = new ArrayList<FlowNode>();
+		List<FlowNode> nodes3 = new ArrayList<FlowNode>();
+		
+		for (FlowNode fn : this.getEntries()) {
+			if(fn instanceof Activity) {
+				pn.addFlow(new Place(), new Transition(fn.getName()));
+				nodes1.add(fn);
+			} else if(fn instanceof Event) {
+				fn = this.getFirstDirectSuccessor(fn);
+				if(fn instanceof Activity) {
+					pn.addFlow(new Place(), new Transition(fn.getName()));
+					nodes1.add(fn);
+				} else if(fn instanceof AndGateway) {
+					for (FlowNode flowNode : this.getDirectSuccessors(fn)) {
+						pn.addFlow(new Place(), new Transition(flowNode.getName()));
+						nodes1.add(flowNode);
+					}
+				} else if(fn instanceof XorGateway) {
+					Place p = new Place();
+					for (FlowNode flowNode : this.getDirectSuccessors(fn)) {
+						pn.addFlow(p, new Transition(flowNode.getName()));
+						nodes1.add(flowNode);
+					}
+				} else {
+					//not possible
+				}
+			} else {
+				//not possible
+			}
+		} //initial transition
+		
+		while(!(nodes1.isEmpty())) {
+			for (FlowNode flowNode : nodes1) {
+				if(flowNode instanceof Activity) {
+					while(this.getFirstDirectSuccessor(flowNode) instanceof Activity) {
+						for (Transition transition : pn.getSinkTransitions()) {
+							if (transition.getName().equalsIgnoreCase(flowNode.getName())) {
+								Place p = new Place();
+								pn.addFlow(transition, p);
+								pn.addFlow(p, new Transition(this.getFirstDirectSuccessor(flowNode).getName()));
+							}
+						} 
+						flowNode = this.getFirstDirectSuccessor(flowNode);
+					}
+					nodes2.add(flowNode);
+				} else if(flowNode instanceof Gateway) {
+					nodes2.add(flowNode);
+				} else {
+					//not possible
+				}
+			} //gateway reached for each path
+			nodes1.clear();
+			nodes1.addAll(nodes2);
+			nodes2.clear();
+			
+			//handle gateways
+			while(!(nodes1.isEmpty())) {
+				FlowNode currentFlowNode = nodes1.get(0);
+				for (FlowNode node : this.getDirectSuccessors(currentFlowNode)) {
+					if(node instanceof Event) {
+						break;
+					}
+					Gateway gw = (Gateway) node;
+					
+					for (FlowNode flowNode : nodes1) {
+						for (FlowNode flowNode2 : this.getDirectSuccessors(flowNode)) {
+							if(flowNode2.equals(gw)) {
+								nodes2.add(flowNode);
+							}
+						}
+					}
+					if(this.getIncomingEdges(gw).size() == 1 && this.getOutgoingEdges(gw).size() > 1) { //split
+						if(gw instanceof AndGateway) { //and split
+							for (Transition transition : pn.getSinkTransitions()) {
+								for (FlowNode flowNode : nodes2) {
+									if(flowNode instanceof Activity) {
+										if (transition.getName().equalsIgnoreCase(flowNode.getName())) {
+											for (FlowNode flowNode2 : this.getDirectSuccessors(gw)) {
+												Place p = new Place();
+												pn.addFlow(transition, p);
+												if(flowNode2 instanceof Activity) {
+													pn.addFlow(p, new Transition(flowNode2.getName()));
+													nodes3.add(flowNode2);
+												} else if(flowNode2 instanceof Gateway) {
+													Transition t = new Transition();
+													t.setDescription(flowNode2.getName());
+													pn.addFlow(p, t);
+													if(!(nodes3.contains(gw))) {
+														nodes3.add(gw);
+													}
+												} else {
+													//not possible
+												}
+											}
+										}
+									} else if(flowNode instanceof Gateway) {
+										if(transition.getDescription().equalsIgnoreCase(node.getName())) {
+											for (FlowNode flowNode2 : this.getDirectSuccessors(gw)) {
+												Place p = new Place();
+												pn.addFlow(transition, p);
+												if(flowNode2 instanceof Activity) {
+													pn.addFlow(p, new Transition(flowNode2.getName()));
+													nodes3.add(flowNode2);
+												} else if(flowNode2 instanceof Gateway) {
+													Transition t = new Transition();
+													t.setDescription(flowNode2.getName());
+													pn.addFlow(p, t);
+													if(!(nodes3.contains(gw))) {
+														nodes3.add(gw);
+													}
+												} else {
+													//not possible
+												}
+											}
+											
+										}
+									} else {
+										//not possible
+									}
+									
+								}
+							}
+						} else if(gw instanceof XorGateway) { //xor split
+							for (Transition transition : pn.getSinkTransitions()) {
+								for (FlowNode flowNode : nodes2) {
+									if(flowNode instanceof Activity) {
+										if (transition.getName().equalsIgnoreCase(flowNode.getName())) {
+											Place p = new Place();
+											for (FlowNode flowNode2 : this.getDirectSuccessors(gw)) {
+												pn.addFlow(transition, p);
+												if(flowNode2 instanceof Activity) {
+													pn.addFlow(p, new Transition(flowNode2.getName()));
+													nodes3.add(flowNode2);
+												} else if(flowNode2 instanceof Gateway) {
+													Transition t = new Transition();
+													t.setDescription(flowNode2.getName());
+													pn.addFlow(p, t);
+													if(!(nodes3.contains(gw))) {
+														nodes3.add(gw);
+													}
+												} else {
+													//not possible
+												}
+											}
+										}
+									} else if(flowNode instanceof Gateway) {
+										if(transition.getDescription().equalsIgnoreCase(node.getName())) {
+											Place p = new Place();
+											for (FlowNode flowNode2 : this.getDirectSuccessors(gw)) {
+												pn.addFlow(transition, p);
+												if(flowNode2 instanceof Activity) {
+													pn.addFlow(p, new Transition(flowNode2.getName()));
+													nodes3.add(flowNode2);
+												} else if(flowNode2 instanceof Gateway) {
+													Transition t = new Transition();
+													t.setDescription(flowNode2.getName());
+													pn.addFlow(p, t);
+													if(!(nodes3.contains(gw))) {
+														nodes3.add(gw);
+													}
+												} else {
+													//not possible
+												}
+											}
+											
+										}
+									} else {
+										//not possible
+									}
+									
+								}
+							}
+						} else {
+							//not possible
+						}
+						
+						 
+					} else if(this.getIncomingEdges(gw).size() > 1 && this.getOutgoingEdges(gw).size() == 1) { //join
+						if(nodes1.containsAll(this.getDirectPredecessors(gw))) {
+							if(gw instanceof AndGateway) { //and join
+								Transition t1 = new Transition(this.getFirstDirectSuccessor(gw).getName());
+								Transition t2 = new Transition();
+								t2.setDescription(gw.getName());
+								for (Transition transition : pn.getSinkTransitions()) {
+									if(this.getFirstDirectSuccessor(gw) instanceof Activity) {
+										for (FlowNode flowNode : nodes2) {
+											if(flowNode instanceof Activity) {
+												if (transition.getName().equalsIgnoreCase(flowNode.getName())) {
+													Place p = new Place();
+													pn.addFlow(transition, p);
+													pn.addFlow(p, t1);
+													if(!(nodes3.contains(getFirstDirectSuccessor(gw)))) {
+														nodes3.add(getFirstDirectSuccessor(gw));
+													}
+												}
+											} else if(flowNode instanceof Gateway) {
+												for (FlowNode flowNode2 : this.getDirectSuccessors(flowNode)) {
+													if (transition.getDescription().equalsIgnoreCase(flowNode2.getName())) {
+														Place p = new Place();
+														pn.addFlow(transition, p);
+														pn.addFlow(p, t1);
+														if(!(nodes3.contains(getFirstDirectSuccessor(gw)))) {
+															nodes3.add(getFirstDirectSuccessor(gw));
+														}
+													}
+												}
+											}
+										}
+									} else if(this.getFirstDirectSuccessor(gw) instanceof Gateway) {
+										for (FlowNode flowNode : nodes2) {
+											if(flowNode instanceof Activity) {
+												if (transition.getName().equalsIgnoreCase(flowNode.getName())) {
+													Place p = new Place();
+													pn.addFlow(transition, p);
+													pn.addFlow(p, t2);
+													if(!(nodes3.contains(gw))) {
+														nodes3.add(gw);
+													}
+												}
+											} else if(flowNode instanceof Gateway) {
+												if (transition.getDescription().equalsIgnoreCase(flowNode.getName())) {
+													Place p = new Place();
+													pn.addFlow(transition, p);
+													pn.addFlow(p, t2);
+													if(!(nodes3.contains(gw))) {
+														nodes3.add(gw);
+													}
+												}
+											}
+										}
+									}
+								}
+								for (FlowNode flowNode : nodes2) {
+									nodes1.remove(flowNode);
+								}
+							} else if(gw instanceof XorGateway) { //xor join
+								Transition t1 = new Transition(this.getFirstDirectSuccessor(gw).getName());
+								Transition t2 = new Transition();
+								t2.setDescription(gw.getName());
+								Place p = new Place();
+								for (Transition transition : pn.getSinkTransitions()) {
+									if(this.getFirstDirectSuccessor(gw) instanceof Activity) {
+										for (FlowNode flowNode : nodes2) {											
+											if(flowNode instanceof Activity) {
+												if (transition.getName().equalsIgnoreCase(flowNode.getName())) {
+													pn.addFlow(transition, p);
+													pn.addFlow(p, t1);
+													if(!(nodes3.contains(getFirstDirectSuccessor(gw)))) {
+														nodes3.add(getFirstDirectSuccessor(gw));
+													}
+												}
+											} else if(flowNode instanceof Gateway) {
+												for (FlowNode flowNode2 : this.getDirectSuccessors(flowNode)) {
+													if (transition.getDescription().equalsIgnoreCase(flowNode2.getName())) {
+														pn.addFlow(transition, p);
+														pn.addFlow(p, t1);
+														if(!(nodes3.contains(getFirstDirectSuccessor(gw)))) {
+															nodes3.add(getFirstDirectSuccessor(gw));
+														}
+													}
+												}
+											}
+										}
+									} else if(this.getFirstDirectSuccessor(gw) instanceof Gateway) {
+										for (FlowNode flowNode : nodes2) {
+											if(flowNode instanceof Activity) {
+												if (transition.getName().equalsIgnoreCase(flowNode.getName())) {
+													pn.addFlow(transition, p);
+													pn.addFlow(p, t2);
+													if(!(nodes3.contains(gw))) {
+														nodes3.add(gw);
+													}
+												}
+											} else if(flowNode instanceof Gateway) {
+												if (transition.getDescription().equalsIgnoreCase(flowNode.getName())) {
+													pn.addFlow(transition, p);
+													pn.addFlow(p, t2);
+													if(!(nodes3.contains(gw))) {
+														nodes3.add(gw);
+													}
+												}
+											}
+										}
+									}
+								}
+								for (FlowNode flowNode : nodes2) {
+									nodes1.remove(flowNode);
+								}
+							}
+						} else {
+							nodes3.add(currentFlowNode);
+						}
+						
+					} else if(this.getIncomingEdges(gw).size() > 1 && this.getOutgoingEdges(gw).size() > 1) { //split and join
+						//TODO
+					} else {
+						//at most one inc and one out
+					}
+					nodes2.clear();
+				}
+				if(nodes1.contains(currentFlowNode)) {
+					nodes1.remove(currentFlowNode);
+				}				
+			}
+			nodes1.clear();
+			nodes2.clear();
+			nodes1.addAll(nodes3);
+			nodes3.clear();
+		}
+		for (Transition t : pn.getSinkTransitions()) {
+			pn.addFlow(t, new Place());
+		}
+		return pn;
 	}
 }
