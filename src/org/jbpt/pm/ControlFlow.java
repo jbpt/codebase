@@ -66,7 +66,6 @@ public class ControlFlow<V extends IFlowNode> extends AbstractDirectedEdge<V> im
 		return clone;
 	}
 	
-	@Override
 	public String getLabel() {
 		return this.label;
 	}
