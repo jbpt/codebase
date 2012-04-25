@@ -34,7 +34,7 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 		Collection<Node> ss = new ArrayList<Node>(); ss.add(from);
 		Collection<Node> ts = new ArrayList<Node>(); ts.add(to);
 		
-		if (!this.checkEdge(ss,ts)) return null;
+		if (!super.checkEdge(ss,ts)) return null;
 		
 		return new Flow(this, from, to);
 	}
@@ -51,7 +51,24 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 		Collection<Node> ss = new ArrayList<Node>(); ss.add(from);
 		Collection<Node> ts = new ArrayList<Node>(); ts.add(to);
 		
-		if (!this.checkEdge(ss,ts)) return null;
+		if (!super.checkEdge(ss,ts)) return null;
+		
+		return new Flow(this, from, to);
+	}
+	
+	/**
+	 * Add flow to the net 
+	 * @param from Source node
+	 * @param to Target node
+	 * @return Flow added to the net; <code>null</code> if no flow was added
+	 */
+	protected Flow addFlow(Node from, Node to) {
+		if (from == null || to == null) return null;
+		
+		Collection<Node> ss = new ArrayList<Node>(); ss.add(from);
+		Collection<Node> ts = new ArrayList<Node>(); ts.add(to);
+		
+		if (!super.checkEdge(ss,ts)) return null;
 		
 		return new Flow(this, from, to);
 	}
@@ -269,7 +286,7 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 	 * Get Petri net flow relation
 	 * @return Petri net flow relation
 	 */
-	public Collection<Flow> getFlowRelation() {
+	public Collection<Flow> getFlow() {
 		return this.getEdges();
 	}
 	
@@ -305,7 +322,11 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 	* Postset/preset methods
 	**************************************************************************/
 	
-	
+	/**
+	 * Get postset places of a transition
+	 * @param t Transition
+	 * @return Postplaces of t
+	 */
 	public Collection<Place> getPostset(Transition t) {
 		Collection<Place> result = new ArrayList<Place>();
 		for (Node n : this.getDirectSuccessors(t)) {
@@ -316,6 +337,11 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 		return result;
 	}
 	
+	/**
+	 * Get postset places of a collection of transitions
+	 * @param ts Transitions
+	 * @return Postplaces of all transitions in ts
+	 */
 	public Collection<Place> getPostsetPlaces(Collection<Transition> ts) {
 		Set<Place> result = new HashSet<Place>();
 		
@@ -327,6 +353,11 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 		return result;
 	}
 	
+	/**
+	 * Get postset transitions of a place
+	 * @param p Place
+	 * @return Posttransitions of p
+	 */
 	public Collection<Transition> getPostset(Place p) {
 		Collection<Transition> result = new ArrayList<Transition>();
 		for (Node n : this.getDirectSuccessors(p)) {
@@ -337,6 +368,11 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 		return result;
 	}
 	
+	/**
+	 * Get postset transitions of a collection of places
+	 * @param ps Places
+	 * @return Posttransitions of all places in ps
+	 */
 	public Collection<Transition> getPostsetTransitions(Collection<Place> ps) {
 		Set<Transition> result = new HashSet<Transition>();
 		
@@ -348,14 +384,29 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 		return result;
 	}
 	
+	/**
+	 * Get postset nodes of a node
+	 * @param n Node
+	 * @return Postnodes of n
+	 */
 	public Collection<Node> getPostset(Node n) {
 		return this.getDirectSuccessors(n);
 	}
 	
+	/**
+	 * Get postset nodes of a collection of nodes
+	 * @param ns Nodes
+	 * @return Postnodes of all nodes in ns
+	 */
 	public Collection<Node> getPostset(Collection<Node> ns) {
 		return this.getDirectSuccessors(ns);
 	}
 	
+	/**
+	 * Get preset places of a transition
+	 * @param t Transition
+	 * @return Preplaces of t
+	 */
 	public Collection<Place> getPreset(Transition t) {
 		Collection<Place> result = new ArrayList<Place>();
 		for (Node n : this.getDirectPredecessors(t)) {
@@ -366,6 +417,11 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 		return result;
 	}
 	
+	/**
+	 * Get preset places of a collection of transitions
+	 * @param ts Transitions
+	 * @return Preplaces of all transitions in ts
+	 */
 	public Collection<Place> getPresetPlaces(Collection<Transition> ts) {
 		Set<Place> result = new HashSet<Place>();
 		
@@ -377,6 +433,11 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 		return result;
 	}
 	
+	/**
+	 * Get preset transitions of a place
+	 * @param p Place
+	 * @return Pretransitions of p
+	 */
 	public Collection<Transition> getPreset(Place p) {
 		Collection<Transition> result = new ArrayList<Transition>();
 		for (Node n : this.getDirectPredecessors(p)) {
@@ -387,6 +448,11 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 		return result;
 	}
 	
+	/**
+	 * Get preset transitions of a collection of places 
+	 * @param ps Places
+	 * @return Pretransitions of all places in ps
+	 */
 	public Collection<Transition> getPresetTransitions(Collection<Place> ps) {
 		Set<Transition> result = new HashSet<Transition>();
 		
@@ -398,10 +464,20 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 		return result;
 	}
 	
+	/**
+	 * Get preset nodes of a node
+	 * @param n Node
+	 * @return Prenodes of n
+	 */
 	public Collection<Node> getPreset(Node n) {
 		return this.getDirectPredecessors(n);
 	}
 	
+	/**
+	 * Get preset nodes of a collection of nodes
+	 * @param ns Nodes
+	 * @return Prenodes of all nodes in ns
+	 */
 	public Collection<Node> getPreset(Collection<Node> ns) {
 		return this.getDirectPredecessors(ns);
 	}
@@ -410,11 +486,19 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 	* Source/sink methods
 	**************************************************************************/
 	
+	/**
+	 * Get source nodes of the net (nodes with empty presets)
+	 * @return Source nodes of the net
+	 */
 	public Collection<Node> getSourceNodes() {
 		if (this.DGA == null) this.DGA = new DirectedGraphAlgorithms<Flow, Node>();
 		return this.DGA.getInputVertices(this);
 	}
 	
+	/**
+	 * Get source places of the net (places with empty presets)
+	 * @return Source places of the net
+	 */
 	public Collection<Place> getSourcePlaces() {
 		Collection<Place> result = new ArrayList<Place>();
 		for (Node n : this.getSourceNodes())
@@ -424,6 +508,10 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 		return result;
 	}
 	
+	/**
+	 * Get source transitions of the net (transitions with empty presets)
+	 * @return Source transitions of the net
+	 */
 	public Collection<Transition> getSourceTransitions() {
 		Collection<Transition> result = new ArrayList<Transition>();
 		for (Node n : this.getSourceNodes())
@@ -433,11 +521,19 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 		return result;
 	}
 	
+	/**
+	 * Get sink nodes of the net (nodes with empty postsets)
+	 * @return Sink nodes of the net
+	 */
 	public Collection<Node> getSinkNodes() {
 		if (this.DGA == null) this.DGA = new DirectedGraphAlgorithms<Flow, Node>();
 		return this.DGA.getOutputVertices(this);
 	}
 	
+	/**
+	 * Get sink places of the net (places with empty postsets)
+	 * @return Sink places of the net
+	 */
 	public Collection<Place> getSinkPlaces() {
 		Collection<Place> result = new ArrayList<Place>();
 		for (Node n : this.getSinkNodes())
@@ -447,6 +543,10 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 		return result;
 	}
 	
+	/**
+	 * Get sink transitions of the net (transitions with empty postsets)
+	 * @return Sink transitions of the net
+	 */
 	public Collection<Transition> getSinkTransitions() {
 		Collection<Transition> result = new ArrayList<Transition>();
 		for (Node n : this.getSinkNodes())
@@ -454,6 +554,33 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 				result.add((Transition)n);
 		
 		return result;
+	}
+	
+	/**
+	 * Get minimal nodes of the net (alias to {@link getSourceNodes})
+	 * @return Minimal nodes of the net
+	 */
+	public Collection<Node> getMin() {
+		return this.getSourceNodes();
+	}
+	
+	/**
+	 * Get maximal nodes of the net (alias to {@link getSinkNodes})
+	 * @return Maximal nodes of the net
+	 */
+	public Collection<Node> getMax() {
+		return this.getSinkNodes();
+	}
+	
+	/*************************************************************************/
+	
+	/**
+	 * Check if net is T-restricted, i.e., a net is T-restricted if presets and postsets of all transitions are not empty 
+	 * @return
+	 */
+	public boolean isTRestricted() {
+		return this.getSourceTransitions().isEmpty() && 
+				this.getSinkTransitions().isEmpty();
 	}
 	
 	/**************************************************************************
@@ -465,10 +592,10 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 	 * @return the clone of the Petri net
 	 */
 	@Override
+	// TODO check how clone behaves and optimize
 	public PetriNet clone() {
 		PetriNet clone = (PetriNet) super.clone();
-		
-		// workaround since abstract graph notifier is not cloned
+			
 		clone.removeVertices(clone.getVertices());
 		clone.removeEdges(clone.getEdges());
 		
@@ -480,12 +607,11 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 			nodeCopies.put(n,c);
 		}
 		
-		//TODO
-		/*for (Flow f : this.getFlowRelation()) {
+		for (Flow f : this.getFlow()) {
 			Node from = nodeCopies.get(f.getSource());
 			Node to = nodeCopies.get(f.getTarget());
 			clone.addFlow(from, to);
-		}*/
+		}
 		
 		return clone;
 	}
@@ -494,7 +620,7 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 	* toDOT method
 	**************************************************************************/
 	
-	/*@Override
+	@Override
 	public String toDOT() {
 		String result = "digraph G {\n";
 		result += "graph [fontname=\"Helvetica\" fontsize=10 nodesep=0.35 ranksep=\"0.25 equally\"];\n";
@@ -517,11 +643,65 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 		}
 		
 		result += "\n";
-		for (Flow f: this.getFlowRelation()) {
+		for (Flow f: this.getFlow()) {
 			result += String.format("\tn%s->n%s;\n", f.getSource().getId().replace("-", ""), f.getTarget().getId().replace("-", ""));
 		}
 		result += "}\n";
 		
 		return result;
-	}*/
+	}
+	
+	/**************************************************************************
+	* Unsupported operations
+	**************************************************************************/
+	
+	@Override
+	public Flow addEdge(Node s, Node t) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Flow addEdge(Collection<Node> ss, Collection<Node> ts) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Node removeVertex(Node v) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Collection<Node> removeVertices(Collection<Node> vs) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Flow addEdge(Collection<Node> vs)  {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Flow addEdge(Node v) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Flow removeEdge(Flow e) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Collection<Flow> removeEdges(Collection<Flow> es) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Node addVertex(Node v) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Collection<Node> addVertices(Collection<Node> vs) {
+		throw new UnsupportedOperationException();
+	}
 }

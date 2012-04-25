@@ -51,6 +51,8 @@ public interface IGraph<E extends IEdge<V>,V extends IVertex> extends IHyperGrap
 	
 	/**
 	 * Serialize graph to GraphViz DOT language
+	 * http://www.graphviz.org/
+	 * 
 	 * @return DOT string
 	 */
 	public String toDOT();
