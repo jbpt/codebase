@@ -41,7 +41,7 @@ public abstract class Node extends Vertex {
 	}
 
 	/**
-	 * Set label
+	 * Set label (alias to name string)
 	 * @param label Label to set
 	 */
 	public void setLabel(String label) {

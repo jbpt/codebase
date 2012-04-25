@@ -16,7 +16,7 @@ import java.util.Set;
  * @param <V> Vertex type employed in the graph
  */
 public abstract class AbstractGraphNotifier<E extends IHyperEdge<V>, V extends IVertex> extends GObject {
-	
+
 	protected Map<V,Set<E>> vertices = new Hashtable<V, Set<E>>();
 	protected Map<E,Set<V>> edges = new Hashtable<E, Set<V>>();
 	
@@ -94,6 +94,22 @@ public abstract class AbstractGraphNotifier<E extends IHyperEdge<V>, V extends I
 	public void clearMembers() {
 		this.vertices = new Hashtable<V, Set<E>>();
 		this.edges = new Hashtable<E, Set<V>>();
+	}
+	
+	@Override
+	public AbstractGraphNotifier<E,V> clone() {
+		@SuppressWarnings("unchecked")
+		AbstractGraphNotifier<E,V> clone = (AbstractGraphNotifier<E,V>) super.clone();
+		
+		for (Map.Entry<V,Set<E>> entry : this.vertices.entrySet()) {
+			clone.vertices.put(entry.getKey(), entry.getValue());
+		}
+		
+		for (Map.Entry<E,Set<V>> entry : this.edges.entrySet()) {
+			clone.edges.put(entry.getKey(), entry.getValue());
+		}
+		
+		return clone;
 	}
 	
 }

@@ -35,10 +35,18 @@ public class Transition extends Node {
 		return (Transition) super.clone();
 	}
 	
+	/**
+	 * Check if transition is silent
+	 * @return <code>true</code> if label is the empty string; <code>false</code> otherwise
+	 */
 	public boolean isSilent() {
 		return this.getLabel().isEmpty();
 	}
-	
+
+	/**
+	 * Check if transition is observable
+	 * @return <code>true</code> if label is not the empty string; <code>false</code> otherwise
+	 */
 	public boolean isObservable() {
 		return !this.getLabel().isEmpty();
 	}

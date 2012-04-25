@@ -18,11 +18,14 @@ public class Marking extends HashMap<Place, Integer> {
 		this.net = net;
 	}
 
+
 	@Override
-	// TODO check if place is in the net
 	public Integer put(Place p, Integer tokens) {
-		if (tokens <= 0)
-			return this.remove(p);
+		// initial checks
+		if (p == null || tokens == null) return null;
+		if (!this.net.contains(p)) return null;
+		
+		if (tokens <= 0) return this.remove(p);
 		
 		return super.put(p, tokens);
 	}
@@ -40,7 +43,18 @@ public class Marking extends HashMap<Place, Integer> {
 		if (i != null) return i;
 		if (p instanceof Place) return 0;
 		return null;
-	}	
+	}
+	
+	/**
+	 * Get number of tokens at a place
+	 * @param p Place
+	 * @return Number of tokens at p
+	 */
+	public Integer get(Place p) {
+		Integer i = super.get(p);
+		if (i != null) return i;
+		return 0;
+	}
 	
 	@Override
 	public boolean equals(Object o) {
@@ -73,5 +87,14 @@ public class Marking extends HashMap<Place, Integer> {
 	 */
 	public PetriNet getPetriNet() {
 		return this.net;
+	}
+	
+	/**
+	 * Check if place is marked, i.e., contains at least one token
+	 * @param p Place
+	 * @return <code>true</code> if p is marked; <code>false</code> otherwise
+	 */
+	public boolean isMarked(Place p) {
+		return this.get(p) > 0;
 	}
 }
