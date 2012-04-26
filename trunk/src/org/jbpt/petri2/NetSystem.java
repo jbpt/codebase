@@ -138,7 +138,36 @@ public class NetSystem extends PetriNet {
 
 	@Override
 	public String toDOT() {
-		// TODO
-		return super.toDOT();
+		String result = "digraph G {\n";
+		result += "graph [fontname=\"Helvetica\" fontsize=10 nodesep=0.35 ranksep=\"0.25 equally\"];\n";
+		result += "node [fontname=\"Helvetica\" fontsize=10 fixedsize style=filled fillcolor=white penwidth=\"2\"];\n";
+		result += "edge [fontname=\"Helvetica\" fontsize=10 arrowhead=normal color=black];\n";
+		result += "\n";
+		result += "node [shape=circle];\n";
+		
+		for (Place p : this.getPlaces()) {
+			Integer n = this.M.get(p);
+			String label = ((n == 0) || (n == null)) ? "" : n.toString(); 
+			result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".3\"];\n", p.getId().replace("-", ""), label);
+		}
+		
+		result += "\n";
+		result += "node [shape=box];\n";
+		
+		for (Transition t : this.getTransitions()) {
+			String fillColor = this.isEnabled(t) ? " fillcolor=green" : "";
+			if (t.getName()=="")
+				result += String.format("\tn%s[label=\"%s\" width=\".3\""+fillColor+" height=\".1\"];\n", t.getId().replace("-", ""), t.getName());
+			else 
+				result += String.format("\tn%s[label=\"%s\" width=\".3\""+fillColor+" height=\".3\"];\n", t.getId().replace("-", ""), t.getName());
+		}
+		
+		result += "\n";
+		for (Flow f: this.getFlow()) {
+			result += String.format("\tn%s->n%s;\n", f.getSource().getId().replace("-", ""), f.getTarget().getId().replace("-", ""));
+		}
+		result += "}\n";
+		
+		return result;
 	}
 }
