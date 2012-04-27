@@ -96,7 +96,7 @@ public abstract class AbstractGraphNotifier<E extends IHyperEdge<V>, V extends I
 		this.edges = new Hashtable<E, Set<V>>();
 	}
 	
-	@Override
+	/*@Override
 	public AbstractGraphNotifier<E,V> clone() {
 		@SuppressWarnings("unchecked")
 		AbstractGraphNotifier<E,V> clone = (AbstractGraphNotifier<E,V>) super.clone();
@@ -110,6 +110,6 @@ public abstract class AbstractGraphNotifier<E extends IHyperEdge<V>, V extends I
 		}
 		
 		return clone;
-	}
+	}*/
 	
 }

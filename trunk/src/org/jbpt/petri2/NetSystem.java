@@ -2,7 +2,9 @@ package org.jbpt.petri2;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -131,12 +133,6 @@ public class NetSystem extends PetriNet {
 	}
 
 	@Override
-	public PetriNet clone() {
-		// TODO
-		return super.clone();
-	}
-
-	@Override
 	public String toDOT() {
 		String result = "digraph G {\n";
 		result += "graph [fontname=\"Helvetica\" fontsize=10 nodesep=0.35 ranksep=\"0.25 equally\"];\n";
@@ -155,7 +151,7 @@ public class NetSystem extends PetriNet {
 		result += "node [shape=box];\n";
 		
 		for (Transition t : this.getTransitions()) {
-			String fillColor = this.isEnabled(t) ? " fillcolor=green" : "";
+			String fillColor = this.isEnabled(t) ? " fillcolor=\"#9ACD32\"" : "";
 			if (t.getName()=="")
 				result += String.format("\tn%s[label=\"%s\" width=\".3\""+fillColor+" height=\".1\"];\n", t.getId().replace("-", ""), t.getName());
 			else 
@@ -169,5 +165,28 @@ public class NetSystem extends PetriNet {
 		result += "}\n";
 		
 		return result;
+	}
+	
+	@Override
+	public NetSystem clone() {
+		NetSystem clone = new NetSystem();
+		
+		Map<Node,Node> nodeCopies = new HashMap<Node, Node>();
+		
+		for (Node n : this.getNodes()) {
+			Node c = (Node)n.clone();
+			clone.addNode(c);
+			nodeCopies.put(n,c);
+		}
+		
+		for (Flow f : this.getFlow()) {
+			Node from = nodeCopies.get(f.getSource());
+			Node to = nodeCopies.get(f.getTarget());
+			clone.addFlow(from, to);
+		}
+		
+		clone.M = this.M.clone();
+		
+		return clone;
 	}
 }
