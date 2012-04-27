@@ -18,7 +18,6 @@ public class Marking extends HashMap<Place, Integer> {
 		this.net = net;
 	}
 
-
 	@Override
 	public Integer put(Place p, Integer tokens) {
 		// initial checks
@@ -96,5 +95,16 @@ public class Marking extends HashMap<Place, Integer> {
 	 */
 	public boolean isMarked(Place p) {
 		return this.get(p) > 0;
+	}
+	
+	@Override
+	public Marking clone() {
+		Marking clone = (Marking) new Marking(this.net);
+		
+		for (Map.Entry<Place,Integer> entry : this.entrySet()) {
+			clone.put(entry.getKey(), entry.getValue());
+		}
+		
+		return clone;
 	}
 }

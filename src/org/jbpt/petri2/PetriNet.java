@@ -18,7 +18,7 @@ import org.jbpt.graph.algo.DirectedGraphAlgorithms;
  */
 public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 	// Directed graph algorithms 
-	private DirectedGraphAlgorithms<Flow,Node> DGA = null;
+	public static DirectedGraphAlgorithms<Flow,Node> DGA = new DirectedGraphAlgorithms<Flow,Node>();
 	
 	public PetriNet(){}
 	
@@ -34,7 +34,7 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 		Collection<Node> ss = new ArrayList<Node>(); ss.add(from);
 		Collection<Node> ts = new ArrayList<Node>(); ts.add(to);
 		
-		if (!super.checkEdge(ss,ts)) return null;
+		if (!this.checkEdge(ss,ts)) return null;
 		
 		return new Flow(this, from, to);
 	}
@@ -51,7 +51,7 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 		Collection<Node> ss = new ArrayList<Node>(); ss.add(from);
 		Collection<Node> ts = new ArrayList<Node>(); ts.add(to);
 		
-		if (!super.checkEdge(ss,ts)) return null;
+		if (!this.checkEdge(ss,ts)) return null;
 		
 		return new Flow(this, from, to);
 	}
@@ -68,7 +68,7 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 		Collection<Node> ss = new ArrayList<Node>(); ss.add(from);
 		Collection<Node> ts = new ArrayList<Node>(); ts.add(to);
 		
-		if (!super.checkEdge(ss,ts)) return null;
+		if (!this.checkEdge(ss,ts)) return null;
 		
 		return new Flow(this, from, to);
 	}
@@ -228,7 +228,7 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 	 * @return Flow that was removed from the net; <code>null</code> if no flow was removed
 	 */
 	public Flow removeFlow(Flow f) {
-		return super.removeEdge(f);
+		return this.removeEdge(f);
 	}
 	
 	/**
@@ -237,7 +237,7 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 	 * @return Flow that was removed from the net; <code>null</code> if no flow was removed
 	 */
 	public Collection<Flow> removeFlow(Collection<Flow> fs) {
-		return super.removeEdges(fs);
+		return this.removeEdges(fs);
 	}
 	
 	/**************************************************************************
@@ -491,8 +491,7 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 	 * @return Source nodes of the net
 	 */
 	public Collection<Node> getSourceNodes() {
-		if (this.DGA == null) this.DGA = new DirectedGraphAlgorithms<Flow, Node>();
-		return this.DGA.getInputVertices(this);
+		return PetriNet.DGA.getInputVertices(this);
 	}
 	
 	/**
@@ -526,8 +525,7 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 	 * @return Sink nodes of the net
 	 */
 	public Collection<Node> getSinkNodes() {
-		if (this.DGA == null) this.DGA = new DirectedGraphAlgorithms<Flow, Node>();
-		return this.DGA.getOutputVertices(this);
+		return PetriNet.DGA.getOutputVertices(this);
 	}
 	
 	/**
@@ -592,12 +590,8 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 	 * @return the clone of the Petri net
 	 */
 	@Override
-	// TODO check how clone behaves and optimize
 	public PetriNet clone() {
-		PetriNet clone = (PetriNet) super.clone();
-			
-		clone.removeVertices(clone.getVertices());
-		clone.removeEdges(clone.getEdges());
+		PetriNet clone = new PetriNet();
 		
 		Map<Node,Node> nodeCopies = new HashMap<Node, Node>();
 		
@@ -655,7 +649,7 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 	* Unsupported operations
 	**************************************************************************/
 	
-	@Override
+	/*@Override
 	public Flow addEdge(Node s, Node t) {
 		throw new UnsupportedOperationException();
 	}
@@ -703,5 +697,5 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 	@Override
 	public Collection<Node> addVertices(Collection<Node> vs) {
 		throw new UnsupportedOperationException();
-	}
+	}*/
 }
