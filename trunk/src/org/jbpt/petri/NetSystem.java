@@ -1,4 +1,4 @@
-package org.jbpt.petri2;
+package org.jbpt.petri;
 
 import java.util.ArrayList;
 import java.util.Collection;

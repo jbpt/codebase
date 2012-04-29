@@ -3,7 +3,6 @@ package org.jbpt.petri.bp.sim;
 import org.jbpt.alignment.Alignment;
 import org.jbpt.alignment.IEntity;
 import org.jbpt.alignment.IEntityModel;
-import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
 import org.jbpt.petri.bp.RelSet;
@@ -21,13 +20,13 @@ public class BaselineSimilarity<R extends RelSet<M, N>, M extends IEntityModel<N
 		double in1 = 0;
 		for (N n : alignment.getFirstModel().getEntities()) {
 			if (n instanceof Place) continue;
-			if (((Transition)n).equals(PetriNet.SILENT_LABEL)) continue;
+			if (((Transition)n).isSilent()) continue;
 			in1++;
 		}
 		double in2 = 0;
 		for (N n : alignment.getSecondModel().getEntities()) {
 			if (n instanceof Place) continue;
-			if (((Transition)n).equals(PetriNet.SILENT_LABEL)) continue;
+			if (((Transition)n).isSilent()) continue;
 			in2++;
 		}
 		
@@ -41,13 +40,13 @@ public class BaselineSimilarity<R extends RelSet<M, N>, M extends IEntityModel<N
 		double in1 = 0;
 		for (N n : alignment.getFirstModel().getEntities()) {
 			if (n instanceof Place) continue;
-			if (((Transition)n).equals(PetriNet.SILENT_LABEL)) continue;
+			if (((Transition)n).isSilent()) continue;
 			in1++;
 		}
 		double in2 = 0;
 		for (N n : alignment.getSecondModel().getEntities()) {
 			if (n instanceof Place) continue;
-			if (((Transition)n).equals(PetriNet.SILENT_LABEL)) continue;
+			if (((Transition)n).isSilent()) continue;
 			in2++;
 		}
 		

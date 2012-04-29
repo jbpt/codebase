@@ -47,7 +47,6 @@ public class Condition extends BPNode {
 	
 	@Override
 	public String getName() {
-		//return this.s.getName();
 		return this.s.getName()+"-"+this.ID;
 	}
 	

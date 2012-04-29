@@ -66,7 +66,7 @@ public class LocalConfiguration extends HashSet<Event> {
 	 * Get marking
 	 * @return marking
 	 */
-	public Marking getMarking() {
+	/*public Marking getMarking() {
 		if (this.M == null) {
 			this.M = new Marking(this.unf.getNet());
 
@@ -77,7 +77,7 @@ public class LocalConfiguration extends HashSet<Event> {
 		}
 		
 		return this.M;
-	}
+	}*/
 	
 	class ParikhComparator implements Comparator<Transition> {
 		

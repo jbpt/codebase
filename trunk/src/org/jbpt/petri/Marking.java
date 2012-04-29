@@ -4,34 +4,29 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Petri net marking implementation
+ * 
  * Stores the current marking of a {@link PetriNet}.
  * 
  * @author Christian Wiggert, Artem Polyvyanyy
  */
 public class Marking extends HashMap<Place, Integer> {
-
 	private static final long serialVersionUID = 1L;
-	
 	private PetriNet net = null;
 	
-	public Marking(PetriNet net) {
+	protected Marking(PetriNet net) {
 		this.net = net;
-	}
-	
-	/**
-	 * Applies the marking to the according {@link PetriNet}.
-	 */
-	public void apply() {
-		this.net.setMarking(this);
 	}
 
 	@Override
-	public Integer put(Place key, Integer value) {
-		if (value <= 0) {
-			return this.remove(key);
-		}
+	public Integer put(Place p, Integer tokens) {
+		// initial checks
+		if (p == null || tokens == null) return null;
+		if (!this.net.contains(p)) return null;
 		
-		return super.put(key, value);
+		if (tokens <= 0) return this.remove(p);
+		
+		return super.put(p, tokens);
 	}
 
 	@Override
@@ -42,11 +37,22 @@ public class Marking extends HashMap<Place, Integer> {
 	}
 	
 	@Override
-	public Integer get(Object key) {
-		Integer i = super.get(key);
+	public Integer get(Object p) {
+		Integer i = super.get(p);
 		if (i != null) return i;
-		if (key instanceof Place) return 0;
+		if (p instanceof Place) return 0;
 		return null;
+	}
+	
+	/**
+	 * Get number of tokens at a place
+	 * @param p Place
+	 * @return Number of tokens at p
+	 */
+	public Integer get(Place p) {
+		Integer i = super.get(p);
+		if (i != null) return i;
+		return 0;
 	}
 	
 	@Override
@@ -72,5 +78,33 @@ public class Marking extends HashMap<Place, Integer> {
 			result += 17 * p.hashCode() * this.get(p);
 		}
 		return result;
+	}
+	
+	/**
+	 * Get Petri net
+	 * @return Petri net
+	 */
+	public PetriNet getPetriNet() {
+		return this.net;
+	}
+	
+	/**
+	 * Check if place is marked, i.e., contains at least one token
+	 * @param p Place
+	 * @return <code>true</code> if p is marked; <code>false</code> otherwise
+	 */
+	public boolean isMarked(Place p) {
+		return this.get(p) > 0;
+	}
+	
+	@Override
+	public Marking clone() {
+		Marking clone = (Marking) new Marking(this.net);
+		
+		for (Map.Entry<Place,Integer> entry : this.entrySet()) {
+			clone.put(entry.getKey(), entry.getValue());
+		}
+		
+		return clone;
 	}
 }
