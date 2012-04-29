@@ -3,7 +3,6 @@ package org.jbpt.petri.bp.sim;
 import org.jbpt.alignment.Alignment;
 import org.jbpt.alignment.IEntity;
 import org.jbpt.alignment.IEntityModel;
-import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
 import org.jbpt.petri.bp.RelSet;
@@ -52,11 +51,11 @@ public abstract class AbstractRelSetSimilarity<R extends RelSet<M, N>, M extends
 		
 		for (N n1 : alignment.getFirstModel().getEntities()) {
 			if (n1 instanceof Place) continue;
-			if (((Transition)n1).equals(PetriNet.SILENT_LABEL)) continue;
+			if (((Transition)n1).isSilent()) continue;
 			
 			for (N n2 : alignment.getFirstModel().getEntities()) {
 				if (n2 instanceof Place) continue;
-				if (((Transition)n2).equals(PetriNet.SILENT_LABEL)) continue;
+				if (((Transition)n2).isSilent()) continue;
 				
 				if (!alignment.getFirstModel().getRelationForEntities(n1, n2).equals(relation1)) continue;
 				
@@ -86,11 +85,11 @@ public abstract class AbstractRelSetSimilarity<R extends RelSet<M, N>, M extends
 		
 		for (N n1 : rs.getEntities()) {
 			if (n1 instanceof Place) continue;
-			if (((Transition)n1).equals(PetriNet.SILENT_LABEL)) continue;
+			if (((Transition)n1).isSilent()) continue;
 			
 			for (N n2 : rs.getEntities()) {
 				if (n2 instanceof Place) continue;
-				if (((Transition)n2).equals(PetriNet.SILENT_LABEL)) continue;
+				if (((Transition)n2).isSilent()) continue;
 
 				if (rs.getRelationForEntities(n1,n2).equals(relation))
 					sizeOfRelation++;

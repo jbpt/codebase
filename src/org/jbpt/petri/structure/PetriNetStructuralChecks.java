@@ -1,12 +1,14 @@
-package org.jbpt.petri2.structure;
+package org.jbpt.petri.structure;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jbpt.petri2.Node;
-import org.jbpt.petri2.PetriNet;
-import org.jbpt.petri2.Place;
-import org.jbpt.petri2.Transition;
+import org.jbpt.graph.algo.TransitiveClosure;
+import org.jbpt.petri.Flow;
+import org.jbpt.petri.Node;
+import org.jbpt.petri.PetriNet;
+import org.jbpt.petri.Place;
+import org.jbpt.petri.Transition;
 
 /**
  * Petri net structural checks
@@ -97,20 +99,21 @@ public class PetriNetStructuralChecks {
 	 * @return <code>true</code> if net is workflow net; <code>false</code> otherwise
 	 */
 	public static boolean isWorkflowNet(PetriNet net) {
-		boolean isWF = (net.getSourcePlaces().size() == 1) && (net.getSinkPlaces().size() == 1);
-		if (!isWF) return false;
+		TransitiveClosure<Flow,Node> tc = new TransitiveClosure<Flow,Node>(net);
+		
+		if (net.getSourcePlaces().size() != 1) return false;
+		if (net.getSinkPlaces().size() != 1) return false;
 		
 		Node source = net.getSourcePlaces().iterator().next();
 		Node sink = net.getSinkPlaces().iterator().next();
 		
 		for (Node n : net.getNodes()) {
 			if (n.equals(source) || n.equals(sink)) continue;
-			isWF &= PetriNet.DGA.hasPath(net,source,n);
-			isWF &= PetriNet.DGA.hasPath(net,n,sink);
-			if (!isWF) return false;
+			if (!tc.hasPath(source,n)) return false;
+			if (!tc.hasPath(n,sink)) return false;
 		}
 		
-		return isWF;
+		return true;
 	}
 
 }

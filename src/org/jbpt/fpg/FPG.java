@@ -13,13 +13,12 @@ import org.jbpt.hypergraph.abs.Vertex;
 
 
 /**
- * Flexible process graph (FPG) model
- * @author artem.polyvyanyy
+ * Flexible process graph (FPG) implementation
+ * 
+ * @author Artem Polyvyanyy
  */
 public class FPG extends AbstractDirectedHyperGraph<Edge, Activity>
-{
-	private FPGFrame frame = null;
-	
+{	
 	/**
 	 * Perform initial model enabling (enable start activities)
 	 */
@@ -149,10 +148,5 @@ public class FPG extends AbstractDirectedHyperGraph<Edge, Activity>
 			as = performEdgeEnabling(i.next(),as);
 		
 		return true;
-	}
-
-	public void serialize() {
-		if (frame==null) frame = new FPGFrame();
-		frame.show(this);
 	}
 }

@@ -4,8 +4,8 @@ import org.jbpt.hypergraph.abs.Vertex;
 
 /**
  * A Petri net abstract node (vertex), might be place or transition 
- * @author artem.polyvyanyy
- *
+ * 
+ * @author Artem Polyvyanyy
  */
 public abstract class Node extends Vertex {
 	/**
@@ -31,9 +31,25 @@ public abstract class Node extends Vertex {
 	public Node(String name, String desc) {
 		super(name,desc);
 	}
+
+	/**
+	 * Get label
+	 * @return Label string (alias to name string)
+	 */
+	public String getLabel() {
+		return this.getName();
+	}
+
+	/**
+	 * Set label (alias to name string)
+	 * @param label Label to set
+	 */
+	public void setLabel(String label) {
+		this.setName(label);
+	}
 	
 	@Override
 	public String toString() {
-		return (getName()==null) ? "" : getName();
+		return (this.getName()==null) ? "" : getName();
 	}
 }

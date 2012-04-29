@@ -16,7 +16,6 @@ import org.jbpt.graph.abs.IDirectedGraph;
 import org.jbpt.graph.algo.rpst.RPST;
 import org.jbpt.graph.algo.rpst.RPSTNode;
 import org.jbpt.graph.algo.tctree.TCType;
-import org.jbpt.petri.CachePetriNet;
 import org.jbpt.petri.Flow;
 import org.jbpt.petri.Node;
 import org.jbpt.petri.PetriNet;
@@ -27,6 +26,7 @@ import org.jbpt.petri.bp.CausalBehaviouralProfile;
 import org.jbpt.petri.bp.RelSetType;
 import org.jbpt.petri.bp.construct.BPCreatorNet;
 import org.jbpt.petri.bp.construct.CBPCreatorNet;
+import org.jbpt.petri.structure.PetriNetStructuralChecks;
 
 
 
@@ -77,8 +77,8 @@ public class WFTree {
 	 * @throws IllegalArgumentException
 	 */
 	public void checkNet() {
-		if (!wf.isWFNet()) throw new IllegalArgumentException();
-		if (!wf.isExtendedFreeChoice()) throw new IllegalArgumentException();
+		if (!PetriNetStructuralChecks.isWorkflowNet(wf)) throw new IllegalArgumentException();
+		if (!PetriNetStructuralChecks.isExtendedFreeChoice(wf)) throw new IllegalArgumentException();
 	}
 	
 	/**
@@ -500,7 +500,7 @@ public class WFTree {
 		 * clone method, in order to keep track of the relation between nodes 
 		 * of both nets.
 		 */
-		PetriNet net = new CachePetriNet();
+		PetriNet net = new PetriNet();
 		
 		Map<Node,Node> nodeCopies = new HashMap<Node, Node>();
 

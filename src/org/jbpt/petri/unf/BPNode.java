@@ -9,11 +9,7 @@ import org.jbpt.petri.Node;
  * @author Artem Polyvyanyy
  */
 public abstract class BPNode extends Vertex {
-
-	@Override
-	public String getName() {
-		return super.getName();
-	}
 	
 	public abstract Node getNode();
+	
 }
