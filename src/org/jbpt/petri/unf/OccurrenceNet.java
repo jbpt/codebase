@@ -63,7 +63,7 @@ public class OccurrenceNet extends PetriNet {
 	}
 	
 	public PetriNet getOriginativeNet() {
-		return this.unf.getNet();
+		return this.unf.getNetSystem();
 	}
 	
 	public Event getEvent(Transition t) {
@@ -181,7 +181,7 @@ public class OccurrenceNet extends PetriNet {
 		}
 		
 		result += "\n";
-		for (Flow f: this.getFlowRelation()) {
+		for (Flow f: this.getFlow()) {
 			result += String.format("\tn%s->n%s;\n", f.getSource().getId().replace("-", ""), f.getTarget().getId().replace("-", ""));
 		}
 		

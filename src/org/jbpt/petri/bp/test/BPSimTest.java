@@ -3,6 +3,7 @@ package org.jbpt.petri.bp.test;
 import junit.framework.TestCase;
 
 import org.jbpt.alignment.Alignment;
+import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Node;
 import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.Place;
@@ -22,7 +23,7 @@ public class BPSimTest extends TestCase {
 	
 	@Test
 	public void testSims() {
-		PetriNet net1 = new PetriNet();
+		NetSystem net1 = new NetSystem();
 		
 		Transition a = new Transition("a");
 		Transition b = new Transition("b");
@@ -37,7 +38,6 @@ public class BPSimTest extends TestCase {
 		net1.addNode(e);
 
 		Place p1 = new Place("1");
-		p1.setTokens(1);
 		Place p2 = new Place("2");
 		Place p3 = new Place("3");
 		Place p4 = new Place("4");
@@ -50,6 +50,8 @@ public class BPSimTest extends TestCase {
 		net1.addNode(p4);
 		net1.addNode(p5);
 		net1.addNode(p6);
+		
+		net1.getMarking().put(p1,1);
 		
 		net1.addFlow(p1, a);
 		net1.addFlow(a, p2);
@@ -64,7 +66,7 @@ public class BPSimTest extends TestCase {
 		net1.addFlow(p5, e);
 		net1.addFlow(e, p6);
 
-		PetriNet net2 = new PetriNet();
+		NetSystem net2 = new NetSystem();
 		
 		Transition x = new Transition("x");
 		Transition y = new Transition("y");
@@ -75,7 +77,6 @@ public class BPSimTest extends TestCase {
 		net2.addNode(z);
 
 		Place p21 = new Place("1");
-		p21.setTokens(1);
 		Place p22 = new Place("2");
 		Place p23 = new Place("3");
 		Place p24 = new Place("4");
@@ -84,6 +85,8 @@ public class BPSimTest extends TestCase {
 		net2.addNode(p22);
 		net2.addNode(p23);
 		net2.addNode(p24);
+		
+		net2.getMarking().put(p21,1);
 		
 		net2.addFlow(p21, x);
 		net2.addFlow(x, p22);

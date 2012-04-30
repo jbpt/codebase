@@ -53,7 +53,7 @@ public class LocalConfiguration extends HashSet<Event> {
 	 */
 	public Cut getCut() {
 		if (this.C == null) {
-			this.C = new Cut(this.unf.getNet());
+			this.C = new Cut(this.unf.getNetSystem());
 			this.C.addAll(this.unf.initialBP);
 			for (Event e : this) this.C.addAll(e.getPostConditions());
 			for (Event e : this) this.C.removeAll(e.getPreConditions());
@@ -66,9 +66,9 @@ public class LocalConfiguration extends HashSet<Event> {
 	 * Get marking
 	 * @return marking
 	 */
-	/*public Marking getMarking() {
+	public Marking getMarking() {
 		if (this.M == null) {
-			this.M = new Marking(this.unf.getNet());
+			this.M = new Marking(this.unf.getPetriNet());
 
 			for (Condition c : this.getCut()) {
 				if (c.getPlace() == null) this.M.put(c.getPlace(), 1);
@@ -77,7 +77,7 @@ public class LocalConfiguration extends HashSet<Event> {
 		}
 		
 		return this.M;
-	}*/
+	}
 	
 	class ParikhComparator implements Comparator<Transition> {
 		

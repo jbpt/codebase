@@ -46,7 +46,7 @@ public class PetriNet2PNMLTest extends TestCase {
 		
 		Document doc = null;
 		try {
-			doc = PetriNet2PNML.convert(net, PetriNet2PNML.LOLA);
+			doc = PetriNet2PNML.serialize(net, PetriNet2PNML.LOLA);
 		} catch (SerializationException e1) {
 			e1.printStackTrace();
 			fail("There should be no exception.");

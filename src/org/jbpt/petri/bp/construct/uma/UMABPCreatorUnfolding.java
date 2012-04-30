@@ -8,8 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Node;
-import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.Transition;
 import org.jbpt.petri.bp.BehaviouralProfile;
 import org.jbpt.petri.bp.RelSetType;
@@ -36,7 +36,7 @@ import org.jbpt.petri.bp.construct.RelSetCreator;
  * @author matthias.weidlich
  *
  */
-public class UMABPCreatorUnfolding extends AbstractRelSetCreator implements RelSetCreator<PetriNet, Node> {
+public class UMABPCreatorUnfolding extends AbstractRelSetCreator implements RelSetCreator<NetSystem, Node> {
 
 	private static UMABPCreatorUnfolding eInstance;
 	
@@ -70,19 +70,19 @@ public class UMABPCreatorUnfolding extends AbstractRelSetCreator implements RelS
 	}
 
 	@Override
-	public BehaviouralProfile<PetriNet, Node> deriveRelationSet(PetriNet pn) {
+	public BehaviouralProfile<NetSystem, Node> deriveRelationSet(NetSystem pn) {
 		return deriveRelationSet(pn, new ArrayList<Node>(pn.getTransitions()));
 	}
 	
 	@Override
-	public BehaviouralProfile<PetriNet, Node> deriveRelationSet(PetriNet pn,
+	public BehaviouralProfile<NetSystem, Node> deriveRelationSet(NetSystem pn,
 			Collection<Node> nodes) {
 		
 		clear();
 		
 		this.eventContinuationProfiler = new EventContinuationProfiler(pn);
 		
-		BehaviouralProfile<PetriNet, Node> profile = new BehaviouralProfile<PetriNet, Node>(pn,nodes);
+		BehaviouralProfile<NetSystem, Node> profile = new BehaviouralProfile<NetSystem, Node>(pn,nodes);
 		RelSetType[][] matrix = profile.getMatrix();
 		
 		for (Node t : nodes)

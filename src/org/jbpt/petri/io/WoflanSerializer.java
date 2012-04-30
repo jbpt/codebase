@@ -1,38 +1,40 @@
-package org.jbpt.petri.util;
+package org.jbpt.petri.io;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.jbpt.petri.CachePetriNet;
+import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Node;
-import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
 
-
-public class WoflanUtils {
+/**
+ * Woflan parser/serializer
+ * 
+ * @author Artem Polyvyanyy, Matthias Weidlich
+ */
+public class WoflanSerializer {
 
 	protected static int counter = 0;
-	
-	public static String formatId(String id) {
-		id = id.replace(" ", "_");
-		return id;
-	}
 	
 	protected static String getId() {
 		counter++;
 		return String.valueOf(counter);
 	}
 	
-	public static PetriNet parse(File file) throws IOException {
-		PetriNet net = new CachePetriNet();
+	public static String formatId(String id) {
+		id = id.replace(" ", "_");
+		return id;
+	}
+	
+	public static NetSystem parse(File file) {
+		NetSystem sys = new NetSystem();
 		
 		try {
 			FileReader input = new FileReader(file);
@@ -53,13 +55,13 @@ public class WoflanUtils {
 						label = line.substring(7, line.indexOf("init")-2);
 						
 						String tokens = line.substring(line.indexOf("init") + 5, line.indexOf(";"));
-						p.setTokens(Integer.valueOf(tokens));
+						sys.getMarking().put(p, Integer.valueOf(tokens));
 					}
 					else label = line.substring(7, line.length()-2);
 					
 					p.setId(getId());
 					p.setName(label);
-					net.getPlaces().add(p);
+					sys.getPlaces().add(p);
 					s2p.put(label,p);
 				}
 				
@@ -68,14 +70,14 @@ public class WoflanUtils {
 					String label = line.substring(7, line.length()-1);
 					t.setId(getId());
 					t.setName(label);
-					net.getTransitions().add(t);
+					sys.getTransitions().add(t);
 					
 					String lineIn = bufRead.readLine();
 					lineIn = lineIn.trim();
 					StringTokenizer st = new StringTokenizer(lineIn.substring(3));
 					while (st.hasMoreTokens()) {
 						String s = st.nextToken();
-						net.addFlow(s2p.get(s.substring(1,s.length()-1)), t);
+						sys.addFlow(s2p.get(s.substring(1,s.length()-1)), t);
 					}
 	
 					String lineOut = bufRead.readLine();
@@ -83,44 +85,42 @@ public class WoflanUtils {
 					StringTokenizer st2 = new StringTokenizer(lineOut.substring(4));
 					while (st2.hasMoreTokens()) {
 						String s = st2.nextToken();
-						net.addFlow(t, s2p.get(s.substring(1,s.length()-1)));
+						sys.addFlow(t, s2p.get(s.substring(1,s.length()-1)));
 					}
 				}
 				
 				line = bufRead.readLine();
 			}
 		} catch (Exception e) {
-			//System.err.println(file.getAbsolutePath());
-			//System.err.println(++counter);
-			return null;
+			e.printStackTrace();
 		}
 	    
-		return net;
+		return sys;
 	}
 	
-	public static void write(File file, PetriNet net) {
+	public static void serialize(File file, NetSystem sys) {
 		
 		try {
 			FileWriter output = new FileWriter(file);
 			BufferedWriter bufWriter = new BufferedWriter(output);
 			
 			bufWriter.write("\n");
-			for (Place p : net.getPlaces()) {
-				if (p.getTokens() > 0)
-					bufWriter.write("place \"" + formatId(p.getId()) + "\" init "+p.getTokens()+";\n");
+			for (Place p : sys.getPlaces()) {
+				if (sys.getMarking().get(p) > 0)
+					bufWriter.write("place \"" + formatId(p.getId()) + "\" init "+sys.getMarking().get(p)+";\n");
 				else
 					bufWriter.write("place \"" + formatId(p.getId()) + "\";\n");
 			}
 			bufWriter.write("\n");
-			for (Transition t : net.getTransitions()) {
+			for (Transition t : sys.getTransitions()) {
 				bufWriter.write("trans \"" + formatId(t.getId()) + "\"\n");
 				bufWriter.write("in ");
-				for (Node n : net.getDirectPredecessors(t)) {
+				for (Node n : sys.getDirectPredecessors(t)) {
 					bufWriter.write("\"" + formatId(n.getId()) + "\" ");
 				}
 				bufWriter.write("\n");
 				bufWriter.write("out ");
-				for (Node n : net.getDirectSuccessors(t)) {
+				for (Node n : sys.getDirectSuccessors(t)) {
 					bufWriter.write("\"" + formatId(n.getId()) + "\" ");
 				}
 				bufWriter.write("\n;\n");
@@ -134,5 +134,4 @@ public class WoflanUtils {
 			e.printStackTrace();
 		}
 	}
-
 }

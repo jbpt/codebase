@@ -1,6 +1,8 @@
 package org.jbpt.petri.bp.test;
 
-import org.jbpt.petri.PetriNet;
+import junit.framework.TestCase;
+
+import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
 import org.jbpt.petri.bp.construct.BPCreatorNet;
@@ -8,12 +10,11 @@ import org.jbpt.petri.bp.construct.BPCreatorTree;
 import org.jbpt.petri.bp.construct.BPCreatorUnfolding;
 import org.jbpt.petri.bp.construct.CBPCreatorTree;
 import org.jbpt.petri.bp.construct.CBPCreatorUnfolding;
-
-import junit.framework.TestCase;
+import org.jbpt.petri.structure.PetriNetPathChecks;
 
 public class CBPCreatorIdempotenceTest extends TestCase {
 	public void testIdempotenceOfCreatorClasses(){
-		PetriNet net = new PetriNet();
+		NetSystem net = new NetSystem();
 		
 		Transition a = new Transition("a");
 		Transition b = new Transition("b");
@@ -38,7 +39,6 @@ public class CBPCreatorIdempotenceTest extends TestCase {
 		net.addNode(j);
 
 		Place p1 = new Place("1");
-		p1.setTokens(1);
 		Place p2 = new Place("2");
 		Place p3 = new Place("3");
 		Place p4 = new Place("4");
@@ -59,6 +59,8 @@ public class CBPCreatorIdempotenceTest extends TestCase {
 		net.addNode(p8);
 		net.addNode(p9);
 		net.addNode(p10);
+		
+		net.putTokens(p1,1);
 		
 		net.addFlow(p1, a);
 		net.addFlow(a, p2);
@@ -111,28 +113,28 @@ public class CBPCreatorIdempotenceTest extends TestCase {
 		assertTrue(net.getPlaces().contains(p10));
 
 		assertTrue(net.getEdges().size() == 22);
-		assertTrue(net.hasPath(p1, a));
-		assertTrue(net.hasPath(a, p2));
-		assertTrue(net.hasPath(a, p3));
-		assertTrue(net.hasPath(p2, b));
-		assertTrue(net.hasPath(p3, c));
-		assertTrue(net.hasPath(b, p4));
-		assertTrue(net.hasPath(c, p5));
-		assertTrue(net.hasPath(p5, d));
-		assertTrue(net.hasPath(p5, e));
-		assertTrue(net.hasPath(d, p6));
-		assertTrue(net.hasPath(e, p6));
-		assertTrue(net.hasPath(p6, f));
-		assertTrue(net.hasPath(p4, f));
-		assertTrue(net.hasPath(f, p7));
-		assertTrue(net.hasPath(p7, g));
-		assertTrue(net.hasPath(g, p8));
-		assertTrue(net.hasPath(p8, h));
-		assertTrue(net.hasPath(h, p9));
-		assertTrue(net.hasPath(p9, i));
-		assertTrue(net.hasPath(i, p7));
-		assertTrue(net.hasPath(p9, j));
-		assertTrue(net.hasPath(j, p10));
+		assertTrue(PetriNetPathChecks.hasPath(net, p1, a));
+		assertTrue(PetriNetPathChecks.hasPath(net, a, p2));
+		assertTrue(PetriNetPathChecks.hasPath(net, a, p3));
+		assertTrue(PetriNetPathChecks.hasPath(net, p2, b));
+		assertTrue(PetriNetPathChecks.hasPath(net, p3, c));
+		assertTrue(PetriNetPathChecks.hasPath(net, b, p4));
+		assertTrue(PetriNetPathChecks.hasPath(net, c, p5));
+		assertTrue(PetriNetPathChecks.hasPath(net, p5, d));
+		assertTrue(PetriNetPathChecks.hasPath(net, p5, e));
+		assertTrue(PetriNetPathChecks.hasPath(net, d, p6));
+		assertTrue(PetriNetPathChecks.hasPath(net, e, p6));
+		assertTrue(PetriNetPathChecks.hasPath(net, p6, f));
+		assertTrue(PetriNetPathChecks.hasPath(net, p4, f));
+		assertTrue(PetriNetPathChecks.hasPath(net, f, p7));
+		assertTrue(PetriNetPathChecks.hasPath(net, p7, g));
+		assertTrue(PetriNetPathChecks.hasPath(net, g, p8));
+		assertTrue(PetriNetPathChecks.hasPath(net, p8, h));
+		assertTrue(PetriNetPathChecks.hasPath(net, h, p9));
+		assertTrue(PetriNetPathChecks.hasPath(net, p9, i));
+		assertTrue(PetriNetPathChecks.hasPath(net, i, p7));
+		assertTrue(PetriNetPathChecks.hasPath(net, p9, j));
+		assertTrue(PetriNetPathChecks.hasPath(net, j, p10));
 		
 		/*
 		 * Invoke all creator classes on net, except for CBPCreatorNet since
@@ -172,28 +174,28 @@ public class CBPCreatorIdempotenceTest extends TestCase {
 		assertTrue(net.getPlaces().contains(p10));
 
 		assertTrue(net.getEdges().size() == 22);
-		assertTrue(net.hasPath(p1, a));
-		assertTrue(net.hasPath(a, p2));
-		assertTrue(net.hasPath(a, p3));
-		assertTrue(net.hasPath(p2, b));
-		assertTrue(net.hasPath(p3, c));
-		assertTrue(net.hasPath(b, p4));
-		assertTrue(net.hasPath(c, p5));
-		assertTrue(net.hasPath(p5, d));
-		assertTrue(net.hasPath(p5, e));
-		assertTrue(net.hasPath(d, p6));
-		assertTrue(net.hasPath(e, p6));
-		assertTrue(net.hasPath(p6, f));
-		assertTrue(net.hasPath(p4, f));
-		assertTrue(net.hasPath(f, p7));
-		assertTrue(net.hasPath(p7, g));
-		assertTrue(net.hasPath(g, p8));
-		assertTrue(net.hasPath(p8, h));
-		assertTrue(net.hasPath(h, p9));
-		assertTrue(net.hasPath(p9, i));
-		assertTrue(net.hasPath(i, p7));
-		assertTrue(net.hasPath(p9, j));
-		assertTrue(net.hasPath(j, p10));
+		assertTrue(PetriNetPathChecks.hasPath(net, p1, a));
+		assertTrue(PetriNetPathChecks.hasPath(net, a, p2));
+		assertTrue(PetriNetPathChecks.hasPath(net, a, p3));
+		assertTrue(PetriNetPathChecks.hasPath(net, p2, b));
+		assertTrue(PetriNetPathChecks.hasPath(net, p3, c));
+		assertTrue(PetriNetPathChecks.hasPath(net, b, p4));
+		assertTrue(PetriNetPathChecks.hasPath(net, c, p5));
+		assertTrue(PetriNetPathChecks.hasPath(net, p5, d));
+		assertTrue(PetriNetPathChecks.hasPath(net, p5, e));
+		assertTrue(PetriNetPathChecks.hasPath(net, d, p6));
+		assertTrue(PetriNetPathChecks.hasPath(net, e, p6));
+		assertTrue(PetriNetPathChecks.hasPath(net, p6, f));
+		assertTrue(PetriNetPathChecks.hasPath(net, p4, f));
+		assertTrue(PetriNetPathChecks.hasPath(net, f, p7));
+		assertTrue(PetriNetPathChecks.hasPath(net, p7, g));
+		assertTrue(PetriNetPathChecks.hasPath(net, g, p8));
+		assertTrue(PetriNetPathChecks.hasPath(net, p8, h));
+		assertTrue(PetriNetPathChecks.hasPath(net, h, p9));
+		assertTrue(PetriNetPathChecks.hasPath(net, p9, i));
+		assertTrue(PetriNetPathChecks.hasPath(net, i, p7));
+		assertTrue(PetriNetPathChecks.hasPath(net, p9, j));
+		assertTrue(PetriNetPathChecks.hasPath(net, j, p10));
 		
 
 	}

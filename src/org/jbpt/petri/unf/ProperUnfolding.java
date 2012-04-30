@@ -3,7 +3,7 @@ package org.jbpt.petri.unf;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jbpt.petri.PetriNet;
+import org.jbpt.petri.NetSystem;
 
 
 /**
@@ -15,14 +15,14 @@ import org.jbpt.petri.PetriNet;
  */
 public class ProperUnfolding extends Unfolding {
 	
-	protected ProperUnfolding() {}
+	protected ProperUnfolding(){}
 
-	public ProperUnfolding(PetriNet pn) {
-		super(pn);
+	public ProperUnfolding(NetSystem sys) {
+		super(sys);
 	}
 	
-	public ProperUnfolding(PetriNet pn, UnfoldingSetup setup) {
-		super(pn, setup);
+	public ProperUnfolding(NetSystem sys, UnfoldingSetup setup) {
+		super(sys, setup);
 	}
 
 	/**

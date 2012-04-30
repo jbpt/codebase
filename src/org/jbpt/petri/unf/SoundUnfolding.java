@@ -6,10 +6,11 @@ import java.util.Set;
 
 import org.jbpt.graph.algo.DirectedGraphAlgorithms;
 import org.jbpt.petri.Flow;
+import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Node;
-import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
+import org.jbpt.petri.structure.PetriNetStructuralClassChecks;
 import org.jbpt.petri.unf.order.UnfoldingAdequateOrder;
 
 
@@ -29,14 +30,14 @@ public class SoundUnfolding extends ProperUnfolding {
 	
 	protected SoundUnfolding() {}
 
-	public SoundUnfolding(PetriNet pn) {
-		if (!pn.isFreeChoice()) throw new IllegalArgumentException("Net must be free choice!");
-		if (!pn.isWFNet()) throw new IllegalArgumentException("Net must be a WF-net!");
-		if (dga.hasCycles(pn)) throw new IllegalArgumentException("Net must be acyclic!");
+	public SoundUnfolding(NetSystem sys) {
+		if (!PetriNetStructuralClassChecks.isFreeChoice(sys)) throw new IllegalArgumentException("Net must be free choice!");
+		if (!PetriNetStructuralClassChecks.isWorkflowNet(sys)) throw new IllegalArgumentException("Net must be a WF-net!");
+		if (dga.hasCycles(sys)) throw new IllegalArgumentException("Net must be acyclic!");
 		
-		this.net = pn;
-		this.initialBP = new Cut(this.net);
-		this.totalOrderTs = new ArrayList<Transition>(this.net.getTransitions());
+		this.sys = sys;
+		this.initialBP = new Cut(this.sys);
+		this.totalOrderTs = new ArrayList<Transition>(this.sys.getTransitions());
 		
 		UnfoldingSetup setup = new UnfoldingSetup();
 		setup.ADEQUATE_ORDER = new UnfoldingAdequateOrder();
@@ -79,7 +80,7 @@ public class SoundUnfolding extends ProperUnfolding {
 			OccurrenceNet BP = this.getOccurrenceNet();
 			
 			for (Place p : BP.getPlaces()) {
-				if (BP.getPostset(p).isEmpty() && !this.net.getPostset(BP.getCondition(p).getPlace()).isEmpty()) {
+				if (BP.getPostset(p).isEmpty() && !this.sys.getPostset(BP.getCondition(p).getPlace()).isEmpty()) {
 					this.deadlock.add(BP.getCondition(p));
 				}
 			}

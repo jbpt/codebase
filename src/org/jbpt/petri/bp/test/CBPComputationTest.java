@@ -1,5 +1,8 @@
 package org.jbpt.petri.bp.test;
 
+import junit.framework.TestCase;
+
+import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Node;
 import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.Place;
@@ -12,13 +15,12 @@ import org.jbpt.petri.bp.construct.BPCreatorTree;
 import org.jbpt.petri.bp.construct.BPCreatorUnfolding;
 import org.jbpt.petri.bp.construct.CBPCreatorTree;
 import org.jbpt.petri.bp.construct.CBPCreatorUnfolding;
-
-import junit.framework.TestCase;
+import org.jbpt.petri.structure.PetriNetStructuralClassChecks;
 
 public class CBPComputationTest extends TestCase {
 
 	public void testCBPComputation1(){
-		PetriNet net = new PetriNet();
+		NetSystem net = new NetSystem();
 		
 		Transition a = new Transition("a");
 		Transition b = new Transition("b");
@@ -33,12 +35,12 @@ public class CBPComputationTest extends TestCase {
 		net.addNode(e);
 
 		Place p1 = new Place("1");
-		p1.setTokens(1);
 		Place p2 = new Place("2");
 		Place p3 = new Place("3");
 		Place p4 = new Place("4");
 		
 		net.addNode(p1);
+		net.getMarking().put(p1,1);
 		net.addNode(p2);
 		net.addNode(p3);
 		net.addNode(p4);
@@ -88,7 +90,7 @@ public class CBPComputationTest extends TestCase {
 	}
 
 	public void testCBPComputation2(){
-		PetriNet net = new PetriNet();
+		NetSystem net = new NetSystem();
 		
 		Transition a = new Transition("a");
 		Transition b = new Transition("b");
@@ -113,7 +115,6 @@ public class CBPComputationTest extends TestCase {
 		net.addNode(j);
 
 		Place p1 = new Place("1");
-		p1.setTokens(1);
 		Place p2 = new Place("2");
 		Place p3 = new Place("3");
 		Place p4 = new Place("4");
@@ -125,6 +126,7 @@ public class CBPComputationTest extends TestCase {
 		Place p10 = new Place("10");
 		
 		net.addNode(p1);
+		net.getMarking().put(p1,1);
 		net.addNode(p2);
 		net.addNode(p3);
 		net.addNode(p4);
@@ -220,7 +222,7 @@ public class CBPComputationTest extends TestCase {
 	}
 	
 	public void testCBPComputation3(){
-		PetriNet net = new PetriNet();
+		NetSystem net = new NetSystem();
 		
 		Transition a = new Transition("a");
 		Transition b = new Transition("b");
@@ -245,7 +247,6 @@ public class CBPComputationTest extends TestCase {
 		net.addNode(j);
 
 		Place p1 = new Place("1");
-		p1.setTokens(1);
 		Place p2 = new Place("2");
 		Place p3 = new Place("3");
 		Place p4 = new Place("4");
@@ -257,6 +258,7 @@ public class CBPComputationTest extends TestCase {
 		Place p10 = new Place("10");
 		
 		net.addNode(p1);
+		net.getMarking().put(p1,1);
 		net.addNode(p2);
 		net.addNode(p3);
 		net.addNode(p4);
@@ -293,11 +295,10 @@ public class CBPComputationTest extends TestCase {
 		/*
 		 * Generic tests for net structure
 		 */
-		assertTrue(net.isExtendedFreeChoice());
-		assertTrue(net.isWFNet());
-		assertFalse(net.isSNet());
-		assertFalse(net.isTNet());
-		assertTrue(net.hasCycle());
+		assertTrue(PetriNetStructuralClassChecks.isExtendedFreeChoice(net));
+		assertTrue(PetriNetStructuralClassChecks.isWorkflowNet(net));
+		assertFalse(PetriNetStructuralClassChecks.isSNet(net));
+		assertFalse(PetriNetStructuralClassChecks.isTNet(net));
 		
 		/*
 		 * Tests for behavioural profile

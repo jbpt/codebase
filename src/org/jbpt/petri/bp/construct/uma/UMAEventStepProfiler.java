@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jbpt.petri.PetriNet;
+import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.util.PNAPIMapper;
 import org.jbpt.petri.util.UMAUnfolderWrapper;
 
@@ -32,7 +32,7 @@ public class UMAEventStepProfiler {
 	protected long[][] stepMatrix; 
 	protected List<DNode> nodesForStepMatrix = new ArrayList<DNode>();
 
-	public UMAEventStepProfiler(PetriNet pn) {
+	public UMAEventStepProfiler(NetSystem pn) {
 		
 		this.unfolding = UMAUnfolderWrapper.getUMAUnfolding(PNAPIMapper.jBPT2PNAPI(pn));
 //		System.out.println(this.unfolding.toDot());

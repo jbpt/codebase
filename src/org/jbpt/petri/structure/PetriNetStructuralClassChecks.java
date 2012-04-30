@@ -11,11 +11,11 @@ import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
 
 /**
- * Petri net structural checks
+ * Petri net structural class checks
  * 
  * @author Artem Polyvyanyy
  */
-public class PetriNetStructuralChecks {
+public class PetriNetStructuralClassChecks {
 	
 	/**
 	 * Check if Petri net is free-choice.

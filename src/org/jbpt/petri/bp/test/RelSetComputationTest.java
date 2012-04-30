@@ -1,5 +1,8 @@
 package org.jbpt.petri.bp.test;
 
+import junit.framework.TestCase;
+
+import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Node;
 import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.Place;
@@ -8,13 +11,11 @@ import org.jbpt.petri.bp.RelSet;
 import org.jbpt.petri.bp.RelSetType;
 import org.jbpt.petri.bp.construct.RelSetCreatorUnfolding;
 
-import junit.framework.TestCase;
-
 
 public class RelSetComputationTest extends TestCase {
 
 	public void testRelSet1() {
-		PetriNet net = new PetriNet();
+		NetSystem net = new NetSystem();
 		
 		Transition a = new Transition("a");
 		Transition b = new Transition("b");
@@ -35,7 +36,6 @@ public class RelSetComputationTest extends TestCase {
 		net.addNode(h);
 
 		Place p1 = new Place("1");
-		p1.setTokens(1);
 		Place p2 = new Place("2");
 		Place p3 = new Place("3");
 		Place p4 = new Place("4");
@@ -44,6 +44,7 @@ public class RelSetComputationTest extends TestCase {
 		Place p7 = new Place("7");
 		
 		net.addNode(p1);
+		net.getMarking().put(p1,1);
 		net.addNode(p2);
 		net.addNode(p3);
 		net.addNode(p4);
@@ -156,7 +157,7 @@ public class RelSetComputationTest extends TestCase {
 	}
 
 	public void testRelSet2() {
-		PetriNet net = new PetriNet();
+		NetSystem net = new NetSystem();
 		
 		Transition a = new Transition("a");
 		Transition b = new Transition("b");
@@ -181,7 +182,6 @@ public class RelSetComputationTest extends TestCase {
 		net.addNode(j);
 
 		Place p1 = new Place("1");
-		p1.setTokens(1);
 		Place p2 = new Place("2");
 		Place p3 = new Place("3");
 		Place p4 = new Place("4");
@@ -191,6 +191,7 @@ public class RelSetComputationTest extends TestCase {
 		Place p8 = new Place("8");
 		
 		net.addNode(p1);
+		net.getMarking().put(p1,1);
 		net.addNode(p2);
 		net.addNode(p3);
 		net.addNode(p4);

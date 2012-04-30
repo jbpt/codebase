@@ -1,4 +1,4 @@
-package org.jbpt.petri.util;
+package org.jbpt.petri.bevahior;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,10 +8,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Node;
 import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
+import org.jbpt.petri.structure.PetriNetStructuralClassChecks;
 
 
 /**
@@ -54,7 +56,7 @@ public class ConcurrencyRelation {
 	/**
 	 * The Petri net for which the concurrency relation is defined.
 	 */
-	private PetriNet pn;
+	private NetSystem sys;
 	
 	/**
 	 * All nodes of the Petri net in a list.
@@ -76,10 +78,10 @@ public class ConcurrencyRelation {
 	 * 
 	 * @param the Petri net
 	 */
-	public ConcurrencyRelation(PetriNet pn) {
-		this.pn = pn;
+	public ConcurrencyRelation(NetSystem sys) {
+		this.sys = sys;
 		this.matrix = null;
-		this.nodes = new ArrayList<Node>(this.pn.getNodes());
+		this.nodes = new ArrayList<Node>(this.sys.getNodes());
 		this.indirectPlaces = new HashMap<Node, Set<Node>>();
 	}
 	
@@ -181,10 +183,10 @@ public class ConcurrencyRelation {
 
 			// optimization for free-choice nets
 			if (isFC) {
-				if (!this.pn.getPostset(p).isEmpty()) {
-					Node t = this.pn.getPostset(p).iterator().next();
-					if (nodeConcurrentToNodes(x, this.pn.getPreset(t))) {
-						Collection<Node> sucP = this.pn.getPostset(p);
+				if (!this.sys.getPostset(p).isEmpty()) {
+					Node t = this.sys.getPostset(p).iterator().next();
+					if (nodeConcurrentToNodes(x, this.sys.getPreset(t))) {
+						Collection<Node> sucP = this.sys.getPostset(p);
 						
 						Set<NodePair> concNodes2 = new HashSet<NodePair>();
 
@@ -211,10 +213,10 @@ public class ConcurrencyRelation {
 				}
 			}
 			else {
-				for (Node t : this.pn.getPostset(p)) {
-					if (nodeConcurrentToNodes(x, this.pn.getPreset(t))) {
+				for (Node t : this.sys.getPostset(p)) {
+					if (nodeConcurrentToNodes(x, this.sys.getPreset(t))) {
 						
-						Collection<Node> sucT = this.pn.getPostset(t);
+						Collection<Node> sucT = this.sys.getPostset(t);
 						Set<NodePair> concNodes2 = new HashSet<NodePair>();
 											
 						for(Node s : sucT) {
@@ -264,12 +266,12 @@ public class ConcurrencyRelation {
 		/*
 		 * Initialization of the algorithm
 		 */
-		List<Node> initialPlaces = new ArrayList<Node>(this.pn.getMarkedPlaces());
+		List<Node> initialPlaces = new ArrayList<Node>(this.sys.getMarkedPlaces());
 		setAllNodesConcurrent(initialPlaces);
 		addAllCombinations(concNodes,initialPlaces);
 		
-		for(Transition t1 : this.pn.getTransitions()) {
-			List<Node> outPlaces = new ArrayList<Node>(this.pn.getPostset(t1));
+		for(Transition t1 : this.sys.getTransitions()) {
+			List<Node> outPlaces = new ArrayList<Node>(this.sys.getPostset(t1));
 			setAllNodesConcurrent(outPlaces);
 			addAllCombinations(concNodes,outPlaces);
 		}
@@ -279,12 +281,12 @@ public class ConcurrencyRelation {
 		 * requires the calculation of the set of places indirectly 
 		 * succeeding a certain place.
 		 */
-		if (pn.isExtendedFreeChoice()) {
+		if (PetriNetStructuralClassChecks.isExtendedFreeChoice(sys)) {
 			for (Node n : this.nodes) {
 				if (n instanceof Place) {
 					Set<Node> nodes = new HashSet<Node>();
-					for (Node t2 : this.pn.getPostset(n)) {
-						for (Node n2 : this.pn.getPostset(t2)) {
+					for (Node t2 : this.sys.getPostset(n)) {
+						for (Node n2 : this.sys.getPostset(t2)) {
 							nodes.add(n2);
 						}
 					}
@@ -297,7 +299,7 @@ public class ConcurrencyRelation {
 		 * Actual algorithm to build up the matrix.
 		 * It runs faster for free-choice nets than for arbitrary nets.
 		 */
-		processConcNodes(concNodes,pn.isExtendedFreeChoice());
+		processConcNodes(concNodes,PetriNetStructuralClassChecks.isExtendedFreeChoice(sys));
 	}
 	
 	public String toString(){
@@ -323,7 +325,7 @@ public class ConcurrencyRelation {
 	 * @return Petri net
 	 */
 	public PetriNet getNet() {
-		return this.pn;
+		return this.sys;
 	}
 	
 	/**
@@ -336,7 +338,7 @@ public class ConcurrencyRelation {
 	 * @return true, if the given relation is equivalent to this relation
 	 */
 	public boolean equals(ConcurrencyRelation relation) {
-		if (!this.pn.equals(relation.getNet()))
+		if (!this.sys.equals(relation.getNet()))
 			return false;
 		
 		boolean equal = true;
