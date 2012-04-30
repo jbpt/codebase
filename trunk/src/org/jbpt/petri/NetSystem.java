@@ -189,4 +189,23 @@ public class NetSystem extends PetriNet {
 		
 		return clone;
 	}
+	
+	/**
+	 * Put tokens at a place
+	 * @param p Place
+	 * @param tokens Number of tokens to put
+	 * @return the previous number of tokens at p, or <code>null</code> if parameters are wrong (either are equal to <code>null</code> or place does not belong to the net system, etc)
+	 */
+	public Integer putTokens(Place p, Integer tokens) {
+		return this.M.put(p, tokens);
+	}
+	
+	/**
+	 * Get number of tokens at a place
+	 * @param p Place
+	 * @return Number of tokens at p
+	 */
+	public Integer getTokens(Place p) {
+		return this.M.get(p);
+	}
 }

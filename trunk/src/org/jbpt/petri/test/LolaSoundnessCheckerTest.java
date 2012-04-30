@@ -2,10 +2,11 @@ package org.jbpt.petri.test;
 
 import java.io.IOException;
 
+import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
-import org.jbpt.petri.util.LolaSoundnessChecker;
+import org.jbpt.petri.bevahior.LolaSoundnessChecker;
 import org.jbpt.pm.serialize.SerializationException;
 
 import junit.framework.TestCase;
@@ -13,9 +14,8 @@ import junit.framework.TestCase;
 public class LolaSoundnessCheckerTest extends TestCase {
 
 	public void testSoundness() {
-		PetriNet net = new PetriNet();
+		NetSystem net = new NetSystem();
 		Place p1 = new Place();
-		p1.setTokens(1);
 		Place p2 = new Place();
 		Place p3 = new Place();
 		Place p4 = new Place();
@@ -35,6 +35,7 @@ public class LolaSoundnessCheckerTest extends TestCase {
 		net.addFlow(p4, t4);
 		net.addFlow(p5, t4);
 		net.addFlow(t4, p6);
+		p1.setTokens(1);
 		try {
 			assertTrue(LolaSoundnessChecker.isSound(net));
 		} catch (IOException e) {

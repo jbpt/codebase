@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jbpt.petri.PetriNet;
+import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.util.PNAPIMapper;
 import org.jbpt.petri.util.UMAUnfolderWrapper;
 
@@ -29,7 +29,7 @@ public class EventContinuationProfiler {
 	protected boolean[][] transitiveCausalityMatrixUnfolding; 
 	protected List<DNode> nodesForTransitiveCausalityMatrixUnfolding = new ArrayList<DNode>();
 
-	public EventContinuationProfiler(PetriNet pn) {
+	public EventContinuationProfiler(NetSystem pn) {
 		
 		this.unfolding = UMAUnfolderWrapper.getUMAUnfolding(PNAPIMapper.jBPT2PNAPI(pn));
 		this.profiler = new UnfoldingRelationsProfiler(this.unfolding);

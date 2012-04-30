@@ -6,9 +6,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.jbpt.graph.algo.CombinationGenerator;
+import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
+import org.jbpt.petri.structure.PetriNetStructuralClassChecks;
 import org.jbpt.petri.unf.order.EsparzaAdequateOrderForArbitrarySystems;
 
 
@@ -21,23 +23,23 @@ import org.jbpt.petri.unf.order.EsparzaAdequateOrderForArbitrarySystems;
  */
 public class SoundUnfoldingMSMS extends SoundUnfolding {
 
-	protected PetriNet originalNet = null;
+	protected NetSystem originalNet = null;
 	
 	/**
 	 * Constructor
 	 * 
 	 * @param pn net to unfold
 	 */
-	public SoundUnfoldingMSMS(PetriNet pn) {
+	public SoundUnfoldingMSMS(NetSystem sys) {
 		// perform structural checks
-		if (!pn.isFreeChoice()) throw new IllegalArgumentException("Net must be free choice!");
-		if (dga.hasCycles(pn)) throw new IllegalArgumentException("Net must be acyclic!");
+		if (!PetriNetStructuralClassChecks.isFreeChoice(sys)) throw new IllegalArgumentException("Net must be free choice!");
+		if (dga.hasCycles(sys)) throw new IllegalArgumentException("Net must be acyclic!");
 		
 		// initialization
-		this.originalNet = pn;
-		this.net = this.constructAugmentedVersion(this.originalNet);
-		this.initialBP = new Cut(this.net);
-		this.totalOrderTs = new ArrayList<Transition>(this.net.getTransitions());
+		this.originalNet = sys;
+		this.sys = this.constructAugmentedVersion(this.originalNet);
+		this.initialBP = new Cut(this.sys);
+		this.totalOrderTs = new ArrayList<Transition>(this.sys.getTransitions());
 		
 		UnfoldingSetup setup = new UnfoldingSetup();
 		setup.ADEQUATE_ORDER = new EsparzaAdequateOrderForArbitrarySystems();
@@ -58,8 +60,8 @@ public class SoundUnfoldingMSMS extends SoundUnfolding {
 	 * 
 	 * @param net net
 	 */
-	private PetriNet constructAugmentedVersion(PetriNet net) {
-		PetriNet result = net.clone();
+	private NetSystem constructAugmentedVersion(NetSystem sys) {
+		NetSystem result = sys.clone();
 		
 		Collection<Place> sources = result.getSourcePlaces();
 		Place s = new Place();
@@ -80,14 +82,14 @@ public class SoundUnfoldingMSMS extends SoundUnfolding {
 	}
 	
 	@Override
-	public PetriNet getNet() {
+	public NetSystem getNetSystem() {
 		return this.originalNet;
 	}
 	
 	@Override
 	public boolean isSound() {
-		Collection<Transition> augTs = new ArrayList<Transition>(this.net.getTransitions());
-		Collection<Transition> augStartTs = new ArrayList<Transition>(this.net.getPostset(this.net.getSourcePlaces().iterator().next()));
+		Collection<Transition> augTs = new ArrayList<Transition>(this.sys.getTransitions());
+		Collection<Transition> augStartTs = new ArrayList<Transition>(this.sys.getPostset(this.sys.getSourcePlaces().iterator().next()));
 		augTs.removeAll(augStartTs);
 		
 		Set<Condition> cs = new HashSet<Condition>(this.getLocallyUnsafeConditions());

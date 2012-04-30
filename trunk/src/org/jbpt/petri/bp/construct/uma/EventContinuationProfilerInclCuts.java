@@ -8,14 +8,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.jbpt.petri.PetriNet;
+import org.jbpt.petri.NetSystem;
 
 
 public class EventContinuationProfilerInclCuts extends EventContinuationProfiler {
 
 	public Map<DNode, Set<DNode>> cutOfLocalConf = new HashMap<DNode, Set<DNode>>();
 
-	public EventContinuationProfilerInclCuts(PetriNet pn) {
+	public EventContinuationProfilerInclCuts(NetSystem pn) {
 		super(pn);
 		
 		this.deriveCutOfLocalConfiguration();

@@ -1,4 +1,4 @@
-package org.jbpt.petri.util;
+package org.jbpt.petri.bevahior;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,7 +16,9 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.PetriNet;
+import org.jbpt.petri.io.PNMLSerializer;
 import org.jbpt.pm.serialize.SerializationException;
 import org.w3c.dom.Document;
 
@@ -36,7 +38,7 @@ public class LolaSoundnessChecker {
 	 * @throws SerializationException 
 	 * @throws IOException 
 	 */
-	public static boolean isSound(PetriNet net) throws SerializationException, IOException {
+	public static boolean isSound(NetSystem net) throws SerializationException, IOException {
 		String pnml = serializePetriNet(net);
 		boolean result = false;
 		
@@ -61,8 +63,8 @@ public class LolaSoundnessChecker {
 	 * @return PNML string
 	 * @throws SerializationException 
 	 */
-	private static String serializePetriNet(PetriNet net) throws SerializationException {
-		Document doc = PetriNet2PNML.convert(net, PetriNet2PNML.LOLA);
+	private static String serializePetriNet(NetSystem net) throws SerializationException {
+		Document doc = PNMLSerializer.serialize(net, PNMLSerializer.LOLA);
 		
 		DOMSource domSource = new DOMSource(doc);
 		

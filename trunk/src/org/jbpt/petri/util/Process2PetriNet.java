@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jbpt.hypergraph.abs.GObject;
+import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
@@ -144,10 +145,10 @@ public class Process2PetriNet {
 		return (node instanceof XorGateway);
 	}
 	
-	public static void addInitialMarking(PetriNet net) {
+	public static void addInitialMarking(NetSystem net) {
 		for (Place place:net.getPlaces()) {
-			if (net.getIncomingEdges(place).size() == 0 && place.getTokens() == 0)
-				place.setTokens(1);
+			if (net.getIncomingEdges(place).size() == 0)
+				net.getMarking().put(place,1);
 		}
 	}
 }

@@ -11,7 +11,7 @@ import org.jbpt.petri.Transition;
 public class Event extends BPNode {
 	
 	static private int count = 0; 
-	private int ID = 0;
+	private int ID;
 
 	// required to capture unfolding
 	private Transition t = null;	// transition that corresponds to event
@@ -88,8 +88,8 @@ public class Event extends BPNode {
 	
 	@Override
 	public String getName() {
-		return this.t.getName();
-		//return this.t.getName()+"-"+this.ID;
+		//return this.t.getName();
+		return this.t.getName()+"-"+this.ID;
 	}
 	
 	@Override

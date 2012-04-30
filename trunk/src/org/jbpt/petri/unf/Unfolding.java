@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jbpt.petri.Marking;
+import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
@@ -30,7 +31,7 @@ public class Unfolding {
 	public static long time_cutoff = 0;
 	
 	// originative net system
-	protected PetriNet net = null;
+	protected NetSystem sys = null;
 	protected List<Transition> totalOrderTs = null;
 	protected UnfoldingSetup setup = null;
 
@@ -63,18 +64,15 @@ public class Unfolding {
 	
 	//private int counter = 1;
 	
-	/**
-	 * Dummy constructor
-	 */
-	protected Unfolding() {}
+	protected Unfolding(){}
 	
 	/**
 	 * Constructor - constructs unfolding of a net system
 	 * 
 	 * @param pn net system to unfold
 	 */
-	public Unfolding(PetriNet pn) {
-		this(pn, new UnfoldingSetup());
+	public Unfolding(NetSystem sys) {
+		this(sys, new UnfoldingSetup());
 	}
 	
 	/**
@@ -83,10 +81,10 @@ public class Unfolding {
 	 * @param pn net system to unfold
 	 * @param setup unfolding configuration
 	 */
-	public Unfolding(PetriNet pn, UnfoldingSetup setup) {
-		this.net = pn;
-		initialBP = new Cut(this.net);
-		this.totalOrderTs = new ArrayList<Transition>(pn.getTransitions());
+	public Unfolding(NetSystem sys, UnfoldingSetup setup) {
+		this.sys = sys;
+		initialBP = new Cut(this.sys);
+		this.totalOrderTs = new ArrayList<Transition>(sys.getTransitions());
 		this.setup = setup;
 		
 		// construct unfolding
@@ -98,11 +96,11 @@ public class Unfolding {
 	 * @throws  
 	 */
 	protected void construct() {
-		if (this.net==null) return;
+		if (this.sys==null) return;
 
 		// CONSTRUCT INITIAL BRANCHING PROCESS
-		Marking M0 = this.net.getMarking();
-		for (Place p : this.net.getPlaces()) {
+		Marking M0 = this.sys.getMarking();
+		for (Place p : this.sys.getPlaces()) {
 			Integer n = M0.get(p);
 			for (int i = 0; i<n; i++) {
 				Condition c = new Condition(p,null);
@@ -178,9 +176,9 @@ public class Unfolding {
 		Set<Event> result = new HashSet<Event>();
 		
 		// iterate over all transitions of the originative net
-		for (Transition t : this.net.getTransitions()) {
+		for (Transition t : this.sys.getTransitions()) {
 			// iterate over all places in the preset
-			Collection<Place> pre = this.net.getPreset(t);
+			Collection<Place> pre = this.sys.getPreset(t);
 			Place p = pre.iterator().next();
 			// get cuts that contain conditions that correspond to the place
 			Collection<Cut> cuts = this.getCutsWithPlace(p);
@@ -351,7 +349,7 @@ public class Unfolding {
 			for (Cut cut : cuts) {
 				if (!cut.getPlaces().containsAll(ps)) continue;
 				
-				Coset coset = new Coset(this.net);
+				Coset coset = new Coset(this.sys);
 				for (Place p : ps) {
 					coset.add(cut.getConditions(p).iterator().next());
 				}
@@ -393,7 +391,7 @@ public class Unfolding {
 	 * @return co-set of conditions that correspond to places in the collection; null if not every place has a corresponding condition 
 	 */
 	protected Coset containsPlaces(Cut cut, Collection<Place> ps) {
-		Coset result = new Coset(this.net);
+		Coset result = new Coset(this.sys);
 		
 		for (Place p : ps) {
 			boolean flag = false;
@@ -485,8 +483,8 @@ public class Unfolding {
 		}
 		
 		// add conditions that correspond to post-places of transition that corresponds to new event
-		Coset postConds = new Coset(this.net);								// collection of new post conditions
-		for (Place s : this.net.getPostset(e.getTransition())) {	// iterate over places in the postset
+		Coset postConds = new Coset(this.sys);								// collection of new post conditions
+		for (Place s : this.sys.getPostset(e.getTransition())) {	// iterate over places in the postset
 			Condition c = new Condition(s,e);	 					// construct new condition
 			postConds.add(c);
 			this.addCondition(c);									// add condition to unfolding
@@ -496,7 +494,7 @@ public class Unfolding {
 		// compute new cuts of unfolding
 		for (Cut cut : c2cut.get(e.getPreConditions().iterator().next())) {
 			if (contains(cut,e.getPreConditions())) {
-				Cut newCut = new Cut(this.net,cut);
+				Cut newCut = new Cut(this.sys,cut);
 				newCut.removeAll(e.getPreConditions());
 				newCut.addAll(postConds);
 				if (!this.addCut(newCut)) return false;
@@ -593,8 +591,16 @@ public class Unfolding {
 	 * Get originative net system
 	 * @return originative net system
 	 */
-	public PetriNet getNet() {
-		return this.net;
+	public NetSystem getNetSystem() {
+		return this.sys;
+	}
+	
+	/**
+	 * Get originative Petri net
+	 * @return originative Petrin net
+	 */
+	public PetriNet getPetriNet() {
+		return this.sys;
 	}
 	
 	/**

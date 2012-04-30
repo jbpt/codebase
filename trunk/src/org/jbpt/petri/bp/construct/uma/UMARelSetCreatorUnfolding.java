@@ -8,8 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Node;
-import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.Transition;
 import org.jbpt.petri.bp.RelSet;
 import org.jbpt.petri.bp.RelSetType;
@@ -36,7 +36,7 @@ import org.jbpt.petri.bp.construct.RelSetCreator;
  * @author matthias.weidlich
  *
  */
-public class UMARelSetCreatorUnfolding extends AbstractRelSetCreator implements RelSetCreator<PetriNet, Node> {
+public class UMARelSetCreatorUnfolding extends AbstractRelSetCreator implements RelSetCreator<NetSystem, Node> {
 
 	private static UMARelSetCreatorUnfolding eInstance;
 	
@@ -70,28 +70,27 @@ public class UMARelSetCreatorUnfolding extends AbstractRelSetCreator implements 
 	}
 
 	@Override
-	public RelSet<PetriNet, Node> deriveRelationSet(PetriNet pn) {
+	public RelSet<NetSystem, Node> deriveRelationSet(NetSystem pn) {
 		return deriveRelationSet(pn, new ArrayList<Node>(pn.getTransitions()));
 	}
 	
-	public RelSet<PetriNet, Node> deriveRelationSet(PetriNet pn, int lookAhead) {
+	public RelSet<NetSystem, Node> deriveRelationSet(NetSystem pn, int lookAhead) {
 		return deriveRelationSet(pn, new ArrayList<Node>(pn.getTransitions()),lookAhead);
 	}
 
 	@Override
-	public RelSet<PetriNet, Node> deriveRelationSet(PetriNet pn,
-			Collection<Node> nodes) {
+	public RelSet<NetSystem, Node> deriveRelationSet(NetSystem pn, Collection<Node> nodes) {
 		return deriveRelationSet(pn, nodes, RelSet.RELATION_FAR_LOOKAHEAD);
 	}
 	
-	public RelSet<PetriNet, Node> deriveRelationSet(PetriNet pn,
+	public RelSet<NetSystem, Node> deriveRelationSet(NetSystem pn,
 			Collection<Node> nodes, int lookAhead) {
 		
 		clear();
 		
 		this.eventStepProfiler = new UMAEventStepProfiler(pn);
 		
-		RelSet<PetriNet, Node> rs = new RelSet<PetriNet, Node>(pn,nodes,lookAhead);
+		RelSet<NetSystem, Node> rs = new RelSet<NetSystem, Node>(pn,nodes,lookAhead);
 		RelSetType[][] matrix = rs.getMatrix();
 		
 		for (Node t : nodes)
@@ -131,7 +130,7 @@ public class UMARelSetCreatorUnfolding extends AbstractRelSetCreator implements 
 		return rs;
 	}
 		
-	protected void deriveBaseOrderRelation(RelSet<PetriNet, Node> rs) {
+	protected void deriveBaseOrderRelation(RelSet<NetSystem, Node> rs) {
 		
 		baseOrderMatrixForTransitions = new boolean[this.transitionsForBaseOrderMatrix.size()][this.transitionsForBaseOrderMatrix.size()];
 		

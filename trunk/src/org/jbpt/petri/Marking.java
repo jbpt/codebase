@@ -14,7 +14,7 @@ public class Marking extends HashMap<Place, Integer> {
 	private static final long serialVersionUID = 1L;
 	private PetriNet net = null;
 	
-	protected Marking(PetriNet net) {
+	public Marking(PetriNet net) {
 		this.net = net;
 	}
 

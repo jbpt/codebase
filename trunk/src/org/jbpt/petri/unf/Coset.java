@@ -85,6 +85,10 @@ public class Coset extends TreeSet<Condition> {
 		return this.p2cs.keySet();
 	}
 	
+	public PetriNet getPetriNet() {
+		return this.net;
+	}
+	
 	/*public Marking getMarking() {
 		Marking result = new Marking(this.net);
 		

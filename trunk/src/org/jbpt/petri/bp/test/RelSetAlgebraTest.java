@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import junit.framework.TestCase;
 
 import org.jbpt.alignment.Alignment;
+import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Node;
 import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.Place;
@@ -21,7 +22,7 @@ public class RelSetAlgebraTest extends TestCase {
 
 	@Test
 	public void testAlgebra() {
-		PetriNet net1 = new PetriNet();
+		NetSystem net1 = new NetSystem();
 		
 		Transition a = new Transition("a");
 		Transition b = new Transition("b");
@@ -34,7 +35,6 @@ public class RelSetAlgebraTest extends TestCase {
 		net1.addNode(d);
 
 		Place p1 = new Place("1");
-		p1.setTokens(1);
 		Place p2 = new Place("2");
 		Place p3 = new Place("3");
 		Place p4 = new Place("4");
@@ -42,6 +42,7 @@ public class RelSetAlgebraTest extends TestCase {
 		Place p6 = new Place("6");
 		
 		net1.addNode(p1);
+		net1.getMarking().put(p1, 1);
 		net1.addNode(p2);
 		net1.addNode(p3);
 		net1.addNode(p4);
@@ -59,7 +60,7 @@ public class RelSetAlgebraTest extends TestCase {
 		net1.addFlow(p5, d);
 		net1.addFlow(d, p6);
 
-		PetriNet net2 = new PetriNet();
+		NetSystem net2 = new NetSystem();
 		
 		Transition x = new Transition("x");
 		Transition y = new Transition("y");
@@ -70,12 +71,12 @@ public class RelSetAlgebraTest extends TestCase {
 		net2.addNode(z);
 
 		Place p21 = new Place("1");
-		p21.setTokens(1);
 		Place p22 = new Place("2");
 		Place p23 = new Place("3");
 		Place p24 = new Place("4");
 		
 		net2.addNode(p21);
+		net2.getMarking().put(p21,1);
 		net2.addNode(p22);
 		net2.addNode(p23);
 		net2.addNode(p24);

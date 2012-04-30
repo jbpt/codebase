@@ -26,7 +26,7 @@ import org.jbpt.petri.bp.CausalBehaviouralProfile;
 import org.jbpt.petri.bp.RelSetType;
 import org.jbpt.petri.bp.construct.BPCreatorNet;
 import org.jbpt.petri.bp.construct.CBPCreatorNet;
-import org.jbpt.petri.structure.PetriNetStructuralChecks;
+import org.jbpt.petri.structure.PetriNetStructuralClassChecks;
 
 
 
@@ -77,8 +77,8 @@ public class WFTree {
 	 * @throws IllegalArgumentException
 	 */
 	public void checkNet() {
-		if (!PetriNetStructuralChecks.isWorkflowNet(wf)) throw new IllegalArgumentException();
-		if (!PetriNetStructuralChecks.isExtendedFreeChoice(wf)) throw new IllegalArgumentException();
+		if (!PetriNetStructuralClassChecks.isWorkflowNet(wf)) throw new IllegalArgumentException();
+		if (!PetriNetStructuralClassChecks.isExtendedFreeChoice(wf)) throw new IllegalArgumentException();
 	}
 	
 	/**
