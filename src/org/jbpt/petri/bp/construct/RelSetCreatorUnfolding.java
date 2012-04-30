@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Node;
-import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.Transition;
 import org.jbpt.petri.bp.RelSet;
 import org.jbpt.petri.bp.RelSetType;
@@ -35,7 +35,7 @@ import org.jbpt.petri.unf.order.EsparzaAdequateOrderForArbitrarySystems;
  * @author matthias.weidlich
  *
  */
-public class RelSetCreatorUnfolding extends AbstractRelSetCreator implements RelSetCreator<PetriNet, Node> {
+public class RelSetCreatorUnfolding extends AbstractRelSetCreator implements RelSetCreator<NetSystem, Node> {
 
 	private static RelSetCreatorUnfolding eInstance;
 	
@@ -74,21 +74,21 @@ public class RelSetCreatorUnfolding extends AbstractRelSetCreator implements Rel
 	}
 
 	@Override
-	public RelSet<PetriNet, Node> deriveRelationSet(PetriNet pn) {
+	public RelSet<NetSystem, Node> deriveRelationSet(NetSystem pn) {
 		return deriveRelationSet(pn, new ArrayList<Node>(pn.getTransitions()));
 	}
 	
-	public RelSet<PetriNet, Node> deriveRelationSet(PetriNet pn, int lookAhead) {
+	public RelSet<NetSystem, Node> deriveRelationSet(NetSystem pn, int lookAhead) {
 		return deriveRelationSet(pn, new ArrayList<Node>(pn.getTransitions()),lookAhead);
 	}
 
 	@Override
-	public RelSet<PetriNet, Node> deriveRelationSet(PetriNet pn,
+	public RelSet<NetSystem, Node> deriveRelationSet(NetSystem pn,
 			Collection<Node> nodes) {
 		return deriveRelationSet(pn, nodes, RelSet.RELATION_FAR_LOOKAHEAD);
 	}
 	
-	public RelSet<PetriNet, Node> deriveRelationSet(PetriNet pn,
+	public RelSet<NetSystem, Node> deriveRelationSet(NetSystem pn,
 			Collection<Node> nodes, int lookAhead) {
 		
 		// clear internal data structures
@@ -113,7 +113,7 @@ public class RelSetCreatorUnfolding extends AbstractRelSetCreator implements Rel
 		/*
 		 * Init rel set
 		 */
-		RelSet<PetriNet, Node> rs = new RelSet<PetriNet, Node>(pn,nodes,lookAhead);
+		RelSet<NetSystem, Node> rs = new RelSet<NetSystem, Node>(pn,nodes,lookAhead);
 		RelSetType[][] matrix = rs.getMatrix();
 		
 		for (Node t : nodes)
@@ -148,7 +148,7 @@ public class RelSetCreatorUnfolding extends AbstractRelSetCreator implements Rel
 		return rs;
 	}
 		
-	protected void deriveBaseOrderRelation(RelSet<PetriNet, Node> rs) {
+	protected void deriveBaseOrderRelation(RelSet<NetSystem, Node> rs) {
 		
 		baseOrderMatrixForTransitions = new boolean[this.transitionsForBaseOrderMatrix.size()][this.transitionsForBaseOrderMatrix.size()];
 		

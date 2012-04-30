@@ -2,11 +2,12 @@ package org.jbpt.petri.bp.construct;
 
 import java.util.Collection;
 
+import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Node;
-import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.bevahior.ConcurrencyRelation;
 import org.jbpt.petri.bp.BehaviouralProfile;
 import org.jbpt.petri.bp.RelSetType;
+import org.jbpt.petri.structure.PetriNetPathChecks;
 import org.jbpt.petri.structure.PetriNetStructuralClassChecks;
 
 
@@ -21,7 +22,7 @@ import org.jbpt.petri.structure.PetriNetStructuralClassChecks;
  * @author matthias.weidlich
  *
  */
-public class BPCreatorNet extends AbstractRelSetCreator implements RelSetCreator<PetriNet, Node> {
+public class BPCreatorNet extends AbstractRelSetCreator implements RelSetCreator<NetSystem, Node> {
 	
 	private static BPCreatorNet eInstance;
 	
@@ -35,11 +36,11 @@ public class BPCreatorNet extends AbstractRelSetCreator implements RelSetCreator
 		
 	}
 
-	public BehaviouralProfile<PetriNet, Node> deriveRelationSet(PetriNet pn) {
+	public BehaviouralProfile<NetSystem, Node> deriveRelationSet(NetSystem pn) {
 		return deriveRelationSet(pn, pn.getNodes());
 	}
 	
-	public BehaviouralProfile<PetriNet, Node> deriveRelationSet(PetriNet pn, Collection<Node> nodes) {
+	public BehaviouralProfile<NetSystem, Node> deriveRelationSet(NetSystem pn, Collection<Node> nodes) {
 		
 		/*
 		 * Check some of the assumptions.
@@ -47,7 +48,7 @@ public class BPCreatorNet extends AbstractRelSetCreator implements RelSetCreator
 		if (!PetriNetStructuralClassChecks.isExtendedFreeChoice(pn)) throw new IllegalArgumentException();
 		if (!PetriNetStructuralClassChecks.isWorkflowNet(pn)) throw new IllegalArgumentException();
 
-		BehaviouralProfile<PetriNet, Node> profile = new BehaviouralProfile<PetriNet, Node>(pn,nodes);
+		BehaviouralProfile<NetSystem, Node> profile = new BehaviouralProfile<NetSystem, Node>(pn,nodes);
 		RelSetType[][] matrix = profile.getMatrix();
 		
 		ConcurrencyRelation concurrencyRelation = new ConcurrencyRelation(pn);
@@ -66,7 +67,7 @@ public class BPCreatorNet extends AbstractRelSetCreator implements RelSetCreator
 				 * What about the relation of a node to itself?
 				 */
 				if (index1 == index2) {
-					if (pn.hasPath(n1,n2))
+					if (PetriNetPathChecks.hasPath(pn,n1,n2))
 						matrix[index1][index1] = RelSetType.Interleaving;
 					else
 						matrix[index1][index1] = RelSetType.Exclusive;
@@ -74,19 +75,19 @@ public class BPCreatorNet extends AbstractRelSetCreator implements RelSetCreator
 				/*
 				 * Check all cases for two distinct nodes of the net
 				 */
-				else if (pn.hasPath(n1,n2) && pn.hasPath(n2,n1)) {
+				else if (PetriNetPathChecks.hasPath(pn,n1,n2) && PetriNetPathChecks.hasPath(pn,n2,n1)) {
 					super.setMatrixEntry(matrix,index1,index2,RelSetType.Interleaving);
 				}
 				else if (concurrencyRelation.areConcurrent(index1,index2)) {
 					super.setMatrixEntry(matrix,index1,index2,RelSetType.Interleaving);
 				}
-				else if (!concurrencyRelation.areConcurrent(index1,index2) && !pn.hasPath(n1,n2) && !pn.hasPath(n2,n1)) {
+				else if (!concurrencyRelation.areConcurrent(index1,index2) && !PetriNetPathChecks.hasPath(pn,n1,n2) && !PetriNetPathChecks.hasPath(pn,n2,n1)) {
 					super.setMatrixEntry(matrix,index1,index2,RelSetType.Exclusive);
 				}
-				else if (pn.hasPath(n1,n2) && !pn.hasPath(n2,n1)) {
+				else if (PetriNetPathChecks.hasPath(pn,n1,n2) && !PetriNetPathChecks.hasPath(pn,n2,n1)) {
 					super.setMatrixEntryOrder(matrix,index1,index2);
 				}
-				else if (pn.hasPath(n2,n1) && !pn.hasPath(n1,n2)) {
+				else if (PetriNetPathChecks.hasPath(pn,n2,n1) && !PetriNetPathChecks.hasPath(pn,n1,n2)) {
 					super.setMatrixEntryOrder(matrix,index2,index1);
 				}
 			}

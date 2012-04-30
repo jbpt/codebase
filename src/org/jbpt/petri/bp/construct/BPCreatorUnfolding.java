@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Node;
-import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.Transition;
 import org.jbpt.petri.bp.BehaviouralProfile;
 import org.jbpt.petri.bp.RelSetType;
@@ -34,7 +34,7 @@ import org.jbpt.petri.unf.order.EsparzaAdequateOrderForArbitrarySystems;
  * @author matthias.weidlich
  *
  */
-public class BPCreatorUnfolding extends AbstractRelSetCreator implements RelSetCreator<PetriNet, Node> {
+public class BPCreatorUnfolding extends AbstractRelSetCreator implements RelSetCreator<NetSystem, Node> {
 
 	private static BPCreatorUnfolding eInstance;
 	
@@ -73,12 +73,12 @@ public class BPCreatorUnfolding extends AbstractRelSetCreator implements RelSetC
 	}
 
 	@Override
-	public BehaviouralProfile<PetriNet, Node> deriveRelationSet(PetriNet pn) {
+	public BehaviouralProfile<NetSystem, Node> deriveRelationSet(NetSystem pn) {
 		return deriveRelationSet(pn, new ArrayList<Node>(pn.getTransitions()));
 	}
 	
 	@Override
-	public BehaviouralProfile<PetriNet, Node> deriveRelationSet(PetriNet pn,
+	public BehaviouralProfile<NetSystem, Node> deriveRelationSet(NetSystem pn,
 			Collection<Node> nodes) {
 				
 		// clear internal data structures
@@ -99,7 +99,7 @@ public class BPCreatorUnfolding extends AbstractRelSetCreator implements RelSetC
 		this.deriveTransitiveCutoffRelation();
 
 		
-		BehaviouralProfile<PetriNet, Node> profile = new BehaviouralProfile<PetriNet, Node>(pn,nodes);
+		BehaviouralProfile<NetSystem, Node> profile = new BehaviouralProfile<NetSystem, Node>(pn,nodes);
 		RelSetType[][] matrix = profile.getMatrix();
 		
 		for (Node t : nodes)
