@@ -2,15 +2,14 @@ package org.jbpt.petri.util;
 
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jbpt.hypergraph.abs.Vertex;
-import org.jbpt.petri.Marking;
-import org.jbpt.petri.PetriNet;
+import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Transition;
 import org.jbpt.pm.ProcessModel;
 
@@ -23,22 +22,22 @@ import org.jbpt.pm.ProcessModel;
  */
 public class BisimilarityChecker2 {
 
-	private PetriNet net1, net2;
+	private NetSystem net1, net2;
 	private boolean areBisimilar = false;
 	private Map<String, BitSet> nameMap;
 	private int n;
 	
 	public BisimilarityChecker2(ProcessModel process1, ProcessModel process2) throws TransformationException {
-		this(Process2PetriNet.convert(process1), Process2PetriNet.convert(process2));
+		this((NetSystem)Process2PetriNet.convert(process1), (NetSystem)Process2PetriNet.convert(process2));
 	}
 	
-	public BisimilarityChecker2(PetriNet net1, PetriNet net2) {
+	public BisimilarityChecker2(NetSystem net1, NetSystem net2) {
 		this.net1 = net1;
 		this.net2 = net2;
 		this.compare();
 	}
 	
-	private List<String> getNames(PetriNet net) {
+	private List<String> getNames(NetSystem net) {
 		ArrayList<String> names = new ArrayList<String>();
 		for (Transition t:net.getTransitions()) {
 			if (!t.getName().equals(""))
@@ -63,16 +62,14 @@ public class BisimilarityChecker2 {
 	}
 	
 	/**
-	 * Runs a DFS to create the state transition relation for a given {@link PetriNet}.
+	 * Runs a DFS to create the state transition relation for a given {@link NetSystem}.
 	 * @param net - the petri net
 	 * @param trans - all yet found transitions
 	 * @param currentState
 	 */
-	private void dfs(PetriNet net, Map<BitSet, Set<BitSet>> trans, BitSet currentState) {
-		Marking marking = net.getMarking();
-		Set<Vertex> enabled = net.getEnabledElements();
-		for (Vertex v:enabled) {
-			marking.apply();
+	private void dfs(NetSystem net, Map<BitSet, Set<BitSet>> trans, BitSet currentState) {
+		Collection<Transition> enabled = net.getEnabledTransitions();
+		for (Transition v:enabled) {
 			BitSet nextState = null;
 			if (!v.getName().equals("")) {
 				// we are just interested in labeled transitions...
@@ -100,9 +97,9 @@ public class BisimilarityChecker2 {
 	 * @param net
 	 * @return the state transition relation
 	 */
-	private Map<BitSet, Set<BitSet>> createStateTransitions(PetriNet net) {
+	private Map<BitSet, Set<BitSet>> createStateTransitions(NetSystem net) {
 		Map<BitSet, Set<BitSet>> transitions = new HashMap<BitSet, Set<BitSet>>();
-		net.setNaturalInitialMarking();
+		net.loadNaturalMarking();
 		dfs(net, transitions, new BitSet(n));
 		return transitions;
 	}

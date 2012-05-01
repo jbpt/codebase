@@ -14,7 +14,7 @@ import org.jbpt.graph.algo.DirectedGraphAlgorithms;
 /**
  * Petri net implementation
  *  
- * @author Artem Polyvyanyy, Andreas Meyer
+ * @author Artem Polyvyanyy, Matthias, Weidlich, Andreas Meyer
  */
 public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 	// Directed graph algorithms 
@@ -610,6 +610,33 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 		for (Flow f : this.getFlow()) {
 			Node from = nodeCopies.get(f.getSource());
 			Node to = nodeCopies.get(f.getTarget());
+			clone.addFlow(from, to);
+		}
+		
+		return clone;
+	}
+	
+	/**
+	 * Creates a deep copy of whole Petri net and enters 
+	 * the node mapping between the original and the clone
+	 * into the given map.
+	 * 
+	 * @param nodeMapping, mapping between nodes of the original and of the clone
+	 * 
+	 * @return the clone of the Petri net
+	 */
+	public Object clone(Map<Node,Node> nodeMapping) throws CloneNotSupportedException {
+		PetriNet clone = (PetriNet) super.clone();
+		
+		for (Node n : this.getNodes()) {
+			Node c = (Node)n.clone();
+			clone.addNode(c);
+			nodeMapping.put(n, c);
+		}
+		
+		for (Flow f : this.getFlow()) {
+			Node from = nodeMapping.get(f.getSource());
+			Node to = nodeMapping.get(f.getTarget());
 			clone.addFlow(from, to);
 		}
 		

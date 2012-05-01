@@ -11,21 +11,21 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.Vector;
 
+import org.jbpt.bp.BehaviouralProfile;
+import org.jbpt.bp.CausalBehaviouralProfile;
+import org.jbpt.bp.RelSetType;
+import org.jbpt.bp.construct.BPCreatorNet;
+import org.jbpt.bp.construct.CBPCreatorNet;
 import org.jbpt.graph.abs.AbstractDirectedEdge;
 import org.jbpt.graph.abs.IDirectedGraph;
 import org.jbpt.graph.algo.rpst.RPST;
 import org.jbpt.graph.algo.rpst.RPSTNode;
 import org.jbpt.graph.algo.tctree.TCType;
 import org.jbpt.petri.Flow;
+import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Node;
-import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
-import org.jbpt.petri.bp.BehaviouralProfile;
-import org.jbpt.petri.bp.CausalBehaviouralProfile;
-import org.jbpt.petri.bp.RelSetType;
-import org.jbpt.petri.bp.construct.BPCreatorNet;
-import org.jbpt.petri.bp.construct.CBPCreatorNet;
 import org.jbpt.petri.structure.PetriNetStructuralClassChecks;
 
 
@@ -34,14 +34,14 @@ import org.jbpt.petri.structure.PetriNetStructuralClassChecks;
  * WF-Tree implementation
  */
 public class WFTree {
-	protected PetriNet wf;
+	protected NetSystem wf;
 	private RPST<Flow, Node> rpst;
 	
 	private Map<Node, RPSTNode<Flow, Node>> node2ptnode = new HashMap<Node, RPSTNode<Flow, Node>>();
 	
-	private Map<RPSTNode<Flow, Node>,BehaviouralProfile<PetriNet, Node>> node2bp = new HashMap<RPSTNode<Flow, Node>, BehaviouralProfile<PetriNet, Node>>();
-	private Map<RPSTNode<Flow, Node>,CausalBehaviouralProfile<PetriNet, Node>> node2cbp = new HashMap<RPSTNode<Flow, Node>, CausalBehaviouralProfile<PetriNet, Node>>();
-	private Map<BehaviouralProfile<PetriNet, Node>,Map<Node,Node>> bp2nodemapping = new HashMap<BehaviouralProfile<PetriNet, Node>, Map<Node,Node>>();
+	private Map<RPSTNode<Flow, Node>,BehaviouralProfile<NetSystem, Node>> node2bp = new HashMap<RPSTNode<Flow, Node>, BehaviouralProfile<NetSystem, Node>>();
+	private Map<RPSTNode<Flow, Node>,CausalBehaviouralProfile<NetSystem, Node>> node2cbp = new HashMap<RPSTNode<Flow, Node>, CausalBehaviouralProfile<NetSystem, Node>>();
+	private Map<BehaviouralProfile<NetSystem, Node>,Map<Node,Node>> bp2nodemapping = new HashMap<BehaviouralProfile<NetSystem, Node>, Map<Node,Node>>();
 	
 	private Set<RPSTNode<Flow, Node>> tNodes = new HashSet<RPSTNode<Flow, Node>>();
 	private Set<RPSTNode<Flow, Node>> pNodes = new HashSet<RPSTNode<Flow, Node>>();
@@ -50,7 +50,7 @@ public class WFTree {
 	
 	private Map<RPSTNode<Flow, Node>,Vector<RPSTNode<Flow, Node>>> orderedPNodes = new HashMap<RPSTNode<Flow,Node>, Vector<RPSTNode<Flow,Node>>>();
 	
-	public WFTree(PetriNet net) {
+	public WFTree(NetSystem net) {
 		wf = net;
 		
 		checkNet();
@@ -488,7 +488,7 @@ public class WFTree {
 		return false;
 	}
 	
-	private BehaviouralProfile<PetriNet, Node> getBPForFragment(RPSTNode<Flow, Node> treeNode) {
+	private BehaviouralProfile<NetSystem, Node> getBPForFragment(RPSTNode<Flow, Node> treeNode) {
 
 		/*
 		 * The subnet we are interested in. It represents the fragment.
@@ -500,7 +500,7 @@ public class WFTree {
 		 * clone method, in order to keep track of the relation between nodes 
 		 * of both nets.
 		 */
-		PetriNet net = new PetriNet();
+		NetSystem net = new NetSystem();
 		
 		Map<Node,Node> nodeCopies = new HashMap<Node, Node>();
 
@@ -561,7 +561,7 @@ public class WFTree {
 		
 		
 
-		BehaviouralProfile<PetriNet, Node> bp = BPCreatorNet.getInstance().deriveRelationSet(net);
+		BehaviouralProfile<NetSystem, Node> bp = BPCreatorNet.getInstance().deriveRelationSet(net);
 		bp2nodemapping.put(bp, nodeCopies);
 		
 		return bp;
@@ -580,7 +580,7 @@ public class WFTree {
 		if (!this.node2bp.containsKey(fragment))
 			this.node2bp.put(fragment, getBPForFragment(fragment));
 		
-		BehaviouralProfile<PetriNet, Node> bp = this.node2bp.get(fragment);
+		BehaviouralProfile<NetSystem, Node> bp = this.node2bp.get(fragment);
 		return bp.areExclusive(this.bp2nodemapping.get(bp).get(t1), this.bp2nodemapping.get(bp).get(t2));
 	}
 	
@@ -597,7 +597,7 @@ public class WFTree {
 		if (!this.node2bp.containsKey(fragment))
 			this.node2bp.put(fragment, getBPForFragment(fragment));
 
-		BehaviouralProfile<PetriNet, Node> bp = this.node2bp.get(fragment);
+		BehaviouralProfile<NetSystem, Node> bp = this.node2bp.get(fragment);
 		return bp.areInterleaving(this.bp2nodemapping.get(bp).get(t1), this.bp2nodemapping.get(bp).get(t2));
 	}
 	
@@ -614,7 +614,7 @@ public class WFTree {
 		if (!this.node2bp.containsKey(fragment))
 			this.node2bp.put(fragment, getBPForFragment(fragment));
 
-		BehaviouralProfile<PetriNet, Node> bp = this.node2bp.get(fragment);
+		BehaviouralProfile<NetSystem, Node> bp = this.node2bp.get(fragment);
 		return bp.areInOrder(this.bp2nodemapping.get(bp).get(t1), this.bp2nodemapping.get(bp).get(t2));
 	}
 	
@@ -625,9 +625,9 @@ public class WFTree {
 	 * @param treeNode representing the fragment
 	 * @return the complete behavioural profile for the fragment
 	 */
-	private CausalBehaviouralProfile<PetriNet, Node> getCBPForFragment(RPSTNode<Flow, Node> treeNode) {
-		BehaviouralProfile<PetriNet, Node> bp = this.getBPForFragment(treeNode);
-		CausalBehaviouralProfile<PetriNet, Node> cbp = CBPCreatorNet.getInstance().deriveCausalBehaviouralProfile(bp);
+	private CausalBehaviouralProfile<NetSystem, Node> getCBPForFragment(RPSTNode<Flow, Node> treeNode) {
+		BehaviouralProfile<NetSystem, Node> bp = this.getBPForFragment(treeNode);
+		CausalBehaviouralProfile<NetSystem, Node> cbp = CBPCreatorNet.getInstance().deriveCausalBehaviouralProfile(bp);
 		this.bp2nodemapping.put(cbp,this.bp2nodemapping.get(bp));
 		return cbp;
 	}
@@ -644,7 +644,7 @@ public class WFTree {
 	private boolean areCooccurringUType(Node t1, Node t2, RPSTNode<Flow, Node> fragment) {
 		if (!this.node2cbp.containsKey(fragment))
 			this.node2cbp.put(fragment, getCBPForFragment(fragment));
-		CausalBehaviouralProfile<PetriNet, Node> cbp = this.node2cbp.get(fragment);
+		CausalBehaviouralProfile<NetSystem, Node> cbp = this.node2cbp.get(fragment);
 		return cbp.areCooccurring(this.bp2nodemapping.get(cbp).get(t1), this.bp2nodemapping.get(cbp).get(t2));
 	}
 
