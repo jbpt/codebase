@@ -1,4 +1,4 @@
-package org.jbpt.test.petri;
+package org.jbpt.test.petri.unfolding;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -11,11 +11,11 @@ import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
 import org.jbpt.petri.unfolding.SoundUnfolding;
-import org.jbpt.petri.unfolding.Utils;
-import org.jbpt.petri.util.TransformationException;
 import org.jbpt.pm.ProcessModel;
 import org.jbpt.pm.io.JSON2Process;
 import org.jbpt.pm.io.SerializationException;
+import org.jbpt.pm.structure.ProcessModel2NetSystem;
+import org.jbpt.utils.TransformationException;
 
 public class SoundUnfoldingExtensiveTestA extends TestCase {
 
@@ -28,7 +28,7 @@ public class SoundUnfoldingExtensiveTestA extends TestCase {
 		for (String name : modelsDir.list()) {
 			if (name.endsWith(".json")) {
 				ProcessModel p = loadProcess(MODELS_DIR + File.separator + name);
-				NetSystem net = (NetSystem)Utils.process2net(p);
+				NetSystem net = ProcessModel2NetSystem.transform(p);
 				int cp = 1; int ct = 1;
 				for (Place place : net.getPlaces()) place.setName("p"+cp++);
 				for (Transition trans : net.getTransitions()) trans.setName("t"+ct++);

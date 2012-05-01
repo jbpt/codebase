@@ -1,4 +1,4 @@
-package org.jbpt.test.petri;
+package org.jbpt.test.petri.unfolding;
 
 import java.io.FileNotFoundException;
 
@@ -9,14 +9,14 @@ import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
 import org.jbpt.petri.unfolding.OccurrenceNet;
 import org.jbpt.petri.unfolding.SoundUnfolding;
-import org.jbpt.petri.unfolding.Utils;
-import org.jbpt.petri.util.TransformationException;
 import org.jbpt.pm.Activity;
 import org.jbpt.pm.AndGateway;
 import org.jbpt.pm.Gateway;
 import org.jbpt.pm.ProcessModel;
 import org.jbpt.pm.XorGateway;
+import org.jbpt.pm.structure.ProcessModel2NetSystem;
 import org.jbpt.utils.IOUtils;
+import org.jbpt.utils.TransformationException;
 
 
 public class SoundUnfoldingTest extends TestCase {
@@ -67,9 +67,9 @@ public class SoundUnfoldingTest extends TestCase {
 		p.addControlFlow(j2,j3);
 		p.addControlFlow(j3,to);
 		
-		Utils.toFile("model.dot", p.toDOT());
+		IOUtils.toFile("model.dot", p.toDOT());
 		
-		NetSystem net = (NetSystem)Utils.process2net(p);
+		NetSystem net = ProcessModel2NetSystem.transform(p);
 		int cp = 1; int ct = 1;
 		for (Place place : net.getPlaces()) place.setName("p"+cp++);
 		for (Transition trans : net.getTransitions()) trans.setName("t"+ct++);

@@ -8,6 +8,7 @@ import org.jbpt.hypergraph.abs.Vertex;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Transition;
 import org.jbpt.pm.ProcessModel;
+import org.jbpt.utils.TransformationException;
 
 
 /**

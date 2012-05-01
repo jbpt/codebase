@@ -1,4 +1,4 @@
-package org.jbpt.test.petri;
+package org.jbpt.test.petri.unfolding;
 
 import java.io.FileNotFoundException;
 
@@ -9,13 +9,13 @@ import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
 import org.jbpt.petri.unfolding.OccurrenceNet;
 import org.jbpt.petri.unfolding.ProperUnfolding;
-import org.jbpt.petri.unfolding.Utils;
-import org.jbpt.petri.util.TransformationException;
 import org.jbpt.pm.Activity;
 import org.jbpt.pm.AndGateway;
 import org.jbpt.pm.ProcessModel;
 import org.jbpt.pm.XorGateway;
+import org.jbpt.pm.structure.ProcessModel2NetSystem;
 import org.jbpt.utils.IOUtils;
+import org.jbpt.utils.TransformationException;
 
 
 public class ProperUnfoldingTest extends TestCase {
@@ -74,9 +74,9 @@ public class ProperUnfoldingTest extends TestCase {
 		p.addControlFlow(tf,gx);
 		p.addControlFlow(tg,gy);
 		
-		Utils.toFile("model1.dot", p.toDOT());
+		IOUtils.toFile("model1.dot", p.toDOT());
 		
-		NetSystem net = (NetSystem)Utils.process2net(p);
+		NetSystem net = ProcessModel2NetSystem.transform(p);
 		int cp = 1; int ct = 1;
 		for (Place place : net.getPlaces()) place.setName("p"+cp++);
 		for (Transition trans : net.getTransitions()) trans.setName("t"+ct++);
@@ -142,9 +142,9 @@ public class ProperUnfoldingTest extends TestCase {
 		p.addControlFlow(tf,gw);
 		p.addControlFlow(tg,gx);
 		
-		Utils.toFile("model2.dot", p.toDOT());
+		IOUtils.toFile("model2.dot", p.toDOT());
 		
-		NetSystem net = (NetSystem) Utils.process2net(p);
+		NetSystem net = ProcessModel2NetSystem.transform(p);
 		int cp = 1; int ct = 1;
 		for (Place place : net.getPlaces()) place.setName("p"+cp++);
 		for (Transition trans : net.getTransitions()) trans.setName("t"+ct++);
@@ -204,9 +204,9 @@ public class ProperUnfoldingTest extends TestCase {
 		p.addControlFlow(gv,gw);
 		p.addControlFlow(gq,gy);
 		
-		Utils.toFile("model3.dot", p.toDOT());
+		IOUtils.toFile("model3.dot", p.toDOT());
 		
-		NetSystem net = (NetSystem) Utils.process2net(p);
+		NetSystem net = ProcessModel2NetSystem.transform(p);
 		int cp = 1; int ct = 1;
 		for (Place place : net.getPlaces()) place.setName("p"+cp++);
 		for (Transition trans : net.getTransitions()) trans.setName("t"+ct++);
@@ -259,9 +259,9 @@ public class ProperUnfoldingTest extends TestCase {
 		p.addControlFlow(gv,gw);
 		p.addControlFlow(gq,gy);
 		
-		Utils.toFile("model4.dot",p.toDOT());
+		IOUtils.toFile("model4.dot",p.toDOT());
 		
-		NetSystem net = (NetSystem)Utils.process2net(p);
+		NetSystem net = ProcessModel2NetSystem.transform(p);
 		int cp = 1; int ct = 1;
 		for (Place place : net.getPlaces()) place.setName("p"+cp++);
 		for (Transition trans : net.getTransitions()) trans.setName("t"+ct++);

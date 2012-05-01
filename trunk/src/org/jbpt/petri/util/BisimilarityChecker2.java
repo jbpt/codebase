@@ -12,6 +12,7 @@ import java.util.Set;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Transition;
 import org.jbpt.pm.ProcessModel;
+import org.jbpt.utils.TransformationException;
 
 
 /**
