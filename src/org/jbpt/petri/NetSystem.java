@@ -208,4 +208,15 @@ public class NetSystem extends PetriNet {
 	public Integer getTokens(Place p) {
 		return this.M.get(p);
 	}
+	
+	/**
+	 * Changes marking of the net system to its natural initial marking, i.e., 
+	 * the marking which put one token at each source place of the net and no tokens elsewhere
+	 */
+	public void loadNaturalMarking() {
+		this.M.clear();
+		for (Place p : this.getSourcePlaces()) {
+			this.M.put(p,1);
+		}
+	}
 }
