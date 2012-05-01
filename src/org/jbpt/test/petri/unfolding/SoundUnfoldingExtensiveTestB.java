@@ -1,4 +1,4 @@
-package org.jbpt.test.petri;
+package org.jbpt.test.petri.unfolding;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -16,14 +16,14 @@ import org.jbpt.petri.Transition;
 import org.jbpt.petri.bevahior.LolaSoundnessChecker;
 import org.jbpt.petri.unfolding.OccurrenceNet;
 import org.jbpt.petri.unfolding.SoundUnfolding;
-import org.jbpt.petri.unfolding.Utils;
-import org.jbpt.petri.util.TransformationException;
 import org.jbpt.pm.ControlFlow;
 import org.jbpt.pm.FlowNode;
 import org.jbpt.pm.ProcessModel;
 import org.jbpt.pm.io.JSON2Process;
 import org.jbpt.pm.io.SerializationException;
+import org.jbpt.pm.structure.ProcessModel2NetSystem;
 import org.jbpt.utils.IOUtils;
+import org.jbpt.utils.TransformationException;
 
 public class SoundUnfoldingExtensiveTestB extends TestCase {
 
@@ -46,7 +46,7 @@ public class SoundUnfoldingExtensiveTestB extends TestCase {
 				System.out.println(count);
 				
 				System.out.print(name + " ... ");
-				NetSystem net = (NetSystem)Utils.process2net(p);
+				NetSystem net = ProcessModel2NetSystem.transform(p);
 				int cp = 1; int ct = 1;
 				for (Place place : net.getPlaces()) place.setName("p"+cp++);
 				for (Transition trans : net.getTransitions()) trans.setName("t"+ct++);

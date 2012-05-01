@@ -1,4 +1,4 @@
-package org.jbpt.test.petri;
+package org.jbpt.test.petri.unfolding;
 
 import hub.top.uma.DNodeBP;
 
@@ -14,9 +14,9 @@ import org.jbpt.petri.unfolding.Unfolding;
 import org.jbpt.petri.unfolding.UnfoldingSetup;
 import org.jbpt.petri.unfolding.order.EsparzaAdequateTotalOrderForSafeSystems;
 import org.jbpt.petri.util.PNAPIMapper;
-import org.jbpt.petri.util.TransformationException;
 import org.jbpt.petri.util.UMAUnfolderWrapper;
 import org.jbpt.utils.IOUtils;
+import org.jbpt.utils.TransformationException;
 
 
 public class UnfoldingTest extends TestCase {

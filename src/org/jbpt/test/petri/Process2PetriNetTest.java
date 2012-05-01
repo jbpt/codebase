@@ -5,12 +5,12 @@ import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
 import org.jbpt.petri.util.Process2PetriNet;
-import org.jbpt.petri.util.TransformationException;
 import org.jbpt.pm.Activity;
 import org.jbpt.pm.AndGateway;
 import org.jbpt.pm.Gateway;
 import org.jbpt.pm.ProcessModel;
 import org.jbpt.pm.XorGateway;
+import org.jbpt.utils.TransformationException;
 
 import junit.framework.TestCase;
 

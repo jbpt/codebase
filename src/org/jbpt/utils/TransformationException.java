@@ -1,4 +1,4 @@
-package org.jbpt.petri.util;
+package org.jbpt.utils;
 
 public class TransformationException extends Exception {
 

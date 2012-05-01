@@ -17,6 +17,7 @@ import org.jbpt.pm.FlowNode;
 import org.jbpt.pm.OrGateway;
 import org.jbpt.pm.ProcessModel;
 import org.jbpt.pm.XorGateway;
+import org.jbpt.utils.TransformationException;
 
 
 public class Process2PetriNet {

@@ -77,7 +77,7 @@ public class SoundUnfoldingMSMS extends SoundUnfolding {
 			}
 		}
 		
-		Utils.addInitialMarking(result);
+		result.loadNaturalMarking();
 		return  result;
 	}
 	

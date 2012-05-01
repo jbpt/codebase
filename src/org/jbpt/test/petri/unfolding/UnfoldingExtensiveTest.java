@@ -1,4 +1,4 @@
-package org.jbpt.test.petri;
+package org.jbpt.test.petri.unfolding;
 
 import hub.top.uma.DNodeBP;
 
@@ -16,15 +16,15 @@ import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
 import org.jbpt.petri.unfolding.Unfolding;
 import org.jbpt.petri.unfolding.UnfoldingSetup;
-import org.jbpt.petri.unfolding.Utils;
 import org.jbpt.petri.unfolding.order.EsparzaAdequateTotalOrderForSafeSystems;
 import org.jbpt.petri.util.PNAPIMapper;
-import org.jbpt.petri.util.TransformationException;
 import org.jbpt.petri.util.UMAUnfolderWrapper;
 import org.jbpt.pm.ProcessModel;
 import org.jbpt.pm.io.JSON2Process;
 import org.jbpt.pm.io.SerializationException;
+import org.jbpt.pm.structure.ProcessModel2NetSystem;
 import org.jbpt.utils.IOUtils;
+import org.jbpt.utils.TransformationException;
 
 public class UnfoldingExtensiveTest extends TestCase {
 
@@ -44,7 +44,7 @@ public class UnfoldingExtensiveTest extends TestCase {
 				System.out.println(name);
 				ProcessModel p = loadProcess(MODELS_DIR + File.separator + name);
 				
-				NetSystem net = (NetSystem)Utils.process2net(p);
+				NetSystem net = ProcessModel2NetSystem.transform(p);
 				int cp = 1; int ct = 1;
 				for (Place place : net.getPlaces()) place.setName("p"+cp++);
 				for (Transition trans : net.getTransitions()) trans.setName("t"+ct++);
