@@ -88,8 +88,8 @@ public class Event extends BPNode {
 	
 	@Override
 	public String getName() {
-		//return this.t.getName();
-		return this.t.getName()+"-"+this.ID;
+		return this.t.getName();
+		//return this.t.getName()+"-"+this.ID;
 	}
 	
 	@Override
