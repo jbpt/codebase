@@ -67,7 +67,7 @@ public class BPCreatorNet extends AbstractRelSetCreator implements RelSetCreator
 				 * What about the relation of a node to itself?
 				 */
 				if (index1 == index2) {
-					if (PetriNetPathUtils.hasDirectedPath(pn,n1,n2))
+					if (PetriNetPathUtils.hasDirectedNonEmptyPath(pn,n1,n2))
 						matrix[index1][index1] = RelSetType.Interleaving;
 					else
 						matrix[index1][index1] = RelSetType.Exclusive;
@@ -75,19 +75,19 @@ public class BPCreatorNet extends AbstractRelSetCreator implements RelSetCreator
 				/*
 				 * Check all cases for two distinct nodes of the net
 				 */
-				else if (PetriNetPathUtils.hasDirectedPath(pn,n1,n2) && PetriNetPathUtils.hasDirectedPath(pn,n2,n1)) {
+				else if (PetriNetPathUtils.hasDirectedNonEmptyPath(pn,n1,n2) && PetriNetPathUtils.hasDirectedNonEmptyPath(pn,n2,n1)) {
 					super.setMatrixEntry(matrix,index1,index2,RelSetType.Interleaving);
 				}
 				else if (concurrencyRelation.areConcurrent(index1,index2)) {
 					super.setMatrixEntry(matrix,index1,index2,RelSetType.Interleaving);
 				}
-				else if (!concurrencyRelation.areConcurrent(index1,index2) && !PetriNetPathUtils.hasDirectedPath(pn,n1,n2) && !PetriNetPathUtils.hasDirectedPath(pn,n2,n1)) {
+				else if (!concurrencyRelation.areConcurrent(index1,index2) && !PetriNetPathUtils.hasDirectedNonEmptyPath(pn,n1,n2) && !PetriNetPathUtils.hasDirectedNonEmptyPath(pn,n2,n1)) {
 					super.setMatrixEntry(matrix,index1,index2,RelSetType.Exclusive);
 				}
-				else if (PetriNetPathUtils.hasDirectedPath(pn,n1,n2) && !PetriNetPathUtils.hasDirectedPath(pn,n2,n1)) {
+				else if (PetriNetPathUtils.hasDirectedNonEmptyPath(pn,n1,n2) && !PetriNetPathUtils.hasDirectedNonEmptyPath(pn,n2,n1)) {
 					super.setMatrixEntryOrder(matrix,index1,index2);
 				}
-				else if (PetriNetPathUtils.hasDirectedPath(pn,n2,n1) && !PetriNetPathUtils.hasDirectedPath(pn,n1,n2)) {
+				else if (PetriNetPathUtils.hasDirectedNonEmptyPath(pn,n2,n1) && !PetriNetPathUtils.hasDirectedNonEmptyPath(pn,n1,n2)) {
 					super.setMatrixEntryOrder(matrix,index2,index1);
 				}
 			}

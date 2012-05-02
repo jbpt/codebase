@@ -113,28 +113,28 @@ public class CBPCreatorIdempotenceTest extends TestCase {
 		assertTrue(net.getPlaces().contains(p10));
 
 		assertTrue(net.getEdges().size() == 22);
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, p1, a));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, a, p2));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, a, p3));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, p2, b));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, p3, c));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, b, p4));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, c, p5));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, p5, d));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, p5, e));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, d, p6));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, e, p6));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, p6, f));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, p4, f));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, f, p7));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, p7, g));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, g, p8));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, p8, h));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, h, p9));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, p9, i));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, i, p7));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, p9, j));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, j, p10));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p1, a));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, a, p2));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, a, p3));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p2, b));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p3, c));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, b, p4));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, c, p5));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p5, d));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p5, e));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, d, p6));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, e, p6));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p6, f));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p4, f));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, f, p7));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p7, g));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, g, p8));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p8, h));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, h, p9));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p9, i));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, i, p7));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p9, j));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, j, p10));
 		
 		/*
 		 * Invoke all creator classes on net, except for CBPCreatorNet since
@@ -174,28 +174,28 @@ public class CBPCreatorIdempotenceTest extends TestCase {
 		assertTrue(net.getPlaces().contains(p10));
 
 		assertTrue(net.getEdges().size() == 22);
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, p1, a));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, a, p2));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, a, p3));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, p2, b));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, p3, c));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, b, p4));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, c, p5));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, p5, d));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, p5, e));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, d, p6));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, e, p6));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, p6, f));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, p4, f));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, f, p7));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, p7, g));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, g, p8));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, p8, h));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, h, p9));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, p9, i));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, i, p7));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, p9, j));
-		assertTrue(PetriNetPathUtils.hasDirectedPath(net, j, p10));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p1, a));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, a, p2));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, a, p3));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p2, b));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p3, c));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, b, p4));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, c, p5));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p5, d));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p5, e));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, d, p6));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, e, p6));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p6, f));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p4, f));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, f, p7));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p7, g));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, g, p8));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p8, h));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, h, p9));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p9, i));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, i, p7));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p9, j));
+		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, j, p10));
 		
 
 	}

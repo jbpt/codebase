@@ -3,7 +3,6 @@ package org.jbpt.petri.structure;
 import java.util.Map;
 import java.util.Set;
 
-import org.jbpt.graph.algo.ReflexiveTransitiveClosure;
 import org.jbpt.graph.algo.TransitiveClosure;
 import org.jbpt.petri.Flow;
 import org.jbpt.petri.Node;
@@ -16,10 +15,10 @@ public class PetriNetPathUtils {
 	 * @param net Petri net
 	 * @param n1 Node
 	 * @param n2 Node
-	 * @return  <code>true</code> if the net has a directed path from n1 to n2; <code>false</code> otherwise
+	 * @return  <code>true</code> if the net has a directed non-empty path from n1 to n2; <code>false</code> otherwise
 	 */
-	public static boolean hasDirectedPath(PetriNet net, Node n1, Node n2) {
-		ReflexiveTransitiveClosure<Flow,Node> tc = new ReflexiveTransitiveClosure<Flow,Node>(net);
+	public static boolean hasDirectedNonEmptyPath(PetriNet net, Node n1, Node n2) {
+		TransitiveClosure<Flow,Node> tc = new TransitiveClosure<Flow,Node>(net);
 		return tc.hasPath(n1,n2);
 	}
 	
