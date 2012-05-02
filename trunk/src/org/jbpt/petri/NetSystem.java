@@ -2,7 +2,6 @@ package org.jbpt.petri;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -69,6 +68,14 @@ public class NetSystem extends PetriNet {
 		return this.M;
 	}
 	
+	/**
+	 * Set marking
+	 * @param m the marking of the net system
+	 */
+	public void setMarking(Marking m) {
+		this.M = m;
+	}
+
 	/**
 	 * Get marked places of the net system
 	 * @return Marked places of the net system
@@ -169,46 +176,53 @@ public class NetSystem extends PetriNet {
 	
 	@Override
 	public NetSystem clone() {
-		NetSystem clone = new NetSystem();
+		NetSystem clone = (NetSystem) super.clone();
 		
-		Map<Node,Node> nodeCopies = new HashMap<Node, Node>();
+		/*
+		 * Clone the marking 
+		 */
+		Marking cMarking = new Marking(clone);
+		clone.setMarking(cMarking);
 		
-		for (Node n : this.getNodes()) {
-			Node c = (Node)n.clone();
-			clone.addNode(c);
-			nodeCopies.put(n,c);
-		}
-		
-		for (Flow f : this.getFlow()) {
-			Node from = nodeCopies.get(f.getSource());
-			Node to = nodeCopies.get(f.getTarget());
-			clone.addFlow(from, to);
-		}
-		
+		/*
+		 * Init marking according to original net system
+		 */
 		for (Place p : this.getMarkedPlaces()) {
-			clone.putTokens((Place)nodeCopies.get(p), this.getTokens(p));
+			Place nPlace = null;
+			for (Place n : clone.getPlaces())
+				if (n.getId().equals(p.getId())) {
+					nPlace = n;
+					break;
+				}
+			
+			assert(nPlace != null);
+			
+			clone.putTokens(nPlace, this.getTokens(p));
 		}
-		
 		return clone;
 	}
 	
 	public NetSystem clone(Map<Node,Node> nodeMapping) {
-		NetSystem clone = new NetSystem();
+		NetSystem clone = this.clone();
 		
-		for (Node n : this.getNodes()) {
-			Node c = (Node)n.clone();
-			clone.addNode(c);
-			nodeMapping.put(n, c);
+		outer:
+		for (Place p : this.getPlaces()) {
+			for (Place cp : clone.getPlaces()) {
+				if (p.getId().equals(cp.getId())) {
+					nodeMapping.put(p, cp);
+					continue outer;
+				}
+			}
 		}
-		
-		for (Flow f : this.getFlow()) {
-			Node from = nodeMapping.get(f.getSource());
-			Node to = nodeMapping.get(f.getTarget());
-			clone.addFlow(from, to);
-		}
-		
-		for (Place p : this.getMarkedPlaces()) {
-			clone.putTokens((Place)nodeMapping.get(p), this.getTokens(p));
+			
+		outer:
+		for (Transition t : this.getTransitions()) {
+			for (Transition ct : clone.getTransitions()) {
+				if (t.getId().equals(ct.getId())) {
+					nodeMapping.put(t, ct);
+					continue outer;
+				}
+			}
 		}
 		
 		return clone;

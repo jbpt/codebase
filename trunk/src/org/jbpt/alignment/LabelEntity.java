@@ -1,5 +1,6 @@
 package org.jbpt.alignment;
 
+
 public class LabelEntity implements IEntity {
 
 	protected String label;
@@ -32,6 +33,11 @@ public class LabelEntity implements IEntity {
 	@Override
 	public String toString() {
 		return this.getLabel();
+	}
+	
+	@Override
+	public Object clone() {
+		return new LabelEntity(this.getLabel());
 	}
 	
 }

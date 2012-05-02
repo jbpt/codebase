@@ -596,23 +596,30 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 	 * @return the clone of the Petri net
 	 */
 	@Override
-	public PetriNet clone() {
-		PetriNet clone = new PetriNet();
+	public PetriNet clone() {		
+		PetriNet clone = (PetriNet) super.clone();
 		
-		Map<Node,Node> nodeCopies = new HashMap<Node, Node>();
+		clone.clearMembers();
+
+		Map<Node,Node> nMapping = new HashMap<Node,Node>();
 		
 		for (Node n : this.getNodes()) {
-			Node c = (Node)n.clone();
-			clone.addNode(c);
-			nodeCopies.put(n,c);
+			Node cn = (Node)n.clone();
+			clone.addVertex(cn);
+			nMapping.put(n, cn);
 		}
 		
 		for (Flow f : this.getFlow()) {
-			Node from = nodeCopies.get(f.getSource());
-			Node to = nodeCopies.get(f.getTarget());
-			clone.addFlow(from, to);
+			Flow cf = clone.addFlow(nMapping.get(f.getSource()),nMapping.get(f.getTarget()));
+
+			if (f.getId() != null)
+				cf.setId(new String(f.getId()));
+			if (f.getName() != null)
+				cf.setName(new String(f.getName()));
+			if (f.getDescription() != null)
+				cf.setDescription(new String(f.getDescription()));
 		}
-		
+				
 		return clone;
 	}
 	
@@ -626,18 +633,26 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 	 * @return the clone of the Petri net
 	 */
 	public PetriNet clone(Map<Node,Node> nodeMapping) {
-		PetriNet clone = new PetriNet();
+		PetriNet clone = this.clone();
 		
-		for (Node n : this.getNodes()) {
-			Node c = (Node)n.clone();
-			clone.addNode(c);
-			nodeMapping.put(n, c);
+		outer:
+		for (Place p : this.getPlaces()) {
+			for (Place cp : clone.getPlaces()) {
+				if (p.getId().equals(cp.getId())) {
+					nodeMapping.put(p, cp);
+					continue outer;
+				}
+			}
 		}
 		
-		for (Flow f : this.getFlow()) {
-			Node from = nodeMapping.get(f.getSource());
-			Node to = nodeMapping.get(f.getTarget());
-			clone.addFlow(from, to);
+		outer:
+		for (Transition t : this.getTransitions()) {
+			for (Transition ct : clone.getTransitions()) {
+				if (t.getId().equals(ct.getId())) {
+					nodeMapping.put(t, ct);
+					continue outer;
+				}
+			}
 		}
 		
 		return clone;

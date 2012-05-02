@@ -91,7 +91,7 @@ public abstract class AbstractGraphNotifier<E extends IHyperEdge<V>, V extends I
 	/**
 	 * Reset private and protected members. Needed for clone routines.
 	 */
-	public void clearMembers() {
+	protected void clearMembers() {
 		this.vertices = new Hashtable<V, Set<E>>();
 		this.edges = new Hashtable<E, Set<V>>();
 	}

@@ -7,7 +7,7 @@ import java.util.UUID;
  * 
  * @author Artem Polyvyanyy
  */
-public abstract class GObject implements IGObject, Cloneable {
+public abstract class GObject implements IGObject {
 	private String id = "";
 	private String name = "";
 	private String desc = "";
