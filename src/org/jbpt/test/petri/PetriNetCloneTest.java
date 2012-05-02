@@ -71,15 +71,17 @@ public class PetriNetCloneTest extends TestCase {
 		assertEquals(7, clone.getPlaces().size());
 		assertEquals(14, clone.getFlow().size());
 		
+		int count = 0;
 		for (Place p : clone.getPlaces()) {
 			if (clone.getTokens(p) > 0) {
 				assertEquals(3, clone.getTokens(p).intValue());
 				assertEquals(1, clone.getDirectPredecessors(p).size()); 
 				assertEquals(2, clone.getDirectSuccessors(p).size()); 
+				count++;
 			}
 		}
-				
-		
+		assertEquals(1, count);
+						
 		assertTrue(PetriNetStructuralClassChecks.isExtendedFreeChoice(clone));
 		assertTrue(PetriNetStructuralClassChecks.isWorkflowNet(clone));
 		assertFalse(PetriNetStructuralClassChecks.isSNet(clone));
