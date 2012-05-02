@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.jbpt.petri.Marking;
 import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.Place;
 
@@ -89,7 +90,7 @@ public class Coset extends TreeSet<Condition> {
 		return this.net;
 	}
 	
-	/*public Marking getMarking() {
+	public Marking getMarking() {
 		Marking result = new Marking(this.net);
 		
 		for (Condition c : this) {
@@ -98,5 +99,5 @@ public class Coset extends TreeSet<Condition> {
 		}
 		
 		return result;
-	}*/
+	}
 }

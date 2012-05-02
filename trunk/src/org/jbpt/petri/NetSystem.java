@@ -185,7 +185,31 @@ public class NetSystem extends PetriNet {
 			clone.addFlow(from, to);
 		}
 		
-		clone.M = this.M.clone();
+		for (Place p : this.getMarkedPlaces()) {
+			clone.putTokens((Place)nodeCopies.get(p), this.getTokens(p));
+		}
+		
+		return clone;
+	}
+	
+	public NetSystem clone(Map<Node,Node> nodeMapping) {
+		NetSystem clone = new NetSystem();
+		
+		for (Node n : this.getNodes()) {
+			Node c = (Node)n.clone();
+			clone.addNode(c);
+			nodeMapping.put(n, c);
+		}
+		
+		for (Flow f : this.getFlow()) {
+			Node from = nodeMapping.get(f.getSource());
+			Node to = nodeMapping.get(f.getTarget());
+			clone.addFlow(from, to);
+		}
+		
+		for (Place p : this.getMarkedPlaces()) {
+			clone.putTokens((Place)nodeMapping.get(p), this.getTokens(p));
+		}
 		
 		return clone;
 	}

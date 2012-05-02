@@ -55,11 +55,8 @@ public class BPCreatorTree extends AbstractRelSetCreator implements RelSetCreato
 		 */
 		NetSystem netClone = null;
 		Map<Node, Node> nodeMapping = new HashMap<Node, Node>();
-		try {
-			netClone = (NetSystem) pn.clone(nodeMapping);
-		} catch (CloneNotSupportedException e) {
-			System.err.println("Clone not supported for NetSystem in BPCreatorTree. Take original net.");
-		}
+		netClone = pn.clone(nodeMapping);
+		
 		// Fall back to original net
 		if (netClone == null) {
 			netClone = pn;

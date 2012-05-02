@@ -196,10 +196,10 @@ public class OccurrenceNet extends PetriNet {
 	}
 	
 	@Override
+	//TODO: must be rewritten/corrected
 	public OccurrenceNet clone() {
-		OccurrenceNet clone = (OccurrenceNet) super.clone();
+		OccurrenceNet clone = new OccurrenceNet(this.unf);
 		
-		clone.unf = this.unf;
 		clone.c2p = new HashMap<Condition,Place>(this.c2p);
 		clone.p2c = new HashMap<Place,Condition>(this.p2c);
 		clone.t2e = new HashMap<Transition,Event>(this.t2e);

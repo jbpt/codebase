@@ -29,7 +29,7 @@ public class PetriNetPathUtils {
 	 * @return  <code>true</code> if the net is cyclic; <code>false</code> otherwise
 	 */
 	public static boolean isCyclic(PetriNet net) {
-		TransitiveClosure<Flow,Node> tc = new ReflexiveTransitiveClosure<Flow,Node>(net);
+		TransitiveClosure<Flow,Node> tc = new TransitiveClosure<Flow,Node>(net);
 		for (Node n : net.getNodes())
 			if (tc.isInLoop(n))
 				return true;

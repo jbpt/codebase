@@ -625,8 +625,8 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 	 * 
 	 * @return the clone of the Petri net
 	 */
-	public Object clone(Map<Node,Node> nodeMapping) throws CloneNotSupportedException {
-		PetriNet clone = (PetriNet) super.clone();
+	public PetriNet clone(Map<Node,Node> nodeMapping) {
+		PetriNet clone = new PetriNet();
 		
 		for (Node n : this.getNodes()) {
 			Node c = (Node)n.clone();
