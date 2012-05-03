@@ -123,20 +123,23 @@ public class NetSystem extends PetriNet {
 	}
 	
 	/**
-	 * Fire transition
-	 * Transition fires only if it is enabled
-	 * Firing removes one token from every preplace and adds one token to every postplace 
+	 * Fire transition. 
+	 * Transition fires only if it is enabled. 
+	 * Firing removes one token from every preplace and adds one token to every postplace. 
 	 * 
 	 * @param t Transition to fire
+	 * @return <code>true</code> if firing changed the marking; <code>false</code> otherwise
 	 */
-	public void fire(Transition t) {
-		if (!this.isEnabled(t)) return;
+	public boolean fire(Transition t) {
+		if (!this.isEnabled(t)) return false;
 		
 		for (Place p : this.getPreset(t))
 			this.M.put(p, this.M.get(p)-1);
 		
 		for (Place p : this.getPostset(t))
 			this.M.put(p, this.M.get(p)+1);
+		
+		return true;
 	}
 
 	@Override
@@ -255,6 +258,17 @@ public class NetSystem extends PetriNet {
 		this.M.clear();
 		for (Place p : this.getSourcePlaces()) {
 			this.M.put(p,1);
+		}
+	}
+	
+	/**
+	 * Changes marking of the net system to the given marking
+	 * @param M Marking
+	 */
+	public void loadMarking(Marking M) {
+		this.M.clear();
+		for (Map.Entry<Place,Integer> entry : M.entrySet()) {
+			this.M.put(entry.getKey(),entry.getValue());
 		}
 	}
 }

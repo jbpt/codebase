@@ -1,5 +1,7 @@
 package org.jbpt.petri;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -96,4 +98,34 @@ public class Marking extends HashMap<Place, Integer> {
 	public boolean isMarked(Place p) {
 		return this.get(p) > 0;
 	}
+	
+	@Override
+	public Marking clone() {
+		return (Marking)super.clone(); 
+	}
+	
+	/**
+	 * Get marking as a multi-set of places 
+	 * @return Marking as a multi-set of places
+	 */
+	public Collection<Place> toMultiSet() {
+		Collection<Place> result = new ArrayList<Place>();
+		
+		for (Map.Entry<Place, Integer> entry : this.entrySet()) {
+			for (int i = 0; i < entry.getValue(); i++) {
+				result.add(entry.getKey());
+			}
+		}
+		
+		return result;
+	}
+	
+	/*@Override
+	public Marking clone() {
+		Marking clone = new Marking(this.net); 
+		
+		for (Map.Entry<Place,Integer> entry : this.entrySet()) {
+			
+		}
+	}*/
 }
