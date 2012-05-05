@@ -108,6 +108,7 @@ public class CBPCreatorUnfolding extends AbstractRelSetCreator implements
 		 */
 		UnfoldingSetup setup = new UnfoldingSetup();
 		setup.ADEQUATE_ORDER = new EsparzaAdequateOrderForArbitrarySystems();
+		setup.MAX_BOUND = 2;
 		
 		this.unfolding = new Unfolding(this.augmentedNet,setup);
 		this.occurrenceNet = this.unfolding.getOccurrenceNet();
