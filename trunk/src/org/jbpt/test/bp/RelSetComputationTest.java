@@ -228,7 +228,6 @@ public class RelSetComputationTest extends TestCase {
 		net.addFlow(g, p5);
 		net.addFlow(c, p5);
 
-		System.out.println(net.toDOT());
 		
 		/*
 		 * Get alpha relations
