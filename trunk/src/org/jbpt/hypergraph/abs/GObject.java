@@ -148,8 +148,8 @@ public abstract class GObject implements IGObject {
 			e.printStackTrace();
 		}
 		
-		if (this.getId() != null)
-			clone.setId(new String(this.getId()));
+		clone.setId(UUID.randomUUID().toString());
+		
 		if (this.getName() != null)
 			clone.setName(new String(this.getName()));
 		if (this.getDescription() != null)
