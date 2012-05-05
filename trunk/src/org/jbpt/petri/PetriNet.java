@@ -598,29 +598,30 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 	@Override
 	public PetriNet clone() {		
 		PetriNet clone = (PetriNet) super.clone();
+		return cloneHelper(clone, new HashMap<Node,Node>());
+	}
+	
+	private PetriNet cloneHelper(PetriNet clone, Map<Node,Node> nodeMapping) {
 		
 		clone.clearMembers();
 
-		Map<Node,Node> nMapping = new HashMap<Node,Node>();
-		
 		for (Node n : this.getNodes()) {
 			Node cn = (Node)n.clone();
 			clone.addVertex(cn);
-			nMapping.put(n, cn);
+			nodeMapping.put(n, cn);
 		}
 		
 		for (Flow f : this.getFlow()) {
-			Flow cf = clone.addFlow(nMapping.get(f.getSource()),nMapping.get(f.getTarget()));
-
-			if (f.getId() != null)
-				cf.setId(new String(f.getId()));
+			Flow cf = clone.addFlow(nodeMapping.get(f.getSource()),nodeMapping.get(f.getTarget()));
+			
 			if (f.getName() != null)
 				cf.setName(new String(f.getName()));
 			if (f.getDescription() != null)
 				cf.setDescription(new String(f.getDescription()));
 		}
-				
+		
 		return clone;
+		
 	}
 	
 	/**
@@ -633,29 +634,8 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 	 * @return the clone of the Petri net
 	 */
 	public PetriNet clone(Map<Node,Node> nodeMapping) {
-		PetriNet clone = this.clone();
-		
-		outer:
-		for (Place p : this.getPlaces()) {
-			for (Place cp : clone.getPlaces()) {
-				if (p.getId().equals(cp.getId())) {
-					nodeMapping.put(p, cp);
-					continue outer;
-				}
-			}
-		}
-		
-		outer:
-		for (Transition t : this.getTransitions()) {
-			for (Transition ct : clone.getTransitions()) {
-				if (t.getId().equals(ct.getId())) {
-					nodeMapping.put(t, ct);
-					continue outer;
-				}
-			}
-		}
-		
-		return clone;
+		PetriNet clone = (PetriNet) super.clone();
+		return cloneHelper(clone, nodeMapping);
 	}
 	
 	/**************************************************************************
