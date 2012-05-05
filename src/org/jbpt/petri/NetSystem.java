@@ -2,6 +2,7 @@ package org.jbpt.petri;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -179,7 +180,12 @@ public class NetSystem extends PetriNet {
 	
 	@Override
 	public NetSystem clone() {
-		NetSystem clone = (NetSystem) super.clone();
+		Map<Node,Node> nodeMapping = new HashMap<Node,Node>();
+		NetSystem clone = (NetSystem) super.clone(nodeMapping);
+		return cloneHelper(clone, nodeMapping);
+	}
+	
+	private NetSystem cloneHelper(NetSystem clone, Map<Node,Node> nodeMapping) {
 		
 		/*
 		 * Clone the marking 
@@ -190,45 +196,15 @@ public class NetSystem extends PetriNet {
 		/*
 		 * Init marking according to original net system
 		 */
-		for (Place p : this.getMarkedPlaces()) {
-			Place nPlace = null;
-			for (Place n : clone.getPlaces())
-				if (n.getId().equals(p.getId())) {
-					nPlace = n;
-					break;
-				}
-			
-			assert(nPlace != null);
-			
-			clone.putTokens(nPlace, this.getTokens(p));
-		}
+		for (Place p : this.getMarkedPlaces()) 
+			clone.putTokens((Place) nodeMapping.get(p), this.getTokens(p));
+		
 		return clone;
 	}
 	
 	public NetSystem clone(Map<Node,Node> nodeMapping) {
-		NetSystem clone = this.clone();
-		
-		outer:
-		for (Place p : this.getPlaces()) {
-			for (Place cp : clone.getPlaces()) {
-				if (p.getId().equals(cp.getId())) {
-					nodeMapping.put(p, cp);
-					continue outer;
-				}
-			}
-		}
-			
-		outer:
-		for (Transition t : this.getTransitions()) {
-			for (Transition ct : clone.getTransitions()) {
-				if (t.getId().equals(ct.getId())) {
-					nodeMapping.put(t, ct);
-					continue outer;
-				}
-			}
-		}
-		
-		return clone;
+		NetSystem clone = (NetSystem) super.clone(nodeMapping);
+		return cloneHelper(clone, nodeMapping);
 	}
 	
 	/**
