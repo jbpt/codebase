@@ -6,6 +6,7 @@ import java.util.Map;
 import org.jbpt.pm.Activity;
 import org.jbpt.pm.AndGateway;
 import org.jbpt.pm.ControlFlow;
+import org.jbpt.pm.Event;
 import org.jbpt.pm.FlowNode;
 import org.jbpt.pm.Gateway;
 import org.jbpt.pm.OrGateway;
@@ -36,6 +37,17 @@ public class JSON2Process {
 				Activity task = new Activity(tasks.getJSONObject(i).getString("label"));
 				task.setId(tasks.getJSONObject(i).getString("id"));
 				nodes.put(task.getId(), task);
+			}
+			//TODO: make this nicer
+			try {
+				JSONArray events = json.getJSONArray("events");
+				for (int i = 0; i < events.length(); i++) {
+					Event event = new Event(events.getJSONObject(i).getString("label"));
+					event.setId(events.getJSONObject(i).getString("id"));
+					nodes.put(event.getId(), event);
+				}
+			} catch(JSONException e) {
+				
 			}
 			JSONArray gateways = json.getJSONArray("gateways");
 			for (int i = 0; i < gateways.length(); i++) {				
