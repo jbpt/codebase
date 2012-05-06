@@ -3,6 +3,7 @@ package org.jbpt.pm.io;
 import org.jbpt.pm.Activity;
 import org.jbpt.pm.AndGateway;
 import org.jbpt.pm.ControlFlow;
+import org.jbpt.pm.Event;
 import org.jbpt.pm.FlowNode;
 import org.jbpt.pm.Gateway;
 import org.jbpt.pm.OrGateway;
@@ -27,6 +28,15 @@ public class Process2JSON {
 				tasks.put(jTask);
 			}
 			json.put("tasks", tasks);
+			JSONArray events = new JSONArray();
+			for (Event event:process.getEvents()) {
+				JSONObject jEvent = new JSONObject();
+				jEvent.put("id", event.getId());
+				jEvent.put("label", event.getName());
+				events.put(jEvent);
+			}
+			json.put("events", events);
+			
 			JSONArray gateways = new JSONArray();
 			for (Gateway gate:process.getGateways()) {
 				JSONObject jGate = new JSONObject();
