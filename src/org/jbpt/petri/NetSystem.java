@@ -68,14 +68,6 @@ public class NetSystem extends PetriNet {
 	public Marking getMarking() {
 		return this.M;
 	}
-	
-	/**
-	 * Set marking
-	 * @param m the marking of the net system
-	 */
-	public void setMarking(Marking m) {
-		this.M = m;
-	}
 
 	/**
 	 * Get marked places of the net system
@@ -191,7 +183,7 @@ public class NetSystem extends PetriNet {
 		 * Clone the marking 
 		 */
 		Marking cMarking = new Marking(clone);
-		clone.setMarking(cMarking);
+		clone.M = cMarking;
 		
 		/*
 		 * Init marking according to original net system
