@@ -14,7 +14,7 @@ import java.util.Set;
  */
 public class NetSystem extends PetriNet {
 	
-	private Marking M = null;
+	protected Marking M = null;
 	
 	public NetSystem() {
 		this.M = new Marking(this);
