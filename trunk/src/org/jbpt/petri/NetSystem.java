@@ -99,6 +99,8 @@ public class NetSystem extends PetriNet {
 	 * @return <code>true</code> if t is enabled; <code>false</code> otherwise
 	 */
 	public boolean isEnabled(Transition t) {
+		if (!this.getTransitions().contains(t)) return false;
+		
 		for (Place p : this.getPreset(t))
 			if (!this.isMarked(p))
 				return false;
@@ -124,6 +126,8 @@ public class NetSystem extends PetriNet {
 	 * @return <code>true</code> if firing changed the marking; <code>false</code> otherwise
 	 */
 	public boolean fire(Transition t) {
+		if (!this.getTransitions().contains(t)) return false;
+		
 		if (!this.isEnabled(t)) return false;
 		
 		for (Place p : this.getPreset(t))
