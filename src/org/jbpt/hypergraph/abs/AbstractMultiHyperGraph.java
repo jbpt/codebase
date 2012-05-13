@@ -342,4 +342,10 @@ public class AbstractMultiHyperGraph <E extends IHyperEdge<V>,V extends IVertex>
 	public Collection<V> getEntities() {
 		return this.getVertices();
 	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public V getFreshVertex() {
+		return (V) new Vertex();
+	}
 }

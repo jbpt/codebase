@@ -3,7 +3,7 @@ package org.jbpt.petri.structure;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jbpt.graph.algo.TransitiveClosure;
+import org.jbpt.graph.algo.DirectedGraphAlgorithms;
 import org.jbpt.petri.Flow;
 import org.jbpt.petri.Node;
 import org.jbpt.petri.PetriNet;
@@ -11,7 +11,7 @@ import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
 
 /**
- * Petri net structural class checks
+ * Petri net structural class checks.
  * 
  * @author Artem Polyvyanyy
  */
@@ -90,30 +90,18 @@ public class PetriNetStructuralClassChecks {
 	}
 	
 	/**
-	 * Checks if Petri net is workflow net. 
+	 * Test if Petri net is a workflow net. 
 	 * 
-	 * Workflow net has exactly one source and exactly one sink place.
-	 * Moreover, every node is on a path from the source to the sink.
+	 * Workflow net has exactly one source and exactly one sink place. 
+	 * Moreover, every node is on a path from the source to the sink. 
 	 * 
 	 * @param net Petri net
-	 * @return <code>true</code> if net is workflow net; <code>false</code> otherwise
+	 * @return <code>true</code> if the net is a workflow net; <code>false</code> otherwise. 
 	 */
 	public static boolean isWorkflowNet(PetriNet net) {
-		TransitiveClosure<Flow,Node> tc = new TransitiveClosure<Flow,Node>(net);
-		
-		if (net.getSourcePlaces().size() != 1) return false;
-		if (net.getSinkPlaces().size() != 1) return false;
-		
-		Node source = net.getSourcePlaces().iterator().next();
-		Node sink = net.getSinkPlaces().iterator().next();
-		
-		for (Node n : net.getNodes()) {
-			if (n.equals(source) || n.equals(sink)) continue;
-			if (!tc.hasPath(source,n)) return false;
-			if (!tc.hasPath(n,sink)) return false;
-		}
-		
-		return true;
+		if (net==null) return false;
+		DirectedGraphAlgorithms<Flow,Node> dga = new DirectedGraphAlgorithms<Flow,Node>();
+		return dga.isTwoTerminal(net);
 	}
 
 }
