@@ -201,7 +201,7 @@ public class DirectedGraphAlgorithms<E extends IDirectedEdge<V>,V extends IVerte
 	public boolean isTwoTerminal(IDirectedGraph<E,V> g) {
 		if (g==null) return false;
 		
-		if ( this.getInputVertices(g).size()!=1 && this.getOutputVertices(g).size()!=1)
+		if (this.getInputVertices(g).size()!=1 || this.getOutputVertices(g).size()!=1)
 			return false;
 		
 		return this.isMultiTerminal(g);
@@ -221,7 +221,8 @@ public class DirectedGraphAlgorithms<E extends IDirectedEdge<V>,V extends IVerte
 		Collection<V> inputs = this.getInputVertices(g);
 		Collection<V> outputs = this.getOutputVertices(g);
 		
-		if (inputs.isEmpty() || outputs.isEmpty()) return false;
+		if (inputs.isEmpty() || outputs.isEmpty()) 
+			return false;
 		
 		V input = g.getFreshVertex();
 		V output = g.getFreshVertex();
@@ -238,6 +239,4 @@ public class DirectedGraphAlgorithms<E extends IDirectedEdge<V>,V extends IVerte
 		
 		return result;
 	}
-
-	
 }
