@@ -155,4 +155,10 @@ public interface IHyperGraph <E extends IHyperEdge<V>,V extends IVertex> extends
 	 * @return <code>true</code> if graph is a multi graph, <code>false</code> otherwise
 	 */
 	public boolean isMultiGraph();
+	
+	/**
+	 * Get fresh vertex
+	 * @return Fresh instance of a vertex
+	 */
+	public V getFreshVertex();
 }

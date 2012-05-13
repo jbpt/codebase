@@ -55,7 +55,7 @@ public class StronglyConnectedComponents<E extends IDirectedEdge<V>,V extends IV
 	}
 	
 	/**
-	 * Main logic of Tarjan's algorithm
+	 * Main logic of Tarjan's algorithm.
 	 * 
 	 * @param g Directed graph
 	 * @param v Vertex
