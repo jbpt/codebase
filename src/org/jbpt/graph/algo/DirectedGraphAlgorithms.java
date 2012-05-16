@@ -16,9 +16,10 @@ import org.jbpt.hypergraph.abs.IVertex;
 
 
 /**
- * Collection of directed graph algorithms. 
+ * Collection of algorithms for manipulations on directed graph. 
  * 
  * @author Artem Polyvyanyy
+ * @author Matthias Weidlich
  *
  * @param <E> template for edge (extends IDirectedEdge)
  * @param <V> template for vertex (extends IVertex)
@@ -26,9 +27,13 @@ import org.jbpt.hypergraph.abs.IVertex;
 public class DirectedGraphAlgorithms<E extends IDirectedEdge<V>,V extends IVertex> {
 	
 	/**
-	 * Get boundary vertices in the directed graph - vertices without predecessors or successors 
+	 * Get boundary vertices of a directed graph. 
+	 * A vertex of a directed graph is called a boundary vertex if it neither has direct predecessors, nor direct successors.
+	 * 
+	 * Time complexity: linear to the size of graph.
+	 *  
 	 * @param g Directed graph
-	 * @return Collection of boundary vertices
+	 * @return Collection of graph's boundary vertices.
 	 */
 	public Collection<V> getBoundaryVertices(IDirectedGraph<E, V> g)
 	{
@@ -46,13 +51,15 @@ public class DirectedGraphAlgorithms<E extends IDirectedEdge<V>,V extends IVerte
 	}
 	
 	/**
-	 * Get input vertices of a directed graph. 
-	 * A vertex of a directed graph is called an input vertex if it has no direct predecessors. 
+	 * Get source vertices of a directed graph. 
+	 * A vertex of a directed graph is called a source vertex if it has no direct predecessors. 
+	 * 
+	 * Time complexity: linear to the size of graph.
 	 * 
 	 * @param g Directed graph
-	 * @return Collection of graph input vertices
+	 * @return Collection of graph's source vertices.
 	 */
-	public Collection<V> getInputVertices(IDirectedGraph<E, V> g)
+	public Collection<V> getSources(IDirectedGraph<E, V> g)
 	{
 		Collection<V> result = new ArrayList<V>();
 		if (g==null) return result;
@@ -68,13 +75,13 @@ public class DirectedGraphAlgorithms<E extends IDirectedEdge<V>,V extends IVerte
 	}
 	
 	/**
-	 * Get output vertices of a directed graph. 
-	 * A vertex of a directed graph is called an output vertex if it has no direct successors.
+	 * Get sink vertices of a directed graph. 
+	 * A vertex of a directed graph is called a sink vertex if it has no direct successors.
 	 * 
 	 * @param g Directed graph
-	 * @return Collection of graph output vertices
+	 * @return Collection of graph's sink vertices.
 	 */
-	public Collection<V> getOutputVertices(IDirectedGraph<E, V> g)
+	public Collection<V> getSinks(IDirectedGraph<E,V> g)
 	{
 		Collection<V> result = new ArrayList<V>();
 		if (g==null) return result;
@@ -82,7 +89,7 @@ public class DirectedGraphAlgorithms<E extends IDirectedEdge<V>,V extends IVerte
 		Iterator<V> i = this.getBoundaryVertices(g).iterator();
 		while (i.hasNext()) {
 			V v = i.next();
-			if (g.getDirectSuccessors(v).size()==0)
+			if (g.getDirectSuccessors(v).isEmpty())
 				result.add(v);
 		}
 		
@@ -90,22 +97,38 @@ public class DirectedGraphAlgorithms<E extends IDirectedEdge<V>,V extends IVerte
 	}
 	
 	/**
-	 * Check if directed graph has cycles. 
+	 * Test if a directed graph is acyclic.
+	 * A directed graph is acyclic if it has no directed cycles, i.e., 
+	 * it is impossible to start at some vertex v and follow a sequence of edges that eventually lead to v again. 
+	 * 
+	 * Time complexity: linear to the size of graph.
 	 * 
 	 * @param g Directed graph
-	 * @return <code>true</code> if graph has a cycle, <code>false</code> otherwise
+	 * @return <tt>true</tt> if the directed graph is acyclic; <tt>false</tt> otherwise.
 	 */
-	public boolean hasCycles(IDirectedGraph<E, V> g) {
-		TransitiveClosure<E, V> tc = new TransitiveClosure<E,V>(g);
-		for (V v : g.getVertices())
-			if (tc.isInLoop(v))
-				return true;
-		
-		return false;
+	public boolean isAcyclic(IDirectedGraph<E, V> g) {
+		StronglyConnectedComponents<E,V> sccs = new StronglyConnectedComponents<E,V>();
+		return sccs.compute(g).size() == g.getVertices().size();
+	}
+	
+	/**
+	 * Test if a directed graph is cyclic.
+	 * A directed graph is cyclic if it has at least one directed cycle, i.e., 
+	 * it is possible to start at some vertex v and follow a sequence of edges that eventually lead to v again. 
+	 * 
+	 * Time complexity: linear to the size of graph.
+	 * 
+	 * @param g Directed graph
+	 * @return <tt>true</tt> if the directed graph is cyclic; <tt>false</tt> otherwise.
+	 */
+	public boolean isCyclic(IDirectedGraph<E,V> g) {
+		return !this.isAcyclic(g);
 	}
 	
 	/**
 	 * Check if directed graph has a path between the given nodes. 
+	 * 
+	 * TODO: Improve. 
 	 * 
 	 * @param Directed graph
 	 * @param source node
@@ -113,24 +136,25 @@ public class DirectedGraphAlgorithms<E extends IDirectedEdge<V>,V extends IVerte
 	 * @return true, if there is a path from the source node to the target node in the directed graph
 	 */
 	public boolean hasPath(IDirectedGraph<E, V> g, V from, V to) {
-		TransitiveClosure<E, V> tc = new TransitiveClosure<E,V>(g);
+		TransitiveClosure<E,V> tc = new TransitiveClosure<E,V>(g);
 		return tc.hasPath(from, to);
 	}
 
 	/**
 	 * Simple implementation of an algorithm to derive dominators and postdominators of a 
 	 * directed graph. It uses the iterative approach which is simple but not really efficient, 
-	 * it requires polynomial time. Could be done in linear time though. 
+	 * it requires polynomial time. Could be done in linear time though.
 	 * 
+	 *  TODO: Replace with an efficient implementation.
 	 * 
-	 * @param the directed graph
+	 * @param Directed graph
 	 * @param postDominators boolean parameter, if set the postdominators instead of dominators are computed
-	 * @return a map comprising for each vertex the set of its dominators (or postdominators, respectively)
+	 * @return A map comprising for each vertex the set of its dominators (or postdominators, respectively).
 	 */
 	public Map<V,Set<V>> getDominators(IDirectedGraph<E, V> g, boolean postDominators) {
 		List<V> vList = new ArrayList<V>(g.getVertices());
 		
-		Collection<V> initV = postDominators ? this.getOutputVertices(g) : this.getInputVertices(g);
+		Collection<V> initV = postDominators ? this.getSinks(g) : this.getSources(g);
 		
 		int size = vList.size(); 
 		final BitSet[] dom = new BitSet[size];
@@ -192,51 +216,43 @@ public class DirectedGraphAlgorithms<E extends IDirectedEdge<V>,V extends IVerte
 	
 	/**
 	 * Check if directed graph is a two-terminal graph. 
-	 * A directed graph is called two-terminal if it has one input and at one output vertex, 
-	 * such that each vertex lies on a path from the input to the output. 
+	 * A directed graph is called two-terminal if it has one source and one sink vertex, 
+	 * such that each vertex lies on a path from the source to the sink. 
+	 * 
+	 * Time complexity: linear to the size of graph.
 	 * 
 	 * @param g Directed graph
-	 * @return <code>true</code> if directed graph is two-terminal; <code>false</code> otherwise.
+	 * @return <tt>true</tt> if directed graph is two-terminal; <tt>false</tt> otherwise.
 	 */
 	public boolean isTwoTerminal(IDirectedGraph<E,V> g) {
 		if (g==null) return false;
-		
-		if (this.getInputVertices(g).size()!=1 || this.getOutputVertices(g).size()!=1)
+		if (this.getSources(g).size()!=1 || this.getSinks(g).size()!=1)
 			return false;
-		
 		return this.isMultiTerminal(g);
 	}
 	
 	/**
 	 * Check if directed graph is a multi-terminal graph. 
-	 * A directed graph is called multi-terminal if it has at least one input and at least one output vertex, 
-	 * such that each vertex lies on a path from some input to some output. 
+	 * A directed graph is called multi-terminal if it has at least one source and at least one sink vertex, 
+	 * such that each vertex lies on a path from some source to some sink. 
+	 * 
+	 * Time complexity: linear to the size of graph.
 	 * 
 	 * @param g Directed graph
-	 * @return <code>true</code> if directed graph is multi-terminal; <code>false</code> otherwise.
+	 * @return <tt>true</tt> if directed graph is multi-terminal; <tt>false</tt> otherwise.
 	 */
 	public boolean isMultiTerminal(IDirectedGraph<E,V> g) {
 		if (g==null) return false;
-		
-		Collection<V> inputs = this.getInputVertices(g);
-		Collection<V> outputs = this.getOutputVertices(g);
-		
-		if (inputs.isEmpty() || outputs.isEmpty()) 
-			return false;
-		
-		V input = g.getFreshVertex();
-		V output = g.getFreshVertex();
-		
-		for (V v : inputs) g.addEdge(input,v);
-		for (V v : outputs) g.addEdge(v,output);
-		g.addEdge(output,input);
-		
-		StronglyConnectedComponents<E,V> SCCs = new StronglyConnectedComponents<E,V>();
-		boolean result = SCCs.isStronglyConnected(g);
-		
-		g.removeVertex(input);
-		g.removeVertex(output);
-		
+		Collection<V> sources = this.getSources(g);
+		Collection<V> sinks = this.getSinks(g);
+		if (sources.isEmpty() || sinks.isEmpty()) return false;
+		V src = g.getFreshVertex(); V snk = g.getFreshVertex();
+		for (V v : sources) g.addEdge(src,v);
+		for (V v : sinks) g.addEdge(v,snk);
+		g.addEdge(snk,src);
+		StronglyConnectedComponents<E,V> sccs = new StronglyConnectedComponents<E,V>();
+		boolean result = sccs.isStronglyConnected(g);
+		g.removeVertex(src); g.removeVertex(snk);
 		return result;
 	}
 }

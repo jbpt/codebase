@@ -209,7 +209,7 @@ public class ProcessModel extends AbstractDirectedGraph<ControlFlow<FlowNode>, F
 
 	@Override
 	public Collection<FlowNode> getEntries() {
-		return (Collection<FlowNode>) directedGraphAlgorithms.getInputVertices(this);
+		return (Collection<FlowNode>) directedGraphAlgorithms.getSources(this);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -220,7 +220,7 @@ public class ProcessModel extends AbstractDirectedGraph<ControlFlow<FlowNode>, F
 
 	@Override
 	public Collection<FlowNode> getExits() {
-		return (Collection<FlowNode>) directedGraphAlgorithms.getOutputVertices(this);
+		return (Collection<FlowNode>) directedGraphAlgorithms.getSinks(this);
 	}
 
 	@Override

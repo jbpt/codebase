@@ -89,13 +89,13 @@ public class StronglyConnectedComponents<E extends IDirectedEdge<V>,V extends IV
 	}
 	
 	/**
-	 * Test if a directed graph is strongly connected.
-	 * A directed graph is strongly connected if there is a path from each vertex in the graph to every other vertex.
+	 * Test if a directed graph is strongly connected. 
+	 * A directed graph is strongly connected if there is a directed path from each vertex in the graph to every other vertex.
 	 * 
-	 * @param g Directed graph.
-	 * @return <code>true</code> if the directed graph is strongly connected; <code>false</code> otherwise.
+	 * @param g Directed graph
+	 * @return <tt>true</tt> if the directed graph is strongly connected; <tt>false</tt> otherwise.
 	 */
 	public boolean isStronglyConnected(IDirectedGraph<E,V> g) {
-		return this.compute(g).size() == 1;
+		return this.compute(g).size()==1;
 	}
 }

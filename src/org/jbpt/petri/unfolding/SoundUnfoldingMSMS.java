@@ -33,7 +33,7 @@ public class SoundUnfoldingMSMS extends SoundUnfolding {
 	public SoundUnfoldingMSMS(NetSystem sys) {
 		// perform structural checks
 		if (!PetriNetStructuralClassChecks.isFreeChoice(sys)) throw new IllegalArgumentException("Net must be free choice!");
-		if (dga.hasCycles(sys)) throw new IllegalArgumentException("Net must be acyclic!");
+		if (dga.isCyclic(sys)) throw new IllegalArgumentException("Net must be acyclic!");
 		
 		// initialization
 		this.originalNet = sys;
