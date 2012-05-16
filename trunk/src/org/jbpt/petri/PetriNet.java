@@ -497,7 +497,7 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 	 * @return Source nodes of the net
 	 */
 	public Collection<Node> getSourceNodes() {
-		return PetriNet.DGA.getInputVertices(this);
+		return PetriNet.DGA.getSources(this);
 	}
 	
 	/**
@@ -531,7 +531,7 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 	 * @return Sink nodes of the net
 	 */
 	public Collection<Node> getSinkNodes() {
-		return PetriNet.DGA.getOutputVertices(this);
+		return PetriNet.DGA.getSinks(this);
 	}
 	
 	/**

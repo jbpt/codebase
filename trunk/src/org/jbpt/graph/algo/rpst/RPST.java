@@ -67,8 +67,8 @@ public class RPST <E extends IDirectedEdge<V>, V extends IVertex>
 		if (g==null) return;
 		this.graph = g;
 		
-		Collection<V> sources = dga.getInputVertices(this.graph);
-		Collection<V> sinks = dga.getOutputVertices(this.graph);
+		Collection<V> sources = dga.getSources(this.graph);
+		Collection<V> sinks = dga.getSinks(this.graph);
 		if (sources.size()!=1 || sinks.size()!=1) return;
 		
 		V src = sources.iterator().next();

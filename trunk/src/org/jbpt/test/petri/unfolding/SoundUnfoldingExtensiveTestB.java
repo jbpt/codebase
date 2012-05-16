@@ -39,7 +39,7 @@ public class SoundUnfoldingExtensiveTestB extends TestCase {
 		for (String name : modelsDir.list()) {
 			if (name.endsWith(".json"))	{
 				ProcessModel p = loadProcess(MODELS_DIR + File.separator + name);
-				if (dga.hasCycles(p)) continue;
+				if (dga.isCyclic(p)) continue;
 				
 				count++;
 				if (count<450) continue;
