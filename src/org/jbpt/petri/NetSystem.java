@@ -1,6 +1,5 @@
 package org.jbpt.petri;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -78,11 +77,12 @@ public class NetSystem extends PetriNet {
 	}
 	
 	/**
-	 * Get enabled transitions of the net system
-	 * @return Enabled transitions of the net system
+	 * Get enabled transitions of the net system.
+	 * 
+	 * @return Enabled transitions of the net system.
 	 */
-	public Collection<Transition> getEnabledTransitions() {
-		Collection<Transition> result = new ArrayList<Transition>();
+	public Set<Transition> getEnabledTransitions() {
+		Set<Transition> result = new HashSet<Transition>();
 		Set<Place> marked = new HashSet<Place>(this.getMarkedPlaces());
 		
 		for (Transition t : this.getTransitions()) {
@@ -94,9 +94,10 @@ public class NetSystem extends PetriNet {
 	}
 	
 	/**
-	 * Check if transition is enabled
+	 * Check if transition is enabled.
+	 * 
 	 * @param t Transition
-	 * @return <code>true</code> if t is enabled; <code>false</code> otherwise
+	 * @return <tt>true</tt> if transition is enabled; <tt>false</tt> otherwise.
 	 */
 	public boolean isEnabled(Transition t) {
 		if (!this.getTransitions().contains(t)) return false;
@@ -111,19 +112,19 @@ public class NetSystem extends PetriNet {
 	/**
 	 * Check if place is marked, i.e., contains at least one token
 	 * @param p Place
-	 * @return <code>true</code> if place is marked; <code>false</code> otherwise
+	 * @return <tt>true</tt> if place is marked; <tt>false</tt> otherwise
 	 */
 	private boolean isMarked(Place p) {
 		return this.M.isMarked(p);
 	}
 	
 	/**
-	 * Fire transition. 
+	 * Fire a transition in this net system. 
 	 * Transition fires only if it is enabled. 
-	 * Firing removes one token from every preplace and adds one token to every postplace. 
+	 * Firing of a transition removes one token from every preplace and adds one token to every postplace of the transition. 
 	 * 
-	 * @param t Transition to fire
-	 * @return <code>true</code> if firing changed the marking; <code>false</code> otherwise
+	 * @param t Transition to fire.
+	 * @return <tt>true</tt> if firing took place; <tt>false</tt> otherwise.
 	 */
 	public boolean fire(Transition t) {
 		if (!this.getTransitions().contains(t)) return false;
@@ -174,49 +175,68 @@ public class NetSystem extends PetriNet {
 		return result;
 	}
 	
+	/**
+	 * Create a deep copy of this net system. 
+	 * 
+	 * @return A clone of this instance.
+	 */
 	@Override
 	public NetSystem clone() {
 		Map<Node,Node> nodeMapping = new HashMap<Node,Node>();
 		NetSystem clone = (NetSystem) super.clone(nodeMapping);
-		return cloneHelper(clone, nodeMapping);
-	}
-	
-	private NetSystem cloneHelper(NetSystem clone, Map<Node,Node> nodeMapping) {
-		
-		/*
-		 * Clone the marking 
-		 */
-		Marking cMarking = new Marking(clone);
-		clone.M = cMarking;
-		
-		/*
-		 * Init marking according to original net system
-		 */
-		for (Place p : this.getMarkedPlaces()) 
-			clone.putTokens((Place) nodeMapping.get(p), this.getTokens(p));
+		cloneHelper(clone, nodeMapping);
 		
 		return clone;
 	}
 	
+	/**
+	 * Create a deep copy of this net system and enter the node mapping between this node system and its copy into the given map. 
+	 * 
+	 * @param nodeMapping Container to store the node mapping.
+	 * @return A clone of this instance.
+	 */
+	@Override
 	public NetSystem clone(Map<Node,Node> nodeMapping) {
+		if (nodeMapping==null)
+			nodeMapping = new HashMap<Node,Node>();
+		
 		NetSystem clone = (NetSystem) super.clone(nodeMapping);
-		return cloneHelper(clone, nodeMapping);
+		cloneHelper(clone,nodeMapping);
+		
+		return clone;
 	}
 	
 	/**
-	 * Put tokens at a place
+	 * This method clones the marking of the net system. 
+	 * 
+	 * @param clone A clone object.
+	 * @param nodeMapping Mapping of nodes of the original net system to nodes of its clone object. 
+	 */
+	private void cloneHelper(NetSystem clone, Map<Node,Node> nodeMapping) {
+		// clone the marking 
+		Marking cMarking = new Marking(clone);
+		clone.M = cMarking;
+		// initialise marking according to original net system
+		for (Place p : this.getMarkedPlaces()) 
+			clone.putTokens((Place) nodeMapping.get(p), this.getTokens(p));
+	}
+	
+	/**
+	 * Put tokens at a place.
+	 * 
 	 * @param p Place
 	 * @param tokens Number of tokens to put
-	 * @return the previous number of tokens at p, or <code>null</code> if parameters are wrong (either are equal to <code>null</code> or place does not belong to the net system, etc)
+	 * @return the previous number of tokens at p, or <tt>null</tt> if parameters are wrong (either are equal to <tt>null</tt> or place does not belong to the net system, etc)
 	 */
 	public Integer putTokens(Place p, Integer tokens) {
 		return this.M.put(p, tokens);
 	}
 	
 	/**
-	 * Get number of tokens at a place
+	 * Get number of tokens at a place.
+	 * 
 	 * @param p Place
-	 * @return Number of tokens at p
+	 * @return Number of tokens at p.
 	 */
 	public Integer getTokens(Place p) {
 		return this.M.get(p);
@@ -224,7 +244,7 @@ public class NetSystem extends PetriNet {
 	
 	/**
 	 * Changes marking of the net system to its natural initial marking, i.e., 
-	 * the marking which put one token at each source place of the net and no tokens elsewhere
+	 * the marking which put one token at each source place of the net system and no tokens elsewhere.
 	 */
 	public void loadNaturalMarking() {
 		this.M.clear();
@@ -234,10 +254,14 @@ public class NetSystem extends PetriNet {
 	}
 	
 	/**
-	 * Changes marking of the net system to the given marking
+	 * Changes marking of the net system to the given one. 
+	 * Note that new marking must be associated with this net system. 
+	 * 
 	 * @param M Marking
 	 */
 	public void loadMarking(Marking M) {
+		if (M.getPetriNet()!=this) return;
+		
 		this.M.clear();
 		for (Map.Entry<Place,Integer> entry : M.entrySet()) {
 			this.M.put(entry.getKey(),entry.getValue());
