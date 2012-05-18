@@ -6,36 +6,72 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Petri net marking implementation
+ * Marking of a Petri net.
  * 
- * Stores the current marking of a {@link PetriNet}.
- * 
- * @author Christian Wiggert, Artem Polyvyanyy
+ * @author Christian Wiggert
+ * @author Artem Polyvyanyy
  */
-public class Marking extends HashMap<Place, Integer> {
+public class Marking extends HashMap<Place,Integer> {
 	private static final long serialVersionUID = 1L;
+	
+	// associated net
 	private PetriNet net = null;
 	
+	/**
+	 * Construct a marking and associate it with a given net.
+	 * 
+	 * @param net A net to associate marking with.
+	 * @throws IllegalArgumentException if a given net is set to <tt>null</tt>.
+	 */
 	public Marking(PetriNet net) {
+		if (net==null) throw new IllegalArgumentException("PetriNet object expected!");
 		this.net = net;
 	}
 
+	/**
+	 * Put specified number of tokens at a given place of the associated net.
+	 * 
+	 * @param p Place of the associated net.
+	 * @param tokens Number of tokens to put at the given place.
+	 * @return Previous number of tokens at the given place. Returns <tt>0</tt> if place is set to <tt>null</tt>. 
+	 * Attempts to remove all tokens from the given place if tokens is negative, equals to <tt>0</tt>, or is set to <tt>null</tt>.   
+	 * @throws IllegalArgumentException if the given place is not part of the associated net.
+	 */
 	@Override
 	public Integer put(Place p, Integer tokens) {
-		// initial checks
-		if (p == null || tokens == null) return null;
-		if (!this.net.contains(p)) return null;
+		if (p==null) return 0;
+		if (!this.net.contains(p)) throw new IllegalArgumentException("Proposed place is not part of the associated net!");
 		
-		if (tokens <= 0) return this.remove(p);
+		Integer result = null;
+		if (tokens==null) result = super.remove(p);
+		else {
+			if (tokens<=0) result = super.remove(p); 
+			else result = super.put(p,tokens);	
+		}
 		
-		return super.put(p, tokens);
+		return result==null ? 0 : result;
 	}
-
+	
+	/**
+	 * Copies all of the marking from the specified map to this marking.
+     * These operation will replace any info that this marking had for any of the places currently in the specified map.
+     *
+     * @param m Mapping to be stored in this marking.
+     * @throws NullPointerException if the specified map is null.
+	 */
 	@Override
 	public void putAll(Map<? extends Place, ? extends Integer> m) {
 		for (Map.Entry<? extends Place, ? extends Integer> entry : m.entrySet()) {
 			this.put(entry.getKey(), entry.getValue());
 		}
+	}
+	
+	/**
+	 * Get associated net.
+	 * @return Associated net.
+	 */
+	public PetriNet getPetriNet() {
+		return this.net;
 	}
 	
 	@Override
@@ -47,7 +83,8 @@ public class Marking extends HashMap<Place, Integer> {
 	}
 	
 	/**
-	 * Get number of tokens at a place
+	 * Get number of tokens at a place.
+	 * 
 	 * @param p Place
 	 * @return Number of tokens at p
 	 */
@@ -76,24 +113,19 @@ public class Marking extends HashMap<Place, Integer> {
 	@Override
 	public int hashCode() {
 		int result = 0;
-		for (Place p : this.net.getPlaces()) {
+		
+		result -= this.net.hashCode();
+		
+		for (Place p : this.net.getPlaces())
 			result += 17 * p.hashCode() * this.get(p);
-		}
+		
 		return result;
 	}
 	
 	/**
-	 * Get Petri net
-	 * @return Petri net
-	 */
-	public PetriNet getPetriNet() {
-		return this.net;
-	}
-	
-	/**
-	 * Check if place is marked, i.e., contains at least one token
+	 * Check if place is marked, i.e., contains at least one token.
 	 * @param p Place
-	 * @return <code>true</code> if p is marked; <code>false</code> otherwise
+	 * @return <code>true</code> if p is marked; <code>false</code> otherwise.
 	 */
 	public boolean isMarked(Place p) {
 		return this.get(p) > 0;
@@ -101,7 +133,9 @@ public class Marking extends HashMap<Place, Integer> {
 	
 	@Override
 	public Marking clone() {
-		return (Marking)super.clone(); 
+		Marking clone = (Marking)super.clone();
+		clone.net = this.net;
+		return clone;
 	}
 	
 	/**
@@ -119,13 +153,4 @@ public class Marking extends HashMap<Place, Integer> {
 		
 		return result;
 	}
-	
-	/*@Override
-	public Marking clone() {
-		Marking clone = new Marking(this.net); 
-		
-		for (Map.Entry<Place,Integer> entry : this.entrySet()) {
-			
-		}
-	}*/
 }
