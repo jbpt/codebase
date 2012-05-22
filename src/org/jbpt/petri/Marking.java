@@ -74,24 +74,28 @@ public class Marking extends HashMap<Place,Integer> {
 		return this.net;
 	}
 	
+	/**
+	 * Get number of tokens at a place.
+	 * 
+	 * @param p Place of the associated net.
+	 * @return Number of tokens at the place.
+	 */
 	@Override
 	public Integer get(Object p) {
+		if (!(p instanceof Place)) return 0; 
 		Integer i = super.get(p);
-		if (i != null) return i;
-		if (p instanceof Place) return 0;
-		return null;
+		return i == null ? 0 : i;
 	}
 	
 	/**
 	 * Get number of tokens at a place.
 	 * 
-	 * @param p Place
-	 * @return Number of tokens at p
+	 * @param p Place of the associated net.
+	 * @return Number of tokens at the place.
 	 */
 	public Integer get(Place p) {
 		Integer i = super.get(p);
-		if (i != null) return i;
-		return 0;
+		return i == null ? 0 : i; 
 	}
 	
 	@Override
@@ -152,5 +156,14 @@ public class Marking extends HashMap<Place,Integer> {
 		}
 		
 		return result;
+	}
+	
+	/**
+	 * Clear this marking. 
+	 * After a call to this procedure, this marking describes a situation when no place of the associated net contains a token.
+	 */
+	@Override
+	public void clear() {
+		super.clear();
 	}
 }

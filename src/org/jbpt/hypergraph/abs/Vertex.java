@@ -8,7 +8,6 @@ package org.jbpt.hypergraph.abs;
 public class Vertex extends GObject implements IVertex
 {	
 	private int x = 0, y = 0, w = 0, h = 0;
-	private String id = null;
 	public Vertex() {
 		super();
 	}
@@ -21,19 +20,6 @@ public class Vertex extends GObject implements IVertex
 		super(name);
 	}
 	
-	public Vertex(String name, String desc, String id) {
-		super(name, desc);
-		this.id = id;
-	}
-	
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * @see de.hpi.bpt.hypergraph.abs.IVertex#getX()
