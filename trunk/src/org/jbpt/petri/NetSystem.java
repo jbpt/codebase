@@ -69,10 +69,11 @@ public class NetSystem extends PetriNet {
 	}
 
 	/**
-	 * Get marked places of the net system
-	 * @return Marked places of the net system
+	 * Get marked places of this net system.
+	 * 
+	 * @return Set of all marked places of this net system.
 	 */
-	public Collection<Place> getMarkedPlaces() {
+	public Set<Place> getMarkedPlaces() {
 		return this.M.keySet();
 	}
 	
