@@ -3,6 +3,8 @@
  */
 package org.jbpt.pm.bpmn;
 
+import java.util.Collection;
+
 import org.jbpt.pm.ControlFlow;
 import org.jbpt.pm.FlowNode;
 import org.jbpt.pm.IProcessModel;
@@ -10,7 +12,7 @@ import org.jbpt.pm.NonFlowNode;
 
 /**
  * Interface for Bpmn class
- * @author Cindy Fähnrich
+ * @author Cindy FÃ¤hnrich, Tobias Hoppe
  *
  */
 public interface IBpmn extends IProcessModel<ControlFlow<FlowNode>, FlowNode, NonFlowNode> {
@@ -58,5 +60,10 @@ public interface IBpmn extends IProcessModel<ControlFlow<FlowNode>, FlowNode, No
 	 * @param flow
 	 */
 	public void addMessageFlow(BpmnMessageFlow flow);
+	
+	/**
+	 * @return all message flow edges of this {@link Bpmn} model.
+	 */
+	public Collection<BpmnMessageFlow> getMessageflows();
 	
 }

@@ -101,6 +101,16 @@ public class BpmnControlFlow<V extends IFlowNode> extends ControlFlow<V> impleme
 	}
 
 	@Override
+	public BpmnEvent getAttachedEvent() {
+		return this.attachedEvent;
+	}
+
+	@Override
+	public String getCondition() {
+		return this.condition;
+	}
+
+	@Override
 	public Collection<IDataNode> getReadDocuments() {
 		return this.readDocuments;
 	}
@@ -121,6 +131,11 @@ public class BpmnControlFlow<V extends IFlowNode> extends ControlFlow<V> impleme
 	@Override
 	public Collection<IDataNode> getUnspecifiedDocuments() {
 		return this.unspecifiedDocuments;
+	}
+
+	@Override
+	public boolean hasAttachedEvent() {
+		return this.attachedEvent != null ? true : false;
 	}
 
 	@Override

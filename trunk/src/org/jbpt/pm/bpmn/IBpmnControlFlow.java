@@ -12,7 +12,7 @@ import org.jbpt.pm.IFlowNode;
 
 /**
  * Interface for BPMN Control Flow.
- * @author Cindy Fähnrich
+ * @author Cindy FÃ¤hnrich, Tobias Hoppe
  *
  */
 public interface IBpmnControlFlow<V extends IFlowNode> extends IControlFlow<V> {
@@ -22,15 +22,35 @@ public interface IBpmnControlFlow<V extends IFlowNode> extends IControlFlow<V> {
 	 * @param event
 	 */
 	public void attachEvent(BpmnEvent event);
+	
 	/**
 	 * Detaches the current BPMN event from this control flow and return it.
 	 */
 	public BpmnEvent detachEvent();
+	
+	/**
+	 * @return <code>true</code> if this {@link BpmnControlFlow} edge has an attached event.
+	 * <code>false</code> otherwise.
+	 */
+	public boolean hasAttachedEvent();
+	
+	/**
+	 * @return the {@link BpmnEvent} attached to this {@link BpmnControlFlow} edge.
+	 * Returns <code>null</code> if non exists.
+	 */
+	public BpmnEvent getAttachedEvent();
+	
 	/**
 	 * Sets the control flow's condition (it will then turn into a conditional control flow).
 	 * @param condition
 	 */
 	public void setCondition(String condition);
+	
+	/**
+	 * @return the control flow's condition
+	 */
+	public String getCondition();
+	
 	/**
 	 * Checks whether this is a conditional control flow.
 	 */

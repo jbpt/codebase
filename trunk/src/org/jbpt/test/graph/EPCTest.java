@@ -193,7 +193,7 @@ public class EPCTest extends TestCase {
 		clonedEpc.addNonFlowNode(d1);
 		assertTrue(epc.getNonFlowNodes().isEmpty());
 		
-		clonedEpc.addControlFlow(f1, g1);
+		clonedEpc.addControlFlow((FlowNode) clonedEpc.filter(Function.class).iterator().next(), g1);
 		assertEquals(1, epc.countEdges());
 		assertEquals(2, clonedEpc.countEdges());
 		
