@@ -20,7 +20,7 @@ public abstract class BpmnEvent extends Event implements IBpmnEvent {
 	/**
 	 * Determines the event type.
 	 */
-	private BpmnEventTypes.TYPES type = BpmnEventTypes.TYPES.BLANK;
+	private BpmnEventTypes.BPMN_EVENT_TYPES type = BpmnEventTypes.BPMN_EVENT_TYPES.BLANK;
 	/**
 	 * Determines whether this event is attached to an activity or not.
 	 */
@@ -46,13 +46,13 @@ public abstract class BpmnEvent extends Event implements IBpmnEvent {
 	}
 
 	@Override
-	public void setEventType(BpmnEventTypes.TYPES type) {
+	public void setEventType(BpmnEventTypes.BPMN_EVENT_TYPES type) {
 		this.type = type;
 		
 	}
 	
 	@Override
-	public BpmnEventTypes.TYPES getEventType(){
+	public BpmnEventTypes.BPMN_EVENT_TYPES getEventType(){
 		return this.type;
 	}
 

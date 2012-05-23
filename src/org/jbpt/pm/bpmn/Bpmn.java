@@ -12,7 +12,7 @@ import org.jbpt.pm.ProcessModel;
 
 /**
  * Container class for Bpmn process models.
- * @author Cindy Fähnrich
+ * @author Cindy Fähnrich, Tobias Hoppe
  *
  * @param <E> {@link BpmnControlFlow} as edges between the flow nodes
  * @param <V> {@link FlowNode} which means Activities, Gateways, Events
@@ -23,7 +23,7 @@ public class Bpmn<E extends BpmnControlFlow<V>, V extends FlowNode> extends Proc
 	 * Message flow attribute to have access on all message flows of this process model
 	 */
 	private Vector<BpmnMessageFlow> messageflows = new Vector<BpmnMessageFlow>();
-	
+
 	@Override
 	public BpmnControlFlow<FlowNode> addControlFlow(FlowNode from, FlowNode to, String condition, boolean defaultFlow){
 		if (from == null || to == null) {
@@ -94,5 +94,10 @@ public class Bpmn<E extends BpmnControlFlow<V>, V extends FlowNode> extends Proc
 			clone.messageflows.add((BpmnMessageFlow) flow.clone());
 		}
 		return clone;
+	}
+	
+	@Override
+	public Collection<BpmnMessageFlow> getMessageflows() {
+		return new ArrayList<BpmnMessageFlow>(this.messageflows);
 	}
 }

@@ -8,7 +8,7 @@ import org.jbpt.pm.IEvent;
 /**
  * Interface for BPMN event class.
  * 
- * @author Cindy Fähnrich, Tobias Hoppe
+ * @author Cindy FÃ¤hnrich, Tobias Hoppe
  *
  */
 public interface IBpmnEvent extends IEvent {
@@ -17,12 +17,12 @@ public interface IBpmnEvent extends IEvent {
 	 * Sets the event type.
 	 * @param type
 	 */
-	public void setEventType(BpmnEventTypes.TYPES type);
+	public void setEventType(BpmnEventTypes.BPMN_EVENT_TYPES type);
 	
 	/**
 	 * @return the event type
 	 */
-	public BpmnEventTypes.TYPES getEventType();
+	public BpmnEventTypes.BPMN_EVENT_TYPES getEventType();
 	
 	/**
 	 * Checks whether this is an interrupting event.

@@ -2,8 +2,7 @@ package org.jbpt.pm.bpmn;
 
 
 /**
- * Constants representing the available event types in Bpmn (v1.1 and 2.0
- * ) 
+ * Constants representing the available event types in Bpmn (v1.1 and 2.0) 
  * @author Cindy Fähnrich, Tobias Hoppe
  *
  */
@@ -29,7 +28,7 @@ public interface BpmnEventTypes {
 	/**
 	 * An enumeration of all BPMN event types
 	 */
-	public enum TYPES{
+	public enum BPMN_EVENT_TYPES{
 		BLANK(BpmnEventTypes.BLANK),
 		MESSAGE(BpmnEventTypes.MESSAGE),
 		TIMER(BpmnEventTypes.TIMER),
@@ -46,7 +45,7 @@ public interface BpmnEventTypes {
 		
 		private String description;
 
-		TYPES(String description) {
+		BPMN_EVENT_TYPES(String description) {
 	        this.description = description;
 	    }
 		public String toString() {
