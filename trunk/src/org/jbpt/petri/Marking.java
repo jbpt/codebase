@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Marking of a Petri net.
@@ -12,7 +14,7 @@ import java.util.Map;
  * @author Artem Polyvyanyy
  */
 public class Marking extends HashMap<Place,Integer> {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -2144274745926614966L;
 	
 	// associated net
 	private PetriNet net = null;
@@ -24,8 +26,16 @@ public class Marking extends HashMap<Place,Integer> {
 	 * @throws IllegalArgumentException if a given net is set to <tt>null</tt>.
 	 */
 	public Marking(PetriNet net) {
-		if (net==null) throw new IllegalArgumentException("PetriNet object expected!");
+		if (net==null) throw new IllegalArgumentException("PetriNet object expected but was NULL!");
 		this.net = net;
+	}
+	
+	/**
+	 * Get associated net.
+	 * @return Associated net.
+	 */
+	public PetriNet getPetriNet() {
+		return this.net;
 	}
 
 	/**
@@ -67,11 +77,24 @@ public class Marking extends HashMap<Place,Integer> {
 	}
 	
 	/**
-	 * Get associated net.
-	 * @return Associated net.
+	 * Removes all tokens from a given place of the associated net.
+	 * 
+	 * @param p Place of the associated net.
+	 * @return The number of tokens previously contained in the given place, or <tt>null</tt> there was no token at the given place. 
 	 */
-	public PetriNet getPetriNet() {
-		return this.net;
+	@Override
+	public Integer remove(Object p) {
+		return super.remove(p);
+	}
+	
+	/**
+	 * Removes all tokens from a given place of the associated net.
+	 * 
+	 * @param p Place of the associated net.
+	 * @return The number of tokens previously contained in the given place, or <tt>null</tt> there was no token at the given place. 
+	 */
+	public Integer remove(Place p) {
+		return super.remove(p);
 	}
 	
 	/**
@@ -96,6 +119,74 @@ public class Marking extends HashMap<Place,Integer> {
 	public Integer get(Place p) {
 		Integer i = super.get(p);
 		return i == null ? 0 : i; 
+	}
+	
+	/**
+	 * Check if place is marked, i.e., contains at least one token.
+	 * 
+	 * @param p Place of the associated net.
+	 * @return <tt>true</tt> if p is marked; <tt>false</tt> otherwise.
+	 */
+	public boolean isMarked(Place p) {
+		return this.get(p) > 0;
+	}
+	
+	/**
+	 * Get marking as a multi-set of places. 
+	 * The multi-set contains each place as many times as there are tokens at the place.
+	 * 
+	 * @return Marking as a multi-set of places.
+	 */
+	public Collection<Place> toMultiSet() {
+		Collection<Place> result = new ArrayList<Place>();
+		
+		for (Map.Entry<Place, Integer> entry : this.entrySet()) {
+			for (int i = 0; i < entry.getValue(); i++) {
+				result.add(entry.getKey());
+			}
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Clear this marking.
+	 * 
+	 * After a call to this procedure, this marking describes a situation when no place of the associated net contains a token.
+	 */
+	@Override
+	public void clear() {
+		super.clear();
+	}
+	
+	/**
+	 * Returns the number of marked places in the associated net.
+	 * 
+	 * @return The number of marked places in the associated net.
+	 */
+	@Override
+	public int size() {
+		return super.size();
+	}
+
+	/**
+	 * Returns <tt>true</tt> if this marking does not mark any place.
+	 * 
+	 * @return <tt>true</tt> if this marking does not mark any place; <tt>false</tt> otherwise.
+	 */
+	@Override
+	public boolean isEmpty() {
+		return super.isEmpty();
+	}
+
+	/**
+	 * Returns set of pairs where every pair specifies a marked place of the associated net and the number of tokens at the place.
+	 * 
+	 * @return The set of pairs where every pair specifies a marked place of the associated net and the number of tokens at the place.
+	 */
+	@Override
+	public Set<Entry<Place, Integer>> entrySet() {
+		return super.entrySet();
 	}
 	
 	@Override
@@ -126,44 +217,21 @@ public class Marking extends HashMap<Place,Integer> {
 		return result;
 	}
 	
-	/**
-	 * Check if place is marked, i.e., contains at least one token.
-	 * @param p Place
-	 * @return <code>true</code> if p is marked; <code>false</code> otherwise.
-	 */
-	public boolean isMarked(Place p) {
-		return this.get(p) > 0;
-	}
-	
 	@Override
 	public Marking clone() {
 		Marking clone = (Marking)super.clone();
 		clone.net = this.net;
+		
 		return clone;
 	}
 	
 	/**
-	 * Get marking as a multi-set of places 
-	 * @return Marking as a multi-set of places
-	 */
-	public Collection<Place> toMultiSet() {
-		Collection<Place> result = new ArrayList<Place>();
-		
-		for (Map.Entry<Place, Integer> entry : this.entrySet()) {
-			for (int i = 0; i < entry.getValue(); i++) {
-				result.add(entry.getKey());
-			}
-		}
-		
-		return result;
-	}
-	
-	/**
-	 * Clear this marking. 
-	 * After a call to this procedure, this marking describes a situation when no place of the associated net contains a token.
+	 * Returns string representation of this marking.
+	 * 
+	 * @return The string representation of this marking.
 	 */
 	@Override
-	public void clear() {
-		super.clear();
+	public String toString() {
+		return super.toString();
 	}
 }
