@@ -26,7 +26,7 @@ import org.w3c.dom.Document;
 
 public class LolaSoundnessChecker {
 	private static final String LOLA_URI = "http://esla.informatik.uni-rostock.de/service-tech/.lola/lola.php";
-	private static int TIMEOUT = 60000;
+	private static int TIMEOUT = 180000;
 	private static int N = 5;
 	
 	/**
@@ -47,8 +47,6 @@ public class LolaSoundnessChecker {
 			try { result = analyseResponse(response); }
 			catch (IllegalArgumentException e) {
 				if (i==LolaSoundnessChecker.N-1) throw new IOException("Lola service failure!");
-				
-				System.err.println("TRY AGAIN");
 				continue;
 			}
 			return result;
@@ -120,6 +118,8 @@ public class LolaSoundnessChecker {
 	 */
 	private static boolean analyseResponse(String response) throws IllegalArgumentException {
 		if (response.toLowerCase().matches(".*warning.*")) throw new IllegalArgumentException("Warning in response!");
-		return response.toLowerCase().matches(".*;soundness = true;.*");
+		if (response.toLowerCase().matches(".*;soundness = true;.*")) return true;
+		if (response.toLowerCase().matches(".*;soundness = false;.*")) return false;
+		throw new IllegalArgumentException("Unknown response!");
 	}
 }

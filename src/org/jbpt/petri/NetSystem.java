@@ -152,7 +152,7 @@ public class NetSystem extends PetriNet {
 		
 		for (Place p : this.getPlaces()) {
 			Integer n = this.M.get(p);
-			String label = ((n == 0) || (n == null)) ? "" : n.toString(); 
+			String label = ((n == 0) || (n == null)) ? p.getLabel() : p.getLabel() + "[" + n.toString() + "]"; 
 			result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".3\"];\n", p.getId().replace("-", ""), label);
 		}
 		
