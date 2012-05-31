@@ -39,15 +39,16 @@ public class PNMLSerializer extends DefaultHandler
 	public static int DEFAULT = 0;
 	public static int LOLA = 1;
 	
-	private boolean place, placetext;
+	private boolean place, placeName, placeNameText, placeMarking, placeMarkingText;
 	private boolean arc;
-	private boolean transition, transitiontext;
+	private boolean transition, transitionName, transitionNameText;
 
 	private NetSystem pn;
 
 	private HashMap<String, Node> nodes;
 
 	private String currentTransitionID;
+	private String currentPlaceID;
 
 	/**
 	 * Clear the internal data structures of the parser
@@ -56,19 +57,24 @@ public class PNMLSerializer extends DefaultHandler
 		this.pn = new NetSystem();
 		this.nodes = new HashMap<String, Node>();
 		this.place = false;
-		this.placetext = false;
+		this.placeName = false;
+		this.placeNameText = false;
+		this.placeMarking = false;
+		this.placeMarkingText = false;
 		this.arc = false;
 		this.transition = false;
-		this.transitiontext = false;
+		this.transitionName = false;
+		this.transitionNameText = false;
 		this.currentTransitionID = "";
+		this.currentPlaceID = "";
 	}
 
 	/**
-	 * Parses a PetriNet out of a predefined PNML-file
+	 * Parses a NetSystem out of a predefined PNML-file
 	 * 
 	 * @param file File containing a process description based on the PNML-Standard.
 	 */
-	public PetriNet parse(String file){
+	public NetSystem parse(String file){
 
 		/*
 		 * Clear internal data structures
@@ -112,17 +118,28 @@ public class PNMLSerializer extends DefaultHandler
 	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 		super.startElement(uri, localName, qName, attributes);
 
-		if(arc)
-		{
+		if(placeName) {
+			placeNameText = localName.equals("text");
+		}
+		else if(placeMarking) {
+			placeMarkingText = localName.equals("text");
+		}
+		else if(transitionName) {
+				transitionNameText = localName.equals("text");
+		}		
+		else if(arc) {
 
 		}
-		else if (place)
-		{
-			placetext = localName.equals("text");
+		else if (place) {
+			if (localName.equals("name"))
+				placeName = true;
+			
+			if (localName.equals("initialMarking"))
+				placeMarking = true;
 		}
-		else if (transition)
-		{
-			transitiontext = localName.equals("text");
+		else if (transition) {
+			if (localName.equals("name"))
+				transitionName = true;
 		}
 
 		if (localName.equals("arc")) {
@@ -133,13 +150,16 @@ public class PNMLSerializer extends DefaultHandler
 			place = true;
 			Place p = new Place(attributes.getValue(0));
 			p.setId(attributes.getValue(0));
-			nodes.put(p.getName(), p);
+			nodes.put(p.getId(), p);
+			pn.addPlace(p);
+			this.currentPlaceID = p.getId();
 		}
 		else if (localName.equals("transition")){
 			transition = true;
 			Transition t = new Transition();
 			t.setId(attributes.getValue(0));
 			nodes.put(t.getId(), t);
+			pn.addTransition(t);
 			this.currentTransitionID = t.getId();
 		}
 	}
@@ -148,18 +168,23 @@ public class PNMLSerializer extends DefaultHandler
 	public void characters(char[] ch, int start, int length) throws SAXException {
 		super.characters(ch, start, length);
 
-		if (placetext)
-		{
-			placetext = false;
-			place = false;
+		if (placeNameText) {
+			placeNameText = false;
+			placeName = false;
 		}
-		else if (transitiontext)
-		{
+		else if (placeMarkingText) {
+			char[] text = new char[length];
+			System.arraycopy(ch, start, text, 0, length);
+			this.pn.getMarking().put((Place) this.nodes.get(currentPlaceID),Integer.valueOf(new String(text)));
+			placeMarkingText = false;
+			placeMarking = false;
+		}
+		else if (transitionNameText) {
 			char[] text = new char[length];
 			System.arraycopy(ch, start, text, 0, length);
 			this.nodes.get(currentTransitionID).setName(normalizeTransitionLabel(new String(text)));
-			transitiontext = false;
-			transition = false;
+			transitionNameText = false;
+			transitionName = false;
 		}
 	}
 
