@@ -61,8 +61,9 @@ public class NetSystem extends PetriNet {
 	}
 
 	/**
-	 * Get marking
-	 * @return Marking of the net system
+	 * Get marking of this net system. 
+	 *  
+	 * @return Marking of this net system.
 	 */
 	public Marking getMarking() {
 		return this.M;
@@ -95,9 +96,9 @@ public class NetSystem extends PetriNet {
 	}
 	
 	/**
-	 * Check if transition is enabled.
+	 * Checks if a transition is enabled.
 	 * 
-	 * @param t Transition
+	 * @param t Transition to check.
 	 * @return <tt>true</tt> if transition is enabled; <tt>false</tt> otherwise.
 	 */
 	public boolean isEnabled(Transition t) {
@@ -255,16 +256,16 @@ public class NetSystem extends PetriNet {
 	}
 	
 	/**
-	 * Changes marking of the net system to the given one. 
-	 * Note that new marking must be associated with this net system. 
+	 * Changes marking of this net system to the given one. 
+	 * Note that the new marking must be associated with this net system.
 	 * 
-	 * @param M Marking
+	 * @param newMarking Marking to use for this net system.
 	 */
-	public void loadMarking(Marking M) {
-		if (M.getPetriNet()!=this) return;
+	public void loadMarking(Marking newMarking) {
+		if (newMarking.getPetriNet()!=this) return;
 		
 		this.M.clear();
-		for (Map.Entry<Place,Integer> entry : M.entrySet()) {
+		for (Map.Entry<Place,Integer> entry : newMarking.entrySet()) {
 			this.M.put(entry.getKey(),entry.getValue());
 		}
 	}
