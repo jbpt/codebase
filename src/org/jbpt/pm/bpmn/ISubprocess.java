@@ -1,5 +1,6 @@
 package org.jbpt.pm.bpmn;
 
+import org.jbpt.hypergraph.abs.IVertex;
 import org.jbpt.pm.FlowNode;
 import org.jbpt.pm.NonFlowNode;
 
@@ -101,7 +102,7 @@ public interface ISubprocess extends IBpmnActivity {
 	 * @param to
 	 * @return TODO
 	 */
-	public BpmnMessageFlow addMessageFlow(Object from, Object to);
+	public BpmnMessageFlow addMessageFlow(IVertex from, IVertex to);
 
 	/**
 	 * @return the {@link Bpmn} model of this sub process.

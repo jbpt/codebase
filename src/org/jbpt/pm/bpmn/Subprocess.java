@@ -3,6 +3,7 @@
  */
 package org.jbpt.pm.bpmn;
 
+import org.jbpt.hypergraph.abs.IVertex;
 import org.jbpt.pm.FlowNode;
 import org.jbpt.pm.NonFlowNode;
 
@@ -176,7 +177,7 @@ public class Subprocess extends BpmnActivity implements ISubprocess {
 	}
 
 	@Override
-	public BpmnMessageFlow addMessageFlow(Object from, Object to) {
+	public BpmnMessageFlow addMessageFlow(IVertex from, IVertex to) {
 		return this.subprocess.addMessageFlow(from, to);
 	}
 

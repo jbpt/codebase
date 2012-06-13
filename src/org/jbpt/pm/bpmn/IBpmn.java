@@ -5,6 +5,7 @@ package org.jbpt.pm.bpmn;
 
 import java.util.Collection;
 
+import org.jbpt.hypergraph.abs.IVertex;
 import org.jbpt.pm.ControlFlow;
 import org.jbpt.pm.FlowNode;
 import org.jbpt.pm.IProcessModel;
@@ -53,7 +54,7 @@ public interface IBpmn extends IProcessModel<ControlFlow<FlowNode>, FlowNode, No
 	 * @param from Node
 	 * @param to Node
 	 */
-	public BpmnMessageFlow addMessageFlow(Object from, Object to);
+	public BpmnMessageFlow addMessageFlow(IVertex from, IVertex to);
 	
 	/**
 	 * adds an already created message flow to the container. necessary for message flows of subprocesses

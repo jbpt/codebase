@@ -5,36 +5,19 @@ package org.jbpt.pm.bpmn;
 
 import java.util.Collection;
 
+import org.jbpt.graph.abs.IDirectedEdge;
+import org.jbpt.hypergraph.abs.IVertex;
 import org.jbpt.pm.IDataNode;
 import org.jbpt.pm.IFlowNode;
 
 
 /**
  * Interface for BPMN Message Flow.
- * @author Cindy F�hnrich
+ * @author Cindy Fähnrich, Tobias Hoppe
  *
  */
-public interface IBpmnMessageFlow {
+public interface IBpmnMessageFlow<V extends IVertex> extends IDirectedEdge<V> {
 
-	/**
-	 * @return the source object of this message flow
-	 */
-	public Object getSource();
-	
-	/**
-	 * @return the target object of this message flow
-	 */
-	public Object getTarget();
-	
-	/**
-	 * @param the source object of this message flow
-	 */
-	public void setSource(Object source);
-	
-	/**
-	 * @param the target object of this message flow
-	 */
-	public void setTarget(Object target);
 	/**
 	 * @return a {@link Collection} of all {@link IDataNode}s, that are read by this {@link IFlowNode}.
 	 */
