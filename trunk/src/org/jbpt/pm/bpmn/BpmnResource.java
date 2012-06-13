@@ -32,15 +32,6 @@ public class BpmnResource extends Resource implements IBpmnResource {
 	public BpmnResource(IResource parent) {
 		super(parent);
 	}
-
-	/**
-	 * Constructor
-	 * @param parent the parent of this BPMN Resource
-	 * @param label the label/name of this BPMN Resource
-	 */
-	public BpmnResource(IResource parent, String label) {
-		super(parent, label);
-	}
 	
 	@Override
 	public BpmnResource clone() {

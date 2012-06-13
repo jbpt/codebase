@@ -31,15 +31,6 @@ public class EpcResource extends Resource implements IEpcResource {
 		super(parent);
 	}
 
-	/**
-	 * @param parent of this {@link Resource}
-	 * @param label of this {@link Resource}
-	 * @return a new instance of this class where parent and label are set to the given values.
-	 */
-	public EpcResource(IResource parent, String label) {
-		super(parent, label);
-	}
-
 	@Override
 	public boolean isOrganization() {
 		return this.isOrganization;

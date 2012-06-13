@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
 
+import org.jbpt.graph.abs.AbstractDirectedGraph;
+import org.jbpt.hypergraph.abs.IVertex;
 import org.jbpt.pm.FlowNode;
 import org.jbpt.pm.ProcessModel;
 
@@ -61,12 +63,12 @@ public class Bpmn<E extends BpmnControlFlow<V>, V extends FlowNode> extends Proc
 	}
 	
 	@Override
-	public BpmnMessageFlow addMessageFlow(Object from, Object to){
+	public BpmnMessageFlow addMessageFlow(IVertex from, IVertex to){
 		
 		if (from == null || to == null) {
 			return null;
 		}
-		BpmnMessageFlow flow = new BpmnMessageFlow(from, to);
+		BpmnMessageFlow flow = new BpmnMessageFlow((AbstractDirectedGraph<?,?>)this, from, to);
 		this.messageflows.add(flow);
 		
 		return flow;
