@@ -1,4 +1,4 @@
-package org.jbpt.pm.io;
+package org.jbpt.utils;
 
 public class SerializationException extends Exception {
 	

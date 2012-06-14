@@ -12,6 +12,7 @@ import java.util.Set;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Transition;
 import org.jbpt.pm.ProcessModel;
+import org.jbpt.pm.structure.ProcessModel2NetSystem;
 import org.jbpt.utils.TransformationException;
 
 
@@ -29,7 +30,7 @@ public class BisimilarityChecker2 {
 	private int n;
 	
 	public BisimilarityChecker2(ProcessModel process1, ProcessModel process2) throws TransformationException {
-		this((NetSystem)Process2PetriNet.convert(process1), (NetSystem)Process2PetriNet.convert(process2));
+		this(ProcessModel2NetSystem.transform(process1), ProcessModel2NetSystem.transform(process2));
 	}
 	
 	public BisimilarityChecker2(NetSystem net1, NetSystem net2) {
