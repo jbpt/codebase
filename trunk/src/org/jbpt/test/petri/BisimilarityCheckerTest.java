@@ -9,7 +9,7 @@ import java.util.HashSet;
 import org.jbpt.petri.util.BisimilarityChecker2;
 import org.jbpt.pm.ProcessModel;
 import org.jbpt.pm.io.JSON2Process;
-import org.jbpt.pm.io.SerializationException;
+import org.jbpt.utils.SerializationException;
 
 import junit.framework.TestCase;
 

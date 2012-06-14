@@ -12,8 +12,8 @@ import org.jbpt.pm.ProcessModel;
 import org.jbpt.pm.XorGateway;
 import org.jbpt.pm.io.JSON2Process;
 import org.jbpt.pm.io.Process2JSON;
-import org.jbpt.pm.io.SerializationException;
 import org.jbpt.pm.structure.ProcessStructureChecker;
+import org.jbpt.utils.SerializationException;
 
 import junit.framework.TestCase;
 

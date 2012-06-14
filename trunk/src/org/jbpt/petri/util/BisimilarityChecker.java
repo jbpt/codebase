@@ -8,6 +8,7 @@ import org.jbpt.hypergraph.abs.Vertex;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Transition;
 import org.jbpt.pm.ProcessModel;
+import org.jbpt.pm.structure.ProcessModel2NetSystem;
 import org.jbpt.utils.TransformationException;
 
 
@@ -28,7 +29,7 @@ public class BisimilarityChecker {
 	 */
 	public static boolean areBisimilar(ProcessModel process1, ProcessModel process2) {
 		try {
-			return areBisimilar((NetSystem)Process2PetriNet.convert(process1), (NetSystem)Process2PetriNet.convert(process2));
+			return areBisimilar(ProcessModel2NetSystem.transform(process1), ProcessModel2NetSystem.transform(process2));
 		} catch (TransformationException e) {
 			e.printStackTrace();
 			return false;

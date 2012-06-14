@@ -20,9 +20,9 @@ import org.jbpt.pm.ControlFlow;
 import org.jbpt.pm.FlowNode;
 import org.jbpt.pm.ProcessModel;
 import org.jbpt.pm.io.JSON2Process;
-import org.jbpt.pm.io.SerializationException;
 import org.jbpt.pm.structure.ProcessModel2NetSystem;
 import org.jbpt.utils.IOUtils;
+import org.jbpt.utils.SerializationException;
 import org.jbpt.utils.TransformationException;
 
 public class SoundUnfoldingExtensiveTestB extends TestCase {
