@@ -20,6 +20,8 @@ import org.jbpt.alignment.IEntityModel;
  */
 public class CausalBehaviouralProfile<M extends IEntityModel<N>, N extends IEntity> extends BehaviouralProfile<M, N> {
 
+	public static final String COOCCURRENCE_SYMBOL = ">>";
+	
 	/**
 	 * Matrix that captures co-occurrence for the Cartesian product of entities 
 	 * over which the profile is defined. Those are defined by a list member of 
@@ -76,7 +78,7 @@ public class CausalBehaviouralProfile<M extends IEntityModel<N>, N extends IEnti
 	 */
 	public static String getSymbolForRelation(RelSetType rel) {
 		String s = BehaviouralProfile.getSymbolForRelation(rel);
-		return (s.isEmpty()) ? ">>" : s;
+		return (s.isEmpty()) ? CausalBehaviouralProfile.COOCCURRENCE_SYMBOL : s;
 	}
 
 	
