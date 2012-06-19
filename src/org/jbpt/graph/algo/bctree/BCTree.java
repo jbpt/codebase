@@ -1,21 +1,23 @@
 package org.jbpt.graph.algo.bctree;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Stack;
 
+import org.jbpt.graph.abs.AbstractTree;
 import org.jbpt.graph.abs.IEdge;
 import org.jbpt.graph.abs.IGraph;
-import org.jbpt.graph.algo.GraphAlgorithms;
 import org.jbpt.hypergraph.abs.IVertex;
 
-
 /**
- * The tree of the biconnected components
+ * The tree of the biconnected components.
+ * 
+ * Expects given graph to be connected!
  * 
  * @author Artem Polyvyanyy
+ * 
  * 
  * Hopcroft, J.; Tarjan, R. (1973). "Efficient algorithms for graph manipulation". Communications of the ACM 16: 372–378.
  * 
@@ -126,81 +128,65 @@ import org.jbpt.hypergraph.abs.IVertex;
  *   end
  * end;
  */
-public class BCTree<E extends IEdge<V>, V extends IVertex> extends DFS<E,V> {
+public class BCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<BCTreeNode<E,V>> {
 
-    protected class NodeAttrs extends DFS<E,V>.NodeAttrs {
+    protected class NodeAttrs {
+    	boolean visited;
         boolean cut;
         V parent;
         int low;
         int dis;
 
         public NodeAttrs() {
-            super();
+        	visited = false;
             cut = false;
             parent = null;
             low = 0;
             dis = 0;
         }
     }
-
-    private Collection<BCTComponent<E,V>> components = new ArrayList<BCTComponent<E,V>>();
-    private Collection<V> artPoints = new ArrayList<V>();
+    
     private Stack<E> s = new Stack<E>();
-    private int time;
-    private V startNode;
+    private int time = 0;
+    private V startNode = null;
+    protected Hashtable<V,NodeAttrs> attrs = null;
+    protected IGraph<E,V> graph;
     
-    private V source = null;
-    private V sink = null;
-    
-    private BCTreeNode<E,V> root;
-    
-    private GraphAlgorithms<E,V> ga = new GraphAlgorithms<E,V>();
-    
-    public BCTree(IGraph<E,V> graph) throws FileNotFoundException {
-        super(graph);
-        
-        startNode = graph.getVertices().iterator().next();
-        
-        boolean backEdge = false;
-        Collection<V> bs = ga.getBoundaryVertices(graph);
-		if (bs.size() == 2) {
-			Iterator<V> bi = bs.iterator();
-        	this.source = bi.next();
-    		this.sink = bi.next();
-    		graph.addEdge(sink, source);
-    		backEdge = true;
+    /**
+     * Constructor of the tree of the biconnected components.
+     * 
+     * @param graph Graph. 
+     */
+    public BCTree(IGraph<E,V> graph) {
+    	this.attrs = new Hashtable<V,NodeAttrs>(graph.getVertices().size());
+    	Iterator<V> nodes = graph.getVertices().iterator();
+    	while (nodes.hasNext()) {
+            prepareNode((V)nodes.next());
         }
-		
-        this.constructBCTree();
-		
-        if (backEdge) {
-        	E e = graph.getEdge(sink, source);
-        	graph.removeEdge(e);
-        	e = this.root.getGraph().getEdge(sink, source);
-        	this.root.getGraph().removeEdge(e);
-        }
-    }
-
-    protected void prepareNode(V node) {
-        NodeAttrs a = new NodeAttrs();
-        attrs.put(node, a);
-    }
-
-    private void addComponent(E e) {
-        BCTComponent<E,V> g = new BCTComponent<E,V>(this.graph);
-
-        E f;
-        do {
-            f = s.pop();
-            g.addEdge(f.getV1(), f.getV2());
-        } while (e != f);
+    	
+    	this.graph = graph;
         
-        components.add(g);
+        if (this.graph.getVertices().isEmpty()) 
+        	this.startNode = null;
+        else
+        	this.startNode = this.graph.getVertices().iterator().next();
+        		
+        this.constructBCTree();	
     }
 
-    @SuppressWarnings("unchecked")
+    protected void constructBCTree() {        
+        this.time = 0;
+        
+        if (startNode != null) 
+        	this.process(startNode);
+        else 
+        	return;
+        
+        this.constructTree();
+    }
+    
 	protected void process(V v) {
-        NodeAttrs att = (NodeAttrs)attrs.get(v);
+        NodeAttrs att = this.attrs.get(v);
         att.visited = true;
         time++;
         att.dis = time;
@@ -213,7 +199,7 @@ public class BCTree<E extends IEdge<V>, V extends IVertex> extends DFS<E,V> {
         for (E e : edges) {
         	w = e.getOtherVertex(v);
             
-            NodeAttrs watt = (NodeAttrs)attrs.get(w);
+            NodeAttrs watt = this.attrs.get(w);
             
             if (!watt.visited) {
                 s.push(e);
@@ -223,17 +209,17 @@ public class BCTree<E extends IEdge<V>, V extends IVertex> extends DFS<E,V> {
                 if (watt.low >= att.dis) {
                     if (att.dis != 1) {
                         att.cut = true;
-                        artPoints.add(v);
+                        super.addVertex(new BCTreeNode<E,V>(v));
                     } else if (watt.dis > 2) {
                         att.cut = true;
-                        artPoints.add(v);
+                        super.addVertex(new BCTreeNode<E,V>(v));
                     }
-                    addComponent(e);
+                    this.addComponent(e);
                 }
                 if (watt.low < att.low) {
                     att.low = watt.low;
                 }
-            } else if (!compareNodes(att.parent, w) && (watt.dis < att.dis)) { // (att.parent != w)
+            } else if (!this.compareNodes(att.parent, w) && (watt.dis < att.dis)) { // (att.parent != w)
                 s.push(e);
                 if (watt.dis < att.low) {
                     att.low = watt.dis;
@@ -243,6 +229,53 @@ public class BCTree<E extends IEdge<V>, V extends IVertex> extends DFS<E,V> {
         
         time++;
     }
+	
+	protected void prepareNode(V node) {
+        NodeAttrs a = new NodeAttrs();
+        attrs.put(node, a);
+    }
+    
+    private void addComponent(E e) {
+        BCTreeNode<E,V> node = new BCTreeNode<E,V>(this.graph);
+
+        E f;
+        do {
+            f = s.pop();
+            node.fragment.add(f);
+        } while (e != f);
+        
+        super.addVertex(node);
+    }
+    
+    /**
+     * Get nodes of this BCTree that represent biconnected components.
+     * @return Collection of BCTree nodes that represent biconnected components. 
+     */
+    public Collection<BCTreeNode<E,V>> getBiconnectedComponents() {
+    	Collection<BCTreeNode<E,V>> result = new ArrayList<BCTreeNode<E,V>>();
+    	
+    	for (BCTreeNode<E,V> node : super.getVertices()) {
+    		if (node.getNodeType()==BCType.B)
+    			result.add(node);
+    	}
+    	
+    	return result;
+    }
+    
+    /**
+     * Get nodes of this BCTree that represent articulation points.
+     * @return Collection of BCTree nodes that represent articulation points. 
+     */
+    public Collection<BCTreeNode<E,V>> getArticulationPoints() {
+    	Collection<BCTreeNode<E,V>> result = new ArrayList<BCTreeNode<E,V>>();
+    	
+    	for (BCTreeNode<E,V> node : super.getVertices()) {
+    		if (node.getNodeType()==BCType.C)
+    			result.add(node);
+    	}
+    	
+    	return result;
+    }
     
     private boolean compareNodes(V i1, V i2) {
     	if (i1==null && i2==null) return true;
@@ -251,97 +284,29 @@ public class BCTree<E extends IEdge<V>, V extends IVertex> extends DFS<E,V> {
     	
     	return true;
     }
-
-    protected void constructBCTree() throws FileNotFoundException {        
-        time = 0;
-        
-        if (startNode != null) process(startNode);
-        else return;
-        /*
-        for (BCTComponent<E,V> gi : this.components) {
-            for (E edge: gi.getEdges()) {
-            	gi.addVertex(edge.getV1());
-            	gi.setLabel(edge.getV1(), this.graph.getLabel(edge.getV1()));
-            	gi.setTag(edge.getV1(), this.graph.getTag(edge.getV1()));
-            	gi.addVertex(edge.getV2());
-            	gi.setLabel(edge.getV2(), this.graph.getLabel(edge.getV2()));
-            	gi.setTag(edge.getV2(), this.graph.getTag(edge.getV2()));
-            }
-        }
-        */
-        constructTree();
-    }
     
+    /**
+     * TODO: can this be optimized?
+     */
     protected void constructTree() {
-    	if (this.source!=null && this.sink!=null) {
-    		for (BCTComponent<E,V> g : this.components) {
-        		if (g.getVertices().contains(this.source) && g.getVertices().contains(this.sink)) {
-        			root = new BCTreeNode<E,V>(g);
-        			break;
-        		}
-        	}
-    		
-    		constructTree(root);
+    	if (super.getVertices().isEmpty()) return;
+    	Collection<BCTreeNode<E,V>> artPoints = this.getArticulationPoints();
+    	Collection<BCTreeNode<E,V>> biComps = this.getBiconnectedComponents();
+    	
+    	if (artPoints.isEmpty()) {
+    		this.root = biComps.iterator().next();
+    		return;
+    	}
+    	else {
+    		for (BCTreeNode<E,V> biComp : biComps) {
+    			for (E e : biComp.getBiconnectedComponent()) {
+    				for (BCTreeNode<E,V> artPoint : artPoints)
+    					if (e.getVertices().contains(artPoint.getArticulatioPoint()))
+    						super.addEdge(biComp,artPoint);
+    			}
+    		}
+        	
+        	super.reRoot(artPoints.iterator().next());
     	}
     }
-    
-    protected void constructTree(BCTreeNode<E,V> node) {
-		if (node.getNodeType()==BCType.B) {
-			for (V p : this.artPoints) {
-				if (node.getGraph().getVertices().contains(p)) {
-					V p2 = null;
-					if (node.getParentNode()!=null)
-						p2 = node.getParentNode().getPoint();
-					
-					if (!p.equals(p2)) {
-						BCTreeNode<E,V> child = new BCTreeNode<E,V>(p);
-						node.addChild(child);
-						child.setParent(node);
-						constructTree(child);
-					}
-				}
-			}
-		}
-		else if (node.getNodeType()==BCType.C) {
-			for (BCTComponent<E,V> g : this.components) {
-				if (g.getVertices().contains(node.getPoint()) && g!=node.getParentNode().getGraph()) {
-					BCTreeNode<E,V> child = new BCTreeNode<E,V>(g);
-					node.addChild(child);
-					child.setParent(node);
-					constructTree(child);
-				}
-			}
-		}
-	}
-
-	public BCTreeNode<E,V> getRoot() {
-    	return this.root;
-    }
-	
-	public Collection<V> getArticulationPoints() {
-    	return this.artPoints;
-    }
-	
-	public Collection<BCTComponent<E,V>> getBiconnectedComponents() {
-		return this.components;
-	}
-	
-	public Collection<BCTreeNode<E,V>> getGraphsInOrder() {
-		Collection<BCTreeNode<E,V>> result = new ArrayList<BCTreeNode<E,V>>();
-		
-		Stack<BCTreeNode<E,V>> nodes = new Stack<BCTreeNode<E,V>>();
-		nodes.push(this.root);
-		BCTreeNode<E,V> currentNode;
-		while (!nodes.isEmpty()) {
-			currentNode = nodes.pop();
-			
-			for (BCTreeNode<E,V> child : currentNode.getChildren()) 
-				nodes.push(child);
-			
-			if (currentNode.getNodeType()==BCType.B)
-				result.add(currentNode);
-		}
-		
-		return result;
-	}
 }

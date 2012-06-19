@@ -465,11 +465,11 @@ public class SplitCompDFS<E extends IEdge<V>, V extends IVertex> extends Abstrac
 					if (!eStack.isEmpty()) {
 						e = (E) eStack.peek();
 						// added for special case of nested p, in some cases multiple edges were stored on the stack -->
-						V b = null;
+						/*V b = null;
 						if (topTriple.b != INVALID_NODE)
 							b = topTriple.b;
 						else
-							b = firstChildOfW;
+							b = firstChildOfW;*/
 						// <--
 						if (isSameEdge(e, v, topTriple.b) || isSameEdge(e, v, firstChildOfW)) {//topTriple.b
 							eAB.add((E) eStack.pop());
