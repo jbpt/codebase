@@ -8,7 +8,7 @@ import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
 import org.jbpt.petri.bevahior.LolaSoundnessChecker;
-import org.jbpt.utils.SerializationException;
+import org.jbpt.throwable.SerializationException;
 
 public class LolaSoundnessCheckerTest extends TestCase {
 

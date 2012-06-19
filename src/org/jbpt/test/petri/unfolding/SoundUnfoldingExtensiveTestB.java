@@ -9,7 +9,7 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
-import org.jbpt.graph.algo.DirectedGraphAlgorithms;
+import org.jbpt.algo.graph.DirectedGraphAlgorithms;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
@@ -21,9 +21,9 @@ import org.jbpt.pm.FlowNode;
 import org.jbpt.pm.ProcessModel;
 import org.jbpt.pm.io.JSON2Process;
 import org.jbpt.pm.structure.ProcessModel2NetSystem;
+import org.jbpt.throwable.SerializationException;
+import org.jbpt.throwable.TransformationException;
 import org.jbpt.utils.IOUtils;
-import org.jbpt.utils.SerializationException;
-import org.jbpt.utils.TransformationException;
 
 public class SoundUnfoldingExtensiveTestB extends TestCase {
 

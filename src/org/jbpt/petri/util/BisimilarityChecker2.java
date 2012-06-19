@@ -13,7 +13,7 @@ import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Transition;
 import org.jbpt.pm.ProcessModel;
 import org.jbpt.pm.structure.ProcessModel2NetSystem;
-import org.jbpt.utils.TransformationException;
+import org.jbpt.throwable.TransformationException;
 
 
 /**

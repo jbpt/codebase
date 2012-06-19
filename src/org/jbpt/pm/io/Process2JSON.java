@@ -9,7 +9,7 @@ import org.jbpt.pm.Gateway;
 import org.jbpt.pm.OrGateway;
 import org.jbpt.pm.ProcessModel;
 import org.jbpt.pm.XorGateway;
-import org.jbpt.utils.SerializationException;
+import org.jbpt.throwable.SerializationException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

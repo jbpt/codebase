@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jbpt.algo.graph.DirectedGraphAlgorithms;
+import org.jbpt.algo.graph.GraphAlgorithms;
 import org.jbpt.graph.abs.AbstractDirectedGraph;
-import org.jbpt.graph.algo.DirectedGraphAlgorithms;
-import org.jbpt.graph.algo.GraphAlgorithms;
 import org.jbpt.hypergraph.abs.IVertex;
 import org.jbpt.hypergraph.abs.Vertex;
 import org.jbpt.petri.PetriNet;

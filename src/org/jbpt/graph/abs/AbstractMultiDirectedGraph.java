@@ -6,9 +6,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.jbpt.graph.util.DotSerializer;
 import org.jbpt.hypergraph.abs.AbstractMultiDirectedHyperGraph;
 import org.jbpt.hypergraph.abs.IVertex;
+import org.jbpt.utils.DotSerializer;
 
 
 /**

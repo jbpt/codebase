@@ -7,7 +7,7 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
-import org.jbpt.graph.algo.bctree.BCTree;
+import org.jbpt.algo.tree.bctree.BCTree;
 import org.jbpt.petri.Flow;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Node;
@@ -17,8 +17,8 @@ import org.jbpt.petri.structure.PetriNetStructuralClassChecks;
 import org.jbpt.pm.ProcessModel;
 import org.jbpt.pm.io.JSON2Process;
 import org.jbpt.pm.structure.ProcessModel2NetSystem;
+import org.jbpt.throwable.SerializationException;
 import org.jbpt.utils.IOUtils;
-import org.jbpt.utils.SerializationException;
 
 public class BCTreeExtensiveTest extends TestCase {
 

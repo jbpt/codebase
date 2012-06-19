@@ -8,8 +8,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.jbpt.algo.graph.DirectedGraphAlgorithms;
 import org.jbpt.graph.abs.AbstractDirectedGraph;
-import org.jbpt.graph.algo.DirectedGraphAlgorithms;
 
 /**
  * Petri net implementation

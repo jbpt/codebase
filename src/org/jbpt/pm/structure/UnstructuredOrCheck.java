@@ -3,9 +3,9 @@ package org.jbpt.pm.structure;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jbpt.graph.algo.rpst.RPST;
-import org.jbpt.graph.algo.rpst.RPSTNode;
-import org.jbpt.graph.algo.tctree.TCType;
+import org.jbpt.algo.tree.rpst.RPST;
+import org.jbpt.algo.tree.rpst.RPSTNode;
+import org.jbpt.algo.tree.tctree.TCType;
 import org.jbpt.pm.ControlFlow;
 import org.jbpt.pm.FlowNode;
 import org.jbpt.pm.Gateway;

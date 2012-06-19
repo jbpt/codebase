@@ -3,10 +3,10 @@ package org.jbpt.test.graph;
 import java.util.Map;
 import java.util.Set;
 
+import org.jbpt.algo.graph.DirectedGraphAlgorithms;
+import org.jbpt.algo.graph.GraphAlgorithms;
 import org.jbpt.graph.DirectedEdge;
 import org.jbpt.graph.DirectedGraph;
-import org.jbpt.graph.algo.DirectedGraphAlgorithms;
-import org.jbpt.graph.algo.GraphAlgorithms;
 import org.jbpt.hypergraph.abs.Vertex;
 
 import junit.framework.TestCase;

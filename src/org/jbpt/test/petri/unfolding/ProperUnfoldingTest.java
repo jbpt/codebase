@@ -14,8 +14,8 @@ import org.jbpt.pm.AndGateway;
 import org.jbpt.pm.ProcessModel;
 import org.jbpt.pm.XorGateway;
 import org.jbpt.pm.structure.ProcessModel2NetSystem;
+import org.jbpt.throwable.TransformationException;
 import org.jbpt.utils.IOUtils;
-import org.jbpt.utils.TransformationException;
 
 
 public class ProperUnfoldingTest extends TestCase {

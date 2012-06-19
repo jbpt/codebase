@@ -1,6 +1,6 @@
 package org.jbpt.test.graph;
 
-import org.jbpt.graph.algo.tctree.BiconnectivityCheck;
+import org.jbpt.algo.tree.tctree.BiconnectivityCheck;
 import org.jbpt.pm.Activity;
 import org.jbpt.pm.ControlFlow;
 import org.jbpt.pm.FlowNode;

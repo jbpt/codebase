@@ -3,7 +3,7 @@ package org.jbpt.petri.structure;
 import java.util.Map;
 import java.util.Set;
 
-import org.jbpt.graph.algo.TransitiveClosure;
+import org.jbpt.algo.graph.TransitiveClosure;
 import org.jbpt.petri.Flow;
 import org.jbpt.petri.Node;
 import org.jbpt.petri.PetriNet;

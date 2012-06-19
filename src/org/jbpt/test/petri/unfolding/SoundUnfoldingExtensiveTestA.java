@@ -14,8 +14,8 @@ import org.jbpt.petri.unfolding.SoundUnfolding;
 import org.jbpt.pm.ProcessModel;
 import org.jbpt.pm.io.JSON2Process;
 import org.jbpt.pm.structure.ProcessModel2NetSystem;
-import org.jbpt.utils.SerializationException;
-import org.jbpt.utils.TransformationException;
+import org.jbpt.throwable.SerializationException;
+import org.jbpt.throwable.TransformationException;
 
 public class SoundUnfoldingExtensiveTestA extends TestCase {
 

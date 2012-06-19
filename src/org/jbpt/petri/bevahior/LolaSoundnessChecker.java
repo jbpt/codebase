@@ -19,7 +19,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.io.PNMLSerializer;
-import org.jbpt.utils.SerializationException;
+import org.jbpt.throwable.SerializationException;
 import org.w3c.dom.Document;
 
 

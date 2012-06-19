@@ -3,7 +3,7 @@ package org.jbpt.petri.structure;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jbpt.graph.algo.DirectedGraphAlgorithms;
+import org.jbpt.algo.graph.DirectedGraphAlgorithms;
 import org.jbpt.petri.Flow;
 import org.jbpt.petri.Node;
 import org.jbpt.petri.PetriNet;

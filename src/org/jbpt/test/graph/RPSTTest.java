@@ -1,11 +1,11 @@
 package org.jbpt.test.graph;
 
+import org.jbpt.algo.tree.rpst.RPST;
+import org.jbpt.algo.tree.rpst.RPSTNode;
+import org.jbpt.algo.tree.tctree.TCType;
 import org.jbpt.graph.DirectedEdge;
 import org.jbpt.graph.DirectedGraph;
 import org.jbpt.graph.abs.IDirectedEdge;
-import org.jbpt.graph.algo.rpst.RPST;
-import org.jbpt.graph.algo.rpst.RPSTNode;
-import org.jbpt.graph.algo.tctree.TCType;
 import org.jbpt.hypergraph.abs.Vertex;
 import org.jbpt.pm.Activity;
 import org.jbpt.pm.ControlFlow;

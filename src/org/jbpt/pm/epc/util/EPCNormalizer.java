@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.jbpt.graph.algo.TransitiveClosure;
+import org.jbpt.algo.graph.TransitiveClosure;
 import org.jbpt.pm.ControlFlow;
 import org.jbpt.pm.Event;
 import org.jbpt.pm.FlowNode;

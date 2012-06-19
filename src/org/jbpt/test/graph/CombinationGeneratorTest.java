@@ -3,7 +3,7 @@ package org.jbpt.test.graph;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.jbpt.graph.algo.CombinationGenerator;
+import org.jbpt.algo.CombinationGenerator;
 
 import junit.framework.TestCase;
 

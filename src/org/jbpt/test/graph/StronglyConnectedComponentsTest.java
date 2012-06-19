@@ -6,9 +6,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
+import org.jbpt.algo.graph.StronglyConnectedComponents;
 import org.jbpt.graph.DirectedEdge;
 import org.jbpt.graph.DirectedGraph;
-import org.jbpt.graph.algo.StronglyConnectedComponents;
 import org.jbpt.hypergraph.abs.Vertex;
 import org.junit.Test;
 

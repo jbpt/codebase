@@ -1,6 +1,6 @@
 package org.jbpt.test.graph;
 
-import org.jbpt.graph.algo.GraphAlgorithms;
+import org.jbpt.algo.graph.GraphAlgorithms;
 import org.jbpt.pm.ControlFlow;
 import org.jbpt.pm.Event;
 import org.jbpt.pm.FlowNode;
