@@ -1,10 +1,12 @@
 package org.jbpt.graph.algo.bctree;
 
 /**
- * BCTree node types
+ * BCTree node types.
+ * 
+ * @author Artem Polyvyanyy
  * 
  * B - biconnected component
- * C - cutvertex
+ * C - cutvertex 
  */
 public enum BCType {
 	B,

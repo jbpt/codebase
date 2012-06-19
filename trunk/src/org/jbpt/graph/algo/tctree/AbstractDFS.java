@@ -192,7 +192,6 @@ public class AbstractDFS<E extends IEdge<V>, V extends IVertex> {
 	/**
 	 * Move to graph algorithms.
 	 */
-	@Deprecated
 	protected EdgeMap<E, V> createEdgeMap(IGraph<E,V> g) {
 		EdgeMap<E, V> map = new EdgeMap<E, V>();
 		for (E e:g.getEdges()) {
@@ -204,7 +203,6 @@ public class AbstractDFS<E extends IEdge<V>, V extends IVertex> {
 	/**
 	 * Move to graph algorithms.
 	 */
-	@Deprecated
 	protected NodeMap<V> createNodeMap(IGraph<E, V> g) {
 		NodeMap<V> map = new NodeMap<V>();
 		for (V v:g.getVertices()) {

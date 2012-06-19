@@ -12,42 +12,41 @@ import org.jbpt.hypergraph.abs.IVertex;
  * 
  * @author Artem Polyvyanyy
  * 
- * @param <E> template for edge (extends IEdge)
  * @param <V> template for vertex (extends IVertex)
  */
-public interface ITree <E extends IEdge<V>,V extends IVertex> {
+public interface ITree <V extends IVertex> {
 	/**
-	 * Get root vertex of the tree
-	 * @return Root vertex
+	 * Get root vertex of this tree.
+	 * @return Root vertex of this tree.
 	 */
 	public V getRoot();
 	
 	/**
-	 * Set the new root of the tree
-	 * @param v Vertex to use as a new root
-	 * @return New root of the tree. Note that the root will stay the same if <code>v</code> does not belong to the tree.
+	 * Set the new root of this tree.
+	 * @param v Vertex to use as a new root.
+	 * @return New root of this tree. Note that the root will stay the same if <tt>v</tt> does not belong to this tree.
 	 */
 	public V reRoot(V v);
 
 	/**
-	 * Get children of the vertex
-	 * @param v Vertex
-	 * @return Children of <code>v</code>
+	 * Get children of the vertex. 
+	 * @param v Vertex of this tree.
+	 * @return Children of the vertex.
 	 */
 	public Collection<V> getChildren(V v);
 	
 	/**
 	 * Get parent of the vertex
-	 * @param v Vertex
-	 * @return Parent vertex of <code>v</code> or <code>null</code> if <code>v</code> is the root vertex
+	 * @param v Vertex of this tree.
+	 * @return Parent vertex of <tt>v</tt> or <tt>null</tt> if <tt>v</tt> is the root vertex.
 	 */
 	public V getParent(V v);
 	
 	/**
-	 * Add child vertex to a given one
-	 * @param p Parent vertex
-	 * @param c Child vertex
-	 * @return Fresh edge added to the tree or <code>null</code> if child was not added 
+	 * Add child vertex to a given vertex.
+	 * @param p Parent vertex.
+	 * @param c Child vertex.
+	 * @return Fresh child vertex added to the tree; <tt>null</tt> if child was not added.
 	 */
-	public E addChild(V p, V c);
+	public V addChild(V p, V c);
 }
