@@ -1,10 +1,10 @@
 package org.jbpt.test.graph;
 
+import org.jbpt.algo.graph.GraphAlgorithms;
 import org.jbpt.graph.DirectedEdge;
 import org.jbpt.graph.DirectedGraph;
 import org.jbpt.graph.Edge;
 import org.jbpt.graph.Graph;
-import org.jbpt.graph.algo.GraphAlgorithms;
 import org.jbpt.hypergraph.abs.Vertex;
 
 import junit.framework.TestCase;

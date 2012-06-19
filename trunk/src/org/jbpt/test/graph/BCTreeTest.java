@@ -4,9 +4,9 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.jbpt.graph.algo.TreeTraversals;
-import org.jbpt.graph.algo.bctree.BCTree;
-import org.jbpt.graph.algo.bctree.BCTreeNode;
+import org.jbpt.algo.tree.TreeTraversals;
+import org.jbpt.algo.tree.bctree.BCTree;
+import org.jbpt.algo.tree.bctree.BCTreeNode;
 import org.jbpt.pm.Activity;
 import org.jbpt.pm.ControlFlow;
 import org.jbpt.pm.FlowNode;

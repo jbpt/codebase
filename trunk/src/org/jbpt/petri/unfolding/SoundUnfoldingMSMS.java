@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jbpt.graph.algo.CombinationGenerator;
+import org.jbpt.algo.CombinationGenerator;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.Place;

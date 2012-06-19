@@ -1,8 +1,8 @@
 package org.jbpt.test.graph;
 
-import org.jbpt.graph.algo.tctree.TCTree;
-import org.jbpt.graph.algo.tctree.TCTreeNode;
-import org.jbpt.graph.algo.tctree.TCType;
+import org.jbpt.algo.tree.tctree.TCTree;
+import org.jbpt.algo.tree.tctree.TCTreeNode;
+import org.jbpt.algo.tree.tctree.TCType;
 import org.jbpt.pm.Activity;
 import org.jbpt.pm.ControlFlow;
 import org.jbpt.pm.FlowNode;

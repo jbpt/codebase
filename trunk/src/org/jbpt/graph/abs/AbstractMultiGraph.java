@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.jbpt.graph.util.DotSerializer;
 import org.jbpt.hypergraph.abs.AbstractMultiHyperGraph;
 import org.jbpt.hypergraph.abs.IVertex;
+import org.jbpt.utils.DotSerializer;
 
 
 /**
