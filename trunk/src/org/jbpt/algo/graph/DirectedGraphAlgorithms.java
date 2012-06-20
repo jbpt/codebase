@@ -219,9 +219,9 @@ public class DirectedGraphAlgorithms<E extends IDirectedEdge<V>,V extends IVerte
 	 * A directed graph is called two-terminal if it has one source and one sink vertex, 
 	 * such that each vertex lies on a path from the source to the sink. 
 	 * 
-	 * Time complexity: linear to the size of graph.
+	 * Time complexity: linear to the size of the graph.
 	 * 
-	 * @param g Directed graph
+	 * @param g Directed graph.
 	 * @return <tt>true</tt> if directed graph is two-terminal; <tt>false</tt> otherwise.
 	 */
 	public boolean isTwoTerminal(IDirectedGraph<E,V> g) {
@@ -236,9 +236,9 @@ public class DirectedGraphAlgorithms<E extends IDirectedEdge<V>,V extends IVerte
 	 * A directed graph is called multi-terminal if it has at least one source and at least one sink vertex, 
 	 * such that each vertex lies on a path from some source to some sink. 
 	 * 
-	 * Time complexity: linear to the size of graph.
+	 * Time complexity: linear to the size of the graph.
 	 * 
-	 * @param g Directed graph
+	 * @param g Directed graph.
 	 * @return <tt>true</tt> if directed graph is multi-terminal; <tt>false</tt> otherwise.
 	 */
 	public boolean isMultiTerminal(IDirectedGraph<E,V> g) {
