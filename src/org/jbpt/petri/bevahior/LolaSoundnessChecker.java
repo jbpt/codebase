@@ -38,13 +38,13 @@ public class LolaSoundnessChecker {
 	 * @throws SerializationException 
 	 * @throws IOException 
 	 */
-	public static boolean isSound(NetSystem net) throws SerializationException, IOException {
+	public static LolaSoundnessCheckerResult analyzeSoundness(NetSystem net) throws SerializationException, IOException {
 		String pnml = serializePetriNet(net);
-		boolean result = false;
+		LolaSoundnessCheckerResult result = new LolaSoundnessCheckerResult();
 		
 		for (int i=0; i<LolaSoundnessChecker.N; i++) {
 			String response = callLola(pnml, LOLA_URI);
-			try { result = analyseResponse(response); }
+			try { result.parseResult(response, net); }
 			catch (IllegalArgumentException e) {
 				if (i==LolaSoundnessChecker.N-1) throw new IOException("Lola service failure!");
 				continue;
@@ -110,16 +110,5 @@ public class LolaSoundnessChecker {
         reader.close();
         return answer.toString();
 	}
-	
-	/**
-	 * Parses the response from LoLA and checks amongst others for soundness.
-	 * @param response from LoLA
-	 * @return true if all checks were positive
-	 */
-	private static boolean analyseResponse(String response) throws IllegalArgumentException {
-		if (response.toLowerCase().matches(".*warning.*")) throw new IllegalArgumentException("Warning in response!");
-		if (response.toLowerCase().matches(".*;soundness = true;.*")) return true;
-		if (response.toLowerCase().matches(".*;soundness = false;.*")) return false;
-		throw new IllegalArgumentException("Unknown response!");
-	}
+
 }
