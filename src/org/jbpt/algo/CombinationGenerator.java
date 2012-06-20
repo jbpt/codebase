@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * Systematically generate combinations
- * @author Michael Gilleland, Artem Polyvyanyy
+ * Generate combinations systematically.
+ * 
+ * @author Michael Gilleland
+ * @author Artem Polyvyanyy
  *
- * @param <O>
+ * @param <O> Template type for elements to generate combinations for.
  */
 public class CombinationGenerator<O> {
 
@@ -36,7 +38,7 @@ public class CombinationGenerator<O> {
 	}
 	
 	/**
-	 * Reset the generator
+	 * Reset the generator.
 	 */
 	public void reset () {
 		for (int i = 0; i < this.a.length; i++) a[i] = i;
@@ -45,7 +47,7 @@ public class CombinationGenerator<O> {
 	}
 	
 	/**
-	 * Return number of combinations not yet generated
+	 * Return number of combinations not yet generated.
 	 */
 	public BigInteger getNumLeft () {
 		return this.numLeft;
@@ -59,7 +61,7 @@ public class CombinationGenerator<O> {
 	}
 	
 	/**
-	 * Return total number of combinations
+	 * Return total number of combinations.
 	 */
 	public BigInteger getTotal () {
 		return this.total;
@@ -77,7 +79,7 @@ public class CombinationGenerator<O> {
 	}
 	
 	/**
-	 * Generate next combination (algorithm from Rosen p. 286)
+	 * Generate next combination (algorithm from Rosen p. 286).
 	 */
 	public Collection<O> getNextCombination () {
 		if (this.numLeft.equals(total)) {
