@@ -36,7 +36,7 @@ public class LolaSoundnessCheckerTest extends TestCase {
 		net.addFlow(t4, p6);
 		net.putTokens(p1,1);
 		try {
-			assertTrue(LolaSoundnessChecker.isSound(net));
+			assertTrue(LolaSoundnessChecker.analyzeSoundness(net).isClassicalSound());
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail("LoLA seems to be unavailable.");

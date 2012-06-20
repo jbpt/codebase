@@ -95,7 +95,7 @@ public class SoundUnfoldingExtensiveTestB extends TestCase {
 				
 				boolean soundLola = false;
 				try {
-					soundLola = LolaSoundnessChecker.isSound(net);
+					soundLola = LolaSoundnessChecker.analyzeSoundness(net).isClassicalSound();
 					if (soundLola) System.out.println("\tSOUND");
 					else System.out.println("\tUNSOUND");	
 				} catch (IOException e) {
