@@ -1,17 +1,19 @@
 package org.jbpt.algo.tree.tctree;
 
 /**
- * Structural types of triconnected components
+ * Structural types of triconnected components.
  * 
- * P - polygon
- * B - bond
+ * @author Artem Polyvyanyy
+ * 
  * T - trivial (edge)
- * R - rigid
+ * P - polygon (sequence of components)
+ * B - bond (set of components that share boundary vertices)
+ * R - rigid (neither trivial, nor polygon, bond)
  */
 public enum TCType {
+	T, 
 	P, 
 	B, 
-	T, 
 	R, 
 	UNDEFINED
 }

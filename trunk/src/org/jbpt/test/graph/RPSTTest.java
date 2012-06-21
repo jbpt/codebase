@@ -18,7 +18,7 @@ import junit.framework.TestCase;
 
 public class RPSTTest extends TestCase {
 	
-	public void testTrivialGraph2() {
+	/*public void testTrivialGraph2() {
 		System.out.println("========================================================");
 		System.out.println("Trivial Graph");
 		System.out.println("========================================================");
@@ -198,5 +198,5 @@ public class RPSTTest extends TestCase {
 		assertEquals(rpst.getVertices(TCType.R).size(), 0);
 		assertEquals(rpst.getVertices(TCType.P).size(), 4);
 		assertEquals(rpst.getVertices(TCType.T).size(), 11);
-	}
+	}*/
 }

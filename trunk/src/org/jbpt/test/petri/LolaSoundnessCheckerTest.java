@@ -7,7 +7,7 @@ import junit.framework.TestCase;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
-import org.jbpt.petri.bevahior.LolaSoundnessChecker;
+import org.jbpt.petri.behavior.LolaSoundnessChecker;
 import org.jbpt.throwable.SerializationException;
 
 public class LolaSoundnessCheckerTest extends TestCase {

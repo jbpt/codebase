@@ -12,11 +12,10 @@ import java.util.Stack;
 
 import org.jbpt.algo.graph.DirectedGraphAlgorithms;
 import org.jbpt.algo.tree.tctree.TCTree;
-import org.jbpt.algo.tree.tctree.TCTreeEdge;
 import org.jbpt.algo.tree.tctree.TCTreeNode;
 import org.jbpt.algo.tree.tctree.TCType;
 import org.jbpt.algo.tree.tctree.VertexFactory;
-import org.jbpt.graph.abs.AbstractDirectedGraph;
+import org.jbpt.graph.abs.AbstractTree;
 import org.jbpt.graph.abs.IDirectedEdge;
 import org.jbpt.graph.abs.IDirectedGraph;
 import org.jbpt.graph.abs.IEdge;
@@ -25,17 +24,17 @@ import org.jbpt.hypergraph.abs.IVertex;
 
 
 /**
- * The Refined Process Structure Tree
+ * Implementation of the The Refined Process Structure Tree.
  * 
  * @author Artem Polyvyanyy
  * 
+ * Implements algorithm proposed in:
  * Artem Polyvyanyy, Jussi Vanhatalo, and Hagen Voelzer. 
  * Simplified Computation and Generalization of the Refined Process Structure Tree. 
  * Proceedings of the 7th International Workshop on Web Services and Formal Methods (WS-FM).
  * Hoboken, NJ, US, September 2010;
  */
-public class RPST <E extends IDirectedEdge<V>, V extends IVertex>
-				extends AbstractDirectedGraph<RPSTEdge<E,V>, RPSTNode<E,V>> {
+public class RPST <E extends IDirectedEdge<V>, V extends IVertex> extends AbstractTree<RPSTNode<E,V>> {
 
 	private IDirectedGraph<E,V> graph = null;
 	
@@ -48,19 +47,6 @@ public class RPST <E extends IDirectedEdge<V>, V extends IVertex>
 	private DirectedGraphAlgorithms<E,V> dga = new DirectedGraphAlgorithms<E,V>();
 	
 	private RPSTNode<E,V> root = null;
-	
-	
-	@Override
-	public RPSTEdge<E,V> addEdge(RPSTNode<E,V> v1, RPSTNode<E,V> v2) {
-		if (v1 == null || v2 == null) return null;
-		
-		Collection<RPSTNode<E,V>> ss = new ArrayList<RPSTNode<E,V>>(); ss.add(v1);
-		Collection<RPSTNode<E,V>> ts = new ArrayList<RPSTNode<E,V>>(); ts.add(v2);
-		
-		if (!this.checkEdge(ss, ts)) return null;
-		
-		return new RPSTEdge<E,V>(this, v1, v2);
-	}
 	
 	@SuppressWarnings("unchecked")
 	public RPST(IDirectedGraph<E,V> g) {

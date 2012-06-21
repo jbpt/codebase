@@ -87,4 +87,10 @@ public class AbstractTree<V extends IVertex> extends AbstractDirectedGraph<IDire
 		
 		return (e==null) ? null : c;
 	}
+
+	@Override
+	public boolean isRoot(V v) {
+		if (this.root == null) return false;
+		return this.root.equals(v);
+	}
 }
