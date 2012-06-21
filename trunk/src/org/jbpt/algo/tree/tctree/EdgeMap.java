@@ -38,7 +38,7 @@ public class EdgeMap<E extends IEdge<V>, V extends IVertex> extends HashMap<E, O
 	}
 	
 	public void initialiseWithFalse() {
-		for (E edge:this.keySet()) {
+		for (E edge : this.keySet()) {
 			this.put(edge, false);
 		}
 	}

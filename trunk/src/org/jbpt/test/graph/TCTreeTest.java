@@ -3,15 +3,44 @@ package org.jbpt.test.graph;
 import junit.framework.TestCase;
 
 import org.jbpt.algo.tree.tctree.TCTree;
-import org.jbpt.algo.tree.tctree.TCTreeNode;
-import org.jbpt.algo.tree.tctree.TCType;
-import org.jbpt.pm.Activity;
-import org.jbpt.pm.ControlFlow;
-import org.jbpt.pm.FlowNode;
-import org.jbpt.pm.ProcessModel;
-import org.jbpt.pm.XorGateway;
+import org.jbpt.graph.Edge;
+import org.jbpt.graph.MultiGraph;
+import org.jbpt.hypergraph.abs.Vertex;
+import org.jbpt.utils.IOUtils;
 
 public class TCTreeTest extends TestCase {
+	
+	public void testSimpleGraph() {
+		MultiGraph g = new MultiGraph();
+		
+		Vertex s = new Vertex("s");
+		Vertex t = new Vertex("t");
+		Vertex u = new Vertex("u");
+		Vertex v = new Vertex("v");
+		Vertex w = new Vertex("w");
+		Vertex x = new Vertex("x");
+		Vertex y = new Vertex("y");
+		Vertex z = new Vertex("z");
+		
+		g.addEdge(s,u);
+		g.addEdge(u,v);
+		g.addEdge(u,w);
+		g.addEdge(v,w);
+		g.addEdge(v,x);
+		g.addEdge(w,x);
+		g.addEdge(x,y);
+		g.addEdge(y,z);
+		g.addEdge(y,z);
+		g.addEdge(y,z);
+		g.addEdge(z,t);
+		Edge backEdge = g.addEdge(t,s);
+		
+		IOUtils.toFile("graph.dot", g.toDOT());
+		
+		TCTree<Edge,Vertex> tctree = new TCTree<Edge,Vertex>();
+		tctree.getTriconnectedComponents(g, backEdge);
+		
+	}
 		
 	/*public void testSimpleGraph() {
 		
@@ -53,22 +82,10 @@ public class TCTreeTest extends TestCase {
 		p.addControlFlow(j5, t9);
 		ControlFlow<FlowNode> backEdge = p.addControlFlow(t9, t1);
 		
-		TCTree<ControlFlow<FlowNode>,FlowNode> tc = new TCTree<ControlFlow<FlowNode>,FlowNode>(p,backEdge);
-		
-		
-		
-		for (TCTreeNode<ControlFlow, Node> n:tc.getVertices()) {
-			System.out.println(String.valueOf(n) + ": " + n.getSkeleton().getEdges());
-			System.out.println(String.valueOf(n) + ": " + n.getSkeleton().getVirtualEdges());
-		}
-		for (TCTreeNode<ControlFlow<FlowNode>, FlowNode> n : tc.getVertices()) {
-			System.out.println(n + ": " + n.getSkeleton().getEdges());
-			System.out.println(n + ": " + n.getSkeleton().getVirtualEdges());
-			System.out.println(n + ": " + n.getSkeleton().getESMap());
-		}
+		ModelDecomposer<ControlFlow<FlowNode>,FlowNode> tc = new ModelDecomposer<ControlFlow<FlowNode>,FlowNode>();
+		System.out.println(tc.getTriconnectedComponents(p, backEdge));
 		
 		System.out.println("-----------------------------");
-		System.out.println(tc.toString());
 		
 		assertEquals(tc.getVertices().size(), 18);
 		assertEquals(tc.getEdges().size(), 17);
@@ -100,9 +117,9 @@ public class TCTreeTest extends TestCase {
 		assertEquals(0, tc.getVertices(TCType.B).size());
 		assertEquals(0, tc.getVertices(TCType.P).size());
 		assertEquals(1, tc.getVertices(TCType.T).size());
-	}*/
+	}
 	
-	/*public void testGraphWithR() {
+	public void testGraphWithR() {
 		// create process model graph
 		ProcessModel p = new ProcessModel();
 		
@@ -137,7 +154,7 @@ public class TCTreeTest extends TestCase {
 		assertEquals(tc.getVertices(TCType.B).size(), 1);
 		assertEquals(tc.getVertices(TCType.R).size(), 1);
 		assertEquals(tc.getVertices(TCType.P).size(), 3);
-	}*/
+	}
 	
 	public void testSimpleR() {
 		//		  ----- s3 -----------
@@ -330,7 +347,7 @@ public class TCTreeTest extends TestCase {
 		assertEquals(3, tc.getVertices(TCType.B).size());
 		assertEquals(1, tc.getVertices(TCType.R).size());
 		assertEquals(10, tc.getVertices(TCType.P).size());
-	}
+	}*/
 	
 	/*public void testOneMoreComplexExample() {
 		Graph g = new Graph();

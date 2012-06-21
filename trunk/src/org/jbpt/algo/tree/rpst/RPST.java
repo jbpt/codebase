@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.Stack;
 
 import org.jbpt.algo.graph.DirectedGraphAlgorithms;
-import org.jbpt.algo.tree.tctree.TCTree;
+import org.jbpt.algo.tree.tctree.TCTreeOLD;
 import org.jbpt.algo.tree.tctree.TCTreeNode;
 import org.jbpt.algo.tree.tctree.TCType;
 import org.jbpt.algo.tree.tctree.VertexFactory;
@@ -42,7 +42,7 @@ public class RPST <E extends IDirectedEdge<V>, V extends IVertex> extends Abstra
 	
 	private Collection<E> extraEdges = null;
 	
-	private TCTree<IEdge<V>,V> tct = null;
+	private TCTreeOLD<IEdge<V>,V> tct = null;
 	
 	private DirectedGraphAlgorithms<E,V> dga = new DirectedGraphAlgorithms<E,V>();
 	
@@ -88,7 +88,7 @@ public class RPST <E extends IDirectedEdge<V>, V extends IVertex> extends Abstra
 		}
 		
 		// compute TCTree
-		this.tct = new TCTree<IEdge<V>, V>((IGraph<IEdge<V>, V>) this.graph,this.backEdge);
+		this.tct = new TCTreeOLD<IEdge<V>, V>((IGraph<IEdge<V>, V>) this.graph,this.backEdge);
 		
 		// remove extra edges
 		Set<TCTreeNode<IEdge<V>,V>> quasi = new HashSet<TCTreeNode<IEdge<V>,V>>();
