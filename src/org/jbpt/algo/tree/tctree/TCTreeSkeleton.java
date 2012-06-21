@@ -8,6 +8,7 @@ import java.util.Set;
 import org.jbpt.graph.abs.AbstractMultiGraph;
 import org.jbpt.graph.abs.IEdge;
 import org.jbpt.hypergraph.abs.IVertex;
+import org.jbpt.utils.DotSerializer;
 
 
 /**
@@ -41,5 +42,10 @@ public class TCTreeSkeleton<E extends IEdge<V>, V extends IVertex> extends Abstr
 	public E removeEdge(E e) {
 		this.virtualEdges.remove(e);
 		return super.removeEdge(e);
+	}
+	
+	@Override
+	public String toDOT() {
+		return new DotSerializer().serialize(this,this.virtualEdges);
 	}
 }
