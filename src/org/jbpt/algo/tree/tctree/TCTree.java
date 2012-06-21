@@ -2,177 +2,187 @@ package org.jbpt.algo.tree.tctree;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Vector;
 
-import org.jbpt.graph.abs.AbstractMultiGraphFragment;
-import org.jbpt.graph.abs.AbstractTree;
 import org.jbpt.graph.abs.IEdge;
 import org.jbpt.graph.abs.IGraph;
 import org.jbpt.hypergraph.abs.IVertex;
 
-
 /**
- * The tree of the triconnected components
+ * This class takes a biconnected graph and decomposes it into triconnected components. 
  * 
- * @author Artem Polyvyanyy
+ * This implementation is an adaption of the algorithm implemented by Martin Mader. 
+ * The general process of this decomposition is described in his master's thesis.
+ * 
+ * @author Martin Mader
  * @author Christian Wiggert
+ * @author Artem Polyvyanyy
  *
- * @param <E> template for edge (extends IEdge)
- * @param <V> template for vertex (extends IVertex)
+ * @param Implementation of IEdge
+ * @param Implementation of IVertex
  */
-public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<TCTreeNode<E,V>> {
+public class TCTree<E extends IEdge<V>, V extends IVertex> {
 
-	protected IGraph<E,V> graph;
-	
-	protected Collection<TCTreeNode<E,V>> nodes = new ArrayList<TCTreeNode<E,V>>();
-	
-	protected E backEdge;
-	
-	/*
-	 * (non-Javadoc)
-	 * @see de.hpi.bpt.graph.abs.AbstractDirectedGraph#addEdge(de.hpi.bpt.hypergraph.abs.IVertex, de.hpi.bpt.hypergraph.abs.IVertex)
-	 */
-	
 	/**
-	 * This class decomposes the given a given biconnected graph into a tree of triconnected components.
-	 * If the given back edge is null, a random edge of the graph is chosen as back edge
-	 * @param graph - a biconnected graph 
-	 * @param edge - the according back edge
+	 * controls the debug output
 	 */
-	public TCTree(IGraph<E,V> g, E edge) {
-		if (g==null) return;
-		this.graph = g;
-		
-		if (isTrivialCase()) {
-			TCTreeSkeleton<E,V> sk = new TCTreeSkeleton<E,V>(this.graph);
-			sk.copyOriginalGraph();
-			this.root = new TCTreeNode<E,V>("T0");
-			this.root.setSkeleton(sk);
-			this.root.setType(TCType.T);
-			this.addVertex(this.root);
-			this.root.setBoundaryNodes(this.graph.getVertices());
-		} else {
-			TCTreeSkeleton<E,V> sk = new TCTreeSkeleton<E,V>(this.graph);
-			sk.copyOriginalGraph();
-			if (edge == null)
-				// choose one edge to be the backEdge
-				this.backEdge = sk.getEdges().iterator().next();
-			else
-				this.backEdge = edge;
-			// graph must be biconnected
-			BiconnectivityCheck<E,V> check = new BiconnectivityCheck<E,V>(sk);
-			if (!check.isBiconnected()) return;
-			
-			// make first node
-			this.root = new TCTreeNode<E,V>("0");
-			this.root.setSkeleton(sk);
+	private static boolean showDebugInformation = false;
 	
-			// decompose
-			ModelDecomposer<E, V> decomposer = new ModelDecomposer<E, V>();
-			Collection<TCTreeNode<E, V>> newNodes = decomposer.getTriconnectedComponents(graph, this.root, this.backEdge);
-			if (newNodes != null) {
-				for (TCTreeNode<E, V> node:newNodes) {
-					this.putNode(node);
+	public TCTree() {}
+	
+	public Collection<TCTreeNode<E,V>> getTriconnectedComponents(IGraph<E,V> graph, E backEdge) {
+		Vector<EdgeList<E,V>> components = new Vector<EdgeList<E,V>>();
+		
+		EdgeMap<E,V> virtEdgeMap = this.createEdgeMap(graph); 
+		virtEdgeMap.initialiseWithFalse();
+		virtEdgeMap.put(backEdge,true);
+		EdgeMap<E,V> assignedVirtEdgeMap = this.createEdgeMap(graph);
+		EdgeMap<E,V> isHiddenMap = this.createEdgeMap(graph);
+		isHiddenMap.initialiseWithFalse();
+		
+		MetaInfoContainer meta = new MetaInfoContainer();
+		meta.setMetaInfo(MetaInfo.VIRTUAL_EDGES, virtEdgeMap);
+		meta.setMetaInfo(MetaInfo.ASSIGNED_VIRTUAL_EDGES, assignedVirtEdgeMap);
+		meta.setMetaInfo(MetaInfo.HIDDEN_EDGES, isHiddenMap);
+		
+		if(showDebugInformation) System.out.println("\nSplitting off initial multiple edges...");
+		System.out.println(components.size());
+		this.splitOffInitialMultipleEdges(graph,components,virtEdgeMap,assignedVirtEdgeMap,isHiddenMap);
+		System.out.println(components.size());
+		if(showDebugInformation) {
+			System.out.println("\nSplitting off initial multiple edges finished !");
+			System.out.println("backEdge: " + backEdge);
+			System.out.println("\nFinding split components...");
+		}
+		this.findSplitComponents(graph,components,virtEdgeMap,assignedVirtEdgeMap,isHiddenMap,meta,backEdge.getV1());
+		if(showDebugInformation) System.out.println("\nFinding split components finished !");
+		
+		// create TCTreeNodes and Skeletons from components
+		if(showDebugInformation) System.out.println("\nCreating TCTreeNodes...");
+		HashMap<E,TCTreeNode<E,V>> virtEdgeComps = new HashMap<E,TCTreeNode<E,V>>(); 
+		LinkedList<TCTreeNode<E,V>> nodes = new LinkedList<TCTreeNode<E,V>>();
+		int i = 0;
+		if(showDebugInformation) System.out.println("\n Graph edges: " + graph.getEdges());		
+		
+		for (EdgeList<E,V> el : components) {
+			TCTreeSkeleton<E,V> skeleton = new TCTreeSkeleton<E,V>();
+			TCTreeNode<E,V> node = new TCTreeNode<E,V>(String.valueOf(i++));
+			for (E edge : el) {
+				if (virtEdgeMap.getBool(edge)) {
+					E virtEdge = skeleton.addVirtualEdge(edge.getV1(),edge.getV2());
+					virtEdge.setDescription(edge.getDescription());
+					virtEdge.setId(edge.getId());
+					virtEdgeComps.put(virtEdge,node);
+				} else {
+					E newEdge = skeleton.addEdge(edge.getV1(),edge.getV2());
+					newEdge.setDescription(edge.getDescription());
 				}
 			}
-			
-			// classify node types
-			this.classifyNodes();
-			
-			// construct tree
-			this.constructTree();
-		
-			this.nodes.clear();
+			node.setSkeleton(skeleton);
+			nodes.add(node);
 		}
-	}
-	
-	/**
-	 * A shot cut for TCTree(graph, null);
-	 * @param graph - a biconnected graph
-	 */
-	public TCTree(IGraph<E,V> g) {
-		this(g, null);
-	}
-	
-	private boolean isTrivialCase() {
-		if (this.graph.getEdges().size() == 1 && !(this.graph.getVertices().size() > 2))
-			return true;
-		return false;
-	}
-	
-	/**
-	 * Get original graph
-	 * @return Graph
-	 */
-	public IGraph<E,V> getGraph() {
-		return this.graph;
-	}
-	
-	/**
-	 * Add TC-tree node, if it was not added before
-	 * @param node Node to add
-	 */
-	private void putNode(TCTreeNode<E,V> node) {
-		Iterator<TCTreeNode<E,V>> i = this.nodes.iterator();
+		if(showDebugInformation) System.out.println("\nCreating TCTreeNodes finished!");
+
+		// classify nodes
+		this.classifyNodes(nodes);
 		
-		Collection<V> vs1 = node.getSkeleton().getVertices();
-		boolean flag = true;
-		while (i.hasNext()) {
-			TCTreeNode<E,V> n = i.next();
+		// merge bonds and polygons
+		/*ArrayList<TCTreeNode<E,V>> result = new ArrayList<TCTreeNode<E,V>>();
+		while (nodes.size() > 0) {
+			TCTreeNode<E,V> node = nodes.poll();
 			
-			Collection<V> vs2 = n.getSkeleton().getVertices();
-			
-			if (vs2.containsAll(vs1) && vs2.size()==vs1.size()) {
-				flag = false;
-				break;
+			if (node.getType() == TCType.R) { // R nodes won't be merged, so add them to the result and skip the rest
+				result.add(node);
+				continue;
 			}
-		}
+			
+			TCTreeNode<E,V> remove = null, replace = null;
+			boolean delete = false;
+			
+			for (TCTreeNode<E,V> n : nodes) {
+				if (node.getType() != n.getType()) continue;
+				for (E edge : node.getSkeleton().getVirtualEdges()) {
+					E e = n.getSkeleton().getEdge(edge.getV1(),edge.getV2());
+					if (e != null && n.getSkeleton().isVirtual(e) && edge.getId().equals(e.getId())) {
+						// there are two different TCTreeNodes with the same type and one virtual edge in common
+						if(showDebugInformation) System.out.println("\nUUID: " + edge.getId() + "; " + edge + "; " + node + "; " + n);
+						remove = n;
+						replace = new TCTreeNode<E,V>(n.getName());
+						replace.setSkeleton(new TCTreeSkeleton<E,V>());
+						replace.setType(n.getType());
+						
+						for (E edge2 : node.getSkeleton().getEdges()) {
+							if (edge == edge2)  continue;
+							
+							E newEdge;
+							if (node.getSkeleton().isVirtual(edge2))
+								newEdge = replace.getSkeleton().addVirtualEdge(edge2.getV1(), edge2.getV2());	
+							else
+								newEdge = replace.getSkeleton().addEdge(edge2.getV1(), edge2.getV2());
+							
+							newEdge.setDescription(edge2.getDescription());
+							newEdge.setId(edge2.getId());
+						}
+						for (E e2 : n.getSkeleton().getEdges()) {
+							if (e == e2)
+								continue;
+							E newEdge;
+							if (n.getSkeleton().isVirtual(e2))
+								newEdge = replace.getSkeleton().addVirtualEdge(e2.getV1(), e2.getV2());
+							else
+								newEdge = replace.getSkeleton().addEdge(e2.getV1(), e2.getV2());
+							
+							newEdge.setDescription(e2.getDescription());
+							newEdge.setId(e2.getId());
+						}
+						delete = true;
+						break;
+					}
+				}
+				if (delete) break;
+			}
+			if (!delete) {
+				if(showDebugInformation) {
+					System.out.println("\n" + node + ": " + node.getSkeleton().getEdges());
+					System.out.println(String.valueOf(node) + ": " + node.getSkeleton().getVirtualEdges());
+				}
+				result.add(node);
+			} else {
+				nodes.remove(remove);
+				nodes.addLast(replace);
+			}
+		}*/
 		
-		if (flag)
-			this.nodes.add(node);
-	}
-	
-	/**
-	 * @param type
-	 * @return
-	 */
-	public Collection<TCTreeNode<E,V>> getVertices(TCType type) {
-		Collection<TCTreeNode<E,V>> result = new ArrayList<TCTreeNode<E,V>>();
-		
-		Iterator<TCTreeNode<E,V>> i = this.getVertices().iterator();
-		while (i.hasNext()) {
-			TCTreeNode<E,V> n = i.next();
-			if (n.getType()==type)
-				result.add(n);
-		}
-		
-		return result;
+		return nodes;
 	}
 	
 	/**
 	 * Classify TCTree nodes on types: P,B,R
 	 */
-	private void classifyNodes() {
+	private void classifyNodes(Collection<TCTreeNode<E,V>> nodes) {
 		int Pc, Bc, Rc;
 		Pc = Bc = Rc = 0;
 		
-		Iterator<TCTreeNode<E,V>> i = this.nodes.iterator();
+		Iterator<TCTreeNode<E,V>> i = nodes.iterator();
 		while (i.hasNext()) {
 			TCTreeNode<E,V> n = i.next();
 			
 			if (n.getSkeleton().countVertices()==2) { n.setType(TCType.B); n.setName("B" + Bc++); continue; }
 			
-			boolean isS = true;
+			boolean isPolygon = true;
 			Iterator<V> vs = n.getSkeleton().getVertices().iterator();
 			while (vs.hasNext()) {
 				V v = vs.next();
 				if (n.getSkeleton().getEdges(v).size()!=2) {
-					isS = false;
+					isPolygon = false;
 					break;
 				}
 			}
 			
-			if (isS) {
+			if (isPolygon) {
 				n.setType(TCType.P);
 				n.setName("P" + Pc++);
 			}
@@ -183,225 +193,355 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
 		}
 	}
 	
-	private void constructTree() {
-		// get root node - a node with back edge
-		Iterator<TCTreeNode<E,V>> i = this.nodes.iterator();
-		while (i.hasNext()) {
-			TCTreeNode<E,V> n = i.next();
-			E e = n.getSkeleton().getEdge(this.backEdge.getV1(), this.backEdge.getV2());
-			if (e!=null) // && n.getSkeleton().isVirtual(e))
-			{				
-				this.root = n;
-				break;
+	/**
+	 * Runs the different DFS algorithms and creates the triconnected components based on the given graph and maps.
+	 */
+	@SuppressWarnings("unchecked")
+	protected void findSplitComponents(IGraph<E,V> graph,
+			Vector<EdgeList<E,V>> components, EdgeMap<E,V> virtEdgeMap,
+			EdgeMap<E,V> assignedVirtEdgeMap, EdgeMap<E,V> isHiddenMap,
+			MetaInfoContainer meta, V root) {
+		// initial adjacency map
+		NodeMap<V> adjMap = this.createNodeMap(graph);
+		for (V v:graph.getVertices()){
+			EdgeList<E,V> adj = new EdgeList<E,V>();
+			for (E e:graph.getEdges(v)){
+				adj.add(e);
 			}
+			adjMap.put(v, adj);
 		}
-		if (this.root == null) return;
-		this.addVertex(this.root);
-		this.root.setBoundaryNodes(this.backEdge.getVertices());
-	
-		Collection<TCTreeNode<E,V>> ns = new ArrayList<TCTreeNode<E,V>>(this.nodes);
-		ns.remove(this.root);
-		constructChildren(this.root,ns);
+		meta.setMetaInfo(MetaInfo.DFS_ADJ_LISTS, adjMap);
+		// first DFS -- calculate lowpoint information
+		LowAndDescDFS<E,V> dfs1 = new LowAndDescDFS<E,V>(graph, meta, adjMap);
+		dfs1.start(root);
 		
-		// construct trivial nodes
-		int Tc = 0;
-		for (TCTreeNode<E,V> node : this.getVertices()) {
-			Collection<E> ts = new ArrayList<E>(node.getSkeleton().getEdges());
-			ts.removeAll(node.getSkeleton().getVirtualEdges());
-			for (E t : ts) {
-				TCTreeNode<E,V> n = new TCTreeNode<E,V>();
-				n.setType(TCType.T);
-				n.setBoundaryNodes(t.getVertices());
-				TCTreeSkeleton<E,V> sk = new TCTreeSkeleton<E,V>(this.graph);
-				sk.addEdge(t.getV1(), t.getV2());
-				n.setSkeleton(sk);
-				n.setName("T"+(Tc++));
-				this.addEdge(node,n);
+		// debug
+		if(showDebugInformation) {
+			System.out.println("\nDFS status after first DFS...");
+			for (V n:graph.getVertices()) {
+				System.out.println("Node "+n+": "+
+						" DFSNum " + ((NodeMap<V>) meta.getMetaInfo(MetaInfo.DFS_NUM)).getInt(n) +
+						" CplNum " + ((NodeMap<V>) meta.getMetaInfo(MetaInfo.DFS_COMPL_NUM)).getInt(n) +
+						" State " + ((NodeMap<V>) meta.getMetaInfo(MetaInfo.DFS_NODE_STATE)).getInt(n) +
+						" Low1Num " + ((NodeMap<V>) meta.getMetaInfo(MetaInfo.DFS_LOWPT1_NUM)).getInt(n) +
+						" Low2Num " + ((NodeMap<V>) meta.getMetaInfo(MetaInfo.DFS_LOWPT2_NUM)).getInt(n) +
+						" NumDesc " + ((NodeMap<V>) meta.getMetaInfo(MetaInfo.DFS_NUM_DESC)).getInt(n) +
+						" Parent " + ((NodeMap<V>) meta.getMetaInfo(MetaInfo.DFS_PARENT)).get(n)
+				);
+				
+			}
+			for (E e:graph.getEdges()) {
+				System.out.println("Edge " + e + ": " +
+						" startsPath " + ((EdgeMap<E,V>) meta.getMetaInfo(MetaInfo.DFS_STARTS_NEW_PATH)).get(e));
 			}
 		}
+		// order adjacency lists according to low-point values
+		NodeMap<V> orderedAdjMap = orderAdjLists(graph, meta);
+		
+		NodeMap<V> copiedOrderedAdjMap = new NodeMap<V>();
+		for (V node:orderedAdjMap.keySet()) {
+			copiedOrderedAdjMap.put(node, ((EdgeList<E,V>) orderedAdjMap.get(node)).clone());
+		}
+		// second DFS -- renumber the vertices
+		NumberDFS<E,V> dfs2 = new NumberDFS<E,V>(graph, meta, copiedOrderedAdjMap);
+		dfs2.start(root);
+		
+		// debug
+		if(showDebugInformation) {
+			System.out.print("\nHigh-Points after second DFS");
+			for (V n:graph.getVertices()){
+				System.out.print("\nNode "+n+": ");
+				NodeList<V> hpList = (NodeList<V>) ((NodeMap<V>) meta.getMetaInfo(MetaInfo.DFS_HIGHPT_LISTS)).get(n);
+				for (V node:hpList) {
+					System.out.print(" " + node + " ");
+				}
+			}
+		}
+		
+		// workaround to circumvent a problem in the JBPT framework
+		// which leads to not properly removed virtual edges in the TCTreeSkeleton
+		// therefore this count is used to store the current state during dfs3
+		NodeMap<V> edgeCount = new NodeMap<V>();
+		for (V node:graph.getVertices()) {
+			edgeCount.put(node, graph.getEdges(node).size());
+		}
+		meta.setMetaInfo(MetaInfo.DFS_EDGE_COUNT, edgeCount);
+		// third DFS -- find the actual split components
+		if(showDebugInformation) System.out.println("\n\nThird DFS - Finding split components...");
+		SplitCompDFS<E,V> dfs3 = new SplitCompDFS<E,V>(graph, meta, copiedOrderedAdjMap, components, dfs2
+				.getParentMap(), dfs2.getTreeArcMap(), dfs2.getHighptMap(),
+				dfs2.getEdgeTypeMap(), virtEdgeMap, assignedVirtEdgeMap, 
+				isHiddenMap);
+		if (showDebugInformation) dfs3.doShowDebugInformation(true);
+		dfs3.start(root);
+		
+		//debug
+		if(showDebugInformation) {
+			for (EdgeList<E,V> el : components) {
+				System.out.print("\n Component: ");
+				for (E e : el) {
+					System.out.print(" (" + e + ")");
+					if (virtEdgeMap.getBool(e))
+						System.out.print("v ");
+					else
+						System.out.print(" ");
+				}
+				
+			}
+		}
+		
+	}
+
+	/**
+	 *  
+	 */
+	@SuppressWarnings("unchecked")
+	protected NodeMap<V> orderAdjLists(IGraph<E,V> graph, MetaInfoContainer meta) {
+		if(showDebugInformation) System.out.println("\nOrdering adjacency lists w.r.t. low-point values...");
+		Collection<E> edges = graph.getEdges();
+		ArrayList<EdgeList<E,V>> bucket = new ArrayList<EdgeList<E,V>>();
+		int bucketSize = 3 * (graph.countVertices()) + 2;
+		if(showDebugInformation) System.out.println("\n vertices: " + graph.countVertices() + ", bucket size: " + bucketSize);
+		for (int i=0; i< bucketSize; i++){
+			bucket.add(new EdgeList<E,V>());
+		}
+		int phi;
+		if(showDebugInformation) System.out.println("Potentials: ");
+		for (E e:edges) {
+
+			phi = -1;
+			// assign each edge its potential phi
+			if (((EdgeMap<E,V>) meta.getMetaInfo(MetaInfo.DFS_EDGE_TYPE)).getInt(e) == AbstractDFS.TREE_EDGE){
+				// e is tree edge
+				if (((NodeMap<V>) meta.getMetaInfo(MetaInfo.DFS_LOWPT2_NUM)).getInt(e.getV2()) 
+						< ((NodeMap<V>) meta.getMetaInfo(MetaInfo.DFS_NUM)).getInt(e.getV1())){
+					// low2(w) < v
+					phi = 3 * ((NodeMap<V>) meta.getMetaInfo(MetaInfo.DFS_LOWPT1_NUM)).getInt(e.getV2());
+				} else {
+					// low2(w) >= v
+					phi = 3 * ((NodeMap<V>) meta.getMetaInfo(MetaInfo.DFS_LOWPT1_NUM)).getInt(e.getV2()) + 2;
+				}
+			} else {
+				// e is back edge
+				phi = 3 * ((NodeMap<V>) meta.getMetaInfo(MetaInfo.DFS_NUM)).getInt(e.getV2()) + 1;
+			}
+			if(showDebugInformation) System.out.print(" ["+e+"]="+phi);
+			
+			// put edge into bucket according to phi
+			// ! bucket's index start with 0
+			(bucket.get(phi-1)).add(e);
+		}
+		
+		// create a new node map for the ordered adj list
+		NodeMap<V> orderedAdjMap = this.createNodeMap(graph);
+		for (V node:graph.getVertices()) {
+			EdgeList<E,V> adj = new EdgeList<E,V>();
+			orderedAdjMap.put(node, adj);
+		}
+		meta.setMetaInfo(MetaInfo.DFS_ORDERED_ADJ_LISTS, orderedAdjMap);
+		
+		// put edges into adj list according to order in buckets
+		for (EdgeList<E,V> el : bucket){
+			while (!el.isEmpty()){
+				E e = el.pop();
+				((EdgeList<E ,V>) orderedAdjMap.get(e.getV1())).add(e);
+			}
+		}
+		if(showDebugInformation) System.out.println("\nOrdering finished");
+		return orderedAdjMap;
+	}
+
+	/**
+	 * This method is used for the deletion of multiple edges. 
+	 * The edges are sorted in a manner, so that multiple edges
+	 * are positioned consecutively in the returned EdgeList.
+	 */
+	@SuppressWarnings("unchecked") 
+	protected EdgeList<E,V> sortConsecutiveMultipleEdges(IGraph<E,V> g){
+		NodeMap<V> indices = new NodeMap<V>();
+		int count = 0;
+		for (V vertex:g.getVertices()) {
+			indices.put(vertex, count++);
+		}
+		// bucketSort edges such that multiple edges come after each other
+		if(showDebugInformation) System.out.println("\nSorting edges...");
+		ArrayList<E> edges = (ArrayList<E>) g.getEdges();
+		ArrayList<EdgeList<E,V>> bucket = new ArrayList<EdgeList<E,V>>();
+		// place edges into buckets according to vertex with smaller index
+		for (int i = 0; i < g.getVertices().size(); i++) {//edges.size(); i++) {
+			bucket.add(new EdgeList<E,V>());
+		}
+		for (E e:edges) {
+			int i = Math.min((Integer) indices.get( e.getV1()), (Integer) indices.get(e.getV2()));
+			bucket.get(i).add(e);
+		}
+		
+		// sort within buckets according to enDP_NAMESoint with larger index
+		EdgeList<E,V> sortedEdges = new EdgeList<E,V>();
+		for  (EdgeList<E,V> l : bucket){
+			HashMap<Integer, EdgeList<E,V>> map = new HashMap<Integer, EdgeList<E,V>>();
+			for (Object e : l){
+				// add up indices of enDP_NAMESoints
+				Integer i = (Integer) indices.get(((E)e).getV1()) + (Integer) indices.get(((E)e).getV2());
+				// take this as key for the map
+				EdgeList<E,V> el = map.get(i);
+				// and add the edge to the corresponding edge list
+				if (el == null) {
+					el = new EdgeList<E,V>();
+					el.add((E) e);
+					map.put(i, el);
+				} else {
+					el.add((E) e);
+				}
+			}
+			// put edges into output list
+			Collection<EdgeList<E,V>> col = map.values();
+			for (EdgeList<E,V> el : col){
+				if (el != null){
+					sortedEdges.addAll(el);
+				}
+			}
+			
+		}
+		
+		//debug
+		if(showDebugInformation) {
+			System.out.println();
+			for (E e : sortedEdges){
+				System.out.println(" [" + e.toString() + "]");
+			}
+		}
+		
+		return sortedEdges;
 	}
 	
-	private void constructChildren(TCTreeNode<E,V> n, Collection<TCTreeNode<E,V>> ns)
-	{
-		Collection<TCTreeNode<E,V>> nss = new ArrayList<TCTreeNode<E,V>>(ns);
-		Collection<TCTreeNode<E,V>> ncs = new ArrayList<TCTreeNode<E,V>>();
-		Collection<TCTreeNode<E,V>> nps = new ArrayList<TCTreeNode<E,V>>();
+	/**
+	 * Simply deletes found multiple edges in the given graph.
+	 */
+	protected void splitOffInitialMultipleEdges(IGraph<E,V> graph, 
+			Vector<EdgeList<E,V>> components, 
+			EdgeMap<E,V> virtEdgeMap, 
+			EdgeMap<E,V> assignedVirtEdgeMap, 
+			EdgeMap<E,V> isHiddenMap) {
 		
-		Iterator<E> i = n.getSkeleton().getVirtualEdges().iterator();
-		while (i.hasNext()) {
-			E ve = i.next();
-			
-			Iterator<TCTreeNode<E,V>> j = ns.iterator();
-			while (j.hasNext()) {
-				TCTreeNode<E,V> vn = j.next();
-				
-				Collection<E> ves = vn.getSkeleton().getEdges(ve.getV1(), ve.getV2());
-				if (this.containsVirtual(vn, ves)) {
-					
-					vn.setBoundaryNodes(ve.getVertices());
-					
-					nss.remove(vn);
-					
-					if (vn.getType() == TCType.B)
-						nps.add(vn);
-					else {
-						ncs.add(vn);
+		// sort edges such that multiple edges are consecutive
+		EdgeList<E,V> edges = this.sortConsecutiveMultipleEdges(graph);
+		
+		// split off multiple edge components
+		EdgeList<E,V> tempComp = new EdgeList<E,V>();
+		E lastEdge=null, currentEdge=null;
+		int tempCompSize = 0;
+		for (E e:edges){
+			currentEdge = e;
+			if (lastEdge != null){
+				// multiple edge if enDP_NAMESoint correspond to lastEdge's enDP_NAMESoints
+				if ((currentEdge.getV1()==lastEdge.getV1() && 
+						currentEdge.getV2()==lastEdge.getV2())
+						|| 
+						(currentEdge.getV1()==lastEdge.getV2() &&
+						currentEdge.getV2()==lastEdge.getV1())){
+					// add lastEdge to new component
+					tempComp.add(lastEdge);
+					tempCompSize++;
+				}
+				// current edge is different from last edge
+				else{
+					// if tempCompSize is greater than zero, there has been split off
+					// at least one edge, and the corresponding component needs to be
+					// finished
+					if (tempCompSize>0){
+						// add lastEdge to component
+						tempComp.add(lastEdge);
+						// finish component, i.e. add virtual edge and store the
+						// component
+						newComponent(graph, components, tempComp, virtEdgeMap, 
+								assignedVirtEdgeMap, isHiddenMap,
+								lastEdge.getV1(), lastEdge.getV2());
+						// look for new multiple edges next time
+						tempComp = new EdgeList<E,V>();
+						tempCompSize=0;
 					}
 				}
 			}
+			lastEdge = currentEdge;
+		}
+		// possible finishing of the last component due to multiple edges
+		if (tempCompSize>0){
+			// add lastEdge to component
+			tempComp.add(lastEdge);
+			// finish component, i.e. add virtual edge and store the
+			// component
+			newComponent(graph, components, tempComp, virtEdgeMap, 
+					assignedVirtEdgeMap, isHiddenMap,
+					lastEdge.getV1(), lastEdge.getV2());
 		}
 		
-		// first work with Bs
-		Collection<TCTreeNode<E,V>> cncs = new ArrayList<TCTreeNode<E,V>>(ncs);
-		Iterator<TCTreeNode<E,V>> j = nps.iterator();
-		while (j.hasNext()) {
-			TCTreeNode<E,V> p = j.next();
-			
-			// look for children
-			Collection<TCTreeNode<E,V>> npc = new ArrayList<TCTreeNode<E,V>>();
-			
-			Iterator<TCTreeNode<E,V>> k = cncs.iterator();
-			while (k.hasNext()) {
-				TCTreeNode<E,V> cc = k.next();
-				
-				Iterator<V> pi = p.getSkeleton().getVertices().iterator();
-				
-				Collection<E> ves = cc.getSkeleton().getEdges(pi.next(), pi.next());
-				if (this.containsVirtual(cc, ves)) {
-					npc.add(cc);
-					nss.remove(cc);
-					ncs.remove(cc);
+		//debug
+		if (showDebugInformation) {
+			for (EdgeList<E,V> el : components) {
+				System.out.println("\nComponent");
+				for (E e:el) {
+					System.out.print(" [" + e.toString() + "] ");
 				}
 			}
-			
-			// call recursion
-			this.addEdge(n,p);
-			Collection<TCTreeNode<E,V>> u = new ArrayList<TCTreeNode<E,V>>(nss);
-			u.addAll(npc);
-			this.constructChildren(p,u);
-		}
-		
-		// now rest
-		j = ncs.iterator();
-		while (j.hasNext()) {
-			TCTreeNode<E,V> vn = j.next();
-			this.addEdge(n,vn);
-			this.constructChildren(vn,nss);
 		}
 	}
-	
-	private boolean containsVirtual(TCTreeNode<E,V> n, Collection<E> ves) {
-		
-		Iterator<E> i = ves.iterator();
-		while (i.hasNext()) {
-			if (n.getSkeleton().getVirtualEdges().contains(i.next()))
-				return true;
+
+	/**
+	 * Creates a new component based on the given list of contained edges.
+	 */
+	protected void newComponent(IGraph<E,V> graph,
+			Vector<EdgeList<E,V>> components, EdgeList<E,V> tempComp,
+			EdgeMap<E,V> virtEdgeMap, EdgeMap<E,V> assignedVirtEdgeMap,
+			EdgeMap<E,V> isHiddenMap, V v1, V v2) {
+		// remove edges from graph
+		if(showDebugInformation) System.out.print("Hiding edge ");
+		for (E e : tempComp){	
+			try {
+				graph.removeEdge(e);
+				if(showDebugInformation) System.out.print("("+e+") ");
+				isHiddenMap.put(e, true);
+			} catch (Exception ex) {
+				if(showDebugInformation) System.err.println("Edge "+e+ ": "+ex.getMessage());
+				ex.printStackTrace();
+			}
 		}
+		// create virtual edge and add edges to component
+		E virtualEdge = graph.addEdge(v1, v2);
+		virtEdgeMap.put(virtualEdge, true);
+		tempComp.add(0, virtualEdge);
+		// assign virtual edge
+		for(E e:tempComp){
+			assignedVirtEdgeMap.put(e, virtualEdge);
+		}
+		components.add(tempComp);
 		
-		return false;
+	}
+
+	/**
+	 * Creates an edgeMap for the given graph containing all edges of the graph.
+	 * @param g
+	 */
+	protected EdgeMap<E,V> createEdgeMap(IGraph<E,V> g) {
+		EdgeMap<E,V> map = new EdgeMap<E,V>();
+		for (E e:g.getEdges()) {
+			map.put(e, null);
+		}
+		return map;
 	}
 	
 	/**
-	 * Get TCTree node containing vertex of original graph
-	 * @param v Vertex of original graph
-	 * @return TCTree node that contains vertex
+	 * Creates a NodeMap for the given graph containing all nodes of the graph.
+	 * -- Move this method to graph algorithms. --
+	 * @param g
+	 * @return
 	 */
-	public TCTreeNode<E,V> getVertex(V v)
-	{
-		Iterator<TCTreeNode<E,V>> i = this.getVertices().iterator();
-		
-		while (i.hasNext()) {
-			TCTreeNode<E,V> n = i.next();
-			if (n.getSkeleton().contains(v))
-				return n;
+	protected NodeMap<V> createNodeMap(IGraph<E,V> g) {
+		NodeMap<V> map = new NodeMap<V>();
+		for (V v:g.getVertices()) {
+			map.put(v, null);
 		}
-		
-		return null;
+		return map;
 	}
-	
-	/**
-	 * Get process graph fragment represented by TCTree node
-	 * @param node TCTree node
-	 * @return Process fragment
-	 */
-	public AbstractMultiGraphFragment<E,V> getFragment(TCTreeNode<E,V> node)
-	{
-		AbstractMultiGraphFragment<E,V> result = new AbstractMultiGraphFragment<E, V>(this.getGraph());
-		this.getFragment(result, node);
-		
-		return result;
-	}
-	
-	private void getFragment(AbstractMultiGraphFragment<E,V> frag, TCTreeNode<E,V> node)
-	{
-		Iterator<E> i = node.getSkeleton().getEdges().iterator();
-		while (i.hasNext()) {
-			E e = i.next();
-			frag.addEdge(e.getV1(), e.getV2());
-		}
-		
-		Iterator<TCTreeNode<E,V>> j = this.getChildren(node).iterator();
-		while (j.hasNext()) {
-			TCTreeNode<E,V> n = j.next();
-			this.getFragment(frag, n);
-		}
-	}
-	
-	public AbstractMultiGraphFragment<E,V> getFragment(TCTreeNode<E,V> parent, TCTreeNode<E,V> child)
-	{
-		if (parent==null || child==null) return new AbstractMultiGraphFragment<E, V>(this.getGraph());
-			
-		Collection<TCTreeNode<E,V>> children = this.getChildren(parent);
-		
-		if (children.size() <= 1) return this.getFragment(parent);
-		
-		// combine 2 branches
-		AbstractMultiGraphFragment<E,V> result = new AbstractMultiGraphFragment<E, V>(this.getGraph());
-		
-		int min = Integer.MAX_VALUE;
-		TCTreeNode<E,V> minc = null; 
-		
-		Iterator<TCTreeNode<E,V>> i = children.iterator();
-		while (i.hasNext()) {
-			TCTreeNode<E,V> c = i.next();
-			if (c.equals(child)) continue;
-			
-			int nv = this.getFragment(c).countVertices();
-			if (nv < min)
-			{
-				min = nv;
-				minc = c;
-			}
-		}
-		
-		if (minc!=null) {
-			result = this.getFragment(minc);
-			
-			Iterator<E> j = child.getSkeleton().getEdges().iterator();
-			while (j.hasNext()) {
-				E e = j.next();
-				result.addEdge(e.getV1(), e.getV2());
-			}
-		}
-		
-		return result;
-	}
-	
-	@Override
-	public String toString() {
-		return toStringHelper(this.getRoot(), 0);
-	}
-	
-	private String toStringHelper(TCTreeNode<E,V> tn, int depth) {
-		String result = "";
-		for (int i = 0; i < depth; i++){
-			result += "   ";
-		}
-		result += tn.toString();
-		result += "\n";
-		for (TCTreeNode<E,V> c: this.getChildren(tn)){
-			result += toStringHelper(c, depth+1);
-		}
-		return result;
-	}
+
 }
