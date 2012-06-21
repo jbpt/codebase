@@ -7,7 +7,7 @@ import org.jbpt.hypergraph.abs.IVertex;
 import org.jbpt.hypergraph.abs.Vertex;
 
 /**
- * implementation of the node of the tree of the biconnected components.
+ * Implementation of the node of the tree of the biconnected components.
  * 
  * @author Artem Polyvyanyy
  *

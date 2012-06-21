@@ -6,7 +6,7 @@ import org.jbpt.bp.BehaviouralProfile;
 import org.jbpt.bp.RelSetType;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Node;
-import org.jbpt.petri.bevahior.ConcurrencyRelation;
+import org.jbpt.petri.behavior.ConcurrencyRelation;
 import org.jbpt.petri.structure.PetriNetPathUtils;
 import org.jbpt.petri.structure.PetriNetStructuralClassChecks;
 

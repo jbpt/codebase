@@ -55,30 +55,6 @@ public class AbstractMultiGraphFragment<E extends IEdge<V>, V extends IVertex> e
 		return esMap;
 	}
 	
-	/*private Collection<E> filterByIds(Collection<E> es, Collection<E> es2) {
-		Collection<E> result = new ArrayList<E>();
-		
-		Iterator<E> i = es.iterator();
-		while (i.hasNext()) {
-			E e = i.next();
-			
-			boolean flag = false;
-			Iterator<E> j = es2.iterator();
-			while (j.hasNext()) {
-				E nextE = j.next();
-				if (nextE.getId().equals(e.getId())) {
-					flag = true;
-					break;
-				}
-			}
-			
-			if (!flag)
-				result.add(e);
-		}
-		
-		return result;
-	}*/
-	
 	/*
 	 * (non-Javadoc)
 	 * @see de.hpi.bpt.hypergraph.abs.AbstractMultiHyperGraph#removeEdge(de.hpi.bpt.hypergraph.abs.IHyperEdge)

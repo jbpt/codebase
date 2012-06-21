@@ -27,6 +27,13 @@ public interface ITree <V extends IVertex> {
 	 * @return New root of this tree. Note that the root will stay the same if <tt>v</tt> does not belong to this tree.
 	 */
 	public V reRoot(V v);
+	
+	/**
+	 * Check if the given vertex is the root of this tree.
+	 * @param v Vertex to check.
+	 * @return <tt>true<tt> if the given vertex is the root of this tree; <tt>false</tt> otherwise.
+	 */
+	public boolean isRoot(V v);
 
 	/**
 	 * Get children of the vertex. 

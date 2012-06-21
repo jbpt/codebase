@@ -1,4 +1,4 @@
-package org.jbpt.petri.bevahior;
+package org.jbpt.petri.behavior;
 
 import java.io.BufferedReader;
 import java.io.IOException;

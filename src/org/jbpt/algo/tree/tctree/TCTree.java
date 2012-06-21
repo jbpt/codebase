@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.jbpt.graph.abs.AbstractDirectedGraph;
 import org.jbpt.graph.abs.AbstractMultiGraphFragment;
+import org.jbpt.graph.abs.AbstractTree;
 import org.jbpt.graph.abs.IEdge;
 import org.jbpt.graph.abs.IGraph;
 import org.jbpt.hypergraph.abs.IVertex;
@@ -20,7 +20,7 @@ import org.jbpt.hypergraph.abs.IVertex;
  * @param <E> template for edge (extends IEdge)
  * @param <V> template for vertex (extends IVertex)
  */
-public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractDirectedGraph<TCTreeEdge<E,V>, TCTreeNode<E,V>> {
+public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<TCTreeNode<E,V>> {
 
 	protected IGraph<E,V> graph;
 	
@@ -28,23 +28,10 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractDirec
 	
 	protected E backEdge;
 	
-	protected TCTreeNode<E,V> root = null;
-	
 	/*
 	 * (non-Javadoc)
 	 * @see de.hpi.bpt.graph.abs.AbstractDirectedGraph#addEdge(de.hpi.bpt.hypergraph.abs.IVertex, de.hpi.bpt.hypergraph.abs.IVertex)
 	 */
-	@Override
-	public TCTreeEdge<E,V> addEdge(TCTreeNode<E,V> v1, TCTreeNode<E,V> v2) {
-		if (v1 == null || v2 == null) return null;
-		
-		Collection<TCTreeNode<E,V>> ss = new ArrayList<TCTreeNode<E,V>>(); ss.add(v1);
-		Collection<TCTreeNode<E,V>> ts = new ArrayList<TCTreeNode<E,V>>(); ts.add(v2);
-		
-		if (!this.checkEdge(ss, ts)) return null;
-		
-		return new TCTreeEdge<E,V>(this, v1, v2);
-	}
 	
 	/**
 	 * This class decomposes the given a given biconnected graph into a tree of triconnected components.
@@ -60,8 +47,8 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractDirec
 			TCTreeSkeleton<E,V> sk = new TCTreeSkeleton<E,V>(this.graph);
 			sk.copyOriginalGraph();
 			this.root = new TCTreeNode<E,V>("T0");
-			root.setSkeleton(sk);
-			root.setType(TCType.T);
+			this.root.setSkeleton(sk);
+			this.root.setType(TCType.T);
 			this.addVertex(this.root);
 			this.root.setBoundaryNodes(this.graph.getVertices());
 		} else {
@@ -78,11 +65,11 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractDirec
 			
 			// make first node
 			this.root = new TCTreeNode<E,V>("0");
-			root.setSkeleton(sk);
+			this.root.setSkeleton(sk);
 	
 			// decompose
 			ModelDecomposer<E, V> decomposer = new ModelDecomposer<E, V>();
-			Collection<TCTreeNode<E, V>> newNodes = decomposer.getTriconnectedComponents(graph, root, backEdge);
+			Collection<TCTreeNode<E, V>> newNodes = decomposer.getTriconnectedComponents(graph, this.root, this.backEdge);
 			if (newNodes != null) {
 				for (TCTreeNode<E, V> node:newNodes) {
 					this.putNode(node);
@@ -330,50 +317,6 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractDirec
 		}
 		
 		return null;
-	}
-	
-	/**
-	 * Check if TCTree node is root
-	 * @param node Node of the TCTree
-	 * @return <code>true</code> if node is the root of TCTree, <code>false</code> otherwise
-	 */
-	public boolean isRoot(TCTreeNode<E,V> node)
-	{
-		if (node == null) return false;
-		return node.equals(this.root);
-	}
-	
-	/**
-	 * Get root node
-	 * @return root node
-	 */
-	public TCTreeNode<E,V> getRoot() {
-		return this.root;
-	}
-	
-	public void setRoot(TCTreeNode<E,V> node) {
-		if (this.getVertices().contains(node))
-			this.root = node;
-	}
-	
-	/**
-	 * Get parent of the TCTree node
-	 * @param node TCTree node
-	 * @return Parent of the node
-	 */
-	public TCTreeNode<E,V> getParent(TCTreeNode<E,V> node)
-	{
-		return this.getFirstDirectPredecessor(node);
-	}
-	
-	/**
-	 * Get children of the TCTree node
-	 * @param node TCTree node
-	 * @return Children of the node
-	 */
-	public Collection<TCTreeNode<E,V>> getChildren(TCTreeNode<E,V> node)
-	{
-		return this.getDirectSuccessors(node);
 	}
 	
 	/**
