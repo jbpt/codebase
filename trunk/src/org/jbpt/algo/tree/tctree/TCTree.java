@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Vector;
 
+import org.jbpt.graph.abs.AbstractTree;
 import org.jbpt.graph.abs.IEdge;
 import org.jbpt.graph.abs.IGraph;
 import org.jbpt.hypergraph.abs.IVertex;
@@ -24,23 +24,39 @@ import org.jbpt.hypergraph.abs.IVertex;
  * @param Implementation of IEdge
  * @param Implementation of IVertex
  */
-public class TCTree<E extends IEdge<V>, V extends IVertex> {
+public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<TCTreeNode<E,V>> {
 
-	/**
-	 * controls the debug output
-	 */
+	// debug output control
 	private static boolean showDebugInformation = false;
 	
-	public TCTree() {}
+	protected IGraph<E,V> graph;
 	
-	public Collection<TCTreeNode<E,V>> getTriconnectedComponents(IGraph<E,V> graph, E backEdge) {
+	public TCTree(IGraph<E,V> graph) {
+		if (graph==null) return;
+		if (graph.getEdges().isEmpty()) return;
+		
+		this.graph = graph;
+		
+		this.construct(graph.getEdges().iterator().next());
+	}
+
+	public TCTree(IGraph<E,V> graph, E backEdge) {
+		if (graph==null) return;
+		if (!graph.contains(backEdge)) return;
+		
+		this.graph = graph;
+		
+		this.construct(backEdge);
+	}
+	
+	private void construct(E backEdge) {
 		Vector<EdgeList<E,V>> components = new Vector<EdgeList<E,V>>();
 		
-		EdgeMap<E,V> virtEdgeMap = this.createEdgeMap(graph); 
+		EdgeMap<E,V> virtEdgeMap = this.createEdgeMap(this.graph); 
 		virtEdgeMap.initialiseWithFalse();
 		virtEdgeMap.put(backEdge,true);
-		EdgeMap<E,V> assignedVirtEdgeMap = this.createEdgeMap(graph);
-		EdgeMap<E,V> isHiddenMap = this.createEdgeMap(graph);
+		EdgeMap<E,V> assignedVirtEdgeMap = this.createEdgeMap(this.graph);
+		EdgeMap<E,V> isHiddenMap = this.createEdgeMap(this.graph);
 		isHiddenMap.initialiseWithFalse();
 		
 		MetaInfoContainer meta = new MetaInfoContainer();
@@ -48,25 +64,15 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> {
 		meta.setMetaInfo(MetaInfo.ASSIGNED_VIRTUAL_EDGES, assignedVirtEdgeMap);
 		meta.setMetaInfo(MetaInfo.HIDDEN_EDGES, isHiddenMap);
 		
-		if(showDebugInformation) System.out.println("\nSplitting off initial multiple edges...");
-		System.out.println(components.size());
-		this.splitOffInitialMultipleEdges(graph,components,virtEdgeMap,assignedVirtEdgeMap,isHiddenMap);
-		System.out.println(components.size());
-		if(showDebugInformation) {
-			System.out.println("\nSplitting off initial multiple edges finished !");
-			System.out.println("backEdge: " + backEdge);
-			System.out.println("\nFinding split components...");
-		}
-		this.findSplitComponents(graph,components,virtEdgeMap,assignedVirtEdgeMap,isHiddenMap,meta,backEdge.getV1());
-		if(showDebugInformation) System.out.println("\nFinding split components finished !");
+		this.splitOffInitialMultipleEdges(this.graph,components,virtEdgeMap,assignedVirtEdgeMap,isHiddenMap);
+		
+		// TODO uncomment
+		//this.findSplitComponents(graph,components,virtEdgeMap,assignedVirtEdgeMap,isHiddenMap,meta,backEdge.getV1());
 		
 		// create TCTreeNodes and Skeletons from components
-		if(showDebugInformation) System.out.println("\nCreating TCTreeNodes...");
 		HashMap<E,TCTreeNode<E,V>> virtEdgeComps = new HashMap<E,TCTreeNode<E,V>>(); 
-		LinkedList<TCTreeNode<E,V>> nodes = new LinkedList<TCTreeNode<E,V>>();
-		int i = 0;
-		if(showDebugInformation) System.out.println("\n Graph edges: " + graph.getEdges());		
 		
+		int i = 0;		
 		for (EdgeList<E,V> el : components) {
 			TCTreeSkeleton<E,V> skeleton = new TCTreeSkeleton<E,V>();
 			TCTreeNode<E,V> node = new TCTreeNode<E,V>(String.valueOf(i++));
@@ -74,7 +80,7 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> {
 				if (virtEdgeMap.getBool(edge)) {
 					E virtEdge = skeleton.addVirtualEdge(edge.getV1(),edge.getV2());
 					virtEdge.setDescription(edge.getDescription());
-					virtEdge.setId(edge.getId());
+					//virtEdge.setId(edge.getId());
 					virtEdgeComps.put(virtEdge,node);
 				} else {
 					E newEdge = skeleton.addEdge(edge.getV1(),edge.getV2());
@@ -82,12 +88,11 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> {
 				}
 			}
 			node.setSkeleton(skeleton);
-			nodes.add(node);
+			this.addVertex(node);
 		}
-		if(showDebugInformation) System.out.println("\nCreating TCTreeNodes finished!");
 
 		// classify nodes
-		this.classifyNodes(nodes);
+		this.classifyNodes();
 		
 		// merge bonds and polygons
 		/*ArrayList<TCTreeNode<E,V>> result = new ArrayList<TCTreeNode<E,V>>();
@@ -155,18 +160,16 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> {
 				nodes.addLast(replace);
 			}
 		}*/
-		
-		return nodes;
 	}
 	
 	/**
 	 * Classify TCTree nodes on types: P,B,R
 	 */
-	private void classifyNodes(Collection<TCTreeNode<E,V>> nodes) {
+	private void classifyNodes() {
 		int Pc, Bc, Rc;
 		Pc = Bc = Rc = 0;
 		
-		Iterator<TCTreeNode<E,V>> i = nodes.iterator();
+		Iterator<TCTreeNode<E,V>> i = this.getVertices().iterator();
 		while (i.hasNext()) {
 			TCTreeNode<E,V> n = i.next();
 			
@@ -431,7 +434,7 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> {
 		EdgeList<E,V> tempComp = new EdgeList<E,V>();
 		E lastEdge=null, currentEdge=null;
 		int tempCompSize = 0;
-		for (E e:edges){
+		for (E e : edges){
 			currentEdge = e;
 			if (lastEdge != null){
 				// multiple edge if enDP_NAMESoint correspond to lastEdge's enDP_NAMESoints
@@ -452,9 +455,8 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> {
 					if (tempCompSize>0){
 						// add lastEdge to component
 						tempComp.add(lastEdge);
-						// finish component, i.e. add virtual edge and store the
-						// component
-						newComponent(graph, components, tempComp, virtEdgeMap, 
+						// finish component, i.e. add virtual edge and store the component
+						this.newComponent(graph, components, tempComp, virtEdgeMap, 
 								assignedVirtEdgeMap, isHiddenMap,
 								lastEdge.getV1(), lastEdge.getV2());
 						// look for new multiple edges next time
@@ -469,21 +471,10 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> {
 		if (tempCompSize>0){
 			// add lastEdge to component
 			tempComp.add(lastEdge);
-			// finish component, i.e. add virtual edge and store the
-			// component
-			newComponent(graph, components, tempComp, virtEdgeMap, 
+			// finish component, i.e. add virtual edge and store the component
+			this.newComponent(graph, components, tempComp, virtEdgeMap, 
 					assignedVirtEdgeMap, isHiddenMap,
 					lastEdge.getV1(), lastEdge.getV2());
-		}
-		
-		//debug
-		if (showDebugInformation) {
-			for (EdgeList<E,V> el : components) {
-				System.out.println("\nComponent");
-				for (E e:el) {
-					System.out.print(" [" + e.toString() + "] ");
-				}
-			}
 		}
 	}
 
@@ -491,8 +482,10 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> {
 	 * Creates a new component based on the given list of contained edges.
 	 */
 	protected void newComponent(IGraph<E,V> graph,
-			Vector<EdgeList<E,V>> components, EdgeList<E,V> tempComp,
-			EdgeMap<E,V> virtEdgeMap, EdgeMap<E,V> assignedVirtEdgeMap,
+			Vector<EdgeList<E,V>> components, 
+			EdgeList<E,V> tempComp,
+			EdgeMap<E,V> virtEdgeMap, 
+			EdgeMap<E,V> assignedVirtEdgeMap,
 			EdgeMap<E,V> isHiddenMap, V v1, V v2) {
 		// remove edges from graph
 		if(showDebugInformation) System.out.print("Hiding edge ");

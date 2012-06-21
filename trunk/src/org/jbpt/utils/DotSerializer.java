@@ -1,6 +1,8 @@
 package org.jbpt.utils;
 
 
+import java.util.Collection;
+
 import org.jbpt.graph.abs.AbstractMultiDirectedGraph;
 import org.jbpt.graph.abs.AbstractMultiGraph;
 import org.jbpt.graph.abs.IDirectedEdge;
@@ -9,12 +11,13 @@ import org.jbpt.hypergraph.abs.AbstractMultiHyperGraph;
 import org.jbpt.hypergraph.abs.IVertex;
 
 public class DotSerializer {
-	private static final String DIGRAPH = "digraph \"%s\" {\n";
-	private static final String NODE = "    \"%s\" [label=\"%s\"];\n";
-	private static final String EDGE = "    \"%s\" %s \"%s\" [label=\"%s\"]\n";
-	private static final String GRAPH = "graph \"%s\" {\n";
-	private static final String RANKDIR = "rankdir=%s\n";
-	private static final String ENDGRAPH = "}\n";
+	private static final String DIGRAPH		= "digraph \"%s\" {\n";
+	private static final String NODE		= "    \"%s\" [label=\"%s\"];\n";
+	private static final String EDGE		= "    \"%s\" %s \"%s\" [label=\"%s\"]\n";
+	private static final String EDGE_DOTTED = "    \"%s\" %s \"%s\" [label=\"%s\" style=dotted]\n";
+	private static final String GRAPH		= "graph \"%s\" {\n";
+	private static final String RANKDIR		= "rankdir=%s\n";
+	private static final String ENDGRAPH	= "}\n";
 	
 	public enum RankDir {LR, TD};
 	
@@ -82,7 +85,25 @@ public class DotSerializer {
 		buff.append(ENDGRAPH);
 		return buff.toString();
 	}
-
+	
+	public String serialize(AbstractMultiGraph<?, ?> graph, Collection<? extends IEdge<?>> dotted){
+		StringBuffer buff = new StringBuffer(graph.getEdges().size() + 2);
+				
+		buff.append(getHeader(false, graph));
+		
+		for (IVertex v : graph.getVertices()) {
+			buff.append(String.format(NODE, v.getId().replace("-", ""), v.getLabel()));
+		}
+		
+		for (IEdge<?> e : graph.getEdges()) {
+			if (dotted.contains(e)) 
+				buff.append(String.format(EDGE_DOTTED, e.getV1().getId().replace("-", ""), "--", e.getV2().getId().replace("-", ""), e.getLabel()));
+			else
+				buff.append(String.format(EDGE, e.getV1().getId().replace("-", ""), "--", e.getV2().getId().replace("-", ""), e.getLabel()));
+		}
+		buff.append(ENDGRAPH);
+		return buff.toString();
+	}
 	
 	/**
     * Sets direction of graph layout. RankDir.LR will layout the graph left to right.
@@ -92,7 +113,5 @@ public class DotSerializer {
 	public void setRankDir(RankDir rankdir) {
 		this.rankdir = rankdir;
 	}
-	
-	
 	
 }

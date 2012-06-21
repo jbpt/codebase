@@ -3,6 +3,7 @@ package org.jbpt.test.graph;
 import junit.framework.TestCase;
 
 import org.jbpt.algo.tree.tctree.TCTree;
+import org.jbpt.algo.tree.tctree.TCTreeNode;
 import org.jbpt.graph.Edge;
 import org.jbpt.graph.MultiGraph;
 import org.jbpt.hypergraph.abs.Vertex;
@@ -37,9 +38,13 @@ public class TCTreeTest extends TestCase {
 		
 		IOUtils.toFile("graph.dot", g.toDOT());
 		
-		TCTree<Edge,Vertex> tctree = new TCTree<Edge,Vertex>();
-		tctree.getTriconnectedComponents(g, backEdge);
-		
+		TCTree<Edge,Vertex> tctree = new TCTree<Edge,Vertex>(g,backEdge);
+		for (TCTreeNode<Edge,Vertex> node : tctree.getVertices()) {
+			System.out.println(node.getType());
+			IOUtils.toFile(node.getName()+".dot",node.getSkeleton().toDOT());
+		}
+	
+		IOUtils.toFile("graph2.dot", g.toDOT());
 	}
 		
 	/*public void testSimpleGraph() {
