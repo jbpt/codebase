@@ -44,7 +44,7 @@ public class TCTreeOLD<E extends IEdge<V>, V extends IVertex> extends AbstractTr
 		this.graph = g;
 		
 		if (isTrivialCase()) {
-			TCTreeSkeleton<E,V> sk = new TCTreeSkeleton<E,V>(this.graph);
+			TCSkeleton<E,V> sk = new TCSkeleton<E,V>(this.graph);
 			sk.copyOriginalGraph();
 			this.root = new TCTreeNode<E,V>("T0");
 			this.root.setSkeleton(sk);
@@ -52,7 +52,7 @@ public class TCTreeOLD<E extends IEdge<V>, V extends IVertex> extends AbstractTr
 			this.addVertex(this.root);
 			this.root.setBoundaryNodes(this.graph.getVertices());
 		} else {
-			TCTreeSkeleton<E,V> sk = new TCTreeSkeleton<E,V>(this.graph);
+			TCSkeleton<E,V> sk = new TCSkeleton<E,V>(this.graph);
 			sk.copyOriginalGraph();
 			if (edge == null)
 				// choose one edge to be the backEdge
@@ -212,7 +212,7 @@ public class TCTreeOLD<E extends IEdge<V>, V extends IVertex> extends AbstractTr
 				TCTreeNode<E,V> n = new TCTreeNode<E,V>();
 				n.setType(TCType.T);
 				n.setBoundaryNodes(t.getVertices());
-				TCTreeSkeleton<E,V> sk = new TCTreeSkeleton<E,V>(this.graph);
+				TCSkeleton<E,V> sk = new TCSkeleton<E,V>(this.graph);
 				sk.addEdge(t.getV1(), t.getV2());
 				n.setSkeleton(sk);
 				n.setName("T"+(Tc++));
