@@ -36,15 +36,13 @@ public class TCTreeTest extends TestCase {
 		g.addEdge(z,t);
 		Edge backEdge = g.addEdge(t,s);
 		
-		IOUtils.toFile("graph.dot", g.toDOT());
-		
 		TCTree<Edge,Vertex> tctree = new TCTree<Edge,Vertex>(g,backEdge);
 		for (TCTreeNode<Edge,Vertex> node : tctree.getVertices()) {
 			System.out.println(node.getType());
 			IOUtils.toFile(node.getName()+".dot",node.getSkeleton().toDOT());
 		}
-	
-		IOUtils.toFile("graph2.dot", g.toDOT());
+		
+		IOUtils.toFile("tree.dot", tctree.toDOT());
 	}
 		
 	/*public void testSimpleGraph() {

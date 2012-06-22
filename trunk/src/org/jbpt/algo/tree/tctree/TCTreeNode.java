@@ -16,33 +16,22 @@ import org.jbpt.hypergraph.abs.Vertex;
  * @param <V> Vertex template.
  */
 public class TCTreeNode<E extends IEdge<V>, V extends IVertex> extends Vertex {
-	// Node type
+	// node type
 	protected TCType type = TCType.UNDEFINED;
-	// Fragment skeleton
-	protected TCTreeSkeleton<E,V> skeleton;
+	// skeleton
+	protected TCSkeleton<E,V> skeleton = new TCSkeleton<E,V>();
 	// boundary vertices of the fragment
 	protected Collection<V> boundary = new ArrayList<V>();
 	
-	/**
-	 * Constructor
-	 */
 	public TCTreeNode() {
 		super();
-	}
-	
-	/**
-	 * Constructor
-	 * @param name Node name
-	 */
-	public TCTreeNode(String name) {
-		super(name);
 	}
 
 	public TCType getType() {
 		return type;
 	}
 	
-	public TCTreeSkeleton<E,V> getSkeleton() {
+	public TCSkeleton<E,V> getSkeleton() {
 		return this.skeleton;
 	}
 	
@@ -60,7 +49,7 @@ public class TCTreeNode<E extends IEdge<V>, V extends IVertex> extends Vertex {
 		this.type = type;
 	}
 	
-	protected void setSkeleton(TCTreeSkeleton<E,V> skeleton) {
+	protected void setSkeleton(TCSkeleton<E,V> skeleton) {
 		this.skeleton = skeleton;
 	}
 	
