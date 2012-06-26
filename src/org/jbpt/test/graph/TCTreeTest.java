@@ -4,15 +4,16 @@ import junit.framework.TestCase;
 
 import org.jbpt.algo.tree.tctree.TCTree;
 import org.jbpt.algo.tree.tctree.TCTreeNode;
-import org.jbpt.graph.Edge;
-import org.jbpt.graph.MultiGraph;
+import org.jbpt.algo.tree.tctree.TCType;
+import org.jbpt.graph.DirectedEdge;
+import org.jbpt.graph.MultiDirectedGraph;
 import org.jbpt.hypergraph.abs.Vertex;
 import org.jbpt.utils.IOUtils;
 
 public class TCTreeTest extends TestCase {
 	
 	public void testSimpleGraph() {
-		MultiGraph g = new MultiGraph();
+		MultiDirectedGraph g = new MultiDirectedGraph();
 		
 		Vertex s = new Vertex("s");
 		Vertex t = new Vertex("t");
@@ -34,13 +35,17 @@ public class TCTreeTest extends TestCase {
 		g.addEdge(y,z);
 		g.addEdge(y,z);
 		g.addEdge(z,t);
-		Edge backEdge = g.addEdge(t,s);
+		DirectedEdge backEdge = g.addEdge(t,s);
 		
-		TCTree<Edge,Vertex> tctree = new TCTree<Edge,Vertex>(g,backEdge);
-		for (TCTreeNode<Edge,Vertex> node : tctree.getVertices()) {
-			System.out.println(node.getType());
-			IOUtils.toFile(node.getName()+".dot",node.getSkeleton().toDOT());
+		TCTree<DirectedEdge,Vertex> tctree = new TCTree<DirectedEdge,Vertex>(g,backEdge);
+		for (TCTreeNode<DirectedEdge,Vertex> node : tctree.getVertices()) {
+			System.out.println(node.getType() + " - " + node.getSkeleton().getVertices().size());
+			if (node.getType()==TCType.P)
+				assertEquals(6, node.getSkeleton().getVertices().size());
+			IOUtils.toFile(node.getName() + ".dot",node.getSkeleton().toDOT());
 		}
+		
+		//RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g); 
 		
 		IOUtils.toFile("tree.dot", tctree.toDOT());
 	}

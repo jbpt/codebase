@@ -51,47 +51,37 @@ public class DirectedGraphAlgorithms<E extends IDirectedEdge<V>,V extends IVerte
 	}
 	
 	/**
-	 * Get source vertices of a directed graph. 
+	 * Get source vertices of a given directed graph. 
 	 * A vertex of a directed graph is called a source vertex if it has no direct predecessors. 
 	 * 
-	 * Time complexity: linear to the size of graph.
-	 * 
-	 * @param g Directed graph
-	 * @return Collection of graph's source vertices.
+	 * @param g Directed graph.
+	 * @return Set of graph's source vertices.
 	 */
-	public Collection<V> getSources(IDirectedGraph<E, V> g)
-	{
-		Collection<V> result = new ArrayList<V>();
+	public Set<V> getSources(IDirectedGraph<E,V> g) {
+		Set<V> result = new HashSet<V>();
 		if (g==null) return result;
 		
-		Iterator<V> i = this.getBoundaryVertices(g).iterator();
-		while (i.hasNext()) {
-			V v = i.next();
-			if (g.getDirectPredecessors(v).size()==0)
+		for (V v : g.getVertices())
+			if (g.getDirectPredecessors(v).isEmpty())
 				result.add(v);
-		}
 		
 		return result;
 	}
 	
 	/**
-	 * Get sink vertices of a directed graph. 
+	 * Get sink vertices of a given directed graph. 
 	 * A vertex of a directed graph is called a sink vertex if it has no direct successors.
 	 * 
 	 * @param g Directed graph
 	 * @return Collection of graph's sink vertices.
 	 */
-	public Collection<V> getSinks(IDirectedGraph<E,V> g)
-	{
-		Collection<V> result = new ArrayList<V>();
+	public Set<V> getSinks(IDirectedGraph<E,V> g) {
+		Set<V> result = new HashSet<V>();
 		if (g==null) return result;
 		
-		Iterator<V> i = this.getBoundaryVertices(g).iterator();
-		while (i.hasNext()) {
-			V v = i.next();
+		for (V v : g.getVertices())
 			if (g.getDirectSuccessors(v).isEmpty())
 				result.add(v);
-		}
 		
 		return result;
 	}

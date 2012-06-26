@@ -2,7 +2,9 @@ package org.jbpt.algo.tree.tctree;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.jbpt.graph.abs.AbstractMultiGraph;
@@ -22,6 +24,7 @@ import org.jbpt.utils.DotSerializer;
  */
 public class TCSkeleton<E extends IEdge<V>, V extends IVertex> extends AbstractMultiGraph<E,V> {
 	Set<E> virtualEdges = new HashSet<E>();
+	Map<E,E> e2o = new HashMap<E,E>();
 
 	public TCSkeleton() {
 		super();
@@ -32,11 +35,12 @@ public class TCSkeleton<E extends IEdge<V>, V extends IVertex> extends AbstractM
 		for (E e : g.getEdges())
 			this.addEdge(e.getV1(),e.getV2());
 	}
-
+	
 	public E addVirtualEdge(V v1, V v2) {
 		E e = super.addEdge(v1,v2);
-		if (e != null)
+		if (e != null) {
 			this.virtualEdges.add(e);
+		}
 
 		return e;
 	}
@@ -48,15 +52,26 @@ public class TCSkeleton<E extends IEdge<V>, V extends IVertex> extends AbstractM
 	public boolean isVirtual(E e) {
 		return this.virtualEdges.contains(e);
 	}
+	
+	public E addEdge(V v1, V v2, E o) {
+		E e = super.addEdge(v1,v2);
+		if (e!=null) this.e2o.put(e,o);
+		return e;
+	}
 
 	@Override
 	public E removeEdge(E e) {
 		this.virtualEdges.remove(e);
+		this.e2o.remove(e);
 		return super.removeEdge(e);
 	}
 
 	@Override
 	public String toDOT() {
 		return new DotSerializer().serialize(this,this.virtualEdges);
+	}
+	
+	public E getOriginalEdge(E e) {
+		return this.e2o.get(e);
 	}
 }
