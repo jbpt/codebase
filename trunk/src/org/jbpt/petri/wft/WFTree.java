@@ -93,10 +93,10 @@ public class WFTree {
 	
 	private void classifyNodes(RPSTNode<Flow, Node> node) {
 		switch (node.getType()) {
-			case P: pNodes.add(node); break;
-			case B: bNodes.add(node); break;
+			case POLYGON: pNodes.add(node); break;
+			case BOND: bNodes.add(node); break;
 			case T: tNodes.add(node); break;
-			case R: rNodes.add(node); break;
+			case RIGID: rNodes.add(node); break;
 		}
 		
 		// call recursively
@@ -105,7 +105,7 @@ public class WFTree {
 	}
 	
 	private void orderPNodes(RPSTNode<Flow, Node> node) {
-		if (node.getType() == TCType.P) {
+		if (node.getType() == TCType.POLYGON) {
 			Vector<RPSTNode<Flow, Node>> orderedChildren = new Vector<RPSTNode<Flow, Node>>();
 			Collection<RPSTNode<Flow, Node>> childrenCopy = new ArrayList<RPSTNode<Flow, Node>>(rpst.getChildren(node));
 			
@@ -158,7 +158,7 @@ public class WFTree {
 	 * @return type of the block node: place bounded (Bp), transition bounded (Bt), loop (L), or none if not a block
 	 */
 	public WFTBlockNodeType getBlockNodeType(RPSTNode<Flow, Node> node) {
-		if (node.getType()!= TCType.B) return WFTBlockNodeType.none;
+		if (node.getType()!= TCType.BOND) return WFTBlockNodeType.none;
 		
 		Iterator<RPSTNode<Flow, Node>> children = rpst.getChildren(node).iterator();
 		while (children.hasNext())
@@ -198,7 +198,7 @@ public class WFTree {
 	 * @return position of a node in a parent sequence (S) node starting from 0, or -1 if order is not defined for this node 
 	 */
 	public int getOrder(RPSTNode<Flow, Node> node) {
-		if (rpst.getParent(node)==null || rpst.getParent(node).getType()!=TCType.P || !orderedPNodes.containsKey(rpst.getParent(node)))
+		if (rpst.getParent(node)==null || rpst.getParent(node).getType()!=TCType.POLYGON || !orderedPNodes.containsKey(rpst.getParent(node)))
 			return -1;
 		
 		
@@ -271,7 +271,7 @@ public class WFTree {
 	}
 	
 	private boolean areInSeries(RPSTNode<Flow, Node> lca, RPSTNode<Flow, Node> a, RPSTNode<Flow, Node> b) {
-		if (lca.getType()!=TCType.P) return false;
+		if (lca.getType()!=TCType.POLYGON) return false;
 		
 		Vector<RPSTNode<Flow, Node>> pathA = getPath(lca, a);
 		Vector<RPSTNode<Flow, Node>> pathB = getPath(lca, b);
@@ -306,12 +306,12 @@ public class WFTree {
 		// check path from ROOT to parent of gamma
 		for (int i=0; i<path.size()-1; i++) {
 			if (getBlockNodeType(path.get(i))==WFTBlockNodeType.L) return false;
-			if (path.get(i).getType()==TCType.R && isChildInLoop(path.get(i), path.get(i+1))) return false;
+			if (path.get(i).getType()==TCType.RIGID && isChildInLoop(path.get(i), path.get(i+1))) return false;
 		}
 		
 		// check gamma
-		if (gamma.getType()==TCType.R) return areInStrictOrderUType(t1, t2, gamma); 
-		if (gamma.getType()!=TCType.P) return false;
+		if (gamma.getType()==TCType.RIGID) return areInStrictOrderUType(t1, t2, gamma); 
+		if (gamma.getType()!=TCType.POLYGON) return false;
 		if (areInSeries(gamma, alpha, beta)) return true;
 		
 		return false;
@@ -344,11 +344,11 @@ public class WFTree {
 		// check path from ROOT to parent of gamma
 		for (int i=0; i<path.size()-1; i++) {
 			if (getBlockNodeType(path.get(i))==WFTBlockNodeType.L) return false;
-			if (path.get(i).getType()==TCType.R && isChildInLoop(path.get(i), path.get(i+1))) return false;
+			if (path.get(i).getType()==TCType.RIGID && isChildInLoop(path.get(i), path.get(i+1))) return false;
 		}
 		
 		// check gamma
-		if (gamma.getType()==TCType.R) return areExclusiveUType(t1,t2,gamma);
+		if (gamma.getType()==TCType.RIGID) return areExclusiveUType(t1,t2,gamma);
 		if (getBlockNodeType(gamma)==WFTBlockNodeType.Bp) return true;
 		
 		// handle alpha == beta == gamma case 
@@ -385,11 +385,11 @@ public class WFTree {
 		// check path from ROOT to the parent of gamma
 		for (int i=0; i<path.size()-1; i++) { 
 			if (getBlockNodeType(path.get(i))==WFTBlockNodeType.L) return true;
-			if (path.get(i).getType()==TCType.R && isChildInLoop(path.get(i), path.get(i+1))) return true;	
+			if (path.get(i).getType()==TCType.RIGID && isChildInLoop(path.get(i), path.get(i+1))) return true;	
 		}
 		
 		// check gamma
-		if (gamma.getType()==TCType.R) return areInterleavingUType(t1, t2, gamma);  
+		if (gamma.getType()==TCType.RIGID) return areInterleavingUType(t1, t2, gamma);  
 		WFTBlockNodeType gammaBlockType = getBlockNodeType(gamma);
 		if (gammaBlockType==WFTBlockNodeType.Bt || gammaBlockType==WFTBlockNodeType.L) return true;
 		
@@ -408,20 +408,20 @@ public class WFTree {
 		if (alpha.equals(beta)) return true; // as easy as that
 		RPSTNode<Flow, Node> gamma = getLCA(alpha, beta);
 		
-		if (gamma.getType()==TCType.R) return areCooccurringUType(t1, t2, gamma); 
+		if (gamma.getType()==TCType.RIGID) return areCooccurringUType(t1, t2, gamma); 
 		
 		// check path from gamma to beta
 		Vector<RPSTNode<Flow, Node>> path = getPath(gamma, beta);
 		
 		for (int i=0; i < path.size()-1; i++) {
 			if	(!(
-					path.get(i).getType()==TCType.P ||
+					path.get(i).getType()==TCType.POLYGON ||
 					getBlockNodeType(path.get(i))==WFTBlockNodeType.Bt ||
 					(getBlockNodeType(path.get(i))==WFTBlockNodeType.L && getLoopOrientationType(path.get(i+1))==WFTLoopOrientationType.forward)
 				)) 
 			{
 				// check if child on the path to beta is always reached, if yes continue with for loop
-				if (path.get(i).getType()==TCType.R) {
+				if (path.get(i).getType()==TCType.RIGID) {
 					
 					Node entryOfUtype = path.get(i).getEntry();
 					boolean allCooccurring = true; 

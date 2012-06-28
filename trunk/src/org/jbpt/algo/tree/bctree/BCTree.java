@@ -255,7 +255,7 @@ public class BCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
     	Collection<BCTreeNode<E,V>> result = new ArrayList<BCTreeNode<E,V>>();
     	
     	for (BCTreeNode<E,V> node : super.getVertices()) {
-    		if (node.getNodeType()==BCType.B)
+    		if (node.getNodeType()==BCType.BICONNECTED)
     			result.add(node);
     	}
     	
@@ -270,7 +270,7 @@ public class BCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
     	Collection<BCTreeNode<E,V>> result = new ArrayList<BCTreeNode<E,V>>();
     	
     	for (BCTreeNode<E,V> node : super.getVertices()) {
-    		if (node.getNodeType()==BCType.C)
+    		if (node.getNodeType()==BCType.CUTVERTEX)
     			result.add(node);
     	}
     	

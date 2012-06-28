@@ -105,7 +105,7 @@ public class AbstractDFS<E extends IEdge<V>, V extends IVertex> {
 				
 				V w = e.getOtherVertex(v);
 				// re-orient edge
-				e.setVertices(v, w);
+				e.setVertices(v,w);
 				
 				if ((Integer) nodeStateMap.get(w) == WHITE) {
 					// tree edge found -> traverse edge

@@ -27,7 +27,7 @@ public class BCTreeNode<E extends IEdge<V>, V extends IVertex> extends Vertex {
 	 * @param g Graph for which BCTree is computed.
 	 */
 	protected BCTreeNode(IGraph<E,V> g) {
-		this.nodeType = BCType.B;
+		this.nodeType = BCType.BICONNECTED;
 		this.fragment = new Fragment<E,V>(g);
 	}
 	
@@ -36,7 +36,7 @@ public class BCTreeNode<E extends IEdge<V>, V extends IVertex> extends Vertex {
 	 * @param g Graph for which BCTree is computed.
 	 */
 	protected BCTreeNode(V v) {
-		this.nodeType = BCType.C;
+		this.nodeType = BCType.CUTVERTEX;
 		this.cutvertex = v;
 	}
 	
@@ -66,13 +66,13 @@ public class BCTreeNode<E extends IEdge<V>, V extends IVertex> extends Vertex {
 	
 	@Override
 	public String toString() {
-		if (this.getNodeType()==BCType.C) return this.cutvertex.toString();
+		if (this.getNodeType()==BCType.CUTVERTEX) return this.cutvertex.toString();
 		return super.toString();
 	}
 	
 	@Override
 	public String getLabel() {
-		if (this.getNodeType()==BCType.C) return this.cutvertex.getLabel();
+		if (this.getNodeType()==BCType.CUTVERTEX) return this.cutvertex.getLabel();
 		return super.toString();
 	}
 }

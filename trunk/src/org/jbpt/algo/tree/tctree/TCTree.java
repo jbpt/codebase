@@ -49,7 +49,7 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
 	
 	/**
 	 * Constructor.
-	 * @param graph Graph to decompose.
+	 * @param graph A graph to decompose.
 	 */
 	public TCTree(IGraph<E,V> graph) {
 		if (graph==null) return;
@@ -63,7 +63,7 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
 
 	/**
 	 * Constructor. 
-	 * @param graph Graph to decompose.
+	 * @param graph A graph to decompose.
 	 * @param backEdge Edge to use as a back edge. A triconnected component which contains the back edge will become the root of the tree.
 	 */
 	public TCTree(IGraph<E,V> graph, E backEdge) {
@@ -77,9 +77,9 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
 	}
 	
 	/**
-	 * Construct the tree of the triconnected components.
+	 * Main construction procedure.
 	 */
-	protected void construct() {	
+	protected void construct() {
 		Vector<EdgeList<E,V>> components = new Vector<EdgeList<E,V>>();
 		
 		EdgeMap<E,V> virtualEdgeMap = this.createEdgeMap(this.graph); 
@@ -94,18 +94,14 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
 		meta.setMetaInfo(MetaInfo.ASSIGNED_VIRTUAL_EDGES, assignedVirtEdgeMap);
 		meta.setMetaInfo(MetaInfo.HIDDEN_EDGES, isHiddenMap);
 		
-		// discover triconnected components
-		System.out.println("---");
+		// discover triconnected components		
 		TCSkeleton<E,V> mainSkeleton = new TCSkeleton<E,V>(this.graph,this.e2o);
-		for (E e : mainSkeleton.getEdges()) {
-			System.out.println(e.getId());
-		}
-		System.out.println("------");
 		this.splitOffInitialMultipleEdges(mainSkeleton,components,virtualEdgeMap,assignedVirtEdgeMap,isHiddenMap);
 		this.findSplitComponents(mainSkeleton,components,virtualEdgeMap,assignedVirtEdgeMap,isHiddenMap,meta,backEdge.getV1());
 		
 		// construct TCTreeNodes and TCSkeletons from components 
 		for (EdgeList<E,V> el : components) {
+			if (components.size()<=1) continue;
 			TCTreeNode<E,V> node = new TCTreeNode<E,V>();
 			for (E edge : el) {
 				if (virtualEdgeMap.getBool(edge))
@@ -132,7 +128,7 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
 
 	private void indexComponents(Map<Set<V>,Set<TCTreeNode<E,V>>> ve2nodes) {
 		for (TCTreeNode<E,V> node : this.getVertices()) {			
-			for (E e : node.getSkeleton().getVirtualEdges()) {
+			for (E e : node.skeleton.getVirtualEdges()) {
 				Set<V> edge = new HashSet<V>(e.getVertices());
 				if (ve2nodes.get(edge)==null){
 					Set<TCTreeNode<E,V>> nodes = new HashSet<TCTreeNode<E,V>>();
@@ -144,7 +140,6 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
 			}
 		}
 	}
-
 	
 	private void mergePolygonsAndBonds(Map<Set<V>,Set<TCTreeNode<E,V>>> ve2nodes) {
 		
@@ -155,21 +150,21 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
 			TCTreeNode<E,V> v2 = i.next();
 			
 			if (v1.getType()!=v2.getType()) continue;
-			if (v1.getType()==TCType.R) continue;
+			if (v1.getType()==TCType.RIGID) continue;
 			
-			for (E e : v2.getSkeleton().getEdges()) {
-				if (v2.getSkeleton().isVirtual(e)) {
+			for (E e : v2.skeleton.getEdges()) {
+				if (v2.skeleton.isVirtual(e)) {
 					if (!entryA.getKey().containsAll(e.getVertices())) {
-						v1.getSkeleton().addVirtualEdge(e.getV1(),e.getV2());
+						v1.skeleton.addVirtualEdge(e.getV1(),e.getV2());
 					}
 				}
 				else
-					v1.getSkeleton().addEdge(e.getV1(), e.getV2());
+					v1.skeleton.addEdge(e.getV1(), e.getV2(),v2.skeleton.getOriginalEdge(e));
 				
-				Set<E> ves = new HashSet<E>(v1.getSkeleton().getVirtualEdges());
+				Set<E> ves = new HashSet<E>(v1.skeleton.getVirtualEdges());
 				for(E ve : ves) {
 					if (entryA.getKey().containsAll(ve.getVertices())) 
-						v1.getSkeleton().removeEdge(ve);
+						v1.skeleton.removeEdge(ve);
 				}
 			}
 						
@@ -193,45 +188,54 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
 		int Pc, Bc, Rc;
 		Pc = Bc = Rc = 0;
 		
-		TCTreeNode<E,V> tobeRoot = null;
-		
-		Set<TCTreeNode<E,V>> visited = new HashSet<TCTreeNode<E,V>>();
-		for (Map.Entry<Set<V>,Set<TCTreeNode<E,V>>> entry : ve2nodes.entrySet()) {
-			Iterator<TCTreeNode<E,V>> i = entry.getValue().iterator();
-			TCTreeNode<E,V> v1 = i.next();
-			TCTreeNode<E,V> v2 = i.next();
-			
-			this.addEdge(v1,v2);
-			
-			if (!visited.contains(v1)) {
-				if (v1.getType()==TCType.B) v1.setName("B"+Bc++);
-				if (v1.getType()==TCType.P) v1.setName("P"+Pc++);
-				if (v1.getType()==TCType.R) v1.setName("R"+Rc++);
-			}
-			
-			if (!visited.contains(v2)) {
-				if (v2.getType()==TCType.B) v2.setName("B"+Bc++);
-				if (v2.getType()==TCType.P) v2.setName("P"+Pc++);
-				if (v2.getType()==TCType.R) v2.setName("R"+Rc++);
-			}
-			
-			if (tobeRoot==null && !visited.contains(v1))
-				tobeRoot = this.checkRoot(v1);
-			
-			visited.add(v1);
-			
-			if (tobeRoot==null && !visited.contains(v2))
-				tobeRoot = this.checkRoot(v2);
-			
-			visited.add(v2);
+		if (this.getVertices().size()==1) {
+			TCTreeNode<E,V> v = this.getVertices().iterator().next(); 
+			if (v.getType()==TCType.BOND) v.setName("B0");
+			if (v.getType()==TCType.POLYGON) v.setName("P0");
+			if (v.getType()==TCType.RIGID) v.setName("R0");
+			this.reRoot(v);
 		}
-		
-		this.reRoot(tobeRoot);
+		else {
+			TCTreeNode<E,V> tobeRoot = null;
+			
+			Set<TCTreeNode<E,V>> visited = new HashSet<TCTreeNode<E,V>>();
+			for (Map.Entry<Set<V>,Set<TCTreeNode<E,V>>> entry : ve2nodes.entrySet()) {
+				Iterator<TCTreeNode<E,V>> i = entry.getValue().iterator();
+				TCTreeNode<E,V> v1 = i.next();
+				TCTreeNode<E,V> v2 = i.next();
+				
+				this.addEdge(v1,v2);
+				
+				if (!visited.contains(v1)) {
+					if (v1.getType()==TCType.BOND) v1.setName("B"+Bc++);
+					if (v1.getType()==TCType.POLYGON) v1.setName("P"+Pc++);
+					if (v1.getType()==TCType.RIGID) v1.setName("R"+Rc++);
+				}
+				
+				if (!visited.contains(v2)) {
+					if (v2.getType()==TCType.BOND) v2.setName("B"+Bc++);
+					if (v2.getType()==TCType.POLYGON) v2.setName("P"+Pc++);
+					if (v2.getType()==TCType.RIGID) v2.setName("R"+Rc++);
+				}
+				
+				if (tobeRoot==null && !visited.contains(v1))
+					tobeRoot = this.checkRoot(v1);
+				
+				visited.add(v1);
+				
+				if (tobeRoot==null && !visited.contains(v2))
+					tobeRoot = this.checkRoot(v2);
+				
+				visited.add(v2);
+			}
+			
+			this.reRoot(tobeRoot);	
+		}
 	}
 
 	private TCTreeNode<E,V> checkRoot(TCTreeNode<E,V> v) {
-		for (E e : v.getSkeleton().getEdges(this.backEdge.getV1(), this.backEdge.getV2())) {
-			if (!v.getSkeleton().isVirtual(e)) return v;
+		for (E e : v.skeleton.getEdges(this.backEdge.getV1(), this.backEdge.getV2())) {
+			if (!v.skeleton.isVirtual(e)) return v;
 		}
 		return null;
 	}
@@ -241,30 +245,31 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
 	 */
 	private void classifyComponents() {
 		for (TCTreeNode<E,V> n : this.getVertices()) {
-			if (n.getSkeleton().countVertices()==2) { 
-				n.setType(TCType.B); 
+			if (n.skeleton.countVertices()==2) { 
+				n.setType(TCType.BOND); 
 				continue;
 			}
 			
 			boolean isPolygon = true;
-			Iterator<V> vs = n.getSkeleton().getVertices().iterator();
+			Iterator<V> vs = n.skeleton.getVertices().iterator();
 			while (vs.hasNext()) {
 				V v = vs.next();
-				if (n.getSkeleton().getEdges(v).size()!=2) {
+				if (n.skeleton.getEdges(v).size()!=2) {
 					isPolygon = false;
 					break;
 				}
 			}
 			
-			if (isPolygon) n.setType(TCType.P);
-			else n.setType(TCType.R);
+			if (isPolygon) n.setType(TCType.POLYGON);
+			else n.setType(TCType.RIGID);
 		}
 	}
 	
 	/**
 	 * Runs the different DFS algorithms and creates the triconnected components based on the given graph and maps.
 	 */
-	protected void findSplitComponents(TCSkeleton<E,V> graph,
+	@SuppressWarnings("unchecked")
+	private void findSplitComponents(TCSkeleton<E,V> graph,
 			Vector<EdgeList<E,V>> components, EdgeMap<E,V> virtEdgeMap,
 			EdgeMap<E,V> assignedVirtEdgeMap, EdgeMap<E,V> isHiddenMap,
 			MetaInfoContainer meta, V root) {
@@ -309,11 +314,8 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
 		dfs3.start(root);
 	}
 
-	/**
-	 *  
-	 */
 	@SuppressWarnings("unchecked")
-	protected NodeMap<V> orderAdjLists(IGraph<E,V> graph, MetaInfoContainer meta) {
+	private NodeMap<V> orderAdjLists(IGraph<E,V> graph, MetaInfoContainer meta) {
 		Collection<E> edges = graph.getEdges();
 		ArrayList<EdgeList<E,V>> bucket = new ArrayList<EdgeList<E,V>>();
 		int bucketSize = 3 * (graph.countVertices()) + 2;
@@ -369,7 +371,7 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
 	 * are positioned consecutively in the returned EdgeList.
 	 */
 	@SuppressWarnings("unchecked") 
-	protected EdgeList<E,V> sortConsecutiveMultipleEdges(IGraph<E,V> g){
+	private EdgeList<E,V> sortConsecutiveMultipleEdges(IGraph<E,V> g){
 		NodeMap<V> indices = new NodeMap<V>();
 		int count = 0;
 		for (V vertex:g.getVertices()) {
@@ -421,7 +423,7 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
 	/**
 	 * Simply deletes found multiple edges in the given graph.
 	 */
-	protected void splitOffInitialMultipleEdges(TCSkeleton<E,V> skeleton, 
+	private void splitOffInitialMultipleEdges(TCSkeleton<E,V> skeleton, 
 			Vector<EdgeList<E,V>> components, 
 			EdgeMap<E,V> virtEdgeMap, 
 			EdgeMap<E,V> assignedVirtEdgeMap, 
@@ -481,7 +483,7 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
 	/**
 	 * Creates a new component based on the given list of contained edges.
 	 */
-	protected void newComponent(TCSkeleton<E,V> skeleton,
+	private void newComponent(TCSkeleton<E,V> skeleton,
 			Vector<EdgeList<E,V>> components, 
 			EdgeList<E,V> tempComp,
 			EdgeMap<E,V> virtEdgeMap, 
@@ -511,7 +513,7 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
 	 * Creates an edgeMap for the given graph containing all edges of the graph.
 	 * @param g
 	 */
-	protected EdgeMap<E,V> createEdgeMap(IGraph<E,V> g) {
+	private EdgeMap<E,V> createEdgeMap(IGraph<E,V> g) {
 		EdgeMap<E,V> map = new EdgeMap<E,V>();
 		for (E e:g.getEdges()) {
 			map.put(e, null);
@@ -524,12 +526,41 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
 	 * @param g
 	 * @return
 	 */
-	protected NodeMap<V> createNodeMap(IGraph<E,V> g) {
+	private NodeMap<V> createNodeMap(IGraph<E,V> g) {
 		NodeMap<V> map = new NodeMap<V>();
 		for (V v:g.getVertices()) {
 			map.put(v, null);
 		}
 		return map;
 	}
-
+	
+	/**
+	 * Get original graph.
+	 * @return Original graph.
+	 */
+	public IGraph<E,V> getGraph() {
+		return this.graph;
+	}
+	
+	/**
+	 * Get the triconnected components of a given {@link TCType} class. 
+	 * @param {@link TCType} class.
+	 * @return Collection of the triconnected components of the given {@link TCType} class.
+	 */
+	public Collection<TCTreeNode<E,V>> getTCTreeNodes(TCType type) {
+		Set<TCTreeNode<E,V>> result = new HashSet<TCTreeNode<E,V>>();
+		for (TCTreeNode<E,V> node : this.getVertices())
+			if (node.getType()==type)
+				result.add(node);
+		
+		return result;
+	}
+	
+	/**
+	 * Get the triconnected components.
+	 * @return Collection of the triconnected components.
+	 */
+	public Collection<TCTreeNode<E,V>> getTCTreeNodes() {
+		return this.getVertices();
+	}
 }
