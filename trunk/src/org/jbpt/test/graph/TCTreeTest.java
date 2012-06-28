@@ -1,5 +1,8 @@
 package org.jbpt.test.graph;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import junit.framework.TestCase;
 
 import org.jbpt.algo.tree.tctree.TCTree;
@@ -37,18 +40,32 @@ public class TCTreeTest extends TestCase {
 		g.addEdge(z,t);
 		DirectedEdge backEdge = g.addEdge(t,s);
 		
+		IOUtils.toFile("graph.dot", g.toDOT());
+		
 		TCTree<DirectedEdge,Vertex> tctree = new TCTree<DirectedEdge,Vertex>(g,backEdge);
+		
+		Set<DirectedEdge> edges = new HashSet<DirectedEdge>();
 		for (TCTreeNode<DirectedEdge,Vertex> node : tctree.getVertices()) {
 			System.out.println(node.getType() + " - " + node.getSkeleton().getVertices().size());
+			
 			if (node.getType()==TCType.P)
 				assertEquals(6, node.getSkeleton().getVertices().size());
+			
+			assertEquals(true,g.getEdges().containsAll(node.getSkeleton().getOriginalEdges()));
+			edges.addAll((node.getSkeleton().getOriginalEdges()));
+			
 			IOUtils.toFile(node.getName() + ".dot",node.getSkeleton().toDOT());
 		}
 		
-		//RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g); 
+		System.out.println(edges.size());
+		System.out.println(g.getEdges().size());
+		assertEquals(true,edges.containsAll(g.getEdges()));
+		assertEquals(true,g.getEdges().containsAll(edges));
+		 
 		
 		IOUtils.toFile("tree.dot", tctree.toDOT());
 	}
+
 		
 	/*public void testSimpleGraph() {
 		

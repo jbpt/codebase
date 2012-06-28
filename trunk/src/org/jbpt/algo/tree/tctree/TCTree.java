@@ -15,28 +15,42 @@ import org.jbpt.graph.abs.IGraph;
 import org.jbpt.hypergraph.abs.IVertex;
 
 /**
- * This class takes a biconnected graph and decomposes it into triconnected components.
+ * This class takes a biconnected graph and decomposes it into the tree of triconnected components.<br/><br/>
  * 
- *  @assumption A given graph is biconnected.
- * 
+ * Every triconnected component is either of trivial (T), or polygon (P), bond (B), or rigid (R) class (TCType). 
+ * Note that every edge is a trivial component and is not explicitly computed by this class.   
  * This implementation is an adaption of the algorithm implemented by Martin Mader. 
- * The general process of this decomposition is described in his master's thesis.
+ * The general process of this decomposition is described in his master's thesis. 
+ * 
+ * For more information please see: 
+ * Carsten Gutwenger, Petra Mutzel: A Linear Time Implementation of SPQR-Trees. Graph Drawing 2000: 77-90.
+ * 
+ * @param <E> Edge template.
+ * @param <V> Vertex template.
  * 
  * @author Martin Mader
  * @author Artem Polyvyanyy
  * @author Christian Wiggert
- *
- * @param <E> Edge template.
- * @param <V> Vertex template.
+ * 
+ * @assumption A given graph is biconnected.
  */
 public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<TCTreeNode<E,V>> {
-	
+	// Original graph to decompose
 	protected IGraph<E,V> graph = null;
-	
+	// Edge of the original graph to use as a back edge
 	protected E backEdge = null;
+	// Maps internal edges used for technical purpose to original graph edges 
+	private Map<E,E> e2o = new HashMap<E,E>();
 	
+	/**
+	 * Empty constructor for technical purposes.
+	 */
 	protected TCTree() {}
 	
+	/**
+	 * Constructor.
+	 * @param graph Graph to decompose.
+	 */
 	public TCTree(IGraph<E,V> graph) {
 		if (graph==null) return;
 		if (graph.getEdges().isEmpty()) return;
@@ -47,6 +61,11 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
 		this.construct();
 	}
 
+	/**
+	 * Constructor. 
+	 * @param graph Graph to decompose.
+	 * @param backEdge Edge to use as a back edge. A triconnected component which contains the back edge will become the root of the tree.
+	 */
 	public TCTree(IGraph<E,V> graph, E backEdge) {
 		if (graph==null) return;
 		if (!graph.contains(backEdge)) return;
@@ -57,6 +76,9 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
 		this.construct();
 	}
 	
+	/**
+	 * Construct the tree of the triconnected components.
+	 */
 	protected void construct() {	
 		Vector<EdgeList<E,V>> components = new Vector<EdgeList<E,V>>();
 		
@@ -73,7 +95,12 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
 		meta.setMetaInfo(MetaInfo.HIDDEN_EDGES, isHiddenMap);
 		
 		// discover triconnected components
-		TCSkeleton<E,V> mainSkeleton = new TCSkeleton<E,V>(this.graph);
+		System.out.println("---");
+		TCSkeleton<E,V> mainSkeleton = new TCSkeleton<E,V>(this.graph,this.e2o);
+		for (E e : mainSkeleton.getEdges()) {
+			System.out.println(e.getId());
+		}
+		System.out.println("------");
 		this.splitOffInitialMultipleEdges(mainSkeleton,components,virtualEdgeMap,assignedVirtEdgeMap,isHiddenMap);
 		this.findSplitComponents(mainSkeleton,components,virtualEdgeMap,assignedVirtEdgeMap,isHiddenMap,meta,backEdge.getV1());
 		
@@ -84,7 +111,7 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
 				if (virtualEdgeMap.getBool(edge))
 					node.skeleton.addVirtualEdge(edge.getV1(),edge.getV2());
 				else
-					node.skeleton.addEdge(edge.getV1(),edge.getV2(),edge);
+					node.skeleton.addEdge(edge.getV1(),edge.getV2(),this.e2o.get(edge));
 			}
 			this.addVertex(node);
 		}
@@ -137,9 +164,10 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
 					}
 				}
 				else
-					v1.getSkeleton().addEdge(e.getV1(), e.getV2(), v2.getSkeleton().getOriginalEdge(e));
+					v1.getSkeleton().addEdge(e.getV1(), e.getV2());
 				
-				for(E ve : v1.getSkeleton().getVirtualEdges()) {
+				Set<E> ves = new HashSet<E>(v1.getSkeleton().getVirtualEdges());
+				for(E ve : ves) {
 					if (entryA.getKey().containsAll(ve.getVertices())) 
 						v1.getSkeleton().removeEdge(ve);
 				}
@@ -236,8 +264,7 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
 	/**
 	 * Runs the different DFS algorithms and creates the triconnected components based on the given graph and maps.
 	 */
-	@SuppressWarnings("unchecked")
-	protected void findSplitComponents(IGraph<E,V> graph,
+	protected void findSplitComponents(TCSkeleton<E,V> graph,
 			Vector<EdgeList<E,V>> components, EdgeMap<E,V> virtEdgeMap,
 			EdgeMap<E,V> assignedVirtEdgeMap, EdgeMap<E,V> isHiddenMap,
 			MetaInfoContainer meta, V root) {
@@ -494,7 +521,6 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
 	
 	/**
 	 * Creates a NodeMap for the given graph containing all nodes of the graph.
-	 * -- Move this method to graph algorithms. --
 	 * @param g
 	 * @return
 	 */

@@ -5,89 +5,50 @@ import org.jbpt.graph.abs.IGraph;
 import org.jbpt.hypergraph.abs.IVertex;
 
 /**
- * A standard Depth-first-search (DFS) implementation. It implements
- * the same dummy-methods as the DFS algorithm in {@link y.algo.Dfs}, but operates
- * on a given adjacency structure to determine the order in which paths
- * are generated.
+ * A standard Depth-first-search (DFS) implementation. 
+ * It implements the same dummy-methods as the DFS algorithm in {@link y.algo.Dfs}, 
+ * but operates on a given adjacency structure to determine the order in which paths are generated.
  * 
  * @author Martin Mader
  * @author Christian Wiggert
- * 
  */
 public class AbstractDFS<E extends IEdge<V>, V extends IVertex> {
-
 	protected final V INVALID_NODE = null;
 	protected final E INVALID_EDGE = null;
 	
-	/**
-	 * Vertex not yet visited
-	 */
+	//Vertex not yet visited
 	public static final int WHITE = 0;
-	
-	/**
-	 * Vertex visited, but not yet finished
-	 */
+	// Vertex visited, but not yet finished
 	public static final int GRAY = 1;
-	
-	/**
-	 * Vertex processed completely
-	 */
+	// Vertex processed completely
 	public static final int BLACK = 2;
 	protected static final int EDGE_NOT_VISITED = 0;
-	
-	/**
-	 * Tree edge
-	 */
+	// Tree edge
 	public static final int TREE_EDGE = 1;
-	
-	/**
-	 * Back edge
-	 */
+	// Back edge
 	public static final int BACK_EDGE = 2;
-	
-	/**
-	 * Adjacency Map
-	 */
+	// Adjacency Map
 	protected NodeMap<V> adj;
-	
-	/**
-	 * The graph to operate on
-	 */
+	// The graph to operate on
 	protected IGraph<E, V> g;
-	
-	/**
-	 * The MetaInfoContainer for the additional maps related to the graph
-	 */
+	// The MetaInfoContainer for the additional maps related to the graph
 	protected MetaInfoContainer meta;
-	
-	/**
-	 * NodeMap storing DFS-Numbers
-	 */
+	// NodeMap storing DFS-Numbers
 	protected NodeMap<V> dfsNumMap;
-	
-	/**
-	 * NodeMap storing Completion Numbers
-	 */
+	// NodeMap storing Completion Numbers
 	protected NodeMap<V> complNumMap;
-	
-	/**
-	 * NodeMap storing current vertex status: WHITE, GRAY, or BLACK
-	 */
+	// NodeMap storing current vertex status: WHITE, GRAY, or BLACK
 	protected NodeMap<V> nodeStateMap;
-	
-	/**
-	 * EdgeMap storing current edge type: EDGE_NOT_VISITED, TREE_EDGE or BACK_EDGE
-	 */
+	// EdgeMap storing current edge type: EDGE_NOT_VISITED, TREE_EDGE or BACK_EDGE
 	protected EdgeMap<E, V> edgeTypeMap;
 	private int dfsNum = 0;
 	private int complNum = 0;
 	
 	/**
-	 * creates an Instance of DFS which operates on the given graph 
-	 * and adjacency structure.
+	 * Creates an instance of DFS which operates on the given graph and adjacency structure.
 	 * 
-	 * @param graph 	the graph on which to perform DFS
-	 * @param adjMap	the adjacency structure to be used.
+	 * @param graph The graph on which to perform DFS.
+	 * @param adjMap The adjacency structure to be used.
 	 * 					in each entry must be contained an 
 	 * 					{@link y.base.EdgeList} 
 	 * 					of adjacent neighbors. DFS traverses edges 
@@ -176,22 +137,18 @@ public class AbstractDFS<E extends IEdge<V>, V extends IVertex> {
 		
 	}
 	
-	protected void preVisit(V v, int dfsNumber){}
+	protected void preVisit(V v, int dfsNumber) {}
 	
-	protected  void preTraverse(E e, V w, boolean treeEdge){}
+	protected  void preTraverse(E e, V w, boolean treeEdge) {}
 	
 	protected  void postTraverse(E e, V w) {}
 	
-	protected  void postVisit(V v, int dfsNumber, int complNumber){}
+	protected  void postVisit(V v, int dfsNumber, int complNumber) {}
 
 	public EdgeMap<E, V> getEdgeTypeMap() {
 		return edgeTypeMap;
 	}
-
 	
-	/**
-	 * Move to graph algorithms.
-	 */
 	protected EdgeMap<E, V> createEdgeMap(IGraph<E,V> g) {
 		EdgeMap<E, V> map = new EdgeMap<E, V>();
 		for (E e:g.getEdges()) {
@@ -200,9 +157,6 @@ public class AbstractDFS<E extends IEdge<V>, V extends IVertex> {
 		return map;
 	}
 	
-	/**
-	 * Move to graph algorithms.
-	 */
 	protected NodeMap<V> createNodeMap(IGraph<E, V> g) {
 		NodeMap<V> map = new NodeMap<V>();
 		for (V v:g.getVertices()) {
