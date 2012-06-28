@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.jbpt.hypergraph.abs.IVertex;
+import org.jbpt.utils.DotSerializer;
 
 
 /**
@@ -20,7 +21,6 @@ import org.jbpt.hypergraph.abs.IVertex;
  * @param <V> Vertex template.
  */
 public class AbstractTree<V extends IVertex> extends AbstractDirectedGraph<IDirectedEdge<V>,V> implements ITree<V> {
-	
 	protected V root = null;
 	
 	/**
@@ -92,5 +92,10 @@ public class AbstractTree<V extends IVertex> extends AbstractDirectedGraph<IDire
 	public boolean isRoot(V v) {
 		if (this.root == null) return false;
 		return this.root.equals(v);
+	}
+	
+	@Override
+	public String toDOT() {
+		return new DotSerializer().serialize(this,false);
 	}
 }

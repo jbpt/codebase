@@ -37,7 +37,7 @@ public class DotSerializer {
 		return rankdir;
 	}
   
-	protected String getHeader(boolean isDirected, AbstractMultiHyperGraph<?, ?> graph){
+	protected String getHeader(boolean isDirected, AbstractMultiHyperGraph<?,?> graph){
 		StringBuffer buff = new StringBuffer(2);
 		
 		if (isDirected){
@@ -53,24 +53,29 @@ public class DotSerializer {
 		return buff.toString();
 	}
 	
-	public String serialize(AbstractMultiDirectedGraph<?, ?> digraph){
+	public String serialize(AbstractMultiDirectedGraph<?,?> digraph){
+		return this.serialize(digraph,true);
+	}
+	
+	public String serialize(AbstractMultiDirectedGraph<?,?> digraph, boolean asDirected) {
 		StringBuffer buff = new StringBuffer(digraph.getEdges().size() + 2);
 		
-		buff.append(getHeader(true, digraph));
+		buff.append(getHeader(asDirected, digraph));
 		
 		for (IVertex v : digraph.getVertices()){
 			buff.append(String.format(NODE, v.getId().replace("-", ""), v.getLabel()));
 		}
 		
 		for (IDirectedEdge<?> e : digraph.getEdges()){
-			buff.append(String.format(EDGE, e.getSource().getId().replace("-", ""), "->", 
+			String edge = asDirected ? "->" : "--";
+			buff.append(String.format(EDGE, e.getSource().getId().replace("-", ""), edge, 
 					e.getTarget().getId().replace("-", ""), e.getLabel()));
 		}
 		buff.append(ENDGRAPH);
 		return buff.toString();
 	}
 	
-	public String serialize(AbstractMultiGraph<?, ?> graph){
+	public String serialize(AbstractMultiGraph<?,?> graph){
 		StringBuffer buff = new StringBuffer(graph.getEdges().size() + 2);
 				
 		buff.append(getHeader(false, graph));
@@ -87,7 +92,7 @@ public class DotSerializer {
 		return buff.toString();
 	}
 	
-	public String serialize(AbstractMultiGraph<?, ?> graph, Collection<? extends IEdge<?>> dotted){
+	public String serialize(AbstractMultiGraph<?,?> graph, Collection<? extends IEdge<?>> dotted){
 		StringBuffer buff = new StringBuffer(graph.getEdges().size() + 2);
 				
 		buff.append(getHeader(false, graph));
@@ -106,7 +111,7 @@ public class DotSerializer {
 		return buff.toString();
 	}
 	
-	public String serialize(AbstractMultiGraph<?, ?> graph, Collection<? extends IEdge<?>> dotted, Collection<? extends IEdge<?>> dashed){
+	public String serialize(AbstractMultiGraph<?,?> graph, Collection<? extends IEdge<?>> dotted, Collection<? extends IEdge<?>> dashed){
 		StringBuffer buff = new StringBuffer(graph.getEdges().size() + 2);
 				
 		buff.append(getHeader(false, graph));
