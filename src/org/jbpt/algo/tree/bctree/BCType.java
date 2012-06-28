@@ -1,15 +1,15 @@
 package org.jbpt.algo.tree.bctree;
 
 /**
- * BCTree node types.
+ * BCTree node types.<br/><br/>
+ *
+ * - BICONNECTED component<br/>
+ * - CUTVERTEX<br/>
  * 
  * @author Artem Polyvyanyy
- * 
- * B - biconnected component
- * C - cutvertex 
  */
 public enum BCType {
-	B,
-	C,
+	BICONNECTED,
+	CUTVERTEX,
 	UNDEFINED;
 }

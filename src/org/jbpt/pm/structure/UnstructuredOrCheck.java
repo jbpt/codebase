@@ -24,7 +24,7 @@ public class UnstructuredOrCheck implements ICheck {
 	public List<String> check(ProcessModel process) {
 		List<String> errors = new ArrayList<String>();
 		RPST<ControlFlow<FlowNode>, FlowNode> rpst = new RPST<ControlFlow<FlowNode>, FlowNode>(process);
-		for (RPSTNode<ControlFlow<FlowNode>, FlowNode> rigid:rpst.getVertices(TCType.R)) 
+		for (RPSTNode<ControlFlow<FlowNode>, FlowNode> rigid:rpst.getVertices(TCType.RIGID)) 
 			for (FlowNode node:rigid.getSkeleton().getVertices()) 
 				if (node instanceof OrGateway)
 					errors.add("Gateway " + node.getId() + " is an unstructured OR-Gateway.");

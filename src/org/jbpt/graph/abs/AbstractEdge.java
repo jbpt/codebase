@@ -50,11 +50,7 @@ public class AbstractEdge<V extends IVertex> extends AbstractHyperEdge<V> implem
 		else return false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see de.hpi.bpt.graph.abs.IEdge#setVertices(de.hpi.bpt.hypergraph.abs.IVertex, de.hpi.bpt.hypergraph.abs.IVertex)
-	 */
-	@SuppressWarnings("unchecked")
+	@Override
 	public void setVertices(V v1, V v2) {
 		if (this.graph == null) return;
 		if (v1 == null || v2 == null) return;
@@ -63,6 +59,7 @@ public class AbstractEdge<V extends IVertex> extends AbstractHyperEdge<V> implem
 			Collection<V> vs = new ArrayList<V>();
 			vs.add(v1); vs.add(v2);
 			
+			@SuppressWarnings("unchecked")
 			Collection<IDirectedHyperEdge<V>> es = (Collection<IDirectedHyperEdge<V>>) this.graph.getEdges(vs);
 			if (es.size()>0) {
 				Iterator<IDirectedHyperEdge<V>> i = es.iterator();
@@ -73,16 +70,15 @@ public class AbstractEdge<V extends IVertex> extends AbstractHyperEdge<V> implem
 				}
 			}
 		}
+	
+		super.removeVertex(v1);
+		super.removeVertex(v2);
 		
 		Collection<V> vs = new ArrayList<V>();
-		vs.add(this.v1); vs.add(this.v2);
-		super.removeVertices(vs);
-		
-		vs.clear();
 		vs.add(v1); vs.add(v2);
 		super.addVertices(vs);
 		this.v1 = v1;
-		this.v2 = v2;		
+		this.v2 = v2;
 	}
 	
 	/*
