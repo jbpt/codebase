@@ -17,19 +17,20 @@ import org.jbpt.utils.DotSerializer;
  *  
  * @author Artem Polyvyanyy
  * 
- * @param <E> template for edge (extends IEdge)
- * @param <V> template for vertex (extends IVertex)
+ * @param <E> Edge template.
+ * @param <V> Vertex template.
  */
 public class TCSkeleton<E extends IEdge<V>, V extends IVertex> extends AbstractMultiGraph<E,V> {
+	// set of virtual edges
 	protected Set<E> virtualEdges = new HashSet<E>();
 	
 	protected Map<E,E> e2o = new HashMap<E,E>();
 	protected Map<E,E> o2e = new HashMap<E,E>();
-
+	
 	/**
-	 * Constructor.
+	 * Empty constructor.
 	 */
-	public TCSkeleton() {
+	protected TCSkeleton() {
 		super();
 	}
 
@@ -37,7 +38,7 @@ public class TCSkeleton<E extends IEdge<V>, V extends IVertex> extends AbstractM
 	 * Constructor.
 	 * @param g Graph to copy skeleton from.
 	 */
-	public TCSkeleton(IGraph<E,V> g, Map<E,E> e2o) {
+	protected TCSkeleton(IGraph<E,V> g, Map<E,E> e2o) {
 		super();
 		for (E o : g.getEdges()) {
 			E e = this.addEdge(o.getV1(),o.getV2());
@@ -45,13 +46,7 @@ public class TCSkeleton<E extends IEdge<V>, V extends IVertex> extends AbstractM
 		}
 	}
 	
-	/**
-	 * Add a virtual edge to this skeleton.
-	 * @param v1 Vertex.
-	 * @param v2 Vertex.
-	 * @return Edge added to this skeleton or <tt>null</tt> if no edge was added.
-	 */
-	public E addVirtualEdge(V v1, V v2, Object id) {
+	protected E addVirtualEdge(V v1, V v2, Object id) {
 		E e = super.addEdge(v1,v2);
 		if (e != null) {
 			e.setTag(id);
@@ -61,7 +56,7 @@ public class TCSkeleton<E extends IEdge<V>, V extends IVertex> extends AbstractM
 		return e;
 	}
 	
-	public E addVirtualEdge(V v1, V v2) {
+	protected E addVirtualEdge(V v1, V v2) {
 		E e = super.addEdge(v1,v2);
 		if (e != null) {
 			this.virtualEdges.add(e);
@@ -71,7 +66,7 @@ public class TCSkeleton<E extends IEdge<V>, V extends IVertex> extends AbstractM
 	}
 
 	/**
-	 * Get virtual edges in this skeleton.
+	 * Get virtual edges of this skeleton.
 	 * @return Set of all virtual edges of this skeleton.
 	 */
 	public Set<E> getVirtualEdges() {		
@@ -79,7 +74,7 @@ public class TCSkeleton<E extends IEdge<V>, V extends IVertex> extends AbstractM
 	}
 
 	/**
-	 * Check if a given edge is a virtual edge in this skeleton.
+	 * Checks if a given edge is a virtual edge of this skeleton.
 	 * @param e Edge.
 	 * @return <tt>true</tt> if the edge is virtual; otherwise <tt>false</tt>. 
 	 */
@@ -87,14 +82,7 @@ public class TCSkeleton<E extends IEdge<V>, V extends IVertex> extends AbstractM
 		return this.virtualEdges.contains(e);
 	}
 
-	/**
-	 * Add edge to this skeleton.
-	 * @param v1
-	 * @param v2
-	 * @param o
-	 * @return
-	 */
-	public E addEdge(V v1, V v2, E o) {
+	protected E addEdge(V v1, V v2, E o) {
 		E e = super.addEdge(v1,v2);
 		if (e!=null) {
 			this.e2o.put(e,o);
@@ -125,6 +113,10 @@ public class TCSkeleton<E extends IEdge<V>, V extends IVertex> extends AbstractM
 		return this.e2o.get(e);
 	}
 	
+	/**
+	 * Get original edges associated with this skeleton. 
+	 * @return
+	 */
 	public Set<E> getOriginalEdges() {
 		return this.o2e.keySet();
 	}

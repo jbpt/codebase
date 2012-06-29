@@ -15,15 +15,20 @@ import org.jbpt.graph.abs.IGraph;
 import org.jbpt.hypergraph.abs.IVertex;
 
 /**
- * This class takes a biconnected graph and decomposes it into the tree of triconnected components.<br/><br/>
+ * This class takes a biconnected graph and decomposes it into the tree of the triconnected components.<br/><br/>
  * 
- * Every triconnected component is either of trivial (T), or polygon (P), bond (B), or rigid (R) class (TCType). 
- * Note that every edge is a trivial component and is not explicitly computed by this class.   
+ * NOTE THAT GIVEN GRAPH MUST BE BICONNECTED; OTHERWISE RESULT IS UNEXPECTED.<br/><br/>
+ * 
+ * Every triconnected component is either of a trivial, or POLYGON, or BOND, or RIGID type ({@link TCType}). 
+ * Note that every edge is a trivial component, but is not explicitly computed by this class. 
  * This implementation is an adaption of the algorithm implemented by Martin Mader. 
- * The general process of this decomposition is described in his master's thesis. 
+ * The general process of this decomposition is described in his master's thesis.<br/><br/>
  * 
- * For more information please see: 
- * Carsten Gutwenger, Petra Mutzel: A Linear Time Implementation of SPQR-Trees. Graph Drawing 2000: 77-90.
+ * For more information on the algorithm please refer to: 
+ * Carsten Gutwenger and Petra Mutzel: A Linear Time Implementation of SPQR-Trees. Graph Drawing 2000: 77-90.
+ * 
+ * @see {@link BiconnectivityCheck} for testing graph biconnectivity.
+ * @see {@link TCType} provides enumeration for types of triconnected components.
  * 
  * @param <E> Edge template.
  * @param <V> Vertex template.
@@ -32,23 +37,19 @@ import org.jbpt.hypergraph.abs.IVertex;
  * @author Artem Polyvyanyy
  * @author Christian Wiggert
  * 
- * @assumption A given graph is biconnected.
+ * @assumption Given graph is biconnected.
  */
 public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<TCTreeNode<E,V>> {
 	// Original graph to decompose
 	protected IGraph<E,V> graph = null;
 	// Edge of the original graph to use as a back edge
 	protected E backEdge = null;
-	// Maps internal edges used for technical purpose to original graph edges 
+	// Maps internal edges used for technical purpose to original graph edges
 	private Map<E,E> e2o = new HashMap<E,E>();
 	
 	/**
-	 * Empty constructor for technical purposes.
-	 */
-	protected TCTree() {}
-	
-	/**
 	 * Constructor.
+	 * 
 	 * @param graph A graph to decompose.
 	 */
 	public TCTree(IGraph<E,V> graph) {
@@ -62,9 +63,10 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
 	}
 
 	/**
-	 * Constructor. 
+	 * Constructor.
+	 * 
 	 * @param graph A graph to decompose.
-	 * @param backEdge Edge to use as a back edge. A triconnected component which contains the back edge will become the root of the tree.
+	 * @param backEdge An edge of the graph to use as a back edge. A triconnected component that contains the edge will become the root of the tree.
 	 */
 	public TCTree(IGraph<E,V> graph, E backEdge) {
 		if (graph==null) return;
@@ -77,7 +79,7 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
 	}
 	
 	/**
-	 * Main construction procedure.
+	 * Constructs the tree of the triconnected components.
 	 */
 	protected void construct() {
 		Vector<EdgeList<E,V>> components = new Vector<EdgeList<E,V>>();
@@ -121,13 +123,17 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
 		
 		// merge bonds and polygons
 		this.mergePolygonsAndBonds(ve2nodes);
-		// assign some names to components
+
+		// assign names to components
 		this.nameComponents();
 		
-		// construct tree of components
+		// construct the tree of components
 		this.constructTree(ve2nodes);
 	}
 
+	/**
+	 * Assign names to components.
+	 */
 	private void nameComponents() {
 		int Pc, Bc, Rc;
 		Pc = Bc = Rc = 0;
@@ -139,6 +145,10 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
 		}
 	}
 	
+	/**
+	 * Compute index for faster tree construction.
+	 * @param ve2nodes Map to store index.
+	 */
 	private void indexComponents(Map<Object,Set<TCTreeNode<E,V>>> ve2nodes) {
 		for (TCTreeNode<E,V> node : this.getVertices()) {			
 			for (E e : node.skeleton.getVirtualEdges()) {
@@ -154,6 +164,10 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
 		}
 	}
 	
+	/**
+	 * Merge polygons and bonds that share virtual edges. 
+	 * @param ve2nodes Index.
+	 */
 	private void mergePolygonsAndBonds(Map<Object,Set<TCTreeNode<E,V>>> ve2nodes) {
 		Set<Object> toRemove = new HashSet<Object>(); 
 		
@@ -196,36 +210,44 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
 			ve2nodes.remove(ve);
 	}
 	
+	/**
+	 * Construct the tree. 
+	 * @param ve2nodes Index.
+	 */
 	private void constructTree(Map<Object,Set<TCTreeNode<E,V>>> ve2nodes) {
-			TCTreeNode<E,V> tobeRoot = null;
+		TCTreeNode<E,V> tobeRoot = null;
+		
+		Set<TCTreeNode<E,V>> visited = new HashSet<TCTreeNode<E,V>>();
+		for (Map.Entry<Object,Set<TCTreeNode<E,V>>> entry : ve2nodes.entrySet()) {
+			Iterator<TCTreeNode<E,V>> i = entry.getValue().iterator();
+			TCTreeNode<E,V> v1 = i.next();
+			TCTreeNode<E,V> v2 = i.next();
 			
-			Set<TCTreeNode<E,V>> visited = new HashSet<TCTreeNode<E,V>>();
-			for (Map.Entry<Object,Set<TCTreeNode<E,V>>> entry : ve2nodes.entrySet()) {
-				Iterator<TCTreeNode<E,V>> i = entry.getValue().iterator();
-				TCTreeNode<E,V> v1 = i.next();
-				TCTreeNode<E,V> v2 = i.next();
-				
-				this.addEdge(v1,v2);
-				
-				if (tobeRoot==null && !visited.contains(v1))
-					tobeRoot = this.checkRoot(v1);
-				
-				visited.add(v1);
-				
-				if (tobeRoot==null && !visited.contains(v2))
-					tobeRoot = this.checkRoot(v2);
-				
-				visited.add(v2);
-			}
+			this.addEdge(v1,v2);
 			
-			this.reRoot(tobeRoot);	
+			if (tobeRoot==null && !visited.contains(v1))
+				if (this.checkRoot(v1))
+					tobeRoot = v1;
+			
+			visited.add(v1);
+			
+			if (tobeRoot==null && !visited.contains(v2))
+				if (this.checkRoot(v2))
+					tobeRoot = v2;
+			
+			visited.add(v2);
+		}
+		
+		this.reRoot(tobeRoot);
 	}
 
-	private TCTreeNode<E,V> checkRoot(TCTreeNode<E,V> v) {
-		for (E e : v.skeleton.getEdges(this.backEdge.getV1(), this.backEdge.getV2())) {
-			if (!v.skeleton.isVirtual(e)) return v;
-		}
-		return null;
+	/**
+	 * Check if triconnected component must be root of the tree.
+	 * @param v Triconnected component.
+	 * @return <tt>true</tt> if the triconnected component contains the back edge; otherwise <tt>false</tt>.
+	 */
+	private boolean checkRoot(TCTreeNode<E,V> v) {
+		return v.skeleton.getOriginalEdges().contains(this.backEdge);
 	}
 
 	/**
@@ -234,7 +256,7 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
 	private void classifyComponents() {
 		for (TCTreeNode<E,V> n : this.getVertices()) {
 			if (n.skeleton.countVertices()==2) { 
-				n.setType(TCType.BOND); 
+				n.type = TCType.BOND; 
 				continue;
 			}
 			
@@ -248,8 +270,8 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
 				}
 			}
 			
-			if (isPolygon) n.setType(TCType.POLYGON);
-			else n.setType(TCType.RIGID);
+			if (isPolygon) n.type = TCType.POLYGON;
+			else n.type = TCType.RIGID;
 		}
 	}
 	
@@ -499,7 +521,7 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
 
 	/**
 	 * Creates an edgeMap for the given graph containing all edges of the graph.
-	 * @param g
+	 * @param g Graph.
 	 */
 	private EdgeMap<E,V> createEdgeMap(IGraph<E,V> g) {
 		EdgeMap<E,V> map = new EdgeMap<E,V>();
@@ -511,8 +533,8 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
 	
 	/**
 	 * Creates a NodeMap for the given graph containing all nodes of the graph.
-	 * @param g
-	 * @return
+	 * @param g Graph.
+	 * @return NodeMap.
 	 */
 	private NodeMap<V> createNodeMap(IGraph<E,V> g) {
 		NodeMap<V> map = new NodeMap<V>();

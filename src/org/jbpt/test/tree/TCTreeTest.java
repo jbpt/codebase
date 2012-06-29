@@ -9,7 +9,9 @@ import org.jbpt.algo.tree.tctree.TCTree;
 import org.jbpt.algo.tree.tctree.TCTreeNode;
 import org.jbpt.algo.tree.tctree.TCType;
 import org.jbpt.graph.DirectedEdge;
+import org.jbpt.graph.Edge;
 import org.jbpt.graph.MultiDirectedGraph;
+import org.jbpt.graph.MultiGraph;
 import org.jbpt.hypergraph.abs.Vertex;
 import org.jbpt.utils.IOUtils;
 
@@ -88,7 +90,7 @@ public class TCTreeTest extends TestCase {
 		IOUtils.toFile("tree.dot", tctree.toDOT());
 	}
 	
-	/*public void testNULL() {
+	public void testNULL() {
 		MultiDirectedGraph g = null;
 		long start = System.nanoTime();
 		TCTree<DirectedEdge,Vertex> tctree = new TCTree<DirectedEdge,Vertex>(g);
@@ -161,9 +163,9 @@ public class TCTreeTest extends TestCase {
 		for (TCTreeNode<Edge,Vertex> node : tctree.getVertices()) {
 			IOUtils.toFile(node.getName() + ".dot",node.getSkeleton().toDOT());
 		}
-	}*/
+	}
 	
-	/*public void testSimpleGraph() {
+	public void testSimpleGraph() {
 		//		  --- t3 --- t4 ---
 		//		  |				  |
 		// t1 -- s2 ------------ j5 -- t9
@@ -225,7 +227,7 @@ public class TCTreeTest extends TestCase {
 		assertEquals(2,tctree.getTCTreeNodes(TCType.BOND).size());
 		assertEquals(0,tctree.getTCTreeNodes(TCType.RIGID).size());
 		assertEquals(4,tctree.getTCTreeNodes(TCType.POLYGON).size());
-	}*/
+	}
 	
 	/*public void testGraphWithR() {
 		// create process model graph
