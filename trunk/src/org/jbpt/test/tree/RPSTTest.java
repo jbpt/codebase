@@ -1,4 +1,4 @@
-package org.jbpt.test.graph;
+package org.jbpt.test.tree;
 
 import org.jbpt.algo.tree.rpst.RPST;
 import org.jbpt.algo.tree.rpst.RPSTNode;

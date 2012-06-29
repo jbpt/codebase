@@ -99,13 +99,13 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
 		this.splitOffInitialMultipleEdges(mainSkeleton,components,virtualEdgeMap,assignedVirtEdgeMap,isHiddenMap);
 		this.findSplitComponents(mainSkeleton,components,virtualEdgeMap,assignedVirtEdgeMap,isHiddenMap,meta,backEdge.getV1());
 		
-		// construct TCTreeNodes and TCSkeletons from components 
+		// construct TCTreeNodes and TCSkeletons from components
 		for (EdgeList<E,V> el : components) {
 			if (components.size()<=1) continue;
 			TCTreeNode<E,V> node = new TCTreeNode<E,V>();
 			for (E edge : el) {
 				if (virtualEdgeMap.getBool(edge))
-					node.skeleton.addVirtualEdge(edge.getV1(),edge.getV2());
+					node.skeleton.addVirtualEdge(edge.getV1(),edge.getV2(),edge.getId());
 				else
 					node.skeleton.addEdge(edge.getV1(),edge.getV2(),this.e2o.get(edge));
 			}
@@ -115,36 +115,49 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
 		// classify triconnected components into polygons, bonds, and rigids
 		this.classifyComponents();
 		
-		// construct index, i.e., a map from a virtual edge to triconnected components that contain the edge
-		Map<Set<V>,Set<TCTreeNode<E,V>>> ve2nodes = new HashMap<Set<V>,Set<TCTreeNode<E,V>>>();
+		// construct index
+		Map<Object,Set<TCTreeNode<E,V>>> ve2nodes = new HashMap<Object,Set<TCTreeNode<E,V>>>();
 		this.indexComponents(ve2nodes);
 		
 		// merge bonds and polygons
 		this.mergePolygonsAndBonds(ve2nodes);
+		// assign some names to components
+		this.nameComponents();
 		
 		// construct tree of components
 		this.constructTree(ve2nodes);
 	}
 
-	private void indexComponents(Map<Set<V>,Set<TCTreeNode<E,V>>> ve2nodes) {
+	private void nameComponents() {
+		int Pc, Bc, Rc;
+		Pc = Bc = Rc = 0;
+		
+		for (TCTreeNode<E,V> node : this.getVertices()) {
+			if (node.getType()==TCType.BOND) node.setName("B"+Bc++);
+			if (node.getType()==TCType.POLYGON) node.setName("P"+Pc++);
+			if (node.getType()==TCType.RIGID) node.setName("R"+Rc++);
+		}
+	}
+	
+	private void indexComponents(Map<Object,Set<TCTreeNode<E,V>>> ve2nodes) {
 		for (TCTreeNode<E,V> node : this.getVertices()) {			
 			for (E e : node.skeleton.getVirtualEdges()) {
-				Set<V> edge = new HashSet<V>(e.getVertices());
-				if (ve2nodes.get(edge)==null){
+				if (ve2nodes.get(e.getTag())==null){
 					Set<TCTreeNode<E,V>> nodes = new HashSet<TCTreeNode<E,V>>();
 					nodes.add(node);
-					ve2nodes.put(edge,nodes);
+					ve2nodes.put(e.getTag(),nodes);
 				}
-				else
-					ve2nodes.get(edge).add(node);
+				else {
+					ve2nodes.get(e.getTag()).add(node);
+				}
 			}
 		}
 	}
 	
-	private void mergePolygonsAndBonds(Map<Set<V>,Set<TCTreeNode<E,V>>> ve2nodes) {
+	private void mergePolygonsAndBonds(Map<Object,Set<TCTreeNode<E,V>>> ve2nodes) {
+		Set<Object> toRemove = new HashSet<Object>(); 
 		
-		Set<Set<V>> toRemove = new HashSet<Set<V>>(); 
-		for (Map.Entry<Set<V>,Set<TCTreeNode<E,V>>> entryA : ve2nodes.entrySet()) {
+		for (Map.Entry<Object,Set<TCTreeNode<E,V>>> entryA : ve2nodes.entrySet()) {
 			Iterator<TCTreeNode<E,V>> i = entryA.getValue().iterator();
 			TCTreeNode<E,V> v1 = i.next();
 			TCTreeNode<E,V> v2 = i.next();
@@ -154,21 +167,20 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
 			
 			for (E e : v2.skeleton.getEdges()) {
 				if (v2.skeleton.isVirtual(e)) {
-					if (!entryA.getKey().containsAll(e.getVertices())) {
-						v1.skeleton.addVirtualEdge(e.getV1(),e.getV2());
-					}
+					if (!e.getTag().equals(entryA.getKey()))
+						v1.skeleton.addVirtualEdge(e.getV1(),e.getV2(),e.getTag());
 				}
 				else
-					v1.skeleton.addEdge(e.getV1(), e.getV2(),v2.skeleton.getOriginalEdge(e));
-				
-				Set<E> ves = new HashSet<E>(v1.skeleton.getVirtualEdges());
-				for(E ve : ves) {
-					if (entryA.getKey().containsAll(ve.getVertices())) 
-						v1.skeleton.removeEdge(ve);
-				}
+					v1.skeleton.addEdge(e.getV1(),e.getV2(),v2.skeleton.getOriginalEdge(e));
+			}
+			
+			Set<E> ves = new HashSet<E>(v1.skeleton.getVirtualEdges());
+			for(E ve : ves) {
+				if (ve.getTag().equals(entryA.getKey())) 
+					v1.skeleton.removeEdge(ve);
 			}
 						
-			for (Map.Entry<Set<V>,Set<TCTreeNode<E,V>>> entryB : ve2nodes.entrySet()) {
+			for (Map.Entry<Object,Set<TCTreeNode<E,V>>> entryB : ve2nodes.entrySet()) {
 				if (entryB.getValue().contains(v2)) {
 					entryB.getValue().remove(v2);
 					entryB.getValue().add(v1);
@@ -180,43 +192,20 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
 			this.removeVertex(v2);
 		}
 		
-		for (Set<V> ve : toRemove)
+		for (Object ve : toRemove)
 			ve2nodes.remove(ve);
 	}
 	
-	private void constructTree(Map<Set<V>,Set<TCTreeNode<E,V>>> ve2nodes) {
-		int Pc, Bc, Rc;
-		Pc = Bc = Rc = 0;
-		
-		if (this.getVertices().size()==1) {
-			TCTreeNode<E,V> v = this.getVertices().iterator().next(); 
-			if (v.getType()==TCType.BOND) v.setName("B0");
-			if (v.getType()==TCType.POLYGON) v.setName("P0");
-			if (v.getType()==TCType.RIGID) v.setName("R0");
-			this.reRoot(v);
-		}
-		else {
+	private void constructTree(Map<Object,Set<TCTreeNode<E,V>>> ve2nodes) {
 			TCTreeNode<E,V> tobeRoot = null;
 			
 			Set<TCTreeNode<E,V>> visited = new HashSet<TCTreeNode<E,V>>();
-			for (Map.Entry<Set<V>,Set<TCTreeNode<E,V>>> entry : ve2nodes.entrySet()) {
+			for (Map.Entry<Object,Set<TCTreeNode<E,V>>> entry : ve2nodes.entrySet()) {
 				Iterator<TCTreeNode<E,V>> i = entry.getValue().iterator();
 				TCTreeNode<E,V> v1 = i.next();
 				TCTreeNode<E,V> v2 = i.next();
 				
 				this.addEdge(v1,v2);
-				
-				if (!visited.contains(v1)) {
-					if (v1.getType()==TCType.BOND) v1.setName("B"+Bc++);
-					if (v1.getType()==TCType.POLYGON) v1.setName("P"+Pc++);
-					if (v1.getType()==TCType.RIGID) v1.setName("R"+Rc++);
-				}
-				
-				if (!visited.contains(v2)) {
-					if (v2.getType()==TCType.BOND) v2.setName("B"+Bc++);
-					if (v2.getType()==TCType.POLYGON) v2.setName("P"+Pc++);
-					if (v2.getType()==TCType.RIGID) v2.setName("R"+Rc++);
-				}
 				
 				if (tobeRoot==null && !visited.contains(v1))
 					tobeRoot = this.checkRoot(v1);
@@ -230,7 +219,6 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
 			}
 			
 			this.reRoot(tobeRoot);	
-		}
 	}
 
 	private TCTreeNode<E,V> checkRoot(TCTreeNode<E,V> v) {

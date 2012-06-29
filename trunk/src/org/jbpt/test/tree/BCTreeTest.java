@@ -1,4 +1,4 @@
-package org.jbpt.test.graph;
+package org.jbpt.test.tree;
 
 import java.util.List;
 

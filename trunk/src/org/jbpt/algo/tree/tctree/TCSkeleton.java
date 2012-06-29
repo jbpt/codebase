@@ -51,6 +51,16 @@ public class TCSkeleton<E extends IEdge<V>, V extends IVertex> extends AbstractM
 	 * @param v2 Vertex.
 	 * @return Edge added to this skeleton or <tt>null</tt> if no edge was added.
 	 */
+	public E addVirtualEdge(V v1, V v2, Object id) {
+		E e = super.addEdge(v1,v2);
+		if (e != null) {
+			e.setTag(id);
+			this.virtualEdges.add(e);
+		}
+
+		return e;
+	}
+	
 	public E addVirtualEdge(V v1, V v2) {
 		E e = super.addEdge(v1,v2);
 		if (e != null) {
