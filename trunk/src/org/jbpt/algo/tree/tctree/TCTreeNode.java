@@ -1,7 +1,8 @@
 package org.jbpt.algo.tree.tctree;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.jbpt.graph.abs.IEdge;
 import org.jbpt.hypergraph.abs.IVertex;
@@ -21,11 +22,8 @@ public class TCTreeNode<E extends IEdge<V>, V extends IVertex> extends Vertex {
 	// skeleton
 	protected TCSkeleton<E,V> skeleton = new TCSkeleton<E,V>();
 	// boundary vertices of the fragment
-	protected Collection<V> boundary = new ArrayList<V>();
-	
-	public TCTreeNode() {
-		super();
-	}
+	// TODO: populate split pair
+	protected Set<V> splitPair = new HashSet<V>();
 
 	public TCType getType() {
 		return type;
@@ -35,28 +33,12 @@ public class TCTreeNode<E extends IEdge<V>, V extends IVertex> extends Vertex {
 		return this.skeleton;
 	}
 	
-	public Collection<V> getBoundaryNodes() {
-		// TODO: do we need to introduce new array?
-		return new ArrayList<V>(this.boundary);
+	public Collection<V> getSplitPair() {
+		return this.splitPair;
 	}
 	
 	@Override
 	public String toString() {
-		return this.getName() + " " + this.getBoundaryNodes() + " - " + this.getSkeleton() + " - " + this.getSkeleton().getVirtualEdges();
+		return this.getName() + " [" + this.splitPair + "] skeleton: " + this.skeleton + " virtual: " + this.skeleton.virtualEdges;
 	}
-	
-	protected void setType(TCType type) {
-		this.type = type;
-	}
-	
-	protected void setSkeleton(TCSkeleton<E,V> skeleton) {
-		this.skeleton = skeleton;
-	}
-	
-	protected void setBoundaryNodes(Collection<V> boundary) {
-		if (boundary == null || boundary.size()!=2) return;
-		
-		this.boundary = new ArrayList<V>(boundary);
-	}
-
 }

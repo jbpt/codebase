@@ -1,11 +1,13 @@
 package org.jbpt.algo.tree.tctree;
 
 /**
- * Structural types of triconnected components.<br/><br/>
+ * Enumeration of structural types of the triconnected components.<br/><br/>
  * 
- * - POLYGON (sequence of components)<br/>
- * - BOND (set of components that share boundary vertices)<br/>
- * - RIGID (neither trivial, nor polygon, nor bond)<br/>
+ * Note that every edge of a graph is a trivial component, but is not explicitly computed by {@link TCTree}.<br/><br/>
+ * 
+ * POLYGON - sequence of triconnected components.<br/>
+ * BOND - set of triconnected components that share a split pair.<br/>
+ * RIGID - neither a trivial, nor polygon, nor bond component.<br/>
  * 
  * @author Artem Polyvyanyy
  */
