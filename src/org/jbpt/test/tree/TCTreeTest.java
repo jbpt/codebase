@@ -1,4 +1,4 @@
-package org.jbpt.test.graph;
+package org.jbpt.test.tree;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -11,17 +11,16 @@ import org.jbpt.algo.tree.tctree.TCType;
 import org.jbpt.graph.DirectedEdge;
 import org.jbpt.graph.MultiDirectedGraph;
 import org.jbpt.hypergraph.abs.Vertex;
-import org.jbpt.pm.ControlFlow;
-import org.jbpt.pm.FlowNode;
 import org.jbpt.utils.IOUtils;
 
 public class TCTreeTest extends TestCase {
 	
 	/**
 	 * Test of a graph from the WS-FM'10 paper:
-	 * Artem Polyvyanyy, Jussi Vanhatalo, Hagen Völzer: Simplified Computation and Generalization of the Refined Process Structure Tree. WS-FM 2010: 25-41
+	 * Artem Polyvyanyy, Jussi Vanhatalo, and Hagen Völzer: 
+	 * Simplified Computation and Generalization of the Refined Process Structure Tree. WS-FM 2010: 25-41
 	 */
-	/*public void testWSFM() {
+	public void testWSFM() {
 		MultiDirectedGraph g = new MultiDirectedGraph();
 		
 		Vertex s = new Vertex("s");
@@ -81,22 +80,22 @@ public class TCTreeTest extends TestCase {
 		
 		assertEquals(true,edges.containsAll(g.getEdges()));
 		assertEquals(true,g.getEdges().containsAll(edges));
-		assertEquals(3,tctree.getTriconnectedComponents().size());
-		assertEquals(1,tctree.getTriconnectedComponents(TCType.BOND).size());
-		assertEquals(1,tctree.getTriconnectedComponents(TCType.RIGID).size());
-		assertEquals(1,tctree.getTriconnectedComponents(TCType.POLYGON).size());
+		assertEquals(3,tctree.getTCTreeNodes().size());
+		assertEquals(1,tctree.getTCTreeNodes(TCType.BOND).size());
+		assertEquals(1,tctree.getTCTreeNodes(TCType.RIGID).size());
+		assertEquals(1,tctree.getTCTreeNodes(TCType.POLYGON).size());
 		
 		IOUtils.toFile("tree.dot", tctree.toDOT());
 	}
 	
-	public void testNULL() {
+	/*public void testNULL() {
 		MultiDirectedGraph g = null;
 		long start = System.nanoTime();
 		TCTree<DirectedEdge,Vertex> tctree = new TCTree<DirectedEdge,Vertex>(g);
 		long end = System.nanoTime();
 		System.out.println("NULL\t"+((double) end-start) / 1000000000);
 		
-		assertEquals(0,tctree.getTriconnectedComponents().size());
+		assertEquals(0,tctree.getTCTreeNodes().size());
 	}
 	
 	public void testSingleVertex() {
@@ -107,7 +106,7 @@ public class TCTreeTest extends TestCase {
 		long end = System.nanoTime();
 		System.out.println("1V\t"+((double) end-start) / 1000000000);
 		
-		assertEquals(0,tctree.getTriconnectedComponents().size());
+		assertEquals(0,tctree.getTCTreeNodes().size());
 	}
 	
 	public void testSingleEdge() {
@@ -118,7 +117,7 @@ public class TCTreeTest extends TestCase {
 		long end = System.nanoTime();
 		System.out.println("1E\t"+((double) end-start) / 1000000000);
 		
-		assertEquals(0,tctree.getTriconnectedComponents().size());
+		assertEquals(0,tctree.getTCTreeNodes().size());
 	}
 	
 	public void testSingleBond() {
@@ -135,8 +134,8 @@ public class TCTreeTest extends TestCase {
 		long end = System.nanoTime();
 		System.out.println("1BOND\t"+((double) end-start) / 1000000000);
 		
-		assertEquals(1,tctree.getTriconnectedComponents().size());
-		assertEquals(1,tctree.getTriconnectedComponents(TCType.BOND).size());
+		assertEquals(1,tctree.getTCTreeNodes().size());
+		assertEquals(1,tctree.getTCTreeNodes(TCType.BOND).size());
 		for (TCTreeNode<Edge,Vertex> node : tctree.getVertices()) {
 			IOUtils.toFile(node.getName() + ".dot",node.getSkeleton().toDOT());
 		}
@@ -157,15 +156,14 @@ public class TCTreeTest extends TestCase {
 		long end = System.nanoTime();
 		System.out.println("1B1V\t"+((double) end-start) / 1000000000);
 		
-		assertEquals(1,tctree.getTriconnectedComponents().size());
-		assertEquals(1,tctree.getTriconnectedComponents(TCType.BOND).size());
+		assertEquals(1,tctree.getTCTreeNodes().size());
+		assertEquals(1,tctree.getTCTreeNodes(TCType.BOND).size());
 		for (TCTreeNode<Edge,Vertex> node : tctree.getVertices()) {
 			IOUtils.toFile(node.getName() + ".dot",node.getSkeleton().toDOT());
 		}
-	}
-*/
-		
-	public void testSimpleGraph() {
+	}*/
+	
+	/*public void testSimpleGraph() {
 		//		  --- t3 --- t4 ---
 		//		  |				  |
 		// t1 -- s2 ------------ j5 -- t9
@@ -201,55 +199,35 @@ public class TCTreeTest extends TestCase {
 		DirectedEdge backEdge = g.addEdge(t9, t1);
 		
 		IOUtils.toFile("graph.dot", g.toDOT());
+		long start = System.nanoTime();
 		TCTree<DirectedEdge,Vertex> tctree = new TCTree<DirectedEdge,Vertex>(g,backEdge);
+		long end = System.nanoTime();
+		System.out.println("2B4P\t"+((double) end-start) / 1000000000);
 		IOUtils.toFile("graph2.dot", g.toDOT());
 		IOUtils.toFile("tree.dot", tctree.toDOT());
 		
 		Set<DirectedEdge> edges = new HashSet<DirectedEdge>();
-		for (TCTreeNode<DirectedEdge,Vertex> node : tctree.getVertices()) {
+		for (TCTreeNode<DirectedEdge,Vertex> node : tctree.getTCTreeNodes()) {
 			assertEquals(true,g.getEdges().containsAll(node.getSkeleton().getOriginalEdges()));
 			edges.addAll((node.getSkeleton().getOriginalEdges()));
+			
+			if (node.getType()==TCType.BOND) {
+				assertEquals(2, node.getSkeleton().getVertices().size());
+			}
 			
 			IOUtils.toFile(node.getName() + ".dot",node.getSkeleton().toDOT());
 		}
 		
 		assertEquals(true,edges.containsAll(g.getEdges()));
 		assertEquals(true,g.getEdges().containsAll(edges));
-		System.out.println(tctree.getTCTreeNodes(TCType.BOND).size());
-		System.out.println(tctree.getTCTreeNodes(TCType.POLYGON).size());
-		System.out.println(tctree.getTCTreeNodes(TCType.RIGID).size());
 		
-		/*assertEquals(6,tctree.getTriconnectedComponents().size());
-		assertEquals(2,tctree.getTriconnectedComponents(TCType.BOND).size());
-		assertEquals(0,tctree.getTriconnectedComponents(TCType.RIGID).size());
-		assertEquals(4,tctree.getTriconnectedComponents(TCType.POLYGON).size());*/
-	}
+		assertEquals(6,tctree.getTCTreeNodes().size());
+		assertEquals(2,tctree.getTCTreeNodes(TCType.BOND).size());
+		assertEquals(0,tctree.getTCTreeNodes(TCType.RIGID).size());
+		assertEquals(4,tctree.getTCTreeNodes(TCType.POLYGON).size());
+	}*/
 	
-	/*public void testTrivialCase() {
-		System.out.println("============================");
-		System.out.println("Trivial case");
-		System.out.println("============================");
-		
-		Graph g = new Graph();
-		
-		Vertex v1 = new Vertex("1");
-		Vertex v2 = new Vertex("2");
-		
-		g.addEdge(v1, v2);
-		
-		TCTree<Edge, Vertex> tc = new TCTree<Edge, Vertex>(g);
-		
-		for (TCTreeNode<Edge, Vertex> node:tc.getVertices()) {
-			System.out.println(node.getName() + ": " + node.getSkeleton().getEdges());
-		}
-		
-		assertEquals(0, tc.getVertices(TCType.R).size());
-		assertEquals(0, tc.getVertices(TCType.B).size());
-		assertEquals(0, tc.getVertices(TCType.P).size());
-		assertEquals(1, tc.getVertices(TCType.T).size());
-	}
-	
-	public void testGraphWithR() {
+	/*public void testGraphWithR() {
 		// create process model graph
 		ProcessModel p = new ProcessModel();
 		

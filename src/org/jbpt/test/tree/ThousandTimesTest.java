@@ -1,4 +1,5 @@
-package org.jbpt.test.graph;
+package org.jbpt.test.tree;
+
 
 import junit.framework.Test;
 import junit.framework.TestSuite;

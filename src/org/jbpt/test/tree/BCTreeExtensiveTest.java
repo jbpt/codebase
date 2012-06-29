@@ -1,4 +1,4 @@
-package org.jbpt.test.graph;
+package org.jbpt.test.tree;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -26,12 +26,12 @@ public class BCTreeExtensiveTest extends TestCase {
 	
 	public void test() throws Exception {	
 		File modelsDir = new File(MODELS_DIR);
-		int count = 0;
+		//int count = 0;
 		long start,stop,time;
 		
 		for (String name : modelsDir.list()) {
 			if (name.endsWith(".json")) {
-				count++;
+				//count++;
 				ProcessModel p = loadProcess(MODELS_DIR + File.separator + name);
 				IOUtils.toFile(name+".dot", p.toDOT());
 				
