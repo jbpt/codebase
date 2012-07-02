@@ -12,11 +12,12 @@ import org.jbpt.hypergraph.abs.IVertex;
 
 
 /**
- * Collection of graph algorithms
+ * Collection of graph algorithms.
+ * 
  * @author Artem Polyvyanyy
  *
- * @param <E> template for edge (extends IEdge)
- * @param <V> template for vertex (extends IVertex)
+ * @param <E> Edge template.
+ * @param <V> Vertex template.
  */
 public class GraphAlgorithms<E extends IEdge<V>,V extends IVertex> {
 	
