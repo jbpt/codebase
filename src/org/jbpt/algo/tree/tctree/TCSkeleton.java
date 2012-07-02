@@ -6,10 +6,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jbpt.graph.abs.AbstractMultiGraph;
+import org.jbpt.graph.abs.IDirectedEdge;
 import org.jbpt.graph.abs.IEdge;
 import org.jbpt.graph.abs.IGraph;
 import org.jbpt.hypergraph.abs.IVertex;
-import org.jbpt.utils.DotSerializer;
 
 
 /**
@@ -101,7 +101,33 @@ public class TCSkeleton<E extends IEdge<V>, V extends IVertex> extends AbstractM
 
 	@Override
 	public String toDOT() {
-		return new DotSerializer().serialize(this,this.virtualEdges);
+		StringBuffer buff = new StringBuffer(this.getEdges().size() + 2);
+		
+		buff.append(String.format("digraph \"%s\" {\n",this.getName()));
+		buff.append("rankdir=TD\n");
+		
+		
+		for (V v : this.getVertices()) {
+			buff.append(String.format("    \"%s\" [label=\"%s\"];\n", v.getId().replace("-", ""), v.getLabel()));
+		}
+		
+		for (E e : this.getEdges()) {
+			if (this.isVirtual(e)) {
+				buff.append(String.format("    \"%s\" %s \"%s\" [label=\"%s\" style=dotted dir=none]\n", e.getV1().getId().replace("-", ""), "->", e.getV2().getId().replace("-", ""), e.getLabel()));
+			}				
+			else {
+				E edge = this.getOriginalEdge(e);
+				if (edge instanceof IDirectedEdge<?>) {
+					IDirectedEdge<?> de = (IDirectedEdge<?>) edge;
+					buff.append(String.format("    \"%s\" %s \"%s\" [label=\"%s\"]\n", de.getSource().getId().replace("-", ""), "->", de.getTarget().getId().replace("-", ""), e.getLabel()));
+				}
+				else
+					buff.append(String.format("    \"%s\" %s \"%s\" [label=\"%s\" dir=none]\n", e.getV1().getId().replace("-", ""), "->", e.getV2().getId().replace("-", ""), e.getLabel()));
+			}
+		}
+		buff.append("}\n");
+		
+		return buff.toString();
 	}
 	
 	/**
