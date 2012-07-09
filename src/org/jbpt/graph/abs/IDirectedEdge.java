@@ -39,9 +39,9 @@ public interface IDirectedEdge <V extends IVertex> extends IDirectedHyperEdge<V>
 	public V setTarget(V v);
 	
 	/**
-	 * Set directed graph edge vertices 
-	 * @param v1 Source vertex
-	 * @param v2 Target vertex
+	 * Set directed graph edge vertices.  
+	 * @param source Source vertex.
+	 * @param target Target vertex.
 	 */
-	public void setVertices(V s, V t);
+	public void setVertices(V source, V target);
 }

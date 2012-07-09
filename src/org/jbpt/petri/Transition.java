@@ -1,53 +1,45 @@
 package org.jbpt.petri;
 
 /**
- * Petri net transition implementation
+ * Implementation of a Petri net transition. 
  * 
  * @author Artem Polyvyanyy
  */
-public class Transition extends Node {
+public class Transition extends Node implements ITransition {
+	
 	/**
-	 * Empty constructor
+	 * Empty constructor.
 	 */
 	public Transition() {
 		super();
 	}
 	
 	/**
-	 * Constructor with transition name parameter
-	 * @param name Transition name
+	 * Constructor with label of the transition parameter.
+	 *  
+	 * @param label String to use as a label of this transition. 
 	 */
-	public Transition(String name) {
-		super(name);
+	public Transition(String label) {
+		super(label);
 	}
 	
 	/**
-	 * Constructor with transition name and description parameters
-	 * @param name Transition name
-	 * @param desc Transition description
+	 * Constructor with label and description of the transition parameters.
+	 * 
+	 * @param label String to use as a label of this transition. 
+	 * @param desc String to use as a description of this transition. 
 	 */
-	public Transition(String name, String desc) {
-		super(name,desc);
+	public Transition(String label, String desc) {
+		super(label,desc);
 	}
 	
 	@Override
-	public Transition clone() {
-		return (Transition) super.clone();
-	}
-	
-	/**
-	 * Check if transition is silent
-	 * @return <code>true</code> if label is the empty string; <code>false</code> otherwise
-	 */
 	public boolean isSilent() {
 		return this.getLabel().isEmpty();
 	}
 
-	/**
-	 * Check if transition is observable
-	 * @return <code>true</code> if label is not the empty string; <code>false</code> otherwise
-	 */
+	@Override
 	public boolean isObservable() {
-		return !this.getLabel().isEmpty();
+		return !this.isSilent();
 	}
 }

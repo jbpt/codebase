@@ -13,7 +13,7 @@ import java.util.Set;
  * @author Christian Wiggert
  * @author Artem Polyvyanyy
  */
-public class Marking extends HashMap<Place,Integer> {
+public class Marking extends HashMap<Place,Integer> implements IMarking {
 	private static final long serialVersionUID = -2144274745926614966L;
 	
 	// associated net
@@ -30,23 +30,18 @@ public class Marking extends HashMap<Place,Integer> {
 		this.net = net;
 	}
 	
-	/**
-	 * Get associated net.
-	 * @return Associated net.
+	/* (non-Javadoc)
+	 * @see org.jbpt.petri.IMarking#getPetriNet()
 	 */
+	@Override
 	public PetriNet getPetriNet() {
 		return this.net;
 	}
 
-	/**
-	 * Put specified number of tokens at a given place of the associated net.
-	 * 
-	 * @param p Place of the associated net.
-	 * @param tokens Number of tokens to put at the given place.
-	 * @return Previous number of tokens at the given place. Returns <tt>0</tt> if place is set to <tt>null</tt>. 
-	 * Attempts to remove all tokens from the given place if tokens is negative, equals to <tt>0</tt>, or is set to <tt>null</tt>.   
-	 * @throws IllegalArgumentException if the given place is not part of the associated net.
+	/* (non-Javadoc)
+	 * @see org.jbpt.petri.IMarking#put(org.jbpt.petri.Place, java.lang.Integer)
 	 */
+	@Override
 	@Override
 	public Integer put(Place p, Integer tokens) {
 		if (p==null) return 0;
@@ -62,13 +57,10 @@ public class Marking extends HashMap<Place,Integer> {
 		return result==null ? 0 : result;
 	}
 	
-	/**
-	 * Copies all of the marking from the specified map to this marking.
-     * These operation will replace any info that this marking had for any of the places currently in the specified map.
-     *
-     * @param m Mapping to be stored in this marking.
-     * @throws NullPointerException if the specified map is null.
+	/* (non-Javadoc)
+	 * @see org.jbpt.petri.IMarking#putAll(java.util.Map)
 	 */
+	@Override
 	@Override
 	public void putAll(Map<? extends Place, ? extends Integer> m) {
 		for (Map.Entry<? extends Place, ? extends Integer> entry : m.entrySet()) {
@@ -76,33 +68,27 @@ public class Marking extends HashMap<Place,Integer> {
 		}
 	}
 	
-	/**
-	 * Removes all tokens from a given place of the associated net.
-	 * 
-	 * @param p Place of the associated net.
-	 * @return The number of tokens previously contained in the given place, or <tt>null</tt> there was no token at the given place. 
+	/* (non-Javadoc)
+	 * @see org.jbpt.petri.IMarking#remove(java.lang.Object)
 	 */
+	@Override
 	@Override
 	public Integer remove(Object p) {
 		return super.remove(p);
 	}
 	
-	/**
-	 * Removes all tokens from a given place of the associated net.
-	 * 
-	 * @param p Place of the associated net.
-	 * @return The number of tokens previously contained in the given place, or <tt>null</tt> there was no token at the given place. 
+	/* (non-Javadoc)
+	 * @see org.jbpt.petri.IMarking#remove(org.jbpt.petri.Place)
 	 */
+	@Override
 	public Integer remove(Place p) {
 		return super.remove(p);
 	}
 	
-	/**
-	 * Get number of tokens at a place.
-	 * 
-	 * @param p Place of the associated net.
-	 * @return Number of tokens at the place.
+	/* (non-Javadoc)
+	 * @see org.jbpt.petri.IMarking#get(java.lang.Object)
 	 */
+	@Override
 	@Override
 	public Integer get(Object p) {
 		if (!(p instanceof Place)) return 0; 
@@ -110,33 +96,27 @@ public class Marking extends HashMap<Place,Integer> {
 		return i == null ? 0 : i;
 	}
 	
-	/**
-	 * Get number of tokens at a place.
-	 * 
-	 * @param p Place of the associated net.
-	 * @return Number of tokens at the place.
+	/* (non-Javadoc)
+	 * @see org.jbpt.petri.IMarking#get(org.jbpt.petri.Place)
 	 */
+	@Override
 	public Integer get(Place p) {
 		Integer i = super.get(p);
 		return i == null ? 0 : i; 
 	}
 	
-	/**
-	 * Check if place is marked, i.e., contains at least one token.
-	 * 
-	 * @param p Place of the associated net.
-	 * @return <tt>true</tt> if p is marked; <tt>false</tt> otherwise.
+	/* (non-Javadoc)
+	 * @see org.jbpt.petri.IMarking#isMarked(org.jbpt.petri.Place)
 	 */
+	@Override
 	public boolean isMarked(Place p) {
 		return this.get(p) > 0;
 	}
 	
-	/**
-	 * Get marking as a multi-set of places. 
-	 * The multi-set contains each place as many times as there are tokens at the place.
-	 * 
-	 * @return Marking as a multi-set of places.
+	/* (non-Javadoc)
+	 * @see org.jbpt.petri.IMarking#toMultiSet()
 	 */
+	@Override
 	public Collection<Place> toMultiSet() {
 		Collection<Place> result = new ArrayList<Place>();
 		
@@ -149,46 +129,46 @@ public class Marking extends HashMap<Place,Integer> {
 		return result;
 	}
 	
-	/**
-	 * Clear this marking.
-	 * 
-	 * After a call to this procedure, this marking describes a situation when no place of the associated net contains a token.
+	/* (non-Javadoc)
+	 * @see org.jbpt.petri.IMarking#clear()
 	 */
+	@Override
 	@Override
 	public void clear() {
 		super.clear();
 	}
 	
-	/**
-	 * Returns the number of marked places in the associated net.
-	 * 
-	 * @return The number of marked places in the associated net.
+	/* (non-Javadoc)
+	 * @see org.jbpt.petri.IMarking#size()
 	 */
+	@Override
 	@Override
 	public int size() {
 		return super.size();
 	}
 
-	/**
-	 * Returns <tt>true</tt> if this marking does not mark any place.
-	 * 
-	 * @return <tt>true</tt> if this marking does not mark any place; <tt>false</tt> otherwise.
+	/* (non-Javadoc)
+	 * @see org.jbpt.petri.IMarking#isEmpty()
 	 */
+	@Override
 	@Override
 	public boolean isEmpty() {
 		return super.isEmpty();
 	}
 
-	/**
-	 * Returns set of pairs where every pair specifies a marked place of the associated net and the number of tokens at the place.
-	 * 
-	 * @return The set of pairs where every pair specifies a marked place of the associated net and the number of tokens at the place.
+	/* (non-Javadoc)
+	 * @see org.jbpt.petri.IMarking#entrySet()
 	 */
+	@Override
 	@Override
 	public Set<Entry<Place, Integer>> entrySet() {
 		return super.entrySet();
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.jbpt.petri.IMarking#equals(java.lang.Object)
+	 */
+	@Override
 	@Override
 	public boolean equals(Object o) {
 		if (o == null) return false;
@@ -205,6 +185,10 @@ public class Marking extends HashMap<Place,Integer> {
 		return true;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.jbpt.petri.IMarking#hashCode()
+	 */
+	@Override
 	@Override
 	public int hashCode() {
 		int result = 0;
@@ -217,6 +201,10 @@ public class Marking extends HashMap<Place,Integer> {
 		return result;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.jbpt.petri.IMarking#clone()
+	 */
+	@Override
 	@Override
 	public Marking clone() {
 		Marking clone = (Marking)super.clone();
@@ -225,11 +213,10 @@ public class Marking extends HashMap<Place,Integer> {
 		return clone;
 	}
 	
-	/**
-	 * Returns string representation of this marking.
-	 * 
-	 * @return The string representation of this marking.
+	/* (non-Javadoc)
+	 * @see org.jbpt.petri.IMarking#toString()
 	 */
+	@Override
 	@Override
 	public String toString() {
 		return super.toString();

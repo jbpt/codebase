@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -12,607 +11,414 @@ import org.jbpt.algo.graph.DirectedGraphAlgorithms;
 import org.jbpt.graph.abs.AbstractDirectedGraph;
 
 /**
- * Petri net implementation
+ * Implementation of a Petri net. 
  *  
- * @author Artem Polyvyanyy, Matthias, Weidlich, Andreas Meyer
+ * @author Artem Polyvyanyy
+ * @author Matthias, Weidlich
+ * @author Andreas Meyer
  */
-public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
+public class PetriNet extends AbstractDirectedGraph<IFlow,INode> implements IPetriNet {
+
 	// Directed graph algorithms 
-	public static DirectedGraphAlgorithms<Flow,Node> DGA = new DirectedGraphAlgorithms<Flow,Node>();
+	public static DirectedGraphAlgorithms<IFlow,INode> DGA = new DirectedGraphAlgorithms<IFlow,INode>();
 	
+	/**
+	 * Empty constructor.
+	 */
 	public PetriNet(){}
 	
 	/**
-	 * Add flow to the net 
-	 * @param from Source place
-	 * @param to Target transition
-	 * @return Flow added to the net; <code>null</code> if no flow was added 
+	 * Add flow to this net. 
+	 * The method ensures that the net stays bipartite.  
+	 * 
+	 * @param from Source node.
+	 * @param to Target node.
+	 * @return Flow added to the net; <tt>null</tt> if no flow was added.
 	 */
-	public Flow addFlow(Place from, Transition to) {
+	protected IFlow addFlow(INode from, INode to) {
 		if (from == null || to == null) return null;
 		
-		Collection<Node> ss = new ArrayList<Node>(); ss.add(from);
-		Collection<Node> ts = new ArrayList<Node>(); ts.add(to);
-		
-		if (!this.checkEdge(ss,ts)) return null;
-		
-		return new Flow(this, from, to);
-	}
-	
-	/**
-	 * Add flow to the net
-	 * 
-	 * @param from Source transition
-	 * @param to Target place
-	 * @return Flow added to the net; <code>null</code> if no flow was added 
-	 */
-	public Flow addFlow(Transition from, Place to) {
-		if (from == null || to == null) return null;
-		
-		Collection<Node> ss = new ArrayList<Node>(); ss.add(from);
-		Collection<Node> ts = new ArrayList<Node>(); ts.add(to);
-		
-		if (!this.checkEdge(ss,ts)) return null;
-		
-		return new Flow(this, from, to);
-	}
-	
-	/**
-	 * Add flow to the net. 
-	 * This method ensures that the net stays bipartite. 
-	 * 
-	 * NOTE: We recommend to use addFlow methods which work with places and transitions. 
-	 * 
-	 * @param from Source node
-	 * @param to Target node
-	 * @return Flow added to the net; <code>null</code> if no flow was added
-	 */
-	public Flow addFlow(Node from, Node to) {
-		if (from == null || to == null) return null;
-		
-		if (from instanceof Place && to instanceof Transition)
-			return this.addFlow((Place)from, (Transition)to);
-		
-		if (from instanceof Transition && to instanceof Place)
-			return this.addFlow((Transition)from, (Place)to);
+		if ((from instanceof IPlace && to instanceof ITransition) ||
+				from instanceof ITransition && to instanceof IPlace) {
+			
+			Collection<INode> ss = new ArrayList<INode>(); ss.add(from);
+			Collection<INode> ts = new ArrayList<INode>(); ts.add(to);
+			
+			if (!this.checkEdge(ss,ts)) return null;
+			
+			return new Flow(this, from, to);
+		}
 		
 		return null;
 	}
 	
-	/**************************************************************************
-	* Add node/place/transition methods
-	**************************************************************************/
-	
-	/**
-	 * Add node to the net
-	 * @param n Node to add
-	 * @return Node that was added to the net; <code>null</code> otherwise
-	 */
-	public Node addNode(Node n) {
-		return this.addVertex(n);
+	@Override
+	public IFlow addFlow(IPlace place, ITransition transition) {
+		return this.addFlow(place,transition);
 	}
 	
-	/**
-	 * Add nodes to the net
-	 * @param ns Nodes to add
-	 * @return Nodes that were added to the net; <code>null</code> if no node was added
-	 */
-	public Collection<Node> addNodes(Collection<Node> ns) {
-		return this.addVertices(ns);
+	@Override
+	public IFlow addFlow(ITransition transition, IPlace place) {
+		return this.addFlow(transition,place);
 	}
 	
-	/**
-	 * Add place to the net
-	 * @param n Place to add
-	 * @return Place that was added to the net; <code>null</code> otherwise
-	 */
-	public Node addPlace(Place p) {
-		return this.addNode(p);
+	@Override
+	public INode addNode(INode node) {
+		return this.addVertex(node);
 	}
 	
-	/**
-	 * Add places to the net
-	 * @param ps Places to add
-	 * @return Places that were added to the net; <code>null</code> if no place was added
-	 */
-	public Collection<Place> addPlaces(Collection<Place> ps) {
-		if (ps == null) return null;
-		Collection<Place> result = new ArrayList<Place>();
+	@Override
+	public Collection<INode> addNodes(Collection<INode> nodes) {
+		Collection<INode> result = this.addVertices(nodes);
+		return result==null ? new ArrayList<INode>() : result;
+	}
+
+	@Override
+	public IPlace addPlace(IPlace place) {
+		return this.addVertex(place)==null ? null : place;
+	}
+	
+	@Override
+	public Collection<IPlace> addPlaces(Collection<IPlace> places) {
+		Collection<IPlace> result = new ArrayList<IPlace>();
+		if (places == null) return result;
 		
-		for (Place p : ps)
-			if (this.addVertex((Node)p) != null)
-				result.add(p);
+		for (IPlace place : places)
+			if (this.addVertex(place) != null)
+				result.add(place);
 		
-		return (result.isEmpty()) ? null : result;
+		return result;
 	}
 	
-	/**
-	 * Add transition to the net
-	 * @param n Transition to add
-	 * @return Transition that was added to the net; <code>null</code> otherwise
-	 */
-	public Node addTransition(Transition t) {
-		return this.addNode(t);
+	@Override
+	public ITransition addTransition(ITransition transition) {
+		return this.addVertex(transition)==null ? null : transition;
 	}
 	
-	/**
-	 * Add transitions to the net
-	 * @param ps Transitions to add
-	 * @return Transitions that were added to the net; <code>null</code> if no transition was added
-	 */
-	public Collection<Transition> addTransitions(Collection<Transition> ts) {
-		if (ts == null) return null;
-		Collection<Transition> result = new ArrayList<Transition>();
+	@Override
+	public Collection<ITransition> addTransitions(Collection<ITransition> transitions) {
+		Collection<ITransition> result = new ArrayList<ITransition>();
+		if (transitions == null) return result;
 		
-		for (Transition t : ts)
-			if (this.addVertex((Node)t) != null)
-				result.add(t);
+		for (ITransition transition : transitions)
+			if (this.addVertex(transition) != null)
+				result.add(transition);
 		
-		return (result.isEmpty()) ? null : result;
+		return result;
 	}
 	
-	/**************************************************************************
-	* Remove node/place/transition/flow methods
-	**************************************************************************/
-	
-	/**
-	 * Remove node from the net
-	 * @param n Node to remove
-	 * @return Node that was removed from the net; <code>null</code> if node was not removed
-	 */
-	public Node removeNode(Node n) {
-		return this.removeVertex(n);
+	@Override
+	public INode removeNode(INode node) {
+		return this.removeVertex(node);
 	}
 	
-	/**
-	 * Remove nodes from the net
-	 * @param ns Nodes to remove
-	 * @return Nodes that were removed from the net; <code>null</code> if no node was removed
-	 */
-	public Collection<Node> removeNodes(Collection<Node> ns) {
-		return this.removeVertices(ns);
+	@Override
+	public Collection<INode> removeNodes(Collection<INode> nodes) {
+		Collection<INode> result = this.removeVertices(nodes);
+		return result==null ? new ArrayList<INode>() : result;
 	}
 	
-	/**
-	 * Remove place from the net
-	 * @param p Place to remove
-	 * @return Place that was removed from the net; <code>null</code> if place was not removed
-	 */
-	public Place removePlace(Place p) {
-		return (this.removeVertex(p) == null) ? null : p;
+	@Override
+	public IPlace removePlace(IPlace place) {
+		return this.removeVertex(place) == null ? null : place;
 	}
 	
-	/**
-	 * Remove places from the net
-	 * @param ps Places to remove
-	 * @return Places that were removed from the net; <code>null</code> if no place was removed
-	 */
-	public Collection<Place> removePlaces(Collection<Place> ps) {
-		if (ps == null) return null;
-		Collection<Place> result = new ArrayList<Place>();
+	@Override
+	public Collection<IPlace> removePlaces(Collection<IPlace> places) {
+		Collection<IPlace> result = new ArrayList<IPlace>();
+		if (places == null) return result;
 		
-		Iterator<Place> i = ps.iterator();
-		while (i.hasNext()) {
-			Place p = i.next();
-			if (this.removePlace(p) != null)
-				result.add(p);
-		}
-		return (result.isEmpty()) ? null : result;
-	}
-	
-	/**
-	 * Remove transition from the net
-	 * @param t Transition to remove
-	 * @return Transition that was removed from the net; <code>null</code> if transition was not removed
-	 */
-	public Transition removeTransition(Transition t) {
-		return (this.removeVertex(t) == null) ? null : t;
-	}
-	
-	/**
-	 * Remove transitions from the net
-	 * @param ts Transitions to remove
-	 * @return Transitions that were removed from the net; <code>null</code> if no transition was removed
-	 */
-	public Collection<Transition> removeTransitions(Collection<Transition> ts) {
-		if (ts == null) return null;
-		Collection<Transition> result = new ArrayList<Transition>();
+		for (IPlace place : places)
+			if (this.removeVertex(place) != null)
+				result.add(place);
 		
-		Iterator<Transition> i = ts.iterator();
-		while (i.hasNext()) {
-			Transition t = i.next();
-			if (this.removeTransition(t) != null)
-				result.add(t);
-		}
+		return result;
+	}
+	
+	@Override
+	public ITransition removeTransition(ITransition transition) {
+		return this.removeVertex(transition) == null ? null : transition;
+	}
+	
+	@Override
+	public Collection<ITransition> removeTransitions(Collection<ITransition> transitions) {
+		Collection<ITransition> result = new ArrayList<ITransition>();
+		if (transitions == null) return result;
 		
-		return (result.isEmpty()) ? null : result;
+		for (ITransition transition : transitions)
+			if (this.removeVertex(transition) != null)
+				result.add(transition);
+		
+		return result;
 	}
 	
-	/**
-	 * Remove flow from the net
-	 * @param f Flow to remove
-	 * @return Flow that was removed from the net; <code>null</code> if no flow was removed
-	 */
-	public Flow removeFlow(Flow f) {
-		return this.removeEdge(f);
+	@Override
+	public IFlow removeFlow(IFlow flow) {
+		return this.removeEdge(flow);
 	}
 	
-	/**
-	 * Remove flow from the net
-	 * @param fs Flow to remove
-	 * @return Flow that was removed from the net; <code>null</code> if no flow was removed
-	 */
-	public Collection<Flow> removeFlow(Collection<Flow> fs) {
-		return this.removeEdges(fs);
+	@Override
+	public Collection<IFlow> removeFlow(Collection<IFlow> flow) {
+		Collection<IFlow> result = this.removeEdges(flow);
+		return result==null ? new ArrayList<IFlow>() : result;
 	}
 	
-	/**************************************************************************
-	* Get methods
-	**************************************************************************/
 	
-	/**
-	 * Get Petri net nodes
-	 * @return Petri net nodes
-	 */
-	public Collection<Node> getNodes() {
+	@Override
+	public Collection<INode> getNodes() {
 		return this.getVertices();
 	}
 	
-	/**
-	 * Get Petri net places
-	 * @return Petri net places
-	 */
-	public Collection<Place> getPlaces() {
-		Collection<Place> result = new ArrayList<Place>();
+	@Override
+	public Collection<IPlace> getPlaces() {
+		Collection<IPlace> result = new ArrayList<IPlace>();
 		
-		for (Node n : this.getVertices()) {
-			if (n instanceof Place)
-				result.add((Place)n);
-		}
+		for (INode node : this.getVertices())
+			if (node instanceof IPlace)
+				result.add((IPlace)node);
+		
+		return result;
+	}
+
+	@Override
+	public Collection<ITransition> getTransitions() {
+		Collection<ITransition> result = new ArrayList<ITransition>();
+		
+		for (INode node : this.getVertices())
+			if (node instanceof ITransition)
+				result.add((ITransition)node);
 		
 		return result;
 	}
 	
-	/**
-	 * Get Petri net transitions
-	 * @return Petri net transitions
-	 */
-	public Collection<Transition> getTransitions() {
-		Collection<Transition> result = new ArrayList<Transition>();
-		
-		for (Node n : this.getVertices()) {
-			if (n instanceof Transition)
-				result.add((Transition)n);
-		}
-		
-		return result;
-	}
-	
-	/**
-	 * Get Petri net flow relation
-	 * @return Petri net flow relation
-	 */
-	public Collection<Flow> getFlow() {
+	@Override
+	public Collection<IFlow> getFlow() {
 		return this.getEdges();
 	}
 	
-	/**
-	 * Get silent transitions
-	 * @return Silent transitions of the net
-	 */
-	public Collection<Transition> getSilentTransitions() {
-		Collection<Transition> result = new ArrayList<Transition>();
+	@Override
+	public Collection<ITransition> getSilentTransitions() {
+		Collection<ITransition> result = new ArrayList<ITransition>();
 		
-		for (Transition t : this.getTransitions()) 
-			if (t.isSilent())
-				result.add(t);
+		for (INode node : this.getVertices())
+			if (node instanceof ITransition && node.getLabel().isEmpty())
+				result.add((ITransition)node);	
 		
 		return result;
 	}
 
-	/**
-	 * Get observable transitions
-	 * @return Observable transitions of the net
-	 */
-	public Collection<Transition> getObservableTransitions() {
-		Collection<Transition> result = new ArrayList<Transition>();
+	@Override
+	public Collection<ITransition> getObservableTransitions() {
+		Collection<ITransition> result = new ArrayList<ITransition>();
 		
-		for (Transition t : this.getTransitions()) 
-			if (t.isObservable())
-				result.add(t);
+		for (INode node : this.getVertices())
+			if (node instanceof ITransition && !node.getLabel().isEmpty())
+				result.add((ITransition)node);	
 		
 		return result;
 	}
 	
-	/**************************************************************************
-	* Postset/preset methods
-	**************************************************************************/
+	@Override
+	public Collection<IPlace> getPostset(ITransition transition) {
+		Collection<IPlace> result = new ArrayList<IPlace>();
+		for (INode node : this.getDirectSuccessors(transition))
+			if (node instanceof IPlace)
+				result.add((IPlace)node);
+		
+		return result;
+	}
 	
-	/**
-	 * Get postset places of a transition
-	 * @param t Transition
-	 * @return Postplaces of t
-	 */
-	public Collection<Place> getPostset(Transition t) {
-		Collection<Place> result = new ArrayList<Place>();
-		for (Node n : this.getDirectSuccessors(t)) {
-			if (n instanceof Place)
-				result.add((Place)n);
+	@Override
+	public Collection<IPlace> getPostsetPlaces(Collection<ITransition> transitions) {
+		Set<IPlace> result = new HashSet<IPlace>();
+		
+		for (ITransition transition : transitions)
+			for (INode node : this.getDirectSuccessors(transition))
+				if (node instanceof IPlace)
+					result.add((IPlace)node);
+		
+		return result;
+	}
+	
+	@Override
+	public Collection<ITransition> getPostset(IPlace place) {
+		Collection<ITransition> result = new ArrayList<ITransition>();
+		
+		for (INode node : this.getDirectSuccessors(place)) {
+			if (node instanceof ITransition)
+				result.add((ITransition)node);
 		}
 		
 		return result;
 	}
 	
-	/**
-	 * Get postset places of a collection of transitions
-	 * @param ts Transitions
-	 * @return Postplaces of all transitions in ts
-	 */
-	public Collection<Place> getPostsetPlaces(Collection<Transition> ts) {
-		Set<Place> result = new HashSet<Place>();
+	@Override
+	public Collection<ITransition> getPostsetTransitions(Collection<IPlace> places) {
+		Set<ITransition> result = new HashSet<ITransition>();
 		
-		for (Transition t : ts)
-			for (Node n : this.getDirectSuccessors(t))
-				if (n instanceof Place)
-					result.add((Place)n);
+		for (IPlace place : places)
+			for (INode node : this.getDirectSuccessors(place))
+				if (node instanceof ITransition)
+					result.add((ITransition)node);
 		
 		return result;
 	}
-	
-	/**
-	 * Get postset transitions of a place
-	 * @param p Place
-	 * @return Posttransitions of p
-	 */
-	public Collection<Transition> getPostset(Place p) {
-		Collection<Transition> result = new ArrayList<Transition>();
-		for (Node n : this.getDirectSuccessors(p)) {
-			if (n instanceof Transition)
-				result.add((Transition)n);
-		}
-		
-		return result;
-	}
-	
-	/**
-	 * Get postset transitions of a collection of places
-	 * @param ps Places
-	 * @return Posttransitions of all places in ps
-	 */
-	public Collection<Transition> getPostsetTransitions(Collection<Place> ps) {
-		Set<Transition> result = new HashSet<Transition>();
-		
-		for (Place p : ps)
-			for (Node n : this.getDirectSuccessors(p))
-				if (n instanceof Transition)
-					result.add((Transition)n);
-		
-		return result;
-	}
-	
-	/**
-	 * Get postset nodes of a node
-	 * @param n Node
-	 * @return Postnodes of n
-	 */
-	public Collection<Node> getPostset(Node n) {
+
+	@Override
+	public Collection<INode> getPostset(INode n) {
 		return this.getDirectSuccessors(n);
 	}
 	
-	/**
-	 * Get postset nodes of a collection of nodes
-	 * @param ns Nodes
-	 * @return Postnodes of all nodes in ns
-	 */
-	public Collection<Node> getPostset(Collection<Node> ns) {
-		return this.getDirectSuccessors(ns);
+	@Override
+	public Collection<INode> getPostset(Collection<INode> nodes) {
+		Collection<INode> result = this.getDirectSuccessors(nodes); 
+		return result == null ? new ArrayList<INode>() : result;
 	}
 	
-	/**
-	 * Get preset places of a transition
-	 * @param t Transition
-	 * @return Preplaces of t
-	 */
-	public Collection<Place> getPreset(Transition t) {
-		Collection<Place> result = new ArrayList<Place>();
-		for (Node n : this.getDirectPredecessors(t)) {
-			if (n instanceof Place)
-				result.add((Place)n);
-		}
+	@Override
+	public Collection<IPlace> getPreset(ITransition transition) {
+		Collection<IPlace> result = new ArrayList<IPlace>();
+		
+		for (INode node : this.getDirectPredecessors(transition))
+			if (node instanceof Place)
+				result.add((Place)node);
+		
+		return result;
+	}
+
+	@Override
+	public Collection<IPlace> getPresetPlaces(Collection<ITransition> transitions) {
+		Set<IPlace> result = new HashSet<IPlace>();
+		
+		for (ITransition transition : transitions)
+			for (INode node : this.getDirectPredecessors(transition))
+				if (node instanceof IPlace)
+					result.add((IPlace)node);
 		
 		return result;
 	}
 	
-	/**
-	 * Get preset places of a collection of transitions
-	 * @param ts Transitions
-	 * @return Preplaces of all transitions in ts
-	 */
-	public Collection<Place> getPresetPlaces(Collection<Transition> ts) {
-		Set<Place> result = new HashSet<Place>();
+	@Override
+	public Collection<ITransition> getPreset(IPlace place) {
+		Collection<ITransition> result = new ArrayList<ITransition>();
 		
-		for (Transition t : ts)
-			for (Node n : this.getDirectPredecessors(t))
-				if (n instanceof Place)
-					result.add((Place)n);
+		for (INode node : this.getDirectPredecessors(place))
+			if (node instanceof ITransition)
+				result.add((ITransition)node);
 		
 		return result;
 	}
 	
-	/**
-	 * Get preset transitions of a place
-	 * @param p Place
-	 * @return Pretransitions of p
-	 */
-	public Collection<Transition> getPreset(Place p) {
-		Collection<Transition> result = new ArrayList<Transition>();
-		for (Node n : this.getDirectPredecessors(p)) {
-			if (n instanceof Transition)
-				result.add((Transition)n);
-		}
+	@Override
+	public Collection<ITransition> getPresetTransitions(Collection<IPlace> places) {
+		Set<ITransition> result = new HashSet<ITransition>();
+		
+		for (IPlace place : places)
+			for (INode node : this.getDirectPredecessors(place))
+				if (node instanceof ITransition)
+					result.add((ITransition)node);
 		
 		return result;
 	}
 	
-	/**
-	 * Get preset transitions of a collection of places 
-	 * @param ps Places
-	 * @return Pretransitions of all places in ps
-	 */
-	public Collection<Transition> getPresetTransitions(Collection<Place> ps) {
-		Set<Transition> result = new HashSet<Transition>();
-		
-		for (Place p : ps)
-			for (Node n : this.getDirectPredecessors(p))
-				if (n instanceof Transition)
-					result.add((Transition)n);
-		
-		return result;
+	@Override
+	public Collection<INode> getPreset(INode node) {
+		Collection<INode> result = this.getDirectPredecessors(node); 
+		return result == null ? new ArrayList<INode>() : result;
 	}
 	
-	/**
-	 * Get preset nodes of a node
-	 * @param n Node
-	 * @return Prenodes of n
-	 */
-	public Collection<Node> getPreset(Node n) {
-		return this.getDirectPredecessors(n);
+	@Override
+	public Collection<INode> getPreset(Collection<INode> nodes) {
+		Collection<INode> result = this.getDirectPredecessors(nodes); 
+		return result == null ? new ArrayList<INode>() : result;
 	}
 	
-	/**
-	 * Get preset nodes of a collection of nodes
-	 * @param ns Nodes
-	 * @return Prenodes of all nodes in ns
-	 */
-	public Collection<Node> getPreset(Collection<Node> ns) {
-		return this.getDirectPredecessors(ns);
-	}
-	
-	/**************************************************************************
-	* Source/sink methods
-	**************************************************************************/
-	
-	/**
-	 * Get source nodes of the net (nodes with empty presets)
-	 * @return Source nodes of the net
-	 */
-	public Collection<Node> getSourceNodes() {
+	@Override
+	public Collection<INode> getSourceNodes() {
 		return PetriNet.DGA.getSources(this);
 	}
 	
-	/**
-	 * Get source places of the net (places with empty presets)
-	 * @return Source places of the net
-	 */
-	public Collection<Place> getSourcePlaces() {
-		Collection<Place> result = new ArrayList<Place>();
-		for (Node n : this.getSourceNodes())
-			if (n instanceof Place)
-				result.add((Place)n);
+	@Override
+	public Collection<IPlace> getSourcePlaces() {
+		Collection<IPlace> result = new ArrayList<IPlace>();
+		
+		for (INode node : this.getSourceNodes())
+			if (node instanceof IPlace)
+				result.add((IPlace)node);
 		
 		return result;
 	}
 	
-	/**
-	 * Get source transitions of the net (transitions with empty presets)
-	 * @return Source transitions of the net
-	 */
-	public Collection<Transition> getSourceTransitions() {
-		Collection<Transition> result = new ArrayList<Transition>();
-		for (Node n : this.getSourceNodes())
-			if (n instanceof Transition)
-				result.add((Transition)n);
+	@Override
+	public Collection<ITransition> getSourceTransitions() {
+		Collection<ITransition> result = new ArrayList<ITransition>();
+		
+		for (INode node : this.getSourceNodes())
+			if (node instanceof ITransition)
+				result.add((ITransition)node);
 		
 		return result;
 	}
 	
-	/**
-	 * Get sink nodes of the net (nodes with empty postsets)
-	 * @return Sink nodes of the net
-	 */
-	public Collection<Node> getSinkNodes() {
+	@Override
+	public Collection<INode> getSinkNodes() {
 		return PetriNet.DGA.getSinks(this);
 	}
 	
-	/**
-	 * Get sink places of the net (places with empty postsets)
-	 * @return Sink places of the net
-	 */
-	public Collection<Place> getSinkPlaces() {
-		Collection<Place> result = new ArrayList<Place>();
-		for (Node n : this.getSinkNodes())
-			if (n instanceof Place)
-				result.add((Place)n);
+	@Override
+	public Collection<IPlace> getSinkPlaces() {
+		Collection<IPlace> result = new ArrayList<IPlace>();
+		
+		for (INode node : this.getSinkNodes())
+			if (node instanceof IPlace)
+				result.add((IPlace)node);
 		
 		return result;
 	}
 	
-	/**
-	 * Get sink transitions of the net (transitions with empty postsets)
-	 * @return Sink transitions of the net
-	 */
-	public Collection<Transition> getSinkTransitions() {
-		Collection<Transition> result = new ArrayList<Transition>();
-		for (Node n : this.getSinkNodes())
-			if (n instanceof Transition)
-				result.add((Transition)n);
+	@Override
+	public Collection<ITransition> getSinkTransitions() {
+		Collection<ITransition> result = new ArrayList<ITransition>();
+		
+		for (INode node : this.getSinkNodes())
+			if (node instanceof ITransition)
+				result.add((ITransition)node);
 		
 		return result;
 	}
 	
-	/**
-	 * Get minimal nodes of the net (alias to {@link getSourceNodes})
-	 * @return Minimal nodes of the net
-	 */
-	public Collection<Node> getMin() {
+	@Override
+	public Collection<INode> getMin() {
 		return this.getSourceNodes();
 	}
 	
-	/**
-	 * Get maximal nodes of the net (alias to {@link getSinkNodes})
-	 * @return Maximal nodes of the net
-	 */
-	public Collection<Node> getMax() {
+	@Override
+	public Collection<INode> getMax() {
 		return this.getSinkNodes();
 	}
 	
-	/*************************************************************************/
-	
-	/**
-	 * Check if net is T-restricted, i.e., a net is T-restricted if presets and postsets of all transitions are not empty 
-	 * @return
-	 */
+	@Override
 	public boolean isTRestricted() {
-		return this.getSourceTransitions().isEmpty() && 
-				this.getSinkTransitions().isEmpty();
+		return this.getSourceTransitions().isEmpty() && this.getSinkTransitions().isEmpty();
 	}
 	
-	/**************************************************************************
-	* Clone
-	**************************************************************************/
-	
-	/**
-	 * Creates a deep copy of the whole Petri net. 
-	 * @return the clone of the Petri net
-	 */
 	@Override
 	public PetriNet clone() {		
 		PetriNet clone = (PetriNet) super.clone();
-		return cloneHelper(clone, new HashMap<Node,Node>());
+		return this.cloneHelper(clone, new HashMap<INode,INode>());
 	}
 	
-	private PetriNet cloneHelper(PetriNet clone, Map<Node,Node> nodeMapping) {
-		
+	private PetriNet cloneHelper(PetriNet clone, Map<INode,INode> nodeMapping) {
 		clone.clearMembers();
 
-		for (Node n : this.getNodes()) {
-			Node cn = (Node)n.clone();
+		for (INode n : this.getNodes()) {
+			INode cn = (INode)n.clone();
 			clone.addVertex(cn);
-			nodeMapping.put(n, cn);
+			nodeMapping.put(n,cn);
 		}
 		
-		for (Flow f : this.getFlow()) {
-			Flow cf = clone.addFlow(nodeMapping.get(f.getSource()),nodeMapping.get(f.getTarget()));
+		for (IFlow f : this.getFlow()) {
+			IFlow cf = clone.addFlow(nodeMapping.get(f.getSource()),nodeMapping.get(f.getTarget()));
 			
 			if (f.getName() != null)
 				cf.setName(new String(f.getName()));
@@ -621,26 +427,12 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 		}
 		
 		return clone;
-		
 	}
 	
-	/**
-	 * Creates a deep copy of whole Petri net and enters 
-	 * the node mapping between the original and the clone
-	 * into the given map.
-	 * 
-	 * @param nodeMapping, mapping between nodes of the original and of the clone
-	 * 
-	 * @return the clone of the Petri net
-	 */
-	public PetriNet clone(Map<Node,Node> nodeMapping) {
+	public PetriNet clone(Map<INode,INode> nodeMapping) {
 		PetriNet clone = (PetriNet) super.clone();
 		return cloneHelper(clone, nodeMapping);
 	}
-	
-	/**************************************************************************
-	* toDOT method
-	**************************************************************************/
 	
 	@Override
 	public String toDOT() {
@@ -651,79 +443,34 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> {
 		result += "\n";
 		result += "node [shape=circle];\n";
 		
-		for (Place n : this.getPlaces()) {
+		for (IPlace place : this.getPlaces()) {
 			String label = ""; 
-			result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".3\"];\n", n.getId().replace("-", ""), label);
+			result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".3\"];\n", place.getId().replace("-", ""), label);
 		}
 		
 		result += "\n";
 		result += "node [shape=box];\n";
 		
-		for (Transition t : this.getTransitions()) {
-			if (t.getName()=="") result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".1\"];\n", t.getId().replace("-", ""), t.getName());
-			else result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".3\"];\n", t.getId().replace("-", ""), t.getName());
+		for (ITransition transition : this.getTransitions()) {
+			if (transition.getName()=="") result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".1\"];\n", transition.getId().replace("-", ""), transition.getName());
+			else result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".3\"];\n", transition.getId().replace("-", ""), transition.getName());
 		}
 		
 		result += "\n";
-		for (Flow f: this.getFlow()) {
-			result += String.format("\tn%s->n%s;\n", f.getSource().getId().replace("-", ""), f.getTarget().getId().replace("-", ""));
+		for (IFlow flow: this.getFlow()) {
+			result += String.format("\tn%s->n%s;\n", flow.getSource().getId().replace("-", ""), flow.getTarget().getId().replace("-", ""));
 		}
 		result += "}\n";
 		
 		return result;
 	}
-	
-	/**************************************************************************
-	* Unsupported operations
-	**************************************************************************/
-	
-	/*@Override
-	public Flow addEdge(Node s, Node t) {
-		throw new UnsupportedOperationException();
-	}
 
 	@Override
-	public Flow addEdge(Collection<Node> ss, Collection<Node> ts) {
-		throw new UnsupportedOperationException();
+	public void doTRestrict() {
+		for (ITransition transition : this.getSourceTransitions())
+			this.addFlow(new Place(), transition);
+		
+		for (ITransition transition : this.getSinkTransitions())
+			this.addFlow(transition, new Place());
 	}
-
-	@Override
-	public Node removeVertex(Node v) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public Collection<Node> removeVertices(Collection<Node> vs) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public Flow addEdge(Collection<Node> vs)  {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public Flow addEdge(Node v) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public Flow removeEdge(Flow e) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public Collection<Flow> removeEdges(Collection<Flow> es) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public Node addVertex(Node v) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public Collection<Node> addVertices(Collection<Node> vs) {
-		throw new UnsupportedOperationException();
-	}*/
 }
