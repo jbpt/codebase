@@ -1,37 +1,35 @@
 package org.jbpt.petri;
 
 /**
- * Petri net place implementation
+ * Implementation of a Petri net place.
  * 
  * @author Artem Polyvyanyy
  */
-public class Place extends Node {
+public class Place extends Node implements IPlace {
+	
 	/**
-	 * Empty constructor
+	 * Empty constructor.
 	 */
 	public Place() {
 		super();
 	}
 	
 	/**
-	 * Constructor with place name parameter
-	 * @param name Place name
+	 * Constructor with label of the place parameter.
+	 *  
+	 * @param label String to use as a label of this place. 
 	 */
-	public Place(String name) {
-		super(name);
+	public Place(String label) {
+		super(label);
 	}
 	
 	/**
-	 * Constructor with place name and description parameters
-	 * @param name Place name
-	 * @param desc Place description
+	 * Constructor with label and description of the place parameters.
+	 * 
+	 * @param label String to use as a label of this place. 
+	 * @param desc String to use as a description of this place. 
 	 */
-	public Place(String name, String desc) {
-		super(name,desc);
-	}
-	
-	@Override
-	public Place clone() {
-		return (Place) super.clone();
+	public Place(String label, String desc) {
+		super(label,desc);
 	}
 }

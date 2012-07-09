@@ -3,53 +3,51 @@ package org.jbpt.petri;
 import org.jbpt.hypergraph.abs.Vertex;
 
 /**
- * A Petri net abstract node (vertex), might be place or transition 
+ * Implementation of a Petri net abstract node. 
+ * A node of a Petri net is either a {@link Place} or {@link Transition}. 
  * 
  * @author Artem Polyvyanyy
  */
-public abstract class Node extends Vertex {
+public abstract class Node extends Vertex implements INode {
+	
 	/**
-	 * Empty constructor
+	 * Empty constructor.
 	 */
 	public Node() {
 		super();
 	}
 	
 	/**
-	 * Constructor with node name parameter
-	 * @param name Node name
+	 * Constructor with label of the node parameter.
+	 *  
+	 * @param label String to use as a label of this node. 
 	 */
-	public Node(String name) {
-		super(name);
+	public Node(String label) {
+		super();
+		
+		this.setLabel(label);
 	}
 	
 	/**
-	 * Constructor with node name and description parameters
-	 * @param name Node name
-	 * @param desc Node description
+	 * Constructor with label and description of the node parameters.
+	 * 
+	 * @param label String to use as a label of this node. 
+	 * @param desc String to use as a description of this node. 
 	 */
-	public Node(String name, String desc) {
-		super(name,desc);
+	public Node(String label, String desc) {
+		super();
+		
+		this.setLabel(label);
+		this.setDescription(desc);
 	}
 
-	/**
-	 * Get label
-	 * @return Label string (alias to name string)
-	 */
+	@Override
 	public String getLabel() {
 		return this.getName();
 	}
 
-	/**
-	 * Set label (alias to name string)
-	 * @param label Label to set
-	 */
+	@Override
 	public void setLabel(String label) {
 		this.setName(label);
-	}
-	
-	@Override
-	public String toString() {
-		return (this.getName()==null) ? "" : getName();
 	}
 }

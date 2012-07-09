@@ -4,12 +4,12 @@ import org.jbpt.graph.abs.AbstractDirectedEdge;
 import org.jbpt.graph.abs.AbstractDirectedGraph;
 
 /**
- * Petri net flow relation element
+ * Implementation of a Petri net flow relation.
  * 
  * @author Artem Polyvyanyy
  */
-public class Flow extends AbstractDirectedEdge<Node> {
-	protected Flow(AbstractDirectedGraph<Flow,Node> g, Node source, Node target) {
+public class Flow extends AbstractDirectedEdge<INode> implements IFlow {
+	protected Flow(AbstractDirectedGraph<IFlow,INode> g, INode source, INode target) {
 		super(g, source, target);
 	}
 }
