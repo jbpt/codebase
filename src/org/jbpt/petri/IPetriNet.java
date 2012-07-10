@@ -8,17 +8,6 @@ import java.util.Collection;
  * @author Artem Polyvyanyy
  */
 public interface IPetriNet<F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition> {
-	
-	/**
-	 * Add flow to this net. 
-	 * The method ensures that the net stays bipartite.
-	 * 
-	 * @param from Source node.
-	 * @param to Target node.
-	 * @return Flow added to the net; <tt>null</tt> if no flow was added.
-	 */
-	public F addFlow(N from, N to);
-
 	/**
 	 * Add flow to this net. 
 	 * 

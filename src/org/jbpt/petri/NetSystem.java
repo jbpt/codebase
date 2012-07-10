@@ -19,6 +19,10 @@ public class NetSystem extends PetriNet implements INetSystem<Flow,Node,Place,Tr
 		this.M = new Marking(this);
 	}
 	
+	public NetSystem(PetriNet net) {
+		this.M = new Marking(this);
+	}
+	
 	@Override
 	public Node removeNode(Node n) {
 		Node result = super.removeNode(n);

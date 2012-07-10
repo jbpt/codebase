@@ -3,7 +3,7 @@ package org.jbpt.test.petri;
 import java.io.File;
 import java.util.HashSet;
 
-import org.jbpt.petri.util.BisimilarityChecker2;
+import org.jbpt.petri.behavior.BisimilarityChecker2;
 import org.jbpt.pm.ProcessModel;
 
 
