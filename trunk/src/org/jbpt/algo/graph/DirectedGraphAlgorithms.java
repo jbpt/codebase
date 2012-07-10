@@ -10,9 +10,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jbpt.graph.DirectedEdge;
+import org.jbpt.graph.MultiDirectedGraph;
 import org.jbpt.graph.abs.IDirectedEdge;
 import org.jbpt.graph.abs.IDirectedGraph;
 import org.jbpt.hypergraph.abs.IVertex;
+import org.jbpt.hypergraph.abs.Vertex;
 
 
 /**
@@ -236,13 +239,26 @@ public class DirectedGraphAlgorithms<E extends IDirectedEdge<V>,V extends IVerte
 		Collection<V> sources = this.getSources(g);
 		Collection<V> sinks = this.getSinks(g);
 		if (sources.isEmpty() || sinks.isEmpty()) return false;
-		V src = g.getFreshVertex(); V snk = g.getFreshVertex();
-		for (V v : sources) g.addEdge(src,v);
-		for (V v : sinks) g.addEdge(v,snk);
-		g.addEdge(snk,src);
-		StronglyConnectedComponents<E,V> sccs = new StronglyConnectedComponents<E,V>();
-		boolean result = sccs.isStronglyConnected(g);
-		g.removeVertex(src); g.removeVertex(snk);
-		return result;
+		
+		Map<V,Vertex> v2v = new HashMap<V,Vertex>();
+		MultiDirectedGraph graph = new MultiDirectedGraph();
+		for (V v : g.getVertices()) {
+			Vertex vv = new Vertex();
+			graph.addVertex(vv);
+			v2v.put(v,vv);
+		}
+		
+		for (E e : g.getEdges()) 
+			graph.addEdge(v2v.get(e.getSource()), v2v.get(e.getTarget()));
+		
+		DirectedGraphAlgorithms<DirectedEdge,Vertex> DGA = new DirectedGraphAlgorithms<DirectedEdge,Vertex>(); 
+		
+		Vertex src = new Vertex(); Vertex snk = new Vertex();
+		for (Vertex v : DGA.getSources(graph)) graph.addEdge(src,v);
+		for (Vertex v : DGA.getSinks(graph)) graph.addEdge(v,snk);
+		graph.addEdge(snk,src);
+		
+		StronglyConnectedComponents<DirectedEdge,Vertex> sccs = new StronglyConnectedComponents<DirectedEdge,Vertex>();
+		return sccs.isStronglyConnected(graph);
 	}
 }

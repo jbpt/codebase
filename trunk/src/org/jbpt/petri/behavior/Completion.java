@@ -13,6 +13,7 @@ import org.jbpt.petri.Node;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
 import org.jbpt.petri.unfolding.SoundUnfoldingMSMS;
+import org.jbpt.utils.IOUtils;
 
 /**
  * This class implements completion methods for multi-terminal nets described in:
@@ -41,6 +42,7 @@ public class Completion {
 		sys.loadNaturalMarking();
 		SoundUnfoldingMSMS unf = new SoundUnfoldingMSMS(sys);
 		unf.completeOriginativeSystemWithCorrectInstantiations();
+		sys.loadNaturalMarking();
 	}
 	
 	/**
