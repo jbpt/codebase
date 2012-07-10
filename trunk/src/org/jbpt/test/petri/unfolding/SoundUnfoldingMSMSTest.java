@@ -59,6 +59,9 @@ public class SoundUnfoldingMSMSTest extends TestCase {
 		IOUtils.toFile("unf_unsafe.dot", bpnet.toDOTcs(unf.getLocallyUnsafeConditions()));
 		IOUtils.toFile("unf_deadlock.dot", bpnet.toDOTcs(unf.getLocalDeadlockConditions()));
 		
+		unf.completeOriginativeSystemWithCorrectInstantiations();
+		IOUtils.toFile("net2.dot", net.toDOT());
+		
 		assertEquals(true, unf.isSound());
 		assertEquals(0, unf.getLocalDeadlockConditions().size());
 		assertEquals(6, unf.getLocallyUnsafeConditions().size());

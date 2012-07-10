@@ -56,8 +56,8 @@ public class TCTreeExtensiveTest extends TestCase {
 				
 				assertTrue(PetriNetStructuralClassChecks.isWorkflowNet(sys));
 				Transition t = new Transition("BACK");
-				sys.addFlow(DGA.getSinks(sys).iterator().next(),t);
-				Flow back = sys.addFlow(t,DGA.getSources(sys).iterator().next());
+				sys.addFlow((Place)DGA.getSinks(sys).iterator().next(),t);
+				Flow back = sys.addFlow(t,(Place)DGA.getSources(sys).iterator().next());
 				
 				TCTree<Flow,Node> tctree = new TCTree<Flow,Node>(sys,back);
 				long start = System.nanoTime();

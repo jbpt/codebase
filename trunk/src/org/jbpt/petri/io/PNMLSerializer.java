@@ -144,7 +144,7 @@ public class PNMLSerializer extends DefaultHandler
 
 		if (localName.equals("arc")) {
 			arc = true;
-			pn.addFlow(nodes.get(attributes.getValue(1)), nodes.get(attributes.getValue(2)));
+			pn.addFreshFlow(nodes.get(attributes.getValue(1)), nodes.get(attributes.getValue(2)));
 		}
 		else if (localName.equals("place")){
 			place = true;

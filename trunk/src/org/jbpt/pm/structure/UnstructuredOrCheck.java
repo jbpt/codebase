@@ -18,7 +18,7 @@ import org.jbpt.pm.ProcessModel;
  * @author Christian Wiggert
  *
  */
-public class UnstructuredOrCheck implements ICheck {
+/*public class UnstructuredOrCheck implements ICheck {
 
 	@Override
 	public List<String> check(ProcessModel process) {
@@ -32,4 +32,4 @@ public class UnstructuredOrCheck implements ICheck {
 		return errors;
 	}
 
-}
+}*/

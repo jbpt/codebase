@@ -1,4 +1,4 @@
-package org.jbpt.petri.util;
+package org.jbpt.petri.behavior;
 
 import java.util.Collection;
 import java.util.HashSet;

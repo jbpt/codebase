@@ -81,7 +81,7 @@ public class ProcessModel2NetSystem {
 				if (isXORGateway(node)) {
 					// XOR place needs an additional transition in front
 					Transition t = new Transition();
-					sys.addFlow(t, getNode(node, sys, map));
+					sys.addFlow(t, (Place)getNode(node, sys, map));
 					sources.add(t);
 				} else
 					// AND or normal task transition
@@ -92,7 +92,7 @@ public class ProcessModel2NetSystem {
 				if (isXORGateway(node)) {
 					// XOR place needs an additional following transition
 					Transition t = new Transition();
-					sys.addFlow(getNode(node, sys, map), t);
+					sys.addFlow((Place)getNode(node, sys, map), t);
 					sinks.add(t);
 				} else 
 					// AND or normal task transition
@@ -102,11 +102,11 @@ public class ProcessModel2NetSystem {
 		// create according entry and exit places for the transitions without incoming / outgoing edges
 		for (org.jbpt.petri.Node node:sources) {
 			Place p = new Place();
-			sys.addFlow(p, node);
+			sys.addFlow(p, (Transition)node);
 		}
 		for (org.jbpt.petri.Node node:sinks) {
 			Place p = new Place();
-			sys.addFlow(node, p);
+			sys.addFlow((Transition)node, p);
 		}
 		
 		sys.loadNaturalMarking();

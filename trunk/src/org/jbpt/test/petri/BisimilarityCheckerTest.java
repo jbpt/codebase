@@ -6,7 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashSet;
 
-import org.jbpt.petri.util.BisimilarityChecker2;
+import org.jbpt.petri.behavior.BisimilarityChecker2;
 import org.jbpt.pm.ProcessModel;
 import org.jbpt.pm.io.JSON2Process;
 import org.jbpt.throwable.SerializationException;
