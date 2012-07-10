@@ -12,37 +12,31 @@ import org.jbpt.graph.abs.AbstractDirectedGraph;
 
 /**
  * Implementation of a Petri net. 
- *  
+ * 
  * @author Artem Polyvyanyy
- * @author Matthias, Weidlich
+ * @author Matthias Weidlich
  * @author Andreas Meyer
  */
-public class PetriNet extends AbstractDirectedGraph<IFlow,INode> implements IPetriNet {
+public class PetriNet extends AbstractDirectedGraph<Flow,Node> implements IPetriNet<Flow,Node,Place,Transition> {
 
 	// Directed graph algorithms 
-	public static DirectedGraphAlgorithms<IFlow,INode> DGA = new DirectedGraphAlgorithms<IFlow,INode>();
+	public static DirectedGraphAlgorithms<Flow,Node> DGA = new DirectedGraphAlgorithms<Flow,Node>();
 	
 	/**
 	 * Empty constructor.
 	 */
-	public PetriNet(){}
+	public PetriNet(){
+	}
 	
-	/**
-	 * Add flow to this net. 
-	 * The method ensures that the net stays bipartite.  
-	 * 
-	 * @param from Source node.
-	 * @param to Target node.
-	 * @return Flow added to the net; <tt>null</tt> if no flow was added.
-	 */
-	protected IFlow addFlow(INode from, INode to) {
+	@Override
+	public Flow addFlow(Node from, Node to) {
 		if (from == null || to == null) return null;
 		
-		if ((from instanceof IPlace && to instanceof ITransition) ||
-				from instanceof ITransition && to instanceof IPlace) {
+		if ((from instanceof Place && to instanceof Transition) ||
+				from instanceof Transition && to instanceof Place) {
 			
-			Collection<INode> ss = new ArrayList<INode>(); ss.add(from);
-			Collection<INode> ts = new ArrayList<INode>(); ts.add(to);
+			Collection<Node> ss = new ArrayList<Node>(); ss.add(from);
+			Collection<Node> ts = new ArrayList<Node>(); ts.add(to);
 			
 			if (!this.checkEdge(ss,ts)) return null;
 			
@@ -53,37 +47,37 @@ public class PetriNet extends AbstractDirectedGraph<IFlow,INode> implements IPet
 	}
 	
 	@Override
-	public IFlow addFlow(IPlace place, ITransition transition) {
+	public Flow addFlow(Place place, Transition transition) {
 		return this.addFlow(place,transition);
 	}
 	
 	@Override
-	public IFlow addFlow(ITransition transition, IPlace place) {
+	public Flow addFlow(Transition transition, Place place) {
 		return this.addFlow(transition,place);
 	}
 	
 	@Override
-	public INode addNode(INode node) {
+	public Node addNode(Node node) {
 		return this.addVertex(node);
 	}
 	
 	@Override
-	public Collection<INode> addNodes(Collection<INode> nodes) {
-		Collection<INode> result = this.addVertices(nodes);
-		return result==null ? new ArrayList<INode>() : result;
+	public Collection<Node> addNodes(Collection<Node> nodes) {
+		Collection<Node> result = this.addVertices(nodes);
+		return result==null ? new ArrayList<Node>() : result;
 	}
 
 	@Override
-	public IPlace addPlace(IPlace place) {
+	public Place addPlace(Place place) {
 		return this.addVertex(place)==null ? null : place;
 	}
 	
 	@Override
-	public Collection<IPlace> addPlaces(Collection<IPlace> places) {
-		Collection<IPlace> result = new ArrayList<IPlace>();
+	public Collection<Place> addPlaces(Collection<Place> places) {
+		Collection<Place> result = new ArrayList<Place>();
 		if (places == null) return result;
 		
-		for (IPlace place : places)
+		for (Place place : places)
 			if (this.addVertex(place) != null)
 				result.add(place);
 		
@@ -91,16 +85,16 @@ public class PetriNet extends AbstractDirectedGraph<IFlow,INode> implements IPet
 	}
 	
 	@Override
-	public ITransition addTransition(ITransition transition) {
+	public Transition addTransition(Transition transition) {
 		return this.addVertex(transition)==null ? null : transition;
 	}
 	
 	@Override
-	public Collection<ITransition> addTransitions(Collection<ITransition> transitions) {
-		Collection<ITransition> result = new ArrayList<ITransition>();
+	public Collection<Transition> addTransitions(Collection<Transition> transitions) {
+		Collection<Transition> result = new ArrayList<Transition>();
 		if (transitions == null) return result;
 		
-		for (ITransition transition : transitions)
+		for (Transition transition : transitions)
 			if (this.addVertex(transition) != null)
 				result.add(transition);
 		
@@ -108,27 +102,27 @@ public class PetriNet extends AbstractDirectedGraph<IFlow,INode> implements IPet
 	}
 	
 	@Override
-	public INode removeNode(INode node) {
+	public Node removeNode(Node node) {
 		return this.removeVertex(node);
 	}
 	
 	@Override
-	public Collection<INode> removeNodes(Collection<INode> nodes) {
-		Collection<INode> result = this.removeVertices(nodes);
-		return result==null ? new ArrayList<INode>() : result;
+	public Collection<Node> removeNodes(Collection<Node> nodes) {
+		Collection<Node> result = this.removeVertices(nodes);
+		return result==null ? new ArrayList<Node>() : result;
 	}
 	
 	@Override
-	public IPlace removePlace(IPlace place) {
+	public Place removePlace(Place place) {
 		return this.removeVertex(place) == null ? null : place;
 	}
 	
 	@Override
-	public Collection<IPlace> removePlaces(Collection<IPlace> places) {
-		Collection<IPlace> result = new ArrayList<IPlace>();
+	public Collection<Place> removePlaces(Collection<Place> places) {
+		Collection<Place> result = new ArrayList<Place>();
 		if (places == null) return result;
 		
-		for (IPlace place : places)
+		for (Place place : places)
 			if (this.removeVertex(place) != null)
 				result.add(place);
 		
@@ -136,16 +130,16 @@ public class PetriNet extends AbstractDirectedGraph<IFlow,INode> implements IPet
 	}
 	
 	@Override
-	public ITransition removeTransition(ITransition transition) {
+	public Transition removeTransition(Transition transition) {
 		return this.removeVertex(transition) == null ? null : transition;
 	}
 	
 	@Override
-	public Collection<ITransition> removeTransitions(Collection<ITransition> transitions) {
-		Collection<ITransition> result = new ArrayList<ITransition>();
+	public Collection<Transition> removeTransitions(Collection<Transition> transitions) {
+		Collection<Transition> result = new ArrayList<Transition>();
 		if (transitions == null) return result;
 		
-		for (ITransition transition : transitions)
+		for (Transition transition : transitions)
 			if (this.removeVertex(transition) != null)
 				result.add(transition);
 		
@@ -153,133 +147,27 @@ public class PetriNet extends AbstractDirectedGraph<IFlow,INode> implements IPet
 	}
 	
 	@Override
-	public IFlow removeFlow(IFlow flow) {
+	public Flow removeFlow(Flow flow) {
 		return this.removeEdge(flow);
 	}
 	
 	@Override
-	public Collection<IFlow> removeFlow(Collection<IFlow> flow) {
-		Collection<IFlow> result = this.removeEdges(flow);
-		return result==null ? new ArrayList<IFlow>() : result;
+	public Collection<Flow> removeFlow(Collection<Flow> flow) {
+		Collection<Flow> result = this.removeEdges(flow);
+		return result==null ? new ArrayList<Flow>() : result;
 	}
 	
 	
 	@Override
-	public Collection<INode> getNodes() {
+	public Collection<Node> getNodes() {
 		return this.getVertices();
 	}
 	
 	@Override
-	public Collection<IPlace> getPlaces() {
-		Collection<IPlace> result = new ArrayList<IPlace>();
+	public Collection<Place> getPlaces() {
+		Collection<Place> result = new ArrayList<Place>();
 		
-		for (INode node : this.getVertices())
-			if (node instanceof IPlace)
-				result.add((IPlace)node);
-		
-		return result;
-	}
-
-	@Override
-	public Collection<ITransition> getTransitions() {
-		Collection<ITransition> result = new ArrayList<ITransition>();
-		
-		for (INode node : this.getVertices())
-			if (node instanceof ITransition)
-				result.add((ITransition)node);
-		
-		return result;
-	}
-	
-	@Override
-	public Collection<IFlow> getFlow() {
-		return this.getEdges();
-	}
-	
-	@Override
-	public Collection<ITransition> getSilentTransitions() {
-		Collection<ITransition> result = new ArrayList<ITransition>();
-		
-		for (INode node : this.getVertices())
-			if (node instanceof ITransition && node.getLabel().isEmpty())
-				result.add((ITransition)node);	
-		
-		return result;
-	}
-
-	@Override
-	public Collection<ITransition> getObservableTransitions() {
-		Collection<ITransition> result = new ArrayList<ITransition>();
-		
-		for (INode node : this.getVertices())
-			if (node instanceof ITransition && !node.getLabel().isEmpty())
-				result.add((ITransition)node);	
-		
-		return result;
-	}
-	
-	@Override
-	public Collection<IPlace> getPostset(ITransition transition) {
-		Collection<IPlace> result = new ArrayList<IPlace>();
-		for (INode node : this.getDirectSuccessors(transition))
-			if (node instanceof IPlace)
-				result.add((IPlace)node);
-		
-		return result;
-	}
-	
-	@Override
-	public Collection<IPlace> getPostsetPlaces(Collection<ITransition> transitions) {
-		Set<IPlace> result = new HashSet<IPlace>();
-		
-		for (ITransition transition : transitions)
-			for (INode node : this.getDirectSuccessors(transition))
-				if (node instanceof IPlace)
-					result.add((IPlace)node);
-		
-		return result;
-	}
-	
-	@Override
-	public Collection<ITransition> getPostset(IPlace place) {
-		Collection<ITransition> result = new ArrayList<ITransition>();
-		
-		for (INode node : this.getDirectSuccessors(place)) {
-			if (node instanceof ITransition)
-				result.add((ITransition)node);
-		}
-		
-		return result;
-	}
-	
-	@Override
-	public Collection<ITransition> getPostsetTransitions(Collection<IPlace> places) {
-		Set<ITransition> result = new HashSet<ITransition>();
-		
-		for (IPlace place : places)
-			for (INode node : this.getDirectSuccessors(place))
-				if (node instanceof ITransition)
-					result.add((ITransition)node);
-		
-		return result;
-	}
-
-	@Override
-	public Collection<INode> getPostset(INode n) {
-		return this.getDirectSuccessors(n);
-	}
-	
-	@Override
-	public Collection<INode> getPostset(Collection<INode> nodes) {
-		Collection<INode> result = this.getDirectSuccessors(nodes); 
-		return result == null ? new ArrayList<INode>() : result;
-	}
-	
-	@Override
-	public Collection<IPlace> getPreset(ITransition transition) {
-		Collection<IPlace> result = new ArrayList<IPlace>();
-		
-		for (INode node : this.getDirectPredecessors(transition))
+		for (Node node : this.getVertices())
 			if (node instanceof Place)
 				result.add((Place)node);
 		
@@ -287,113 +175,219 @@ public class PetriNet extends AbstractDirectedGraph<IFlow,INode> implements IPet
 	}
 
 	@Override
-	public Collection<IPlace> getPresetPlaces(Collection<ITransition> transitions) {
-		Set<IPlace> result = new HashSet<IPlace>();
+	public Collection<Transition> getTransitions() {
+		Collection<Transition> result = new ArrayList<Transition>();
 		
-		for (ITransition transition : transitions)
-			for (INode node : this.getDirectPredecessors(transition))
-				if (node instanceof IPlace)
-					result.add((IPlace)node);
-		
-		return result;
-	}
-	
-	@Override
-	public Collection<ITransition> getPreset(IPlace place) {
-		Collection<ITransition> result = new ArrayList<ITransition>();
-		
-		for (INode node : this.getDirectPredecessors(place))
-			if (node instanceof ITransition)
-				result.add((ITransition)node);
+		for (Node node : this.getVertices())
+			if (node instanceof Transition)
+				result.add((Transition)node);
 		
 		return result;
 	}
 	
 	@Override
-	public Collection<ITransition> getPresetTransitions(Collection<IPlace> places) {
-		Set<ITransition> result = new HashSet<ITransition>();
+	public Collection<Flow> getFlow() {
+		return this.getEdges();
+	}
+	
+	@Override
+	public Collection<Transition> getSilentTransitions() {
+		Collection<Transition> result = new ArrayList<Transition>();
 		
-		for (IPlace place : places)
-			for (INode node : this.getDirectPredecessors(place))
-				if (node instanceof ITransition)
-					result.add((ITransition)node);
+		for (Node node : this.getVertices())
+			if (node instanceof Transition && node.getLabel().isEmpty())
+				result.add((Transition)node);	
+		
+		return result;
+	}
+
+	@Override
+	public Collection<Transition> getObservableTransitions() {
+		Collection<Transition> result = new ArrayList<Transition>();
+		
+		for (Node node : this.getVertices())
+			if (node instanceof Transition && !node.getLabel().isEmpty())
+				result.add((Transition)node);	
 		
 		return result;
 	}
 	
 	@Override
-	public Collection<INode> getPreset(INode node) {
-		Collection<INode> result = this.getDirectPredecessors(node); 
-		return result == null ? new ArrayList<INode>() : result;
+	public Collection<Place> getPostset(Transition transition) {
+		Collection<Place> result = new ArrayList<Place>();
+		for (Node node : this.getDirectSuccessors(transition))
+			if (node instanceof Place)
+				result.add((Place)node);
+		
+		return result;
 	}
 	
 	@Override
-	public Collection<INode> getPreset(Collection<INode> nodes) {
-		Collection<INode> result = this.getDirectPredecessors(nodes); 
-		return result == null ? new ArrayList<INode>() : result;
+	public Collection<Place> getPostsetPlaces(Collection<Transition> transitions) {
+		Set<Place> result = new HashSet<Place>();
+		
+		for (Transition transition : transitions)
+			for (Node node : this.getDirectSuccessors(transition))
+				if (node instanceof Place)
+					result.add((Place)node);
+		
+		return result;
 	}
 	
 	@Override
-	public Collection<INode> getSourceNodes() {
+	public Collection<Transition> getPostset(Place place) {
+		Collection<Transition> result = new ArrayList<Transition>();
+		
+		for (Node node : this.getDirectSuccessors(place)) {
+			if (node instanceof Transition)
+				result.add((Transition)node);
+		}
+		
+		return result;
+	}
+	
+	@Override
+	public Collection<Transition> getPostsetTransitions(Collection<Place> places) {
+		Set<Transition> result = new HashSet<Transition>();
+		
+		for (Place place : places)
+			for (Node node : this.getDirectSuccessors(place))
+				if (node instanceof Transition)
+					result.add((Transition)node);
+		
+		return result;
+	}
+
+	@Override
+	public Collection<Node> getPostset(Node n) {
+		return this.getDirectSuccessors(n);
+	}
+	
+	@Override
+	public Collection<Node> getPostset(Collection<Node> nodes) {
+		Collection<Node> result = this.getDirectSuccessors(nodes); 
+		return result == null ? new ArrayList<Node>() : result;
+	}
+	
+	@Override
+	public Collection<Place> getPreset(Transition transition) {
+		Collection<Place> result = new ArrayList<Place>();
+		
+		for (Node node : this.getDirectPredecessors(transition))
+			if (node instanceof Place)
+				result.add((Place)node);
+		
+		return result;
+	}
+
+	@Override
+	public Collection<Place> getPresetPlaces(Collection<Transition> transitions) {
+		Set<Place> result = new HashSet<Place>();
+		
+		for (Transition transition : transitions)
+			for (Node node : this.getDirectPredecessors(transition))
+				if (node instanceof Place)
+					result.add((Place)node);
+		
+		return result;
+	}
+	
+	@Override
+	public Collection<Transition> getPreset(Place place) {
+		Collection<Transition> result = new ArrayList<Transition>();
+		
+		for (Node node : this.getDirectPredecessors(place))
+			if (node instanceof Transition)
+				result.add((Transition)node);
+		
+		return result;
+	}
+	
+	@Override
+	public Collection<Transition> getPresetTransitions(Collection<Place> places) {
+		Set<Transition> result = new HashSet<Transition>();
+		
+		for (Place place : places)
+			for (Node node : this.getDirectPredecessors(place))
+				if (node instanceof Transition)
+					result.add((Transition)node);
+		
+		return result;
+	}
+	
+	@Override
+	public Collection<Node> getPreset(Node node) {
+		Collection<Node> result = this.getDirectPredecessors(node); 
+		return result == null ? new ArrayList<Node>() : result;
+	}
+	
+	@Override
+	public Collection<Node> getPreset(Collection<Node> nodes) {
+		Collection<Node> result = this.getDirectPredecessors(nodes); 
+		return result == null ? new ArrayList<Node>() : result;
+	}
+	
+	@Override
+	public Collection<Node> getSourceNodes() {
 		return PetriNet.DGA.getSources(this);
 	}
 	
 	@Override
-	public Collection<IPlace> getSourcePlaces() {
-		Collection<IPlace> result = new ArrayList<IPlace>();
+	public Collection<Place> getSourcePlaces() {
+		Collection<Place> result = new ArrayList<Place>();
 		
-		for (INode node : this.getSourceNodes())
-			if (node instanceof IPlace)
-				result.add((IPlace)node);
-		
-		return result;
-	}
-	
-	@Override
-	public Collection<ITransition> getSourceTransitions() {
-		Collection<ITransition> result = new ArrayList<ITransition>();
-		
-		for (INode node : this.getSourceNodes())
-			if (node instanceof ITransition)
-				result.add((ITransition)node);
+		for (Node node : this.getSourceNodes())
+			if (node instanceof Place)
+				result.add((Place)node);
 		
 		return result;
 	}
 	
 	@Override
-	public Collection<INode> getSinkNodes() {
+	public Collection<Transition> getSourceTransitions() {
+		Collection<Transition> result = new ArrayList<Transition>();
+		
+		for (Node node : this.getSourceNodes())
+			if (node instanceof Transition)
+				result.add((Transition)node);
+		
+		return result;
+	}
+	
+	@Override
+	public Collection<Node> getSinkNodes() {
 		return PetriNet.DGA.getSinks(this);
 	}
 	
 	@Override
-	public Collection<IPlace> getSinkPlaces() {
-		Collection<IPlace> result = new ArrayList<IPlace>();
+	public Collection<Place> getSinkPlaces() {
+		Collection<Place> result = new ArrayList<Place>();
 		
-		for (INode node : this.getSinkNodes())
-			if (node instanceof IPlace)
-				result.add((IPlace)node);
-		
-		return result;
-	}
-	
-	@Override
-	public Collection<ITransition> getSinkTransitions() {
-		Collection<ITransition> result = new ArrayList<ITransition>();
-		
-		for (INode node : this.getSinkNodes())
-			if (node instanceof ITransition)
-				result.add((ITransition)node);
+		for (Node node : this.getSinkNodes())
+			if (node instanceof Place)
+				result.add((Place)node);
 		
 		return result;
 	}
 	
 	@Override
-	public Collection<INode> getMin() {
+	public Collection<Transition> getSinkTransitions() {
+		Collection<Transition> result = new ArrayList<Transition>();
+		
+		for (Node node : this.getSinkNodes())
+			if (node instanceof Transition)
+				result.add((Transition)node);
+		
+		return result;
+	}
+	
+	@Override
+	public Collection<Node> getMin() {
 		return this.getSourceNodes();
 	}
 	
 	@Override
-	public Collection<INode> getMax() {
+	public Collection<Node> getMax() {
 		return this.getSinkNodes();
 	}
 	
@@ -405,20 +399,20 @@ public class PetriNet extends AbstractDirectedGraph<IFlow,INode> implements IPet
 	@Override
 	public PetriNet clone() {		
 		PetriNet clone = (PetriNet) super.clone();
-		return this.cloneHelper(clone, new HashMap<INode,INode>());
+		return this.cloneHelper(clone, new HashMap<Node,Node>());
 	}
 	
-	private PetriNet cloneHelper(PetriNet clone, Map<INode,INode> nodeMapping) {
+	private PetriNet cloneHelper(PetriNet clone, Map<Node,Node> nodeMapping) {
 		clone.clearMembers();
 
-		for (INode n : this.getNodes()) {
-			INode cn = (INode)n.clone();
+		for (Node n : this.getNodes()) {
+			Node cn = (Node)n.clone();
 			clone.addVertex(cn);
 			nodeMapping.put(n,cn);
 		}
 		
-		for (IFlow f : this.getFlow()) {
-			IFlow cf = clone.addFlow(nodeMapping.get(f.getSource()),nodeMapping.get(f.getTarget()));
+		for (Flow f : this.getFlow()) {
+			Flow cf = clone.addFlow(nodeMapping.get(f.getSource()),nodeMapping.get(f.getTarget()));
 			
 			if (f.getName() != null)
 				cf.setName(new String(f.getName()));
@@ -429,7 +423,7 @@ public class PetriNet extends AbstractDirectedGraph<IFlow,INode> implements IPet
 		return clone;
 	}
 	
-	public PetriNet clone(Map<INode,INode> nodeMapping) {
+	public PetriNet clone(Map<Node,Node> nodeMapping) {
 		PetriNet clone = (PetriNet) super.clone();
 		return cloneHelper(clone, nodeMapping);
 	}
@@ -443,7 +437,7 @@ public class PetriNet extends AbstractDirectedGraph<IFlow,INode> implements IPet
 		result += "\n";
 		result += "node [shape=circle];\n";
 		
-		for (IPlace place : this.getPlaces()) {
+		for (Place place : this.getPlaces()) {
 			String label = ""; 
 			result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".3\"];\n", place.getId().replace("-", ""), label);
 		}
@@ -451,13 +445,13 @@ public class PetriNet extends AbstractDirectedGraph<IFlow,INode> implements IPet
 		result += "\n";
 		result += "node [shape=box];\n";
 		
-		for (ITransition transition : this.getTransitions()) {
+		for (Transition transition : this.getTransitions()) {
 			if (transition.getName()=="") result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".1\"];\n", transition.getId().replace("-", ""), transition.getName());
 			else result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".3\"];\n", transition.getId().replace("-", ""), transition.getName());
 		}
 		
 		result += "\n";
-		for (IFlow flow: this.getFlow()) {
+		for (Flow flow: this.getFlow()) {
 			result += String.format("\tn%s->n%s;\n", flow.getSource().getId().replace("-", ""), flow.getTarget().getId().replace("-", ""));
 		}
 		result += "}\n";
@@ -467,10 +461,10 @@ public class PetriNet extends AbstractDirectedGraph<IFlow,INode> implements IPet
 
 	@Override
 	public void doTRestrict() {
-		for (ITransition transition : this.getSourceTransitions())
+		for (Transition transition : this.getSourceTransitions())
 			this.addFlow(new Place(), transition);
 		
-		for (ITransition transition : this.getSinkTransitions())
+		for (Transition transition : this.getSinkTransitions())
 			this.addFlow(transition, new Place());
 	}
 }

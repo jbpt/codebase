@@ -8,8 +8,9 @@ import org.jbpt.graph.abs.AbstractDirectedGraph;
  * 
  * @author Artem Polyvyanyy
  */
-public class Flow extends AbstractDirectedEdge<INode> implements IFlow {
-	protected Flow(AbstractDirectedGraph<IFlow,INode> g, INode source, INode target) {
+public class Flow extends AbstractDirectedEdge<Node> implements IFlow<Node> {
+	
+	protected Flow(AbstractDirectedGraph<?,Node> g, Node source, Node target) {
 		super(g, source, target);
 	}
 }

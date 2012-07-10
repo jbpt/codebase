@@ -2,14 +2,22 @@ package org.jbpt.petri;
 
 import java.util.Collection;
 
-import org.jbpt.graph.abs.IDirectedGraph;
-
 /**
  * PetriNet interface.
  *
  * @author Artem Polyvyanyy
  */
-public interface IPetriNet extends IDirectedGraph<IFlow,INode> {
+public interface IPetriNet<F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition> {
+	
+	/**
+	 * Add flow to this net. 
+	 * The method ensures that the net stays bipartite.
+	 * 
+	 * @param from Source node.
+	 * @param to Target node.
+	 * @return Flow added to the net; <tt>null</tt> if no flow was added.
+	 */
+	public F addFlow(N from, N to);
 
 	/**
 	 * Add flow to this net. 
@@ -18,7 +26,7 @@ public interface IPetriNet extends IDirectedGraph<IFlow,INode> {
 	 * @param transition Target transition.
 	 * @return Flow added to this net; <tt>null</tt> if no flow was added.  
 	 */
-	public IFlow addFlow(IPlace place, ITransition transition);
+	public F addFlow(P place, T transition);
 
 	/**
 	 * Add flow to this net.
@@ -27,7 +35,7 @@ public interface IPetriNet extends IDirectedGraph<IFlow,INode> {
 	 * @param to Target place.
 	 * @return Flow added to this net; <tt>null</tt> if no flow was added. 
 	 */
-	public IFlow addFlow(ITransition transition, IPlace place);
+	public F addFlow(T transition, P place);
 
 	/**
 	 * Add node to this net.
@@ -35,7 +43,7 @@ public interface IPetriNet extends IDirectedGraph<IFlow,INode> {
 	 * @param node Node to add. 
 	 * @return Node added to this net; <tt>null</tt> if no node was added. 
 	 */
-	public INode addNode(INode node);
+	public N addNode(N node);
 
 	/**
 	 * Add nodes to this net.
@@ -43,7 +51,7 @@ public interface IPetriNet extends IDirectedGraph<IFlow,INode> {
 	 * @param nodes Nodes to add.
 	 * @return Nodes added to this net.
 	 */
-	public Collection<INode> addNodes(Collection<INode> nodes);
+	public Collection<N> addNodes(Collection<N> nodes);
 
 	/**
 	 * Add place to this net.
@@ -51,7 +59,7 @@ public interface IPetriNet extends IDirectedGraph<IFlow,INode> {
 	 * @param place Place to add.
 	 * @return Place added to this net; <tt>null</tt> if no place was added.
 	 */
-	public IPlace addPlace(IPlace p);
+	public P addPlace(P p);
 
 	/**
 	 * Add places to this net.
@@ -59,7 +67,7 @@ public interface IPetriNet extends IDirectedGraph<IFlow,INode> {
 	 * @param places Places to add.
 	 * @return Places added to this net.
 	 */
-	public Collection<IPlace> addPlaces(Collection<IPlace> places);
+	public Collection<P> addPlaces(Collection<P> places);
 
 	/**
 	 * Add transition to this net.
@@ -67,7 +75,7 @@ public interface IPetriNet extends IDirectedGraph<IFlow,INode> {
 	 * @param transition Transition to add.
 	 * @return Transition added to this net; <tt>null</tt> if no transition was added.
 	 */
-	public ITransition addTransition(ITransition transition);
+	public T addTransition(T transition);
 
 	/**
 	 * Add transitions to this net.
@@ -75,7 +83,7 @@ public interface IPetriNet extends IDirectedGraph<IFlow,INode> {
 	 * @param transitions Transitions to add.
 	 * @return Transitions added to this net.
 	 */
-	public Collection<ITransition> addTransitions(Collection<ITransition> transitions);
+	public Collection<T> addTransitions(Collection<T> transitions);
 
 	/**
 	 * Remove node from this net.
@@ -83,7 +91,7 @@ public interface IPetriNet extends IDirectedGraph<IFlow,INode> {
 	 * @param node Node to remove.
 	 * @return Node removed from this net; <tt>null</tt> if node was not removed.
 	 */
-	public INode removeNode(INode node);
+	public N removeNode(N node);
 
 	/**
 	 * Remove nodes from this net.
@@ -91,7 +99,7 @@ public interface IPetriNet extends IDirectedGraph<IFlow,INode> {
 	 * @param nodes Nodes to remove.
 	 * @return Nodes removed from this net.
 	 */
-	public Collection<INode> removeNodes(Collection<INode> nodes);
+	public Collection<N> removeNodes(Collection<N> nodes);
 
 	/**
 	 * Remove place from this net. 
@@ -99,7 +107,7 @@ public interface IPetriNet extends IDirectedGraph<IFlow,INode> {
 	 * @param place Place to remove.
 	 * @return Place removed from this net; <tt>null</tt> if place was not removed.
 	 */
-	public IPlace removePlace(IPlace place);
+	public P removePlace(P place);
 
 	/**
 	 * Remove places from this net.
@@ -107,7 +115,7 @@ public interface IPetriNet extends IDirectedGraph<IFlow,INode> {
 	 * @param places Places to remove.
 	 * @return Places removed from this net.
 	 */
-	public Collection<IPlace> removePlaces(Collection<IPlace> places);
+	public Collection<P> removePlaces(Collection<P> places);
 
 	/**
 	 * Remove transition from this net.
@@ -115,7 +123,7 @@ public interface IPetriNet extends IDirectedGraph<IFlow,INode> {
 	 * @param transition Transition to remove.
 	 * @return Transition removed from this net; <tt>null</tt> if transition was not removed.
 	 */
-	public ITransition removeTransition(ITransition transition);
+	public T removeTransition(T transition);
 
 	/**
 	 * Remove transitions from this net.
@@ -123,7 +131,7 @@ public interface IPetriNet extends IDirectedGraph<IFlow,INode> {
 	 * @param transitions Transitions to remove.
 	 * @return Transitions removed from this net.
 	 */
-	public Collection<ITransition> removeTransitions(Collection<ITransition> transitions);
+	public Collection<T> removeTransitions(Collection<T> transitions);
 
 	/**
 	 * Remove flow from this net.
@@ -131,7 +139,7 @@ public interface IPetriNet extends IDirectedGraph<IFlow,INode> {
 	 * @param flow Flow to remove.
 	 * @return Flow removed from this net; <tt>null</tt> if no flow was removed.
 	 */
-	public IFlow removeFlow(IFlow flow);
+	public F removeFlow(F flow);
 
 	/**
 	 * Remove flow from this net.
@@ -139,49 +147,49 @@ public interface IPetriNet extends IDirectedGraph<IFlow,INode> {
 	 * @param flow Flow to remove.
 	 * @return Flow removed from this net.
 	 */
-	public Collection<IFlow> removeFlow(Collection<IFlow> flow);
+	public Collection<F> removeFlow(Collection<F> flow);
 
 	/**
 	 * Get nodes of this net.
 	 * 
 	 * @return Nodes of this net.
 	 */
-	public Collection<INode> getNodes();
+	public Collection<N> getNodes();
 
 	/**
 	 * Get places of this net.
 	 * 
 	 * @return Places of this net.
 	 */
-	public Collection<IPlace> getPlaces();
+	public Collection<P> getPlaces();
 
 	/**
 	 * Get transitions of this net.
 	 * 
 	 * @return Transitions of this net.
 	 */
-	public Collection<ITransition> getTransitions();
+	public Collection<T> getTransitions();
 
 	/**
 	 * Get flow relation of this net. 
 	 * 
 	 * @return Flow relation of this net.
 	 */
-	public Collection<IFlow> getFlow();
+	public Collection<F> getFlow();
 
 	/**
 	 * Get silent transitions of this net.
 	 * 
 	 * @return Silent transitions of this net.
 	 */
-	public Collection<ITransition> getSilentTransitions();
+	public Collection<T> getSilentTransitions();
 
 	/**
 	 * Get observable transitions of this net.
 	 * 
 	 * @return Observable transitions of this net.
 	 */
-	public Collection<ITransition> getObservableTransitions();
+	public Collection<T> getObservableTransitions();
 
 	/**
 	 * Get postset of a given transition.
@@ -189,7 +197,7 @@ public interface IPetriNet extends IDirectedGraph<IFlow,INode> {
 	 * @param transition Transition.
 	 * @return Postset of the given transition.
 	 */
-	public Collection<IPlace> getPostset(ITransition transition);
+	public Collection<P> getPostset(T transition);
 
 	/**
 	 * Get postset of given transitions.
@@ -197,7 +205,7 @@ public interface IPetriNet extends IDirectedGraph<IFlow,INode> {
 	 * @param transitions Transitions.
 	 * @return Postset of the given transitions.
 	 */
-	public Collection<IPlace> getPostsetPlaces(Collection<ITransition> transitions);
+	public Collection<P> getPostsetPlaces(Collection<T> transitions);
 
 	/**
 	 * Get postset of a given place
@@ -205,7 +213,7 @@ public interface IPetriNet extends IDirectedGraph<IFlow,INode> {
 	 * @param place Place.
 	 * @return Postset of the given place.
 	 */
-	public Collection<ITransition> getPostset(IPlace place);
+	public Collection<T> getPostset(P place);
 
 	/**
 	 * Get postset of given places.
@@ -213,7 +221,7 @@ public interface IPetriNet extends IDirectedGraph<IFlow,INode> {
 	 * @param places Places.
 	 * @return Postset of the given places.
 	 */
-	public Collection<ITransition> getPostsetTransitions(Collection<IPlace> places);
+	public Collection<T> getPostsetTransitions(Collection<P> places);
 
 	/**
 	 * Get postset of a given node.
@@ -221,7 +229,7 @@ public interface IPetriNet extends IDirectedGraph<IFlow,INode> {
 	 * @param node Node.
 	 * @return Postset of the given node.
 	 */
-	public Collection<INode> getPostset(INode node);
+	public Collection<N> getPostset(N node);
 
 	/**
 	 * Get postset of given nodes.
@@ -229,7 +237,7 @@ public interface IPetriNet extends IDirectedGraph<IFlow,INode> {
 	 * @param nodes Nodes.
 	 * @return Postset of given nodes.
 	 */
-	public Collection<INode> getPostset(Collection<INode> nodes);
+	public Collection<N> getPostset(Collection<N> nodes);
 
 	/**
 	 * Get preset of a given transition.
@@ -237,7 +245,7 @@ public interface IPetriNet extends IDirectedGraph<IFlow,INode> {
 	 * @param transition Transition.
 	 * @return Preset of the given transition.
 	 */
-	public Collection<IPlace> getPreset(ITransition transition);
+	public Collection<P> getPreset(T transition);
 
 	/**
 	 * Get preset of given transitions.
@@ -245,7 +253,7 @@ public interface IPetriNet extends IDirectedGraph<IFlow,INode> {
 	 * @param transitions Transitions.
 	 * @return Preset of given transitions.
 	 */
-	public Collection<IPlace> getPresetPlaces(Collection<ITransition> transitions);
+	public Collection<P> getPresetPlaces(Collection<T> transitions);
 
 	/**
 	 * Get preset of a given place.
@@ -253,7 +261,7 @@ public interface IPetriNet extends IDirectedGraph<IFlow,INode> {
 	 * @param place Place.
 	 * @return Preset of the given place.
 	 */
-	public Collection<ITransition> getPreset(IPlace place);
+	public Collection<T> getPreset(P place);
 
 	/**
 	 * Get preset of given places.
@@ -261,7 +269,7 @@ public interface IPetriNet extends IDirectedGraph<IFlow,INode> {
 	 * @param places Places.
 	 * @return Preset of the given places.
 	 */
-	public Collection<ITransition> getPresetTransitions(Collection<IPlace> places);
+	public Collection<T> getPresetTransitions(Collection<P> places);
 
 	/**
 	 * Get preset of a given node.
@@ -269,7 +277,7 @@ public interface IPetriNet extends IDirectedGraph<IFlow,INode> {
 	 * @param node Node.
 	 * @return Preset of the given node.
 	 */
-	public Collection<INode> getPreset(INode n);
+	public Collection<N> getPreset(N n);
 
 	/**
 	 * Get preset of the given nodes.
@@ -277,7 +285,7 @@ public interface IPetriNet extends IDirectedGraph<IFlow,INode> {
 	 * @param nodes Nodes.
 	 * @return Preset of the given nodes.
 	 */
-	public Collection<INode> getPreset(Collection<INode> nodes);
+	public Collection<N> getPreset(Collection<N> nodes);
 
 	/**
 	 * Get source nodes of this net. 
@@ -285,7 +293,7 @@ public interface IPetriNet extends IDirectedGraph<IFlow,INode> {
 	 * 
 	 * @return Source nodes of this net.
 	 */
-	public Collection<INode> getSourceNodes();
+	public Collection<N> getSourceNodes();
 
 	/**
 	 * Get source places of this net. 
@@ -293,7 +301,7 @@ public interface IPetriNet extends IDirectedGraph<IFlow,INode> {
 	 * 
 	 * @return Source places of this net.
 	 */
-	public Collection<IPlace> getSourcePlaces();
+	public Collection<P> getSourcePlaces();
 
 	/**
 	 * Get source transitions of this net.
@@ -301,7 +309,7 @@ public interface IPetriNet extends IDirectedGraph<IFlow,INode> {
 	 * 
 	 * @return Source transitions of this net.
 	 */
-	public Collection<ITransition> getSourceTransitions();
+	public Collection<T> getSourceTransitions();
 
 	/**
 	 * Get sink nodes of this net. 
@@ -309,7 +317,7 @@ public interface IPetriNet extends IDirectedGraph<IFlow,INode> {
 	 * 
 	 * @return Sink nodes of this net.
 	 */
-	public Collection<INode> getSinkNodes();
+	public Collection<N> getSinkNodes();
 
 	/**
 	 * Get sink places of this net.
@@ -317,7 +325,7 @@ public interface IPetriNet extends IDirectedGraph<IFlow,INode> {
 	 * 
 	 * @return Sink places of this net.
 	 */
-	public Collection<IPlace> getSinkPlaces();
+	public Collection<P> getSinkPlaces();
 
 	/**
 	 * Get sink transitions of this net.
@@ -325,21 +333,21 @@ public interface IPetriNet extends IDirectedGraph<IFlow,INode> {
 	 * 
 	 * @return Sink transitions of this net.
 	 */
-	public Collection<ITransition> getSinkTransitions();
+	public Collection<T> getSinkTransitions();
 
 	/**
 	 * Get minimal nodes of this net (alias of {@link getSourceNodes}).
 	 * 
 	 * @return Minimal nodes of this net.
 	 */
-	public Collection<INode> getMin();
+	public Collection<N> getMin();
 
 	/**
 	 * Get maximal nodes of this net (alias of {@link getSinkNodes}).
 	 * 
 	 * @return Maximal nodes of this net.
 	 */
-	public Collection<INode> getMax();
+	public Collection<N> getMax();
 
 	/**
 	 * Check if this net is T-restricted. 

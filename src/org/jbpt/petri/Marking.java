@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 /**
@@ -13,35 +12,13 @@ import java.util.Set;
  * @author Christian Wiggert
  * @author Artem Polyvyanyy
  */
-public class Marking extends HashMap<Place,Integer> implements IMarking {
+public class Marking extends HashMap<Place,Integer> implements IMarking<Place> {
+
 	private static final long serialVersionUID = -2144274745926614966L;
 	
 	// associated net
 	private PetriNet net = null;
 	
-	/**
-	 * Construct a marking and associate it with a given net.
-	 * 
-	 * @param net A net to associate marking with.
-	 * @throws IllegalArgumentException if a given net is set to <tt>null</tt>.
-	 */
-	public Marking(PetriNet net) {
-		if (net==null) throw new IllegalArgumentException("PetriNet object expected but was NULL!");
-		this.net = net;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.jbpt.petri.IMarking#getPetriNet()
-	 */
-	@Override
-	public PetriNet getPetriNet() {
-		return this.net;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.jbpt.petri.IMarking#put(org.jbpt.petri.Place, java.lang.Integer)
-	 */
-	@Override
 	@Override
 	public Integer put(Place p, Integer tokens) {
 		if (p==null) return 0;
@@ -57,65 +34,26 @@ public class Marking extends HashMap<Place,Integer> implements IMarking {
 		return result==null ? 0 : result;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.jbpt.petri.IMarking#putAll(java.util.Map)
+	/**
+	 * Construct a marking and associate it with a given net.
+	 * 
+	 * @param net A net to associate marking with.
+	 * @throws IllegalArgumentException if a given net is set to <tt>null</tt>.
 	 */
-	@Override
-	@Override
-	public void putAll(Map<? extends Place, ? extends Integer> m) {
-		for (Map.Entry<? extends Place, ? extends Integer> entry : m.entrySet()) {
-			this.put(entry.getKey(), entry.getValue());
-		}
+	public Marking(PetriNet net) {
+		if (net==null) throw new IllegalArgumentException("PetriNet object expected but was NULL!");
+		this.net = net;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.jbpt.petri.IMarking#remove(java.lang.Object)
-	 */
-	@Override
-	@Override
-	public Integer remove(Object p) {
-		return super.remove(p);
+	public PetriNet getPetriNet() {
+		return this.net;
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.jbpt.petri.IMarking#remove(org.jbpt.petri.Place)
-	 */
+
 	@Override
-	public Integer remove(Place p) {
-		return super.remove(p);
+	public boolean isMarked(Place place) {
+		return this.get(place) > 0;
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.jbpt.petri.IMarking#get(java.lang.Object)
-	 */
-	@Override
-	@Override
-	public Integer get(Object p) {
-		if (!(p instanceof Place)) return 0; 
-		Integer i = super.get(p);
-		return i == null ? 0 : i;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.jbpt.petri.IMarking#get(org.jbpt.petri.Place)
-	 */
-	@Override
-	public Integer get(Place p) {
-		Integer i = super.get(p);
-		return i == null ? 0 : i; 
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.jbpt.petri.IMarking#isMarked(org.jbpt.petri.Place)
-	 */
-	@Override
-	public boolean isMarked(Place p) {
-		return this.get(p) > 0;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.jbpt.petri.IMarking#toMultiSet()
-	 */
+
 	@Override
 	public Collection<Place> toMultiSet() {
 		Collection<Place> result = new ArrayList<Place>();
@@ -128,47 +66,86 @@ public class Marking extends HashMap<Place,Integer> implements IMarking {
 		
 		return result;
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.jbpt.petri.IMarking#clear()
-	 */
+
 	@Override
+	public Integer remove(Place place) {
+		return super.remove(place);
+	}
+
+	@Override
+	public Integer get(Place place) {
+		Integer i = super.get(place);
+		return i == null ? 0 : i; 
+	}
+	
 	@Override
 	public void clear() {
 		super.clear();
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.jbpt.petri.IMarking#size()
-	 */
-	@Override
-	@Override
-	public int size() {
-		return super.size();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.jbpt.petri.IMarking#isEmpty()
-	 */
-	@Override
 	@Override
 	public boolean isEmpty() {
 		return super.isEmpty();
 	}
-
-	/* (non-Javadoc)
-	 * @see org.jbpt.petri.IMarking#entrySet()
+	
+	/**
+	 * Removes all tokens from a given place of the associated net.
+	 * 
+	 * @param place Place of the associated net.
+	 * @return The number of tokens previously contained in the given place, or <tt>null</tt> there was no token at the given place. 
 	 */
 	@Override
+	public Integer remove(Object place) {
+		return super.remove(place);
+	}
+
+	/**
+	 * Copies all of the marking from the specified map to this marking.
+	 * These operation will replace any info that this marking had for any of the places currently in the specified map.
+	 *
+	 * @param map Mapping to be stored in this marking.
+	 * @throws NullPointerException if the specified map is null.
+	 */
 	@Override
-	public Set<Entry<Place, Integer>> entrySet() {
+	public void putAll(Map<? extends Place, ? extends Integer> m) {
+		for (Map.Entry<? extends Place, ? extends Integer> entry : m.entrySet()) {
+			this.put(entry.getKey(), entry.getValue());
+		}
+	}
+	
+	/**
+	 * Get number of tokens at a place.
+	 * 
+	 * @param p Place of the associated net.
+	 * @return Number of tokens at the place.
+	 */
+	@Override
+	public Integer get(Object p) {
+		if (!(p instanceof Place)) return 0; 
+		Integer i = super.get(p);
+		return i == null ? 0 : i;
+	}
+	
+	/**
+	 * Returns the number of marked places in the associated net.
+	 * 
+	 * @return The number of marked places in the associated net.
+	 */
+	@Override
+	public int size() {
+		return super.size();
+	}
+	
+	/**
+	 * Returns set of pairs where every pair specifies a marked place of the associated net and the number of tokens at the place.
+	 * 
+	 * @return The set of pairs where every pair specifies a marked place of the associated net and the number of tokens at the place.
+	 */
+	@Override
+	public Set<Map.Entry<Place,Integer>> entrySet() {
 		return super.entrySet();
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.jbpt.petri.IMarking#equals(java.lang.Object)
-	 */
-	@Override
 	@Override
 	public boolean equals(Object o) {
 		if (o == null) return false;
@@ -185,10 +162,6 @@ public class Marking extends HashMap<Place,Integer> implements IMarking {
 		return true;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.jbpt.petri.IMarking#hashCode()
-	 */
-	@Override
 	@Override
 	public int hashCode() {
 		int result = 0;
@@ -201,24 +174,11 @@ public class Marking extends HashMap<Place,Integer> implements IMarking {
 		return result;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.jbpt.petri.IMarking#clone()
-	 */
-	@Override
 	@Override
 	public Marking clone() {
 		Marking clone = (Marking)super.clone();
 		clone.net = this.net;
 		
 		return clone;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.jbpt.petri.IMarking#toString()
-	 */
-	@Override
-	@Override
-	public String toString() {
-		return super.toString();
 	}
 }

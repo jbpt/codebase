@@ -11,7 +11,7 @@ import java.util.Set;
  * 
  * @author Artem Polyvyanyy
  */
-public class NetSystem extends PetriNet {
+public class NetSystem extends PetriNet implements INetSystem<Flow,Node,Place,Transition,Marking> {
 	
 	protected Marking M = null;
 	
@@ -60,29 +60,17 @@ public class NetSystem extends PetriNet {
 		return result;
 	}
 
-	/**
-	 * Get marking of this net system. 
-	 *  
-	 * @return Marking of this net system.
-	 */
+	@Override
 	public Marking getMarking() {
 		return this.M;
 	}
 
-	/**
-	 * Get marked places of this net system.
-	 * 
-	 * @return Set of all marked places of this net system.
-	 */
+	@Override
 	public Set<Place> getMarkedPlaces() {
 		return this.M.keySet();
 	}
-	
-	/**
-	 * Get enabled transitions of the net system.
-	 * 
-	 * @return Enabled transitions of the net system.
-	 */
+
+	@Override
 	public Set<Transition> getEnabledTransitions() {
 		Set<Transition> result = new HashSet<Transition>();
 		Set<Place> marked = new HashSet<Place>(this.getMarkedPlaces());
@@ -94,13 +82,8 @@ public class NetSystem extends PetriNet {
 		
 		return result;
 	}
-	
-	/**
-	 * Checks if a transition is enabled.
-	 * 
-	 * @param t Transition to check.
-	 * @return <tt>true</tt> if transition is enabled; <tt>false</tt> otherwise.
-	 */
+
+	@Override
 	public boolean isEnabled(Transition t) {
 		if (!this.getTransitions().contains(t)) return false;
 		
@@ -111,23 +94,12 @@ public class NetSystem extends PetriNet {
 		return true;
 	}
 	
-	/**
-	 * Check if place is marked, i.e., contains at least one token
-	 * @param p Place
-	 * @return <tt>true</tt> if place is marked; <tt>false</tt> otherwise
-	 */
-	private boolean isMarked(Place p) {
+	@Override
+	public boolean isMarked(Place p) {
 		return this.M.isMarked(p);
 	}
-	
-	/**
-	 * Fire a transition in this net system. 
-	 * Transition fires only if it is enabled. 
-	 * Firing of a transition removes one token from every preplace and adds one token to every postplace of the transition. 
-	 * 
-	 * @param t Transition to fire.
-	 * @return <tt>true</tt> if firing took place; <tt>false</tt> otherwise.
-	 */
+
+	@Override
 	public boolean fire(Transition t) {
 		if (!this.getTransitions().contains(t)) return false;
 		
@@ -177,11 +149,6 @@ public class NetSystem extends PetriNet {
 		return result;
 	}
 	
-	/**
-	 * Create a deep copy of this net system. 
-	 * 
-	 * @return A clone of this instance.
-	 */
 	@Override
 	public NetSystem clone() {
 		Map<Node,Node> nodeMapping = new HashMap<Node,Node>();
@@ -191,12 +158,6 @@ public class NetSystem extends PetriNet {
 		return clone;
 	}
 	
-	/**
-	 * Create a deep copy of this net system and enter the node mapping between this node system and its copy into the given map. 
-	 * 
-	 * @param nodeMapping Container to store the node mapping.
-	 * @return A clone of this instance.
-	 */
 	@Override
 	public NetSystem clone(Map<Node,Node> nodeMapping) {
 		if (nodeMapping==null)
@@ -222,32 +183,19 @@ public class NetSystem extends PetriNet {
 		for (Place p : this.getMarkedPlaces()) 
 			clone.putTokens((Place) nodeMapping.get(p), this.getTokens(p));
 	}
-	
-	/**
-	 * Put tokens at a place.
-	 * 
-	 * @param p Place
-	 * @param tokens Number of tokens to put
-	 * @return the previous number of tokens at p, or <tt>null</tt> if parameters are wrong (either are equal to <tt>null</tt> or place does not belong to the net system, etc)
-	 */
+
+	@Override
 	public Integer putTokens(Place p, Integer tokens) {
 		return this.M.put(p, tokens);
 	}
 	
-	/**
-	 * Get number of tokens at a place.
-	 * 
-	 * @param p Place
-	 * @return Number of tokens at p.
-	 */
+
+	@Override
 	public Integer getTokens(Place p) {
 		return this.M.get(p);
 	}
 	
-	/**
-	 * Changes marking of the net system to its natural initial marking, i.e., 
-	 * the marking which put one token at each source place of the net system and no tokens elsewhere.
-	 */
+	@Override
 	public void loadNaturalMarking() {
 		this.M.clear();
 		for (Place p : this.getSourcePlaces()) {
@@ -255,12 +203,7 @@ public class NetSystem extends PetriNet {
 		}
 	}
 	
-	/**
-	 * Changes marking of this net system to the given one. 
-	 * Note that the new marking must be associated with this net system.
-	 * 
-	 * @param newMarking Marking to use for this net system.
-	 */
+	@Override
 	public void loadMarking(Marking newMarking) {
 		if (newMarking.getPetriNet()!=this) return;
 		
