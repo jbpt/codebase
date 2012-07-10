@@ -111,7 +111,8 @@ public class SoundUnfoldingMSMS extends SoundUnfolding {
 	
 	public void completeOriginativeSystemWithCorrectInstantiations() {
 		Set<Condition> errors = new HashSet<Condition>(this.getLocallyUnsafeConditions());
-		errors.addAll(this.getLocalDeadlockConditions());
+		// TODO
+		//errors.addAll(this.getLocalDeadlockConditions());
 		
 		OccurrenceNet occ = this.getOccurrenceNet();
 		Collection<Transition> starts = new ArrayList<Transition>(occ.getPostset(occ.getSourcePlaces().iterator().next()));
