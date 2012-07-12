@@ -20,7 +20,7 @@ public class TCTreeNode<E extends IEdge<V>, V extends IVertex> extends Vertex {
 	// boundary vertices of the fragment
 
 	public TCType getType() {
-		return type;
+		return this.type;
 	}
 	
 	public TCSkeleton<E,V> getSkeleton() {
