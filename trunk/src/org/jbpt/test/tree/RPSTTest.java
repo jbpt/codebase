@@ -171,29 +171,157 @@ public class RPSTTest extends TestCase {
 	 * This test is taken from: 
 	 * Artem Polyvyanyy, Jussi Vanhatalo, Hagen Völzer: Simplified Computation and Generalization of the Refined Process Structure Tree. WS-FM 2010: 25-41. 
 	 * See Figure 12(a).
-	 * TODO finish test
 	 */
-	public void testWSFM10_Figure12a() {
+	/*public void testWSFM10_Figure12a() {
 		MultiDirectedGraph g = new MultiDirectedGraph();
 		
 		Vertex s = new Vertex("s");
 		Vertex t = new Vertex("t");
 		Vertex u = new Vertex("u");
 		Vertex v = new Vertex("v");
-		Vertex a1 = new Vertex("a1");
-		Vertex a2 = new Vertex("a2");
 		
 		g.addEdge(s,u);
-		g.addEdge(u,a1);
-		g.addEdge(a1,u);
-		g.addEdge(u,a2);
-		g.addEdge(a2,v);
+		g.addEdge(u,v);
 		g.addEdge(v,u);
-		g.addEdge(v,t);
+		g.addEdge(u,t);
 		
 		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
 		IOUtils.toFile("rpst.dot", rpst.toDOT());
 		rpst.test();
+		
+		performBasicChecks(g,rpst);
+		
+		for (RPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
+			System.out.println(node);
+		}
+	}*/
+	
+	/**
+	 * This test is taken from: 
+	 * Artem Polyvyanyy, Jussi Vanhatalo, Hagen Völzer: Simplified Computation and Generalization of the Refined Process Structure Tree. WS-FM 2010: 25-41. 
+	 * See Figure 12(b).
+	 */
+	/*public void testWSFM10_Figure12b() {
+		MultiDirectedGraph g = new MultiDirectedGraph();
+		
+		Vertex s = new Vertex("s");
+		Vertex t = new Vertex("t");
+		Vertex u = new Vertex("u");
+		Vertex v = new Vertex("v");
+		Vertex w = new Vertex("w");
+		
+		g.addEdge(s,u);
+		g.addEdge(u,v);
+		g.addEdge(v,u);
+		g.addEdge(u,t);
+		g.addEdge(u,w);
+		g.addEdge(w,u);
+		
+		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
+		IOUtils.toFile("rpst.dot", rpst.toDOT());
+		rpst.test();
+		
+		performBasicChecks(g,rpst);
+		
+		for (RPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
+			System.out.println(node);
+		}
+	}*/
+	
+	/**
+	 * This test is taken from: 
+	 * Artem Polyvyanyy, Jussi Vanhatalo, Hagen Völzer: Simplified Computation and Generalization of the Refined Process Structure Tree. WS-FM 2010: 25-41. 
+	 * See Figure 12(c).
+	 */
+	/*public void testWSFM10_Figure12c() {
+		MultiDirectedGraph g = new MultiDirectedGraph();
+		
+		Vertex s = new Vertex("s");
+		Vertex t = new Vertex("t");
+		Vertex u = new Vertex("u");
+		Vertex v = new Vertex("v");
+		Vertex w = new Vertex("w");
+		
+		g.addEdge(s,u);
+		g.addEdge(u,t);
+		g.addEdge(u,v);
+		g.addEdge(v,u);
+		g.addEdge(v,w);
+		g.addEdge(w,v);
+		
+		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
+		IOUtils.toFile("rpst.dot", rpst.toDOT());
+		rpst.test();
+		
+		performBasicChecks(g,rpst);
+		
+		for (RPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
+			System.out.println(node);
+		}
+	}*/
+	
+	/**
+	 * This test is taken from: 
+	 * Artem Polyvyanyy, Jussi Vanhatalo, Hagen Völzer: Simplified Computation and Generalization of the Refined Process Structure Tree. WS-FM 2010: 25-41. 
+	 * See Figure 13.
+	 * 
+	 * TODO: an edge is a trivial fragment!
+	 */
+	/*public void testWSFM10_Figure13() {
+		MultiDirectedGraph g = new MultiDirectedGraph();
+		
+		Vertex u = new Vertex("u");
+		Vertex v = new Vertex("v");
+		Vertex w = new Vertex("w");
+		Vertex x = new Vertex("x");
+		Vertex y = new Vertex("y");
+		Vertex z = new Vertex("z");
+		Vertex q = new Vertex("q");
+		
+		g.addEdge(u,w);
+		g.addEdge(v,w);
+		g.addEdge(w,x);
+		g.addEdge(x,y);
+		g.addEdge(x,z);
+		g.addEdge(w,q);
+		
+		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
+		IOUtils.toFile("rpst.dot", rpst.toDOT());
+		rpst.test();
+		
+		performBasicChecks(g,rpst);
+		
+		for (RPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
+			System.out.println(node);
+		}
+	}*/
+	
+	/**
+	 * This test is taken from: 
+	 * Artem Polyvyanyy, Jussi Vanhatalo, Hagen Völzer: Simplified Computation and Generalization of the Refined Process Structure Tree. WS-FM 2010: 25-41. 
+	 * See Figure 14.
+	 * TODO
+	 */
+	public void testWSFM10_Figure14() {
+		MultiDirectedGraph g = new MultiDirectedGraph();
+		
+		Vertex u = new Vertex("u");
+		Vertex v = new Vertex("v");
+		Vertex w = new Vertex("w");
+		Vertex x = new Vertex("x");
+		Vertex y = new Vertex("y");
+		Vertex z = new Vertex("z");
+		Vertex q = new Vertex("q");
+		
+		g.addEdge(u,v);
+		g.addEdge(v,w);
+		g.addEdge(v,x);
+		g.addEdge(y,z);
+		g.addEdge(z,q);
+		
+		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
+		IOUtils.toFile("rpst.dot", rpst.toDOT());
+		rpst.debug();
 		
 		performBasicChecks(g,rpst);
 		

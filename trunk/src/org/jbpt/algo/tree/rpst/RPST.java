@@ -115,7 +115,7 @@ public class RPST<E extends IDirectedEdge<V>, V extends IVertex> extends Abstrac
 		return this.getVertices();
 	}
 	
-	public void test() {
+	public void debug() {
 		IOUtils.toFile("original.dot", this.diGraph.toDOT());
 		IOUtils.toFile("normalized.dot", this.normalizedGraph.toDOT());
 		IOUtils.toFile("tctree.dot", this.tctree.toDOT());
@@ -177,9 +177,9 @@ public class RPST<E extends IDirectedEdge<V>, V extends IVertex> extends Abstrac
 	private void constructRPST() {
 		// remove redundant TCTree nodes
 		Collection<TCTreeNode<DirectedEdge,Vertex>> nodes = new ArrayList<TCTreeNode<DirectedEdge,Vertex>>(this.tctree.getTCTreeNodes());
-		
 		for (TCTreeNode<DirectedEdge,Vertex> node : nodes) {
-			if (this.tctree.getChildren(node).size()==1 && this.extraEdges.containsAll(node.getSkeleton().getOriginalEdges())) {
+			if (this.tctree.getChildren(node).size()==1 && this.extraEdges.containsAll(node.getSkeleton().getOriginalEdges())) 
+			{
 				TCTreeNode<DirectedEdge,Vertex> child = this.tctree.getChildren(node).iterator().next();
 				
 				if (this.tctree.isRoot(node)) {
@@ -193,6 +193,20 @@ public class RPST<E extends IDirectedEdge<V>, V extends IVertex> extends Abstrac
 				}
 			}
 		}
+		
+		/*Collection<TCTreeNode<DirectedEdge,Vertex>> redundant = new ArrayList<TCTreeNode<DirectedEdge,Vertex>>();
+		nodes = new ArrayList<TCTreeNode<DirectedEdge,Vertex>>(this.tctree.getTCTreeNodes());
+		for (TCTreeNode<DirectedEdge,Vertex> node : nodes) {
+			if (this.tctree.getChildren(node).isEmpty()) {
+				Set<DirectedEdge> edges = new HashSet<DirectedEdge>(node.getSkeleton().getOriginalEdges());
+				edges.removeAll(this.extraEdges);
+				if (edges.size()<=1)
+					redundant.add(node);
+			}	
+		}
+		
+		for (TCTreeNode<DirectedEdge,Vertex> node : redundant)
+			this.tctree.removeVertex(node);*/
 		
 		// construct RPST nodes
 		Map<TCTreeNode<DirectedEdge,Vertex>,RPSTNode<E,V>> t2r = new HashMap<TCTreeNode<DirectedEdge,Vertex>,RPSTNode<E,V>>();
