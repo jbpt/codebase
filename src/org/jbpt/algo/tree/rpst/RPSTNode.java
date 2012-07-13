@@ -58,7 +58,19 @@ public class RPSTNode<E extends IDirectedEdge<V>, V extends IVertex> extends Ver
 	}
 
 	/**
-	 * Get entry of the fragment represented by this RPST node.
+	 * Get entry of the fragment represented by this RPST node.<br/><br/>
+	 * 
+	 * NOTE THAT ENTRY CAN BE EQUAL TO EXIT! THIS IS THE CASE WHEN THERE ARE CUTVERTICES IN THE GRAPH! 
+	 * SEE SECTION 4.1 IN: 
+	 * Artem Polyvyanyy, Jussi Vanhatalo, and Hagen Voelzer. 
+ 	 * Simplified Computation and Generalization of the Refined Process Structure Tree. 
+	 * Proceedings of the 7th International Workshop on Web Services and Formal Methods (WS-FM).<br/><br/>
+	 * 
+	 * NOTE THAT ENTRY CAN BE NULL! THIS IS THE CASE WHEN MULTIPLE SOURCES OF THE GRAPH BELONG TO THE FRAGMENT!
+	 * SEE SECTION 4.2 IN: 
+	 * Artem Polyvyanyy, Jussi Vanhatalo, and Hagen Voelzer. 
+ 	 * Simplified Computation and Generalization of the Refined Process Structure Tree. 
+	 * Proceedings of the 7th International Workshop on Web Services and Formal Methods (WS-FM).
 	 * 
 	 * @return Entry of the fragment.
 	 */
@@ -70,7 +82,19 @@ public class RPSTNode<E extends IDirectedEdge<V>, V extends IVertex> extends Ver
 	}
 	
 	/**
-	 * Get exit of the fragment represented by this RPST node.
+	 * Get exit of the fragment represented by this RPST node.<br/><br/>
+	 * 
+	 * NOTE THAT ENTRY CAN BE EQUAL TO EXIT! THIS IS THE CASE WHEN THERE ARE CUTVERTICES IN THE GRAPH! 
+	 * SEE SECTION 4.1 IN: 
+	 * Artem Polyvyanyy, Jussi Vanhatalo, and Hagen Voelzer. 
+ 	 * Simplified Computation and Generalization of the Refined Process Structure Tree. 
+	 * Proceedings of the 7th International Workshop on Web Services and Formal Methods (WS-FM).<br/><br/>
+	 * 
+	 * NOTE THAT EXIT CAN BE NULL! THIS IS THE CASE WHEN MULTIPLE SINKS OF THE GRAPH BELONG TO THE FRAGMENT!
+	 * SEE SECTION 4.2 IN: 
+	 * Artem Polyvyanyy, Jussi Vanhatalo, and Hagen Voelzer. 
+ 	 * Simplified Computation and Generalization of the Refined Process Structure Tree. 
+	 * Proceedings of the 7th International Workshop on Web Services and Formal Methods (WS-FM).
 	 * 
 	 * @return Exit of the fragment.
 	 */
@@ -101,33 +125,31 @@ public class RPSTNode<E extends IDirectedEdge<V>, V extends IVertex> extends Ver
 			vertices.add(e.getTarget());
 		}
 		
+		int csrc=0;
+		int csnk=0;
 		boolean flag = false;
+		boolean fflag = true;
 		V vv = null;
 		for (V v : vertices) {
-			if (this.rpst.diGraph.getIncomingEdges(v).isEmpty())
+			if (this.rpst.diGraph.getIncomingEdges(v).isEmpty()) { this.entry = v; csrc++; fflag=false; continue; }
+			if (this.rpst.diGraph.getOutgoingEdges(v).isEmpty()) { this.exit = v; csnk++; fflag= false; continue; }
+			if (this.getFragment().containsAll(this.rpst.diGraph.getEdges(v))) continue;
+			
+			if (flag) flag = false; 
+			else if (!flag) { flag=true; vv=v; }
+			
+			if (this.getFragment().containsAll(this.rpst.diGraph.getOutgoingEdges(v)) ||
+					this.areDisjoint(this.getFragment(),this.rpst.diGraph.getIncomingEdges(v)))
 				this.entry = v;
-			else if (this.rpst.diGraph.getOutgoingEdges(v).isEmpty())
+			
+			if (this.getFragment().containsAll(this.rpst.diGraph.getIncomingEdges(v)) ||
+					this.areDisjoint(this.getFragment(),this.rpst.diGraph.getOutgoingEdges(v)))
 				this.exit = v;
-			else {
-				if (this.getFragment().containsAll(this.rpst.diGraph.getEdges(v))) continue;
-				
-				if (!flag) { flag = true; vv = v; }
-				else flag = false;
-				
-				if (this.getFragment().containsAll(this.rpst.diGraph.getOutgoingEdges(v)) ||
-						this.areDisjoint(this.getFragment(),this.rpst.diGraph.getIncomingEdges(v)))
-					this.entry = v;
-				
-				if (this.getFragment().containsAll(this.rpst.diGraph.getIncomingEdges(v)) ||
-						this.areDisjoint(this.getFragment(),this.rpst.diGraph.getOutgoingEdges(v)))
-					this.exit = v;
-			}
 		}
 		
-		if (flag) {
-			this.entry = vv;
-			this.exit = vv;
-		}
+		if (csrc>1) this.entry=null;
+		if (csnk>1) this.exit=null;
+		if (flag && fflag) this.entry = this.exit = vv;
 	}
 	
 	private boolean areDisjoint(Collection<E> c1, Collection<E> c2) {
