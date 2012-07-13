@@ -82,7 +82,7 @@ public class TCSkeleton<E extends IEdge<V>, V extends IVertex> extends AbstractM
 		return this.virtualEdges.contains(e);
 	}
 
-	protected E addEdge(V v1, V v2, E o) {
+	public E addEdge(V v1, V v2, E o) {
 		E e = super.addEdge(v1,v2);
 		if (e!=null) {
 			this.e2o.put(e,o);
@@ -96,7 +96,8 @@ public class TCSkeleton<E extends IEdge<V>, V extends IVertex> extends AbstractM
 		this.virtualEdges.remove(e);
 		this.o2e.remove(this.e2o.get(e));
 		this.e2o.remove(e);
-		return super.removeEdge(e);
+		E ee = super.removeEdge(e);
+		return ee;
 	}
 
 	@Override
@@ -145,5 +146,9 @@ public class TCSkeleton<E extends IEdge<V>, V extends IVertex> extends AbstractM
 	 */
 	public Set<E> getOriginalEdges() {
 		return this.o2e.keySet();
+	}
+
+	public void removeOriginalEdge(E e) {
+		this.removeEdge(this.o2e.get(e));
 	}
 }

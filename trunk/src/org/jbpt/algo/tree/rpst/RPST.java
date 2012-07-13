@@ -17,7 +17,6 @@ import org.jbpt.graph.abs.IDirectedEdge;
 import org.jbpt.graph.abs.IDirectedGraph;
 import org.jbpt.hypergraph.abs.IVertex;
 import org.jbpt.hypergraph.abs.Vertex;
-import org.jbpt.utils.IOUtils;
 
 
 /**
@@ -115,12 +114,6 @@ public class RPST<E extends IDirectedEdge<V>, V extends IVertex> extends Abstrac
 		return this.getVertices();
 	}
 	
-	public void debug() {
-		IOUtils.toFile("original.dot", this.diGraph.toDOT());
-		IOUtils.toFile("normalized.dot", this.normalizedGraph.toDOT());
-		IOUtils.toFile("tctree.dot", this.tctree.toDOT());
-	}
-	
 	private void normalizeGraph() {
 		this.normalizedGraph = new MultiDirectedGraph();
 		
@@ -139,7 +132,7 @@ public class RPST<E extends IDirectedEdge<V>, V extends IVertex> extends Abstrac
 			if (this.diGraph.getIncomingEdges(v).size()>1 && this.diGraph.getOutgoingEdges(v).size()>1) 
 				mixed.add(v);
 			
-			this.ov2nv.put(v,this.normalizedGraph.addVertex(new Vertex()));
+			this.ov2nv.put(v,this.normalizedGraph.addVertex(new Vertex(v.getName())));
 		}
 		
 		// copy edges 
@@ -147,18 +140,18 @@ public class RPST<E extends IDirectedEdge<V>, V extends IVertex> extends Abstrac
 			this.ne2oe.put(this.normalizedGraph.addEdge(this.ov2nv.get(e.getSource()), this.ov2nv.get(e.getTarget())), e);
 		
 		// introduce single source
-		Vertex src = new Vertex();
+		Vertex src = new Vertex("SRC");
 		for (V v : sources)
 			this.extraEdges.add(this.normalizedGraph.addEdge(src,this.ov2nv.get(v)));
 		
 		// introduce single sink
-		Vertex snk = new Vertex();
+		Vertex snk = new Vertex("SNK");
 		for (V v : sinks)
 			this.extraEdges.add(this.normalizedGraph.addEdge(this.ov2nv.get(v),snk));
 		
 		// split mixed 'gateways', i.e., vertices with multiple inputs and outputs
 		for (V v : mixed) {
-			Vertex vertex = new Vertex();
+			Vertex vertex = new Vertex(v.getName()+"*");
 			
 			for (DirectedEdge edge : this.normalizedGraph.getIncomingEdges(this.ov2nv.get(v))) {
 				this.normalizedGraph.removeEdge(edge);
@@ -175,10 +168,19 @@ public class RPST<E extends IDirectedEdge<V>, V extends IVertex> extends Abstrac
 	}
 	
 	private void constructRPST() {
-		// remove redundant TCTree nodes
+		// remove extra edges
+		for (TCTreeNode<DirectedEdge,Vertex> node : this.tctree.getVertices()) {
+			Set<DirectedEdge> edges = new HashSet<DirectedEdge>(node.getSkeleton().getOriginalEdges());
+			for (DirectedEdge edge : edges) {
+				if (this.extraEdges.contains(edge)) {
+					node.getSkeleton().removeOriginalEdge(edge);
+				}
+			}
+		}
+		
 		Collection<TCTreeNode<DirectedEdge,Vertex>> nodes = new ArrayList<TCTreeNode<DirectedEdge,Vertex>>(this.tctree.getTCTreeNodes());
 		for (TCTreeNode<DirectedEdge,Vertex> node : nodes) {
-			if (this.tctree.getChildren(node).size()==1 && this.extraEdges.containsAll(node.getSkeleton().getOriginalEdges())) 
+			if (this.tctree.getChildren(node).size()==1 && node.getSkeleton().getOriginalEdges().isEmpty()) 
 			{
 				TCTreeNode<DirectedEdge,Vertex> child = this.tctree.getChildren(node).iterator().next();
 				
@@ -194,19 +196,14 @@ public class RPST<E extends IDirectedEdge<V>, V extends IVertex> extends Abstrac
 			}
 		}
 		
-		/*Collection<TCTreeNode<DirectedEdge,Vertex>> redundant = new ArrayList<TCTreeNode<DirectedEdge,Vertex>>();
 		nodes = new ArrayList<TCTreeNode<DirectedEdge,Vertex>>(this.tctree.getTCTreeNodes());
 		for (TCTreeNode<DirectedEdge,Vertex> node : nodes) {
-			if (this.tctree.getChildren(node).isEmpty()) {
-				Set<DirectedEdge> edges = new HashSet<DirectedEdge>(node.getSkeleton().getOriginalEdges());
-				edges.removeAll(this.extraEdges);
-				if (edges.size()<=1)
-					redundant.add(node);
-			}	
+			if (node.getType()==TCType.POLYGON && this.tctree.getChildren(node).isEmpty() && node.getSkeleton().getOriginalEdges().size()==1) {
+				DirectedEdge edge = node.getSkeleton().getOriginalEdges().iterator().next();
+				this.tctree.getParent(node).getSkeleton().addEdge(edge.getSource(), edge.getTarget(), edge);
+				this.tctree.removeVertex(node);
+			}
 		}
-		
-		for (TCTreeNode<DirectedEdge,Vertex> node : redundant)
-			this.tctree.removeVertex(node);*/
 		
 		// construct RPST nodes
 		Map<TCTreeNode<DirectedEdge,Vertex>,RPSTNode<E,V>> t2r = new HashMap<TCTreeNode<DirectedEdge,Vertex>,RPSTNode<E,V>>();
@@ -234,4 +231,15 @@ public class RPST<E extends IDirectedEdge<V>, V extends IVertex> extends Abstrac
 			this.addEdge(rsrc,rtgt);
 		}
 	}
+	
+	/*public void debug() {
+	System.out.println("DEBUG");
+	IOUtils.toFile("original.dot", this.diGraph.toDOT());
+	IOUtils.toFile("normalized.dot", this.normalizedGraph.toDOT());
+	IOUtils.toFile("tctree.dot", this.tctree.toDOT());
+	
+	for (TCTreeNode<DirectedEdge,Vertex> node : this.tctree.getVertices()) {
+		IOUtils.toFile(node.getName()+".dot", node.getSkeleton().toDOT());
+	}
+}*/
 }
