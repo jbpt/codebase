@@ -4,23 +4,15 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.StringWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.concurrent.TimeoutException;
 
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-
 import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.io.PNMLSerializer;
 import org.jbpt.throwable.SerializationException;
-import org.w3c.dom.Document;
 
 
 
@@ -39,7 +31,7 @@ public class LolaSoundnessChecker {
 	 * @throws IOException 
 	 */
 	public static LolaSoundnessCheckerResult analyzeSoundness(NetSystem net) throws SerializationException, IOException {
-		String pnml = serializePetriNet(net);
+		String pnml = PNMLSerializer.serializePetriNet(net, PNMLSerializer.LOLA);
 		LolaSoundnessCheckerResult result = new LolaSoundnessCheckerResult();
 		
 		for (int i=0; i<LolaSoundnessChecker.N; i++) {
@@ -53,31 +45,6 @@ public class LolaSoundnessChecker {
 		}
 		
 		return result;
-	}
-
-	/**
-	 * Creates a PNML XML string from the given Petri net.
-	 * @param petrinet to serialize
-	 * @return PNML string
-	 * @throws SerializationException 
-	 */
-	private static String serializePetriNet(NetSystem net) throws SerializationException {
-		Document doc = PNMLSerializer.serialize(net, PNMLSerializer.LOLA);
-		
-		DOMSource domSource = new DOMSource(doc);
-		
-		StreamResult streamResult = new StreamResult(new StringWriter());
-		TransformerFactory tf = TransformerFactory.newInstance();
-		Transformer serializer;
-		try {
-			serializer = tf.newTransformer();
-			//serializer.setOutputProperty(OutputKeys.INDENT,"yes");
-			serializer.transform(domSource, streamResult);
-		} catch (TransformerException e) {
-			e.printStackTrace();
-			throw new SerializationException(e.getMessage());
-		}
-		return ((StringWriter) streamResult.getWriter()).getBuffer().toString();
 	}
 	
 	/**

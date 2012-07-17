@@ -1,12 +1,20 @@
 package org.jbpt.petri.io;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.HashMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.jbpt.petri.Flow;
 import org.jbpt.petri.NetSystem;
@@ -31,7 +39,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * 
  * Main method: <code>parse(String filename)</code>
  * 
- * @author  johannes...@gmail.com, Matthias Weidlich, Artem Polyvyanyy
+ * @author  johannes...@gmail.com, Matthias Weidlich, Artem Polyvyanyy, Tobias Hoppe
  * @since   09.11.2011
  */
 public class PNMLSerializer extends DefaultHandler
@@ -68,19 +76,40 @@ public class PNMLSerializer extends DefaultHandler
 		this.currentTransitionID = "";
 		this.currentPlaceID = "";
 	}
-
+	
+	/**
+	 * Parses a NetSystem out of the given PNML XML-File.
+	 * 
+	 * @param pnmlContent A process description based on the PNML-Standard as byte array.
+	 * @return The {@link NetSystem} parsed from the given PNML-content.
+	 */
+	public NetSystem parse(byte[] pnmlContent){
+		return parseContent(null, pnmlContent);
+	}
+	
 	/**
 	 * Parses a NetSystem out of a predefined PNML-file
 	 * 
 	 * @param file File containing a process description based on the PNML-Standard.
+	 * @return The {@link NetSystem} parsed from the given {@link File}.
 	 */
 	public NetSystem parse(String file){
+		return parseContent(file, null);
+	}
 
+	/**
+	 * Parses a NetSystem from the given file name if it is not <code>null</code>.
+	 * Otherwise, the byte array containing the PNML-content is parsed.
+	 * @param file File containing a process description based on the PNML-Standard.
+	 * @param pnmlContent A process description based on the PNML-Standard as byte array.
+	 * @return The {@link NetSystem} parsed from the given {@link File} or PNML-content.
+	 */
+	private NetSystem parseContent(String file, byte[] pnmlContent) {
 		/*
 		 * Clear internal data structures
 		 */
 		clear();
-
+	
 		XMLReader xmlReader; //Reader to perform XML parsing
 		try
 		{
@@ -89,12 +118,17 @@ public class PNMLSerializer extends DefaultHandler
 			xmlReader.setContentHandler(this);
 			xmlReader.setDTDHandler(this);
 			xmlReader.setErrorHandler(this);
-
-			FileReader r;
+	
 			try
 			{
-				r = new FileReader(file);
-				xmlReader.parse(new InputSource(r));
+				if(file != null) {
+					FileReader r;
+					r = new FileReader(file);
+					xmlReader.parse(new InputSource(r));					
+				} else if (pnmlContent != null) {
+					StringReader inStream = new StringReader(new String(pnmlContent));
+					xmlReader.parse(new InputSource(inStream));	
+				}
 			}
 			catch (IOException e)
 			{
@@ -105,12 +139,12 @@ public class PNMLSerializer extends DefaultHandler
 		{
 			System.out.println("SAX Exception: " + e.getMessage());
 		}
-
+	
 		// add an initial token to each source place
 		// Artem: we should not put tokens if they do not come from PNML file 
 		/*for (Place p : pn.getSourcePlaces())
 			pn.getMarking().put(p,1);*/
-
+	
 		return pn;
 	}
 
@@ -229,19 +263,67 @@ public class PNMLSerializer extends DefaultHandler
 		return result;
 
 	}
+	
+	/**
+	 * Creates a PNML XML string from the given {@link PetriNet}.
+	 * @param net {@link PetriNet} to transform into PNML-String
+	 * @return PNML string.
+	 * @throws SerializationException
+	 */
+	public static String serializePetriNet(NetSystem net) throws SerializationException {
+		return serializePetriNet(net, DEFAULT);
+	}
 
-	public static Document serialize(NetSystem net) throws SerializationException {
-		return serialize(net, DEFAULT);
+	/**
+	 * Creates a PNML XML string from the given {@link PetriNet}.
+	 * @param net {@link PetriNet} to transform into PNML-String
+	 * @param tool integer indicating the tool
+	 * @return PNML string
+	 * @throws SerializationException 
+	 */
+	public static String serializePetriNet(NetSystem net, int tool) throws SerializationException {
+		Document doc = PNMLSerializer.serialize(net, tool);
+		if (doc == null) {
+			return null;
+		}
+		
+		DOMSource domSource = new DOMSource(doc);
+		
+		StreamResult streamResult = new StreamResult(new StringWriter());
+		TransformerFactory tf = TransformerFactory.newInstance();
+		Transformer serializer;
+		try {
+			serializer = tf.newTransformer();
+			//serializer.setOutputProperty(OutputKeys.INDENT,"yes");
+			serializer.transform(domSource, streamResult);
+		} catch (TransformerException e) {
+			e.printStackTrace();
+			throw new SerializationException(e.getMessage());
+		}
+		return ((StringWriter) streamResult.getWriter()).getBuffer().toString();
 	}
 
 	/**
 	 * Serializes the given PetriNet to PNML and returns the according Document object.
+	 * @param net {@link PetriNet} to serialize
+	 * @return PNML object.
+	 * @throws SerializationException
+	 */
+	public static Document serialize(NetSystem net) throws SerializationException {
+		return serialize(net, DEFAULT);
+	}
+	
+	/**
+	 * Serializes the given PetriNet to PNML and returns the according Document object.
 	 * 
 	 * @param the PetriNet
-	 * @param integer indicating the tool
+	 * @param tool integer indicating the tool
 	 * @return Document object
 	 */
 	public static Document serialize(NetSystem net, int tool) throws SerializationException {
+		if (net == null) {
+			return null;
+		}
 		DocumentBuilderFactory docBFac = DocumentBuilderFactory.newInstance();
 		Document doc = null;
 		try {
