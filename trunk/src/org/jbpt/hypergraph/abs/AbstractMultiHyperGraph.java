@@ -164,6 +164,9 @@ public class AbstractMultiHyperGraph <E extends IHyperEdge<V>,V extends IVertex>
 	 * @see de.hpi.bpt.hypergraph.abs.IHyperGraph#getEdges(de.hpi.bpt.hypergraph.abs.IVertex)
 	 */
 	public Collection<E> getEdges(V v) {
+		if (v==null){
+			return (Collections.<E>emptyList());
+		}
 		Collection<E> result = this.vertices.get(v);
 		return (result==null) ? (Collections.<E>emptyList()) : (new ArrayList<E>(result));
 	}

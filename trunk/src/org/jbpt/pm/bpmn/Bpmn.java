@@ -6,9 +6,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
 
-import org.jbpt.graph.abs.AbstractDirectedGraph;
 import org.jbpt.hypergraph.abs.IVertex;
 import org.jbpt.pm.FlowNode;
+import org.jbpt.pm.NonFlowNode;
 import org.jbpt.pm.ProcessModel;
 
 
@@ -63,28 +63,40 @@ public class Bpmn<E extends BpmnControlFlow<V>, V extends FlowNode> extends Proc
 	}
 	
 	@Override
-	public BpmnMessageFlow addMessageFlow(IVertex from, IVertex to){
-		
-		if (from == null || to == null) {
-			return null;
-		}
-		BpmnMessageFlow flow = new BpmnMessageFlow((AbstractDirectedGraph<?,?>)this, from, to);
-		this.messageflows.add(flow);
-		
-		return flow;
-	}
-	
-	@Override
 	public void addControlFlow(BpmnControlFlow<FlowNode> flow) {
 		Set<FlowNode> set = new HashSet<FlowNode>();
 		set.add(flow.getSource());
 		set.add(flow.getTarget());
 		this.edges.put(flow, set);
 	}
+
+	@Override
+	public BpmnMessageFlow addMessageFlow(IVertex from, IVertex to){
+		
+		if (from == null || to == null) {
+			return null;
+		}
+		BpmnMessageFlow flow = new BpmnMessageFlow(null, from, to);
+		this.addMessageFlow(flow);
+		
+		return flow;
+	}
 	
 	@Override
 	public void addMessageFlow(BpmnMessageFlow flow) {
-		this.messageflows.add(flow);		
+		this.messageflows.add(flow);
+		IVertex source = flow.getSource();
+		if (source instanceof NonFlowNode) {
+			this.nonFlowNodes.add((NonFlowNode) source);			
+		} else {
+			this.addFlowNode((FlowNode) source);
+		}	
+		IVertex target = flow.getTarget();
+		if (target instanceof NonFlowNode) {
+			this.nonFlowNodes.add((NonFlowNode) target);			
+		} else {
+			this.addFlowNode((FlowNode) target);
+		}
 	}
 	
 	@Override
