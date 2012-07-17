@@ -29,6 +29,8 @@ public class BpmnMessageFlow extends AbstractDirectedEdge<IVertex> implements IB
 	public BpmnMessageFlow(AbstractDirectedGraph<?, ?> g, IVertex source,
 			IVertex target) {
 		super(g, source, target);
+		this.source = source;
+		this.target = target;
 	}
 
 	@Override

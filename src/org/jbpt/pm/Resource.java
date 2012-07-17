@@ -15,7 +15,7 @@ public class Resource extends NonFlowNode implements IResource, Cloneable {
 	 * Create a new instance of this class where parent and label are set to <code>null</code>.
 	 */
 	public Resource() {
-		
+		super();
 	}
 
 	/**
