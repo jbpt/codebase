@@ -233,13 +233,13 @@ public class RPST<E extends IDirectedEdge<V>, V extends IVertex> extends Abstrac
 	}
 	
 	/*public void debug() {
-	System.out.println("DEBUG");
-	IOUtils.toFile("original.dot", this.diGraph.toDOT());
-	IOUtils.toFile("normalized.dot", this.normalizedGraph.toDOT());
-	IOUtils.toFile("tctree.dot", this.tctree.toDOT());
-	
-	for (TCTreeNode<DirectedEdge,Vertex> node : this.tctree.getVertices()) {
-		IOUtils.toFile(node.getName()+".dot", node.getSkeleton().toDOT());
-	}
-}*/
+		System.out.println("DEBUG");
+		IOUtils.toFile("original.dot", this.diGraph.toDOT());
+		IOUtils.toFile("normalized.dot", this.normalizedGraph.toDOT());
+		IOUtils.toFile("tctree.dot", this.tctree.toDOT());
+		
+		for (TCTreeNode<DirectedEdge,Vertex> node : this.tctree.getVertices()) {
+			IOUtils.toFile(node.getName()+".dot", node.getSkeleton().toDOT());
+		}
+	}*/
 }
