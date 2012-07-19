@@ -238,6 +238,17 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
 			visited.add(v2);
 		}
 		
+		// construct trivial fragments
+		for (TCTreeNode<E,V> node : this.getVertices()) {
+			for (E edge : node.getSkeleton().getOriginalEdges()) {
+				TCTreeNode<E,V> trivial = new TCTreeNode<E,V>();
+				trivial.type = TCType.TRIVIAL;
+				trivial.skeleton.addEdge(edge.getV1(), edge.getV2(), edge);
+				trivial.setName(edge.toString());
+				this.addEdge(node,trivial);
+			}
+		}
+		
 		this.reRoot(tobeRoot);
 	}
 

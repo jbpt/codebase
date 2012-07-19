@@ -43,7 +43,7 @@ public class TCTreeTest extends TestCase {
 		g.addEdge(x,y);
 		g.addEdge(y,z);
 		g.addEdge(y,z);
-		g.addEdge(y,z);
+		g.addEdge(z,y);
 		g.addEdge(z,t);
 		DirectedEdge backEdge = g.addEdge(t,s);
 		
@@ -77,12 +77,14 @@ public class TCTreeTest extends TestCase {
 			assertEquals(true,g.getEdges().containsAll(node.getSkeleton().getOriginalEdges()));
 			edges.addAll((node.getSkeleton().getOriginalEdges()));
 			
+			if (node.getType()==TCType.TRIVIAL) continue;
 			IOUtils.toFile(node.getName() + ".dot",node.getSkeleton().toDOT());
 		}
 		
 		assertEquals(true,edges.containsAll(g.getEdges()));
 		assertEquals(true,g.getEdges().containsAll(edges));
-		assertEquals(3,tctree.getTCTreeNodes().size());
+		assertEquals(15,tctree.getTCTreeNodes().size());
+		assertEquals(12,tctree.getTCTreeNodes(TCType.TRIVIAL).size());
 		assertEquals(1,tctree.getTCTreeNodes(TCType.BOND).size());
 		assertEquals(1,tctree.getTCTreeNodes(TCType.RIGID).size());
 		assertEquals(1,tctree.getTCTreeNodes(TCType.POLYGON).size());
@@ -136,9 +138,11 @@ public class TCTreeTest extends TestCase {
 		long end = System.nanoTime();
 		System.out.println("1BOND\t"+((double) end-start) / 1000000000);
 		
-		assertEquals(1,tctree.getTCTreeNodes().size());
+		assertEquals(6,tctree.getTCTreeNodes().size());
 		assertEquals(1,tctree.getTCTreeNodes(TCType.BOND).size());
+		assertEquals(5,tctree.getTCTreeNodes(TCType.TRIVIAL).size());
 		for (TCTreeNode<Edge,Vertex> node : tctree.getVertices()) {
+			if (node.getType()==TCType.TRIVIAL) continue;
 			IOUtils.toFile(node.getName() + ".dot",node.getSkeleton().toDOT());
 		}
 	}
@@ -158,9 +162,11 @@ public class TCTreeTest extends TestCase {
 		long end = System.nanoTime();
 		System.out.println("1B1V\t"+((double) end-start) / 1000000000);
 		
-		assertEquals(1,tctree.getTCTreeNodes().size());
+		assertEquals(6,tctree.getTCTreeNodes().size());
 		assertEquals(1,tctree.getTCTreeNodes(TCType.BOND).size());
+		assertEquals(5,tctree.getTCTreeNodes(TCType.TRIVIAL).size());
 		for (TCTreeNode<Edge,Vertex> node : tctree.getVertices()) {
+			if (node.getType()==TCType.TRIVIAL) continue;
 			IOUtils.toFile(node.getName() + ".dot",node.getSkeleton().toDOT());
 		}
 	}
@@ -217,13 +223,15 @@ public class TCTreeTest extends TestCase {
 				assertEquals(2, node.getSkeleton().getVertices().size());
 			}
 			
+			if (node.getType()==TCType.TRIVIAL) continue;
 			IOUtils.toFile(node.getName() + ".dot",node.getSkeleton().toDOT());
 		}
 		
 		assertEquals(true,edges.containsAll(g.getEdges()));
 		assertEquals(true,g.getEdges().containsAll(edges));
 		
-		assertEquals(6,tctree.getTCTreeNodes().size());
+		assertEquals(18,tctree.getTCTreeNodes().size());
+		assertEquals(12,tctree.getTCTreeNodes(TCType.TRIVIAL).size());
 		assertEquals(2,tctree.getTCTreeNodes(TCType.BOND).size());
 		assertEquals(0,tctree.getTCTreeNodes(TCType.RIGID).size());
 		assertEquals(4,tctree.getTCTreeNodes(TCType.POLYGON).size());
