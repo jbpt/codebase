@@ -20,7 +20,7 @@ import org.jbpt.bp.RelSetType;
 import org.jbpt.bp.construct.BPCreatorNet;
 import org.jbpt.bp.construct.CBPCreatorNet;
 import org.jbpt.graph.abs.AbstractDirectedEdge;
-import org.jbpt.graph.abs.IDirectedGraph;
+import org.jbpt.graph.abs.IGraph;
 import org.jbpt.petri.Flow;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Node;
@@ -72,21 +72,21 @@ public class WFTree {
 		
 	}
 
-	*//**
+	/**
 	 * Check whether Petri net is WF-net and FC-net
 	 * 
 	 * @throws IllegalArgumentException
-	 *//*
+	 */
 	public void checkNet() {
 		if (!PetriNetStructuralClassChecks.isWorkflowNet(wf)) throw new IllegalArgumentException();
 		if (!PetriNetStructuralClassChecks.isExtendedFreeChoice(wf)) throw new IllegalArgumentException();
 	}
 	
-	*//**
+	/**
 	 * Pre-process Petri net by 
 	 * performing node-splitting
 	 * 
-	 *//*
+	 */
 	public void preProcessWF() {
 		PetriNetUtils.splitMixedPlaces(wf);
 		PetriNetUtils.isolateTransitions(wf);
@@ -96,8 +96,13 @@ public class WFTree {
 		switch (node.getType()) {
 			case POLYGON: pNodes.add(node); break;
 			case BOND: bNodes.add(node); break;
-			case T: tNodes.add(node); break;
 			case RIGID: rNodes.add(node); break;
+			
+			/*
+			 * TODO: we need to fill the tNodes in order to locate transitions
+			 */
+			
+			default: tNodes.add(node); break;
 		}
 		
 		// call recursively
@@ -136,28 +141,28 @@ public class WFTree {
 	}
 
 	
-	*//**
+	/**
 	 * Track links to trivial (t) fragments that contain transitions as entries
-	 *//*
+	 */
 	private void trackLabeledTransitions() {
 		for (RPSTNode<Flow, Node> node: tNodes)
 			if (node.getEntry() instanceof Transition)
 				node2ptnode.put((Transition) node.getEntry(), node);
 	}
 	
-	*//**
+	/**
 	 * Get root node of the WF-tree
 	 * @return root node
-	 *//*
+	 */
 	public RPSTNode<Flow, Node> getRootNode(){
 		return rpst.getRoot();
 	}
 	
-	*//**
+	/**
 	 * Get type of the WF-tree block node
 	 * @param node node to get type for
 	 * @return type of the block node: place bounded (Bp), transition bounded (Bt), loop (L), or none if not a block
-	 *//*
+	 */
 	public WFTBlockNodeType getBlockNodeType(RPSTNode<Flow, Node> node) {
 		if (node.getType()!= TCType.BOND) return WFTBlockNodeType.none;
 		
@@ -174,11 +179,11 @@ public class WFTree {
 		throw new IllegalArgumentException("WF-net is not sound");
 	}
 	
-	*//**
+	/**
 	 * Get loop orientation type for the node
 	 * @param node node to get loop orientation type for
 	 * @return loop orientation of the node: forward, backward, or none if parent node is not loop node (L)
-	 *//*
+	 */
 	public WFTLoopOrientationType getLoopOrientationType(RPSTNode<Flow, Node> node) {
 		if (rpst.getParent(node) !=null && getBlockNodeType(rpst.getParent(node))==WFTBlockNodeType.L) {
 			if (node.getEntry().equals(rpst.getParent(node).getEntry()))
@@ -192,12 +197,12 @@ public class WFTree {
 		return WFTLoopOrientationType.none;
 	}
 	
-	*//**
+	/**
 	 * Get order of a node in a parent sequence
 	 * A partial function, defined for nodes with a parent node of type (S) 
 	 * @param node a node to get position for 
 	 * @return position of a node in a parent sequence (S) node starting from 0, or -1 if order is not defined for this node 
-	 *//*
+	 */
 	public int getOrder(RPSTNode<Flow, Node> node) {
 		if (rpst.getParent(node)==null || rpst.getParent(node).getType()!=TCType.POLYGON || !orderedPNodes.containsKey(rpst.getParent(node)))
 			return -1;
@@ -206,7 +211,7 @@ public class WFTree {
 		return orderedPNodes.get(rpst.getParent(node)).lastIndexOf(node);
 	}
 	
-	*//**
+	/**
 	 * TODO LCA can be computed in O(1) and requires O(n) preprocessing step (see below)
 	 * TODO Bender M., Farach-Colton M. The LCA problem revisited // Proceedings of the 4th Latin American Symposium on Theoretical Informatics. — Springer-Verlag, 2000. — Vol. 1776. — P. 88-94
 	 * 
@@ -214,7 +219,7 @@ public class WFTree {
 	 * @param n1 node
 	 * @param n2 node
 	 * @return LCA of 
-	 *//*
+	 */
 	public RPSTNode<Flow, Node> getLCA(RPSTNode<Flow, Node> n1, RPSTNode<Flow, Node> n2) {
 		if (n1.equals(n2)) return n1;
 		
@@ -238,22 +243,22 @@ public class WFTree {
 		}
 	}
 	
-	*//**
+	/**
 	 * Get a node in a WF-tree that contains a Petri net node
 	 *
 	 * @param t
 	 * @return
-	 *//*
+	 */
 	public RPSTNode<Flow, Node> getTreeNode(Node t) {
 		return node2ptnode.get(t);
 	}
 	
-	*//**
+	/**
 	 * Get path (a sequence of tree nodes from an ancestor [from] to a descendant [to])
 	 * @param from An ancestor tree node
 	 * @param to An descendant tree node
 	 * @return A path from [from] to [to] :), empty path if no path exists
-	 *//*
+	 */
 	public Vector<RPSTNode<Flow, Node>> getPath(RPSTNode<Flow, Node> from, RPSTNode<Flow, Node> to) {
 		Vector<RPSTNode<Flow, Node>> path = new Vector<RPSTNode<Flow, Node>>();
 		if (from==null || to==null) return path;
@@ -286,15 +291,12 @@ public class WFTree {
 	}
 	
 	
-	 * Compute behavioural profile relations 
-	 
-	
-	*//**
+	/**
 	 * Check if two Petri net nodes are in strict order relation (->)
 	 * @param t1 Petri net node
 	 * @param t2 Petri net node
 	 * @return true if t1->t2, false otherwise
-	 *//*
+	 */
 	public boolean areInStrictOrder(Node t1, Node t2) {
 		RPSTNode<Flow, Node> alpha = getTreeNode(t1);
 		RPSTNode<Flow, Node> beta  = getTreeNode(t2);
@@ -318,22 +320,22 @@ public class WFTree {
 		return false;
 	}
 	
-	*//**
+	/**
 	 * Check if two Petri net nodey are in order relation
 	 * @param t1 Petri net node
 	 * @param t2 Petri net node
 	 * @return true if t1->t2 or t2->t1, false otherwise
-	 *//*
+	 */
 	public boolean areInOrder(Node t1, Node t2) {
 		return areInStrictOrder(t1, t2) || areInStrictOrder(t2, t1);
 	}
 	
-	*//**
+	/**
 	 * Check if two Petri net nodes are in exclusive relation (+)
 	 * @param t1 Petri net node
 	 * @param t2 Petri net node
 	 * @return true if t1+t2, false otherwise
-	 *//*
+	 */
 	public boolean areExclusive(Node t1, Node t2) {
 		RPSTNode<Flow, Node> alpha = getTreeNode(t1);
 		RPSTNode<Flow, Node> beta  = getTreeNode(t2);
@@ -358,12 +360,12 @@ public class WFTree {
 		return false;
 	}
 	
-	*//**
-	 * Check if two Petri net nodes are in concurrent relation (||)
+	/**
+	 * Check if two Petri net nodes are in interleaving relation (||)
 	 * @param t1 Petri net node
 	 * @param t2 Petri net node
 	 * @return true if t1||t2, false otherwise
-	 *//*
+	 */
 	public boolean areInterleaving(Node t1, Node t2) {
 		RPSTNode<Flow, Node> alpha = getTreeNode(t1);
 		RPSTNode<Flow, Node> beta  = getTreeNode(t2);
@@ -372,14 +374,14 @@ public class WFTree {
 		// Get path from ROOT to gamma
 		Vector<RPSTNode<Flow, Node>> path = getPath(getRootNode(), gamma);
 		
-		
-		 * !!! alpha == beta case is subsumed later
-		 * !!! if (alpha == beta) then gamma == alpha == beta !!!
-		 * 
-		 * if (alpha.equals(beta)) { // x||x ?
-			for (TreeNode node: path) {
-				if (getBlockNodeType(node)==PTBlockNodeType.L) return true;
-				if (getNodeType(node)==PTNodeType.U) return false;
+		 /* 
+		  * !!! alpha == beta case is subsumed later
+		  *  !!! if (alpha == beta) then gamma == alpha == beta !!!
+  		  */
+		if (alpha.equals(beta)) { // x||x ?
+			for (RPSTNode<Flow, Node> node: path) {
+				if (getBlockNodeType(node)==WFTBlockNodeType.L) return true;
+				if (node.getType()==TCType.RIGID) return false;
 			}
 		}
 		
@@ -397,12 +399,12 @@ public class WFTree {
 		return false;
 	}
 	
-	*//**
+	/**
 	 * Check if two Petri net nodes are in co-occurrence relation (>>)
 	 * @param t1 Petri net node
 	 * @param t2 Petri net node
 	 * @return true if t1>>t2, false otherwise
-	 *//*
+	 */
 	public boolean areCooccurring(Node t1, Node t2) {
 		RPSTNode<Flow, Node> alpha = getTreeNode(t1);
 		RPSTNode<Flow, Node> beta  = getTreeNode(t2);
@@ -452,12 +454,12 @@ public class WFTree {
 		return true;
 	}
 	
-	*//**
+	/**
 	 * Check if child fragment is in some loop within a parent fragment, i.e., there exists path from exit to entry of the child fragment
 	 * @param parent Parent tree node
 	 * @param child Child of the parent tree node
 	 * @return true if child is in some loop, false otherwise
-	 *//*
+	 */
 	private boolean isChildInLoop(RPSTNode<Flow, Node> parent, RPSTNode<Flow, Node> child) {
 		Set<Node> visited = new HashSet<Node>();
 		Collection<RPSTNode<Flow, Node>> searchGraph = rpst.getChildren(parent);
@@ -492,14 +494,17 @@ public class WFTree {
 	private BehaviouralProfile<NetSystem, Node> getBPForFragment(RPSTNode<Flow, Node> treeNode) {
 
 		
-		 * The subnet we are interested in. It represents the fragment.
+		 /* 
+		  * The subnet we are interested in. It represents the fragment.
+		  */
 		 
-		IDirectedGraph<Flow, Node> subnet = treeNode.getFragment();
+		IGraph<Flow, Node> subnet = treeNode.getFragment().getGraph();
 		
 		
-		 * A new net, which will be a clone of the subnet. We do not use the
+		 /* A new net, which will be a clone of the subnet. We do not use the
 		 * clone method, in order to keep track of the relation between nodes 
 		 * of both nets.
+		 */
 		 
 		NetSystem net = new NetSystem();
 		
@@ -521,7 +526,7 @@ public class WFTree {
 			
 			for(AbstractDirectedEdge<Node> f : subnet.getEdges()) {
 //				if (net.getNodes().contains(nodeCopies.get(f.getSource())) && net.getNodes().contains(nodeCopies.get(f.getTarget()))) {
-					net.addFlow(nodeCopies.get(f.getSource()), nodeCopies.get(f.getTarget()));
+					net.addFreshFlow(nodeCopies.get(f.getSource()), nodeCopies.get(f.getTarget()));
 //				}
 			}
 		} catch (Exception e) {
@@ -540,10 +545,10 @@ public class WFTree {
 				Transition initT = new Transition();
 				net.addNode(initT);
 				net.addFlow(init, initT);
-				net.addFlow(initT, entryNode);
+				net.addFreshFlow(initT, entryNode);
 			}
 			else
-				net.addFlow(init, entryNode);
+				net.addFreshFlow(init, entryNode);
 		}
 		
 		if (net.getDirectSuccessors(exitNode).size() != 0 || (exitNode instanceof Transition)) {
@@ -553,11 +558,11 @@ public class WFTree {
 			if (exitNode instanceof Place) {
 				Transition exitT = new Transition();
 				net.addNode(exitT);
-				net.addFlow(exitNode, exitT);
+				net.addFreshFlow(exitNode, exitT);
 				net.addFlow(exitT, exit);
 			}
 			else
-				net.addFlow(exitNode, exit);
+				net.addFreshFlow(exitNode, exit);
 		}
 		
 		
@@ -568,7 +573,7 @@ public class WFTree {
 		return bp;
 	}
 	
-	*//**
+	/**
 	 * Returns true, if both nodes are exclusive based on the
 	 * analysis of the PTNet that is associated with the given fragment.
 	 * 
@@ -576,7 +581,7 @@ public class WFTree {
 	 * @param t2
 	 * @param fragment, that contains both nodes
 	 * @return true, if t1 + t2
-	 *//*
+	 */
 	private boolean areExclusiveUType(Node t1, Node t2, RPSTNode<Flow, Node> fragment) {
 		if (!this.node2bp.containsKey(fragment))
 			this.node2bp.put(fragment, getBPForFragment(fragment));
@@ -585,15 +590,15 @@ public class WFTree {
 		return bp.areExclusive(this.bp2nodemapping.get(bp).get(t1), this.bp2nodemapping.get(bp).get(t2));
 	}
 	
-	*//**
-	 * Returns true, if both nodes are concurrent based on the
+	/**
+	 * Returns true, if both nodes are interleaving based on the
 	 * analysis of the PTNet that is associated with the given fragment.
 	 * 
 	 * @param t1
 	 * @param t2
 	 * @param fragment, that contains both nodes
 	 * @return true, if t1 || t2
-	 *//*
+	 */
 	private boolean areInterleavingUType(Node t1, Node t2, RPSTNode<Flow, Node> fragment) {
 		if (!this.node2bp.containsKey(fragment))
 			this.node2bp.put(fragment, getBPForFragment(fragment));
@@ -602,7 +607,7 @@ public class WFTree {
 		return bp.areInterleaving(this.bp2nodemapping.get(bp).get(t1), this.bp2nodemapping.get(bp).get(t2));
 	}
 	
-	*//**
+	/**
 	 * Returns true, if both nodes are in strict order based on the
 	 * analysis of the PTNet that is associated with the given fragment.
 	 * 
@@ -610,7 +615,7 @@ public class WFTree {
 	 * @param t2
 	 * @param fragment, that contains both nodes
 	 * @return true, if t1 -> t2
-	 *//*
+	 */
 	private boolean areInStrictOrderUType(Node t1, Node t2, RPSTNode<Flow, Node> fragment) {
 		if (!this.node2bp.containsKey(fragment))
 			this.node2bp.put(fragment, getBPForFragment(fragment));
@@ -619,13 +624,13 @@ public class WFTree {
 		return bp.areInOrder(this.bp2nodemapping.get(bp).get(t1), this.bp2nodemapping.get(bp).get(t2));
 	}
 	
-	*//**
+	/**
 	 * Derive the CBP via the net approach for a U type fragment.
 	 * Note that the CBP is based on the BP for the respective fragment.
 	 * 
 	 * @param treeNode representing the fragment
 	 * @return the complete behavioural profile for the fragment
-	 *//*
+	 */
 	private CausalBehaviouralProfile<NetSystem, Node> getCBPForFragment(RPSTNode<Flow, Node> treeNode) {
 		BehaviouralProfile<NetSystem, Node> bp = this.getBPForFragment(treeNode);
 		CausalBehaviouralProfile<NetSystem, Node> cbp = CBPCreatorNet.getInstance().deriveCausalBehaviouralProfile(bp);
@@ -633,7 +638,7 @@ public class WFTree {
 		return cbp;
 	}
 
-	*//**
+	/**
 	 * Returns true, if both nodes are co-occurring based on the
 	 * analysis of the PTNet that is associated with the given fragment.
 	 * 
@@ -641,7 +646,7 @@ public class WFTree {
 	 * @param t2
 	 * @param fragment, that contains both nodes
 	 * @return true, if t1 >> t2
-	 *//*
+	 */
 	private boolean areCooccurringUType(Node t1, Node t2, RPSTNode<Flow, Node> fragment) {
 		if (!this.node2cbp.containsKey(fragment))
 			this.node2cbp.put(fragment, getCBPForFragment(fragment));
