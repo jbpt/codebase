@@ -62,7 +62,7 @@ public interface ISubprocess extends IBpmnActivity {
 	 * @return whether the adhoc order of the subprocess is sequential or
 	 * parallel. Returns "None" if it is no adhoc subprocess at all
 	 */
-	public String getAdhocOrder();
+	public AdHocOrdering getAdhocOrder();
 	/**
 	 * adds a {@link FlowNode} to the subprocess' flow nodes
 	 * @param n flow node to add
@@ -75,7 +75,7 @@ public interface ISubprocess extends IBpmnActivity {
 	public void addNonFlowNode(NonFlowNode n);
 	/**
 	 * adds a {@link BpmnControlFlow} to the subprocess
-	 * @return TODO
+	 * @return the created edge
 	 */
 	public BpmnControlFlow<FlowNode> addControlFlow(FlowNode from, FlowNode to, boolean defaultFlow);
 	/**
@@ -100,7 +100,7 @@ public interface ISubprocess extends IBpmnActivity {
 	 * adds a {@link BpmnMessageFlow} to the subprocess
 	 * @param from
 	 * @param to
-	 * @return TODO
+	 * @return the created edge
 	 */
 	public BpmnMessageFlow addMessageFlow(IVertex from, IVertex to);
 
@@ -108,4 +108,10 @@ public interface ISubprocess extends IBpmnActivity {
 	 * @return the {@link Bpmn} model of this sub process.
 	 */
 	public Bpmn<BpmnControlFlow<FlowNode>, FlowNode> getSubProcess();
+	
+	/**
+	 * Set the internal subprocess model
+	 * @param subprocessModel
+	 */
+	public void setSubProcess(Bpmn<BpmnControlFlow<FlowNode>, FlowNode> subprocessModel);
 }
