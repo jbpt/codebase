@@ -65,6 +65,6 @@ public interface IBpmn extends IProcessModel<ControlFlow<FlowNode>, FlowNode, No
 	/**
 	 * @return all message flow edges of this {@link Bpmn} model.
 	 */
-	public Collection<BpmnMessageFlow> getMessageflows();
+	public Collection<BpmnMessageFlow> getMessageFlowEdges();
 	
 }

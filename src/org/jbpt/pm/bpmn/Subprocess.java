@@ -123,14 +123,14 @@ public class Subprocess extends BpmnActivity implements ISubprocess {
 
 
 	@Override
-	public String getAdhocOrder() {
+	public AdHocOrdering getAdhocOrder() {
 		if (this.parallelAdhocOrdering){
-			return "Parallel";
+			return AdHocOrdering.Parallel;
 		} 
 		if (this.sequentialAdhocOrdering){
-			return "Sequential";
+			return AdHocOrdering.Sequential;
 		}
-		return "None"; //if no order is selected, it is no adhoc process
+		return AdHocOrdering.None; //if no order is selected, it is no adhoc process
 	}
 
 	@Override
@@ -184,5 +184,10 @@ public class Subprocess extends BpmnActivity implements ISubprocess {
 	@Override
 	public Bpmn<BpmnControlFlow<FlowNode>, FlowNode> getSubProcess() {
 		return this.subprocess;
+	}
+	
+	@Override
+	public void setSubProcess(Bpmn<BpmnControlFlow<FlowNode>, FlowNode> subprocessModel) {
+		this.subprocess = subprocessModel;
 	}
 }

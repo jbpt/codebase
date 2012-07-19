@@ -73,7 +73,10 @@ public class BpmnControlFlow<V extends IFlowNode> extends ControlFlow<V> impleme
 
 	@Override
 	public void attachEvent(BpmnEvent event) {
-		this.attachedEvent = event;		
+		this.attachedEvent = event;
+		if(event != null) {
+			event.setAttached(true);
+		}
 	}
 	
 	@SuppressWarnings("unchecked")
