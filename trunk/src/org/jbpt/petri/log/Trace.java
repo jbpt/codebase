@@ -1,9 +1,12 @@
 package org.jbpt.petri.log;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.jbpt.alignment.IEntityModel;
 
 /**
  * Simple data structure to represent a single trace of a Petri net.
@@ -11,8 +14,13 @@ import java.util.Set;
  * @author matthias.weidlich
  *
  */
-public class Trace {
+public class Trace implements IEntityModel<TraceEntry> {
 
+	/**
+	 * The id of the trace.
+	 */
+	protected int id;
+	
 	/**
 	 * The trace as a list of trace entries.
 	 */
@@ -49,8 +57,14 @@ public class Trace {
 	 * @return the trace as a list of strings
 	 */
 	public List<TraceEntry> getTraceAsList() {
-		return trace;
+		return this.trace;
 	}
+	
+	@Override
+	public Collection<TraceEntry> getEntities() {
+		return this.trace;
+	}
+
 	
 	/**
 	 * Returns the set of labels that are observed in the trace
@@ -67,4 +81,14 @@ public class Trace {
 	public int getLength() {
 		return trace.size();
 	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+	
+	
 }

@@ -19,6 +19,11 @@ import org.jbpt.alignment.IEntityModel;
 public class Log implements IEntityModel<TraceEntry> {
 	
 	/**
+	 * The id of the log.
+	 */
+	protected int id;
+	
+	/**
 	 * The traces of the log along with their number of occurrence 
 	 * in the log.
 	 */
@@ -97,5 +102,15 @@ public class Log implements IEntityModel<TraceEntry> {
 		return true;
 		
 	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+	
+	
 	
 }
