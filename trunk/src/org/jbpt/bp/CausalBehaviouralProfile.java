@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.jbpt.alignment.IEntity;
-import org.jbpt.alignment.IEntityModel;
 
 
 /**
@@ -18,7 +17,7 @@ import org.jbpt.alignment.IEntityModel;
  * @author matthias.weidlich
  *
  */
-public class CausalBehaviouralProfile<M extends IEntityModel<N>, N extends IEntity> extends BehaviouralProfile<M, N> {
+public class CausalBehaviouralProfile<M, N extends IEntity> extends BehaviouralProfile<M, N> {
 
 	public static final String COOCCURRENCE_SYMBOL = ">>";
 	
