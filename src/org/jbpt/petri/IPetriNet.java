@@ -2,12 +2,14 @@ package org.jbpt.petri;
 
 import java.util.Collection;
 
+import org.jbpt.graph.abs.IDirectedGraph;
+
 /**
  * PetriNet interface.
  *
  * @author Artem Polyvyanyy
  */
-public interface IPetriNet<F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition> {
+public interface IPetriNet<F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition> extends IDirectedGraph<F,N> {
 	/**
 	 * Add flow to this net. 
 	 * 

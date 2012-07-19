@@ -61,7 +61,7 @@ public class BPCreatorTree extends AbstractRelSetCreator implements RelSetCreato
 		if (netClone == null) {
 			netClone = pn;
 			for (Node n : pn.getNodes())
-				nodeMapping.put(n, n);
+				nodeMapping.put(n,n);
 		}
 
 		
