@@ -11,11 +11,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jbpt.alignment.LabelEntity;
 import org.jbpt.bp.BehaviouralProfile;
 import org.jbpt.bp.CausalBehaviouralProfile;
 import org.jbpt.bp.RelSetType;
 import org.jbpt.petri.log.Trace;
-import org.jbpt.petri.log.TraceEntry;
 
 public class ConformanceRootCauseAnalysis extends AbstractAnalysis {
 	
@@ -218,19 +218,19 @@ public class ConformanceRootCauseAnalysis extends AbstractAnalysis {
 		return constraintList.indexOf(constraint);
 	}
 	
-	public void addTrace(BehaviouralProfile<Trace,TraceEntry> rs) {
+	public void addTrace(BehaviouralProfile<Trace,LabelEntity> rs) {
 		this.traceIds.add(rs.getModel().getId());
 		this.traceAnalyses.put(this.traceIds.indexOf(rs.getModel().getId()), new RootCauseAnalysisForTrace(rs.getModel().getId()));
 	}
 	
-	public void addBPViolation(String s1, String s2, BehaviouralProfile<Trace,TraceEntry> rs, RelSetType expectedRelation, RelSetType  foundRelation) {
+	public void addBPViolation(String s1, String s2, BehaviouralProfile<Trace,LabelEntity> rs, RelSetType expectedRelation, RelSetType  foundRelation) {
 		ViolationTupleInclSupport v = new ViolationTupleInclSupport(s1,s2,BehaviouralProfile.getSymbolForRelation(expectedRelation));
 		
 		addViolation(rs,v);
 		this.traceAnalyses.get(this.traceIds.indexOf(rs.getModel().getId())).addBPViolation(s1, s2, expectedRelation.toString(), foundRelation.toString());
 	}
 	
-	protected void addViolation(BehaviouralProfile<Trace,TraceEntry> rs, ViolationTupleInclSupport v) {
+	protected void addViolation(BehaviouralProfile<Trace,LabelEntity> rs, ViolationTupleInclSupport v) {
 		if (!this.violations.contains(v)) {
 			this.violations.add(v);
 			this.violationsForTraces.add(this.violations.indexOf(v), new HashSet<Integer>());
@@ -239,7 +239,7 @@ public class ConformanceRootCauseAnalysis extends AbstractAnalysis {
 		this.violationsForTraces.get(this.violations.indexOf(v)).add(this.traceIds.indexOf(rs.getModel().getId()));
 	}
 	
-	public void addCooccurrenceViolation(String s1, String s2, BehaviouralProfile<Trace,TraceEntry> rs) {
+	public void addCooccurrenceViolation(String s1, String s2, BehaviouralProfile<Trace,LabelEntity> rs) {
 		ViolationTupleInclSupport v = new ViolationTupleInclSupport(s1,s2,CausalBehaviouralProfile.COOCCURRENCE_SYMBOL);
 		
 		addViolation(rs, v);
