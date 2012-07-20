@@ -17,6 +17,7 @@ import org.jbpt.graph.abs.IDirectedEdge;
 import org.jbpt.graph.abs.IDirectedGraph;
 import org.jbpt.hypergraph.abs.IVertex;
 import org.jbpt.hypergraph.abs.Vertex;
+import org.jbpt.utils.IOUtils;
 
 
 /**
@@ -169,18 +170,22 @@ public class RPST<E extends IDirectedEdge<V>, V extends IVertex> extends Abstrac
 	
 	private void constructRPST() {
 		// remove extra edges
+		Collection<TCTreeNode<DirectedEdge,Vertex>> toRemove = new ArrayList<TCTreeNode<DirectedEdge,Vertex>>();
 		for (TCTreeNode<DirectedEdge,Vertex> node : this.tctree.getVertices()) {
 			Set<DirectedEdge> edges = new HashSet<DirectedEdge>(node.getSkeleton().getOriginalEdges());
 			for (DirectedEdge edge : edges) {
 				if (this.extraEdges.contains(edge)) {
 					node.getSkeleton().removeOriginalEdge(edge);
+					if (node.getType()==TCType.TRIVIAL)
+						toRemove.add(node);
 				}
 			}
 		}
+		this.tctree.removeVertices(toRemove);
 		
 		Collection<TCTreeNode<DirectedEdge,Vertex>> nodes = new ArrayList<TCTreeNode<DirectedEdge,Vertex>>(this.tctree.getTCTreeNodes());
 		for (TCTreeNode<DirectedEdge,Vertex> node : nodes) {
-			if (this.tctree.getChildren(node).size()==1 && node.getSkeleton().getOriginalEdges().isEmpty()) 
+			if (this.tctree.getChildren(node).size()==1) 
 			{
 				TCTreeNode<DirectedEdge,Vertex> child = this.tctree.getChildren(node).iterator().next();
 				
@@ -212,16 +217,26 @@ public class RPST<E extends IDirectedEdge<V>, V extends IVertex> extends Abstrac
 			TCTreeNode<DirectedEdge,Vertex> src = edge.getSource();
 			TCTreeNode<DirectedEdge,Vertex> tgt = edge.getTarget();
 			
+			// ignore extra edges
+			if (tgt.getType()==TCType.TRIVIAL && tgt.getSkeleton().getOriginalEdges().isEmpty())
+				continue;
+			
 			RPSTNode<E,V> rsrc = t2r.get(src);
 			RPSTNode<E,V> rtgt = t2r.get(tgt);
 			
 			if (rsrc==null) {
 				rsrc = new RPSTNode<E,V>(this, src);
+				
 				t2r.put(src, rsrc);
 			}
 				
 			if (rtgt==null) {
 				rtgt = new RPSTNode<E,V>(this, tgt);
+				
+				if (rtgt.getType()==TCType.TRIVIAL)  {
+					rtgt.setName(rtgt.getFragment().toString());
+				}
+				
 				t2r.put(tgt, rtgt);
 			}
 			
@@ -234,11 +249,13 @@ public class RPST<E extends IDirectedEdge<V>, V extends IVertex> extends Abstrac
 	
 	/*public void debug() {
 		System.out.println("DEBUG");
+		
 		IOUtils.toFile("original.dot", this.diGraph.toDOT());
 		IOUtils.toFile("normalized.dot", this.normalizedGraph.toDOT());
 		IOUtils.toFile("tctree.dot", this.tctree.toDOT());
 		
 		for (TCTreeNode<DirectedEdge,Vertex> node : this.tctree.getVertices()) {
+			if (node.getType()==TCType.TRIVIAL) continue;
 			IOUtils.toFile(node.getName()+".dot", node.getSkeleton().toDOT());
 		}
 	}*/

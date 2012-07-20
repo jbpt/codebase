@@ -18,7 +18,7 @@ import org.jbpt.hypergraph.abs.IVertex;
  * @param <V> Vertex type employed in the edge
  */
 public class AbstractEdge<V extends IVertex> extends AbstractHyperEdge<V> implements IEdge<V> {
-	
+
 	protected V v1;
 	protected V v2;
 	
@@ -163,5 +163,10 @@ public class AbstractEdge<V extends IVertex> extends AbstractHyperEdge<V> implem
 	 */
 	public boolean connectsVertices(V v1, V v2) {
 		return this.connectsVertex(v1) && this.connectsVertex(v2);
+	}
+	
+	@Override
+	public String toString() {
+		return String.format("%s-%s", this.v1, this.v2);
 	}
 }

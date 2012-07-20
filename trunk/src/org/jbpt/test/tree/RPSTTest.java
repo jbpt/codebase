@@ -47,7 +47,8 @@ public class RPSTTest extends TestCase {
 		}
 		
 		performBasicChecks(g,rpst);
-		assertEquals(2,rpst.getRPSTNodes().size());
+		assertEquals(9,rpst.getRPSTNodes().size());
+		assertEquals(7,rpst.getRPSTNodes(TCType.TRIVIAL).size());
 		assertEquals(0,rpst.getRPSTNodes(TCType.BOND).size());
 		assertEquals(1,rpst.getRPSTNodes(TCType.POLYGON).size());
 		assertEquals(1,rpst.getRPSTNodes(TCType.RIGID).size());
@@ -91,7 +92,8 @@ public class RPSTTest extends TestCase {
 		}
 		
 		performBasicChecks(g,rpst);
-		assertEquals(3,rpst.getRPSTNodes().size());
+		assertEquals(8,rpst.getRPSTNodes().size());
+		assertEquals(5,rpst.getRPSTNodes(TCType.TRIVIAL).size());
 		assertEquals(2,rpst.getRPSTNodes(TCType.BOND).size());
 		assertEquals(1,rpst.getRPSTNodes(TCType.POLYGON).size());
 		assertEquals(0,rpst.getRPSTNodes(TCType.RIGID).size());
@@ -161,7 +163,8 @@ public class RPSTTest extends TestCase {
 		}
 		
 		performBasicChecks(g,rpst);
-		assertEquals(4,rpst.getRPSTNodes().size());
+		assertEquals(19,rpst.getRPSTNodes().size());
+		assertEquals(15,rpst.getRPSTNodes(TCType.TRIVIAL).size());
 		assertEquals(1,rpst.getRPSTNodes(TCType.BOND).size());
 		assertEquals(1,rpst.getRPSTNodes(TCType.POLYGON).size());
 		assertEquals(2,rpst.getRPSTNodes(TCType.RIGID).size());
@@ -209,7 +212,8 @@ public class RPSTTest extends TestCase {
 		}
 		
 		performBasicChecks(g,rpst);
-		assertEquals(4,rpst.getRPSTNodes().size());
+		assertEquals(11,rpst.getRPSTNodes().size());
+		assertEquals(7,rpst.getRPSTNodes(TCType.TRIVIAL).size());
 		assertEquals(1,rpst.getRPSTNodes(TCType.BOND).size());
 		assertEquals(3,rpst.getRPSTNodes(TCType.POLYGON).size());
 		assertEquals(0,rpst.getRPSTNodes(TCType.RIGID).size());
@@ -253,7 +257,7 @@ public class RPSTTest extends TestCase {
 		g.addEdge(v,u);
 		g.addEdge(u,t);
 		
-		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
+		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);		
 		IOUtils.toFile("rpst.dot", rpst.toDOT());
 		
 		for (RPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
@@ -261,7 +265,8 @@ public class RPSTTest extends TestCase {
 		}
 		
 		performBasicChecks(g,rpst);
-		assertEquals(2,rpst.getRPSTNodes().size());
+		assertEquals(6,rpst.getRPSTNodes().size());
+		assertEquals(4,rpst.getRPSTNodes(TCType.TRIVIAL).size());
 		assertEquals(0,rpst.getRPSTNodes(TCType.BOND).size());
 		assertEquals(2,rpst.getRPSTNodes(TCType.POLYGON).size());
 		assertEquals(0,rpst.getRPSTNodes(TCType.RIGID).size());
@@ -312,7 +317,8 @@ public class RPSTTest extends TestCase {
 		}
 		
 		performBasicChecks(g,rpst);
-		assertEquals(4,rpst.getRPSTNodes().size());
+		assertEquals(10,rpst.getRPSTNodes().size());
+		assertEquals(6,rpst.getRPSTNodes(TCType.TRIVIAL).size());
 		assertEquals(1,rpst.getRPSTNodes(TCType.BOND).size());
 		assertEquals(3,rpst.getRPSTNodes(TCType.POLYGON).size());
 		assertEquals(0,rpst.getRPSTNodes(TCType.RIGID).size());
@@ -368,7 +374,8 @@ public class RPSTTest extends TestCase {
 		}
 		
 		performBasicChecks(g,rpst);
-		assertEquals(3,rpst.getRPSTNodes().size());
+		assertEquals(9,rpst.getRPSTNodes().size());
+		assertEquals(6,rpst.getRPSTNodes(TCType.TRIVIAL).size());
 		assertEquals(0,rpst.getRPSTNodes(TCType.BOND).size());
 		assertEquals(3,rpst.getRPSTNodes(TCType.POLYGON).size());
 		assertEquals(0,rpst.getRPSTNodes(TCType.RIGID).size());
@@ -419,7 +426,8 @@ public class RPSTTest extends TestCase {
 		}
 		
 		performBasicChecks(g,rpst);
-		assertEquals(5,rpst.getRPSTNodes().size());
+		assertEquals(11,rpst.getRPSTNodes().size());
+		assertEquals(6,rpst.getRPSTNodes(TCType.TRIVIAL).size());
 		assertEquals(3,rpst.getRPSTNodes(TCType.BOND).size());
 		assertEquals(2,rpst.getRPSTNodes(TCType.POLYGON).size());
 		assertEquals(0,rpst.getRPSTNodes(TCType.RIGID).size());
@@ -471,37 +479,11 @@ public class RPSTTest extends TestCase {
 		}
 		
 		performBasicChecks(g,rpst);
-		assertEquals(4,rpst.getRPSTNodes().size());
+		assertEquals(9,rpst.getRPSTNodes().size());
+		assertEquals(5,rpst.getRPSTNodes(TCType.TRIVIAL).size());
 		assertEquals(2,rpst.getRPSTNodes(TCType.BOND).size());
 		assertEquals(2,rpst.getRPSTNodes(TCType.POLYGON).size());
 		assertEquals(0,rpst.getRPSTNodes(TCType.RIGID).size());
-		
-		for (RPSTNode<DirectedEdge,Vertex> bond : rpst.getRPSTNodes(TCType.BOND)) {
-			if (rpst.getChildren(bond).isEmpty()) {
-				assertEquals("v", bond.getEntry().getName());
-				assertEquals(null, bond.getExit());
-				assertEquals(2,bond.getFragment().size());
-			}
-			else {
-				assertEquals(true,rpst.isRoot(bond));
-				assertEquals(null, bond.getEntry());
-				assertEquals(null, bond.getExit());
-				assertEquals(5,bond.getFragment().size());
-			}
-		}
-		
-		for (RPSTNode<DirectedEdge,Vertex> polygon : rpst.getRPSTNodes(TCType.POLYGON)) {
-			if (rpst.getChildren(polygon).isEmpty()) {
-				assertEquals("y", polygon.getEntry().getName());
-				assertEquals("q", polygon.getExit().getName());
-				assertEquals(2,polygon.getFragment().size());
-			}
-			else {
-				assertEquals("u", polygon.getEntry().getName());
-				assertEquals(null, polygon.getExit());
-				assertEquals(3,polygon.getFragment().size());
-			}
-		}
 		
 		System.out.println("-----------------------------------------------------------------------");
 	}

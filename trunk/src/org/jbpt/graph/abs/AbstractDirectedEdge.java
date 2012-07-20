@@ -290,4 +290,9 @@ public class AbstractDirectedEdge<V extends IVertex> extends AbstractDirectedHyp
 	public boolean connectsVertices(V v1, V v2) {
 		return this.connectsVertex(v1) && this.connectsVertex(v2);
 	}
+	
+	@Override
+	public String toString() {
+		return String.format("%s->%s", this.source, this.target);
+	}
 }

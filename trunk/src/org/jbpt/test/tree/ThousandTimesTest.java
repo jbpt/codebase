@@ -10,7 +10,7 @@ public class ThousandTimesTest {
 		TestSuite suite = new TestSuite(ThousandTimesTest.class.getName());
 		//$JUnit-BEGIN$
 		for (int i=0; i<1000; i++) {
-			suite.addTestSuite(TCTreeTest.class);
+			suite.addTestSuite(RPSTTest.class);
 		}
 		//$JUnit-END$
 		return suite;
