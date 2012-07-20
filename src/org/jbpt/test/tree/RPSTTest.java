@@ -20,7 +20,7 @@ public class RPSTTest extends TestCase {
 	 * Artem Polyvyanyy, Jussi Vanhatalo, Hagen Völzer: Simplified Computation and Generalization of the Refined Process Structure Tree. WS-FM 2010: 25-41. 
 	 * See Figure 6.
 	 */
-	/*public void testWSFM10_Figure6() {
+	public void testWSFM10_Figure6() {
 		System.out.println("WSFM'10: Figure 6");
 		MultiDirectedGraph g = new MultiDirectedGraph();
 		
@@ -43,7 +43,11 @@ public class RPSTTest extends TestCase {
 		IOUtils.toFile("rpst.dot", rpst.toDOT());
 		
 		for (RPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
-			System.out.println(node);
+			System.out.print(node.getName() + ": ");
+			for (RPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
+				System.out.print(child.getName() + " ");	
+			}
+			System.out.println();
 		}
 		
 		performBasicChecks(g,rpst);
@@ -64,11 +68,11 @@ public class RPSTTest extends TestCase {
 		System.out.println("-----------------------------------------------------------------------");
 	}
 	
-	*//**
+	/**
 	 * This test is taken from: 
 	 * Artem Polyvyanyy, Jussi Vanhatalo, Hagen Völzer: Simplified Computation and Generalization of the Refined Process Structure Tree. WS-FM 2010: 25-41. 
 	 * See Figures 8 & 9.
-	 *//*
+	 */
 	public void testWSFM10_Figures8and9() {
 		System.out.println("WSFM'10: Figures 8 & 9");
 		MultiDirectedGraph g = new MultiDirectedGraph();
@@ -88,7 +92,11 @@ public class RPSTTest extends TestCase {
 		IOUtils.toFile("rpst.dot", rpst.toDOT());
 		
 		for (RPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
-			System.out.println(node);
+			System.out.print(node.getName() + ": ");
+			for (RPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
+				System.out.print(child.getName() + " ");	
+			}
+			System.out.println();
 		}
 		
 		performBasicChecks(g,rpst);
@@ -110,11 +118,11 @@ public class RPSTTest extends TestCase {
 		System.out.println("-----------------------------------------------------------------------");
 	}
 	
-	*//**
+	/**
 	 * This test is taken from: 
 	 * Jussi Vanhatalo, Hagen Völzer, Jana Koehler: The Refined Process Structure Tree. BPM 2008: 100-115.  
 	 * See Figure 11.
-	 *//*
+	 */
 	public void testBPM08_Figure6() {
 		System.out.println("BPM'08: Figure 6");
 		MultiDirectedGraph g = new MultiDirectedGraph();
@@ -159,7 +167,11 @@ public class RPSTTest extends TestCase {
 		IOUtils.toFile("rpst.dot", rpst.toDOT());
 		
 		for (RPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
-			System.out.println(node);
+			System.out.print(node.getName() + ": ");
+			for (RPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
+				System.out.print(child.getName() + " ");	
+			}
+			System.out.println();
 		}
 		
 		performBasicChecks(g,rpst);
@@ -178,7 +190,7 @@ public class RPSTTest extends TestCase {
 		assertEquals(5,rpst.getRPSTNodes(TCType.BOND).iterator().next().getFragment().size());
 		
 		System.out.println("-----------------------------------------------------------------------");
-	}*/
+	}
 	
 	/**
 	 * This test is taken from: 
@@ -208,13 +220,13 @@ public class RPSTTest extends TestCase {
 		IOUtils.toFile("rpst.dot", rpst.toDOT());
 		rpst.debug();
 		
-		/*for (RPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
+		for (RPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
 			System.out.print(node.getName() + ": ");
 			for (RPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
 				System.out.print(child.getName() + " ");	
 			}
 			System.out.println();
-		}*/
+		}
 		
 		performBasicChecks(g,rpst);
 		assertEquals(11,rpst.getRPSTNodes().size());
@@ -248,7 +260,7 @@ public class RPSTTest extends TestCase {
 	 * Artem Polyvyanyy, Jussi Vanhatalo, Hagen Völzer: Simplified Computation and Generalization of the Refined Process Structure Tree. WS-FM 2010: 25-41. 
 	 * See Figure 12(a).
 	 */
-	/*public void testWSFM10_Figure12a() {
+	public void testWSFM10_Figure12a() {
 		System.out.println("WSFM'10: Figure 12(a)");
 		MultiDirectedGraph g = new MultiDirectedGraph();
 		
@@ -266,7 +278,11 @@ public class RPSTTest extends TestCase {
 		IOUtils.toFile("rpst.dot", rpst.toDOT());
 		
 		for (RPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
-			System.out.println(node);
+			System.out.print(node.getName() + ": ");
+			for (RPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
+				System.out.print(child.getName() + " ");	
+			}
+			System.out.println();
 		}
 		
 		performBasicChecks(g,rpst);
@@ -292,11 +308,11 @@ public class RPSTTest extends TestCase {
 		System.out.println("-----------------------------------------------------------------------");
 	}
 	
-	*//**
+	/**
 	 * This test is taken from: 
 	 * Artem Polyvyanyy, Jussi Vanhatalo, Hagen Völzer: Simplified Computation and Generalization of the Refined Process Structure Tree. WS-FM 2010: 25-41. 
 	 * See Figure 12(b).
-	 *//*
+	 */
 	public void testWSFM10_Figure12b() {
 		System.out.println("WSFM'10: Figure 12(b)");
 		MultiDirectedGraph g = new MultiDirectedGraph();
@@ -318,7 +334,11 @@ public class RPSTTest extends TestCase {
 		IOUtils.toFile("rpst.dot", rpst.toDOT());
 		
 		for (RPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
-			System.out.println(node);
+			System.out.print(node.getName() + ": ");
+			for (RPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
+				System.out.print(child.getName() + " ");	
+			}
+			System.out.println();
 		}
 		
 		performBasicChecks(g,rpst);
@@ -349,11 +369,11 @@ public class RPSTTest extends TestCase {
 		System.out.println("-----------------------------------------------------------------------");
 	}
 	
-	*//**
+	/**
 	 * This test is taken from: 
 	 * Artem Polyvyanyy, Jussi Vanhatalo, Hagen Völzer: Simplified Computation and Generalization of the Refined Process Structure Tree. WS-FM 2010: 25-41. 
 	 * See Figure 12(c).
-	 *//*
+	 */
 	public void testWSFM10_Figure12c() {
 		System.out.println("WSFM'10: Figure 12(c)");
 		MultiDirectedGraph g = new MultiDirectedGraph();
@@ -375,7 +395,11 @@ public class RPSTTest extends TestCase {
 		IOUtils.toFile("rpst.dot", rpst.toDOT());
 		
 		for (RPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
-			System.out.println(node);
+			System.out.print(node.getName() + ": ");
+			for (RPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
+				System.out.print(child.getName() + " ");	
+			}
+			System.out.println();
 		}
 		
 		performBasicChecks(g,rpst);
@@ -399,11 +423,11 @@ public class RPSTTest extends TestCase {
 		System.out.println("-----------------------------------------------------------------------");
 	}
 	
-	*//**
+	/**
 	 * This test is taken from: 
 	 * Artem Polyvyanyy, Jussi Vanhatalo, Hagen Völzer: Simplified Computation and Generalization of the Refined Process Structure Tree. WS-FM 2010: 25-41. 
 	 * See Figure 13.
-	 *//*
+	 */
 	public void testWSFM10_Figure13() {
 		System.out.println("WSFM'10: Figure 13");
 		MultiDirectedGraph g = new MultiDirectedGraph();
@@ -427,7 +451,11 @@ public class RPSTTest extends TestCase {
 		IOUtils.toFile("rpst.dot", rpst.toDOT());
 		
 		for (RPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
-			System.out.println(node);
+			System.out.print(node.getName() + ": ");
+			for (RPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
+				System.out.print(child.getName() + " ");	
+			}
+			System.out.println();
 		}
 		
 		performBasicChecks(g,rpst);
@@ -453,11 +481,11 @@ public class RPSTTest extends TestCase {
 		System.out.println("-----------------------------------------------------------------------");
 	}
 	
-	*//**
+	/**
 	 * This test is taken from: 
 	 * Artem Polyvyanyy, Jussi Vanhatalo, Hagen Völzer: Simplified Computation and Generalization of the Refined Process Structure Tree. WS-FM 2010: 25-41. 
 	 * See Figure 14.
-	 *//*
+	 */
 	public void testWSFM10_Figure14() {
 		System.out.println("WSFM'10: Figure 14");
 		MultiDirectedGraph g = new MultiDirectedGraph();
@@ -480,7 +508,11 @@ public class RPSTTest extends TestCase {
 		IOUtils.toFile("rpst.dot", rpst.toDOT());
 		
 		for (RPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
-			System.out.println(node);
+			System.out.print(node.getName() + ": ");
+			for (RPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
+				System.out.print(child.getName() + " ");	
+			}
+			System.out.println();
 		}
 		
 		performBasicChecks(g,rpst);
@@ -491,7 +523,7 @@ public class RPSTTest extends TestCase {
 		assertEquals(0,rpst.getRPSTNodes(TCType.RIGID).size());
 		
 		System.out.println("-----------------------------------------------------------------------");
-	}*/
+	}
 	
 	private void performBasicChecks(MultiDirectedGraph g, RPST<DirectedEdge, Vertex> rpst) {
 		for (RPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
