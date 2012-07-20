@@ -197,18 +197,18 @@ public class AbstractMultiHyperGraph <E extends IHyperEdge<V>,V extends IVertex>
 	 */
 	@Override
 	public String toString() {
-		String res = "";
+		String result = "";
 		
 		Iterator<V> j = this.getDisconnectedVertices().iterator();
 		while (j.hasNext()) {
-			res += j.next();
+			result += String.format("%s, ", j.next());
 		}
 		
 		Iterator<E> i = this.getEdges().iterator();
 		while (i.hasNext())
-			res += i.next();
+			result += String.format("%s, ", i.next());
 		
-		return res.trim();
+		return result.length()>0 ? result.substring(0, result.length()-2) : result;
 	}
 
 	/*

@@ -254,6 +254,7 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
 
 	/**
 	 * Check if triconnected component must be root of the tree.
+	 * 
 	 * @param v Triconnected component.
 	 * @return <tt>true</tt> if the triconnected component contains the back edge; otherwise <tt>false</tt>.
 	 */
