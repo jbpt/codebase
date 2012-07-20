@@ -259,7 +259,7 @@ public class RPST<E extends IDirectedEdge<V>, V extends IVertex> extends Abstrac
 	 * @param node Node of the RPST. 
 	 * @return An ordered list of polygon child fragments; the order is random if node is not of type polygon.
 	 */
-	/*public List<RPSTNode<E,V>> getPolygonChildren(RPSTNode<E,V> node) {
+	 public List<RPSTNode<E,V>> getPolygonChildren(RPSTNode<E,V> node) {
 		List<RPSTNode<E,V>> result = new ArrayList<RPSTNode<E,V>>();
 		
 		if (node.getType()!=TCType.POLYGON) {
@@ -268,7 +268,6 @@ public class RPST<E extends IDirectedEdge<V>, V extends IVertex> extends Abstrac
 		}
 	
 		Map<V,Set<RPSTNode<E,V>>> entry2nodes = new HashMap<V,Set<RPSTNode<E,V>>>();
-		Map<V,Set<RPSTNode<E,V>>> exit2nodes = new HashMap<V,Set<RPSTNode<E,V>>>();
 		
 		for (RPSTNode<E,V> n : this.getChildren(node)) {
 			if (entry2nodes.get(n.getEntry())==null) {
@@ -278,21 +277,9 @@ public class RPST<E extends IDirectedEdge<V>, V extends IVertex> extends Abstrac
 			}
 			else 
 				entry2nodes.get(n.getEntry()).add(n);
-			
-			if (exit2nodes.get(n.getExit())==null) {
-				Set<RPSTNode<E,V>> set = new HashSet<RPSTNode<E,V>>();
-				set.add(n);
-				exit2nodes.put(n.getExit(),set);
-			}
-			else 
-				exit2nodes.get(n.getExit()).add(n);
 		}
 		
-		Set<V> entries = new HashSet<V>(entry2nodes.keySet());
-		Set<V> exits = new HashSet<V>(exit2nodes.keySet());
-		entries.removeAll(exits);
-		V entry = entries.iterator().next();
-		
+		V entry = node.getEntry();
 		while (entry2nodes.get(entry)!=null) {
 			Set<RPSTNode<E,V>> nodes = entry2nodes.get(entry);
 			if (nodes.size()==1) {
@@ -310,20 +297,12 @@ public class RPST<E extends IDirectedEdge<V>, V extends IVertex> extends Abstrac
 				result.add(last);
 				entry = last.getExit();
 			}
-			
+			if (entry==null) break;
+			if (entry==node.getEntry()) break;
 		}
 		
 		return result;
-	}*/
-	
-	/*class RPSTNodeComparator implements Comparator<RPSTNode<E,V>> {
-		@Override
-		public int compare(RPSTNode<E,V> node1, RPSTNode<E,V> node2) {
-			if (node1.getExit()==node2.getEntry()) return -1;
-			if (node2.getExit()==node1.getEntry()) return 1;
-			return 0;
-		}
-	}*/
+	}
 	
 	public void debug() {
 		System.out.println("DEBUG");
