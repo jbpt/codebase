@@ -1,6 +1,6 @@
 package org.jbpt.graph.abs;
 
-import java.util.Collection;
+import java.util.Set;
 
 import org.jbpt.hypergraph.abs.IVertex;
 
@@ -40,7 +40,7 @@ public interface ITree <V extends IVertex> {
 	 * @param v Vertex of this tree.
 	 * @return Children of the vertex.
 	 */
-	public Collection<V> getChildren(V v);
+	public Set<V> getChildren(V v);
 	
 	/**
 	 * Get parent of the vertex

@@ -71,8 +71,9 @@ public class AbstractTree<V extends IVertex> extends AbstractDirectedGraph<IDire
 	}
 
 	@Override
-	public Collection<V> getChildren(V v) {
-		return super.getDirectSuccessors(v);
+	public Set<V> getChildren(V v) {
+		// TODO: super.getDirectSuccessors(v) must return a set
+		return new HashSet<V>(super.getDirectSuccessors(v));
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -95,9 +96,9 @@ public class RPST<E extends IDirectedEdge<V>, V extends IVertex> extends Abstrac
 	 * Get RPST nodes induced by triconnected components of a given {@link TCType} class.
 	 * 
 	 * @param {@link TCType} class.
-	 * @return Collection of RPST nodes induced by the given {@link TCType} class.
+	 * @return Set of RPST nodes induced by the given {@link TCType} class.
 	 */
-	public Collection<RPSTNode<E,V>> getRPSTNodes(TCType type) {
+	public Set<RPSTNode<E,V>> getRPSTNodes(TCType type) {
 		Set<RPSTNode<E,V>> result = new HashSet<RPSTNode<E,V>>();
 		for (RPSTNode<E,V> node : this.getVertices())
 			if (node.getType()==type)
@@ -109,10 +110,11 @@ public class RPST<E extends IDirectedEdge<V>, V extends IVertex> extends Abstrac
 	/**
 	 * Get RPST nodes.
 	 * 
-	 * @return Collection of RPST nodes.
+	 * @return Set of RPST nodes.
 	 */
-	public Collection<RPSTNode<E,V>> getRPSTNodes() {
-		return this.getVertices();
+	public Set<RPSTNode<E,V>> getRPSTNodes() {
+		// TODO: this.getVertices() must return a set
+		return new HashSet<RPSTNode<E,V>>(this.getVertices());
 	}
 	
 	private void normalizeGraph() {
@@ -247,7 +249,83 @@ public class RPST<E extends IDirectedEdge<V>, V extends IVertex> extends Abstrac
 		}
 	}
 	
-	/*public void debug() {
+	/**
+	 * Get ordered children of a polygon fragment. 
+	 * A polygon is a sequence of other fragments such that the exit of the i-th fragment in the sequence is the entry to the (i+1)-th fragment.<br/><br/> 
+	 * 
+	 * NOTE THAT THE ENTRY OF THE FIRST AND THE EXIT OF THE LAST FRAGMENT CAN BE NULL. 
+	 * THIS IS THE CASE IF THE POLYGON CONTAINS MULTIPLE SOURCES AND/OR SINKS OF THE GRAPH.
+	 * 
+	 * @param node Node of the RPST. 
+	 * @return An ordered list of polygon child fragments; the order is random if node is not of type polygon.
+	 */
+	/*public List<RPSTNode<E,V>> getPolygonChildren(RPSTNode<E,V> node) {
+		List<RPSTNode<E,V>> result = new ArrayList<RPSTNode<E,V>>();
+		
+		if (node.getType()!=TCType.POLYGON) {
+			result.addAll(this.getChildren(node));
+			return result;
+		}
+	
+		Map<V,Set<RPSTNode<E,V>>> entry2nodes = new HashMap<V,Set<RPSTNode<E,V>>>();
+		Map<V,Set<RPSTNode<E,V>>> exit2nodes = new HashMap<V,Set<RPSTNode<E,V>>>();
+		
+		for (RPSTNode<E,V> n : this.getChildren(node)) {
+			if (entry2nodes.get(n.getEntry())==null) {
+				Set<RPSTNode<E,V>> set = new HashSet<RPSTNode<E,V>>();
+				set.add(n);
+				entry2nodes.put(n.getEntry(),set);
+			}
+			else 
+				entry2nodes.get(n.getEntry()).add(n);
+			
+			if (exit2nodes.get(n.getExit())==null) {
+				Set<RPSTNode<E,V>> set = new HashSet<RPSTNode<E,V>>();
+				set.add(n);
+				exit2nodes.put(n.getExit(),set);
+			}
+			else 
+				exit2nodes.get(n.getExit()).add(n);
+		}
+		
+		Set<V> entries = new HashSet<V>(entry2nodes.keySet());
+		Set<V> exits = new HashSet<V>(exit2nodes.keySet());
+		entries.removeAll(exits);
+		V entry = entries.iterator().next();
+		
+		while (entry2nodes.get(entry)!=null) {
+			Set<RPSTNode<E,V>> nodes = entry2nodes.get(entry);
+			if (nodes.size()==1) {
+				result.addAll(nodes);
+				entry = nodes.iterator().next().getExit();
+			}
+			else if (nodes.size()>1) {
+				RPSTNode<E,V> last = null;
+				for (RPSTNode<E,V> curr : nodes) {
+					if (curr.getEntry().equals(curr.getExit()))
+						result.add(curr);
+					else 
+						last = curr;
+				}
+				result.add(last);
+				entry = last.getExit();
+			}
+			
+		}
+		
+		return result;
+	}*/
+	
+	/*class RPSTNodeComparator implements Comparator<RPSTNode<E,V>> {
+		@Override
+		public int compare(RPSTNode<E,V> node1, RPSTNode<E,V> node2) {
+			if (node1.getExit()==node2.getEntry()) return -1;
+			if (node2.getExit()==node1.getEntry()) return 1;
+			return 0;
+		}
+	}*/
+	
+	public void debug() {
 		System.out.println("DEBUG");
 		
 		IOUtils.toFile("original.dot", this.diGraph.toDOT());
@@ -258,5 +336,5 @@ public class RPST<E extends IDirectedEdge<V>, V extends IVertex> extends Abstrac
 			if (node.getType()==TCType.TRIVIAL) continue;
 			IOUtils.toFile(node.getName()+".dot", node.getSkeleton().toDOT());
 		}
-	}*/
+	}
 }
