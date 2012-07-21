@@ -1,0 +1,6 @@
+Trace ID;Number of Matched Tasks;Constraint-Rel BP Conformance;Model-Rel BP Conformance;Constraint-Rel Co-occurrence Conformance;Model-Rel Co-occurrence Conformance;Constraint-Rel Overall Conformance;Model-Rel Overall Conformance
+4;3;1.0;1.0;0.625;0.75;0.8;0.85714287
+3;7;0.8;0.8367347;0.6923077;0.8545455;0.73913044;0.8490566
+2;7;0.82608694;0.8367347;0.8181818;0.8888889;0.82222223;0.8677686
+1;8;1.0;1.0;1.0;1.0;1.0;1.0
+5;4;1.0;1.0;0.5;0.61904764;0.6363636;0.7241379
