@@ -1,4 +1,4 @@
-package org.jbpt.petri.behavior;
+package org.jbpt.petri.conform;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -15,6 +15,7 @@ import org.jbpt.alignment.LabelEntity;
 import org.jbpt.bp.BehaviouralProfile;
 import org.jbpt.bp.CausalBehaviouralProfile;
 import org.jbpt.bp.RelSetType;
+import org.jbpt.petri.behavior.AbstractAnalysis;
 import org.jbpt.petri.log.Trace;
 
 public class ConformanceRootCauseAnalysis extends AbstractAnalysis {
