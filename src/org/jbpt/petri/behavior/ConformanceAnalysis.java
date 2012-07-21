@@ -9,13 +9,12 @@ import org.jbpt.alignment.LabelEntity;
 import org.jbpt.bp.BehaviouralProfile;
 import org.jbpt.bp.CausalBehaviouralProfile;
 import org.jbpt.bp.RelSetType;
-import org.jbpt.petri.Node;
-import org.jbpt.petri.PetriNet;
+import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.log.Trace;
 
 public class ConformanceAnalysis extends AbstractAnalysis {
 	
-	protected static Set<String> IGNORED_LABELS = new HashSet<String>();
+	protected static Set<String> IGNORED_LABEL_SUBSTRINGS = new HashSet<String>();
 	
 	static {
 //		IGNORED_LABELS.add("start");
@@ -25,34 +24,32 @@ public class ConformanceAnalysis extends AbstractAnalysis {
 	
 	protected Set<TraceAnalysisTask> traceAnalysisTasks = new HashSet<TraceAnalysisTask>();
 	
-	protected CausalBehaviouralProfile<PetriNet, LabelEntity> baseProfile;
-	protected List<String> modelLabels = new ArrayList<String>(); 
-	protected boolean[][] modelCooccurrencesForLabels;
+	protected CausalBehaviouralProfile<NetSystem, LabelEntity> baseProfile;
 	
 	protected ConformanceRootCauseAnalysis rootCauseAnalysis = new ConformanceRootCauseAnalysis();
 	
-	protected class TraceAnalysisTask {
+	public class TraceAnalysisTask {
 		
 		protected BehaviouralProfile<Trace, LabelEntity> traceProfile;
 
-		protected float constraintRelativeBehaviouralProfileCompliance = -1;
-		protected float modelRelativeBehaviouralProfileCompliance = -1;
+		protected float constraintRelativeBehaviouralProfileConformance = -1;
+		protected float modelRelativeBehaviouralProfileConformance = -1;
 
-		protected float constraintRelativeBehaviouralProfileComplianceTop = -1;
-		protected float constraintRelativeBehaviouralProfileComplianceBottom = -1;
-		protected float modelRelativeBehaviouralProfileComplianceTop = -1;
-		protected float modelRelativeBehaviouralProfileComplianceBottom = -1;
+		protected float constraintRelativeBehaviouralProfileConformanceTop = -1;
+		protected float constraintRelativeBehaviouralProfileConformanceBottom = -1;
+		protected float modelRelativeBehaviouralProfileConformanceTop = -1;
+		protected float modelRelativeBehaviouralProfileConformanceBottom = -1;
 
-		protected float constraintRelativeCooccurrenceCompliance = -1;
-		protected float modelRelativeCooccurrenceCompliance = -1;
+		protected float constraintRelativeCooccurrenceConformance = -1;
+		protected float modelRelativeCooccurrenceConformance = -1;
 
-		protected float constraintRelativeOverallCompliance = -1;
-		protected float modelRelativeOverallCompliance = -1;
+		protected float constraintRelativeOverallConformance = -1;
+		protected float modelRelativeOverallConformance = -1;
 
-		protected float constraintRelativeCooccurrenceComplianceTop = -1;
-		protected float constraintRelativeCooccurrenceComplianceBottom = -1;
-		protected float modelRelativeCooccurrenceComplianceTop = -1;
-		protected float modelRelativeCooccurrenceComplianceBottom = -1;
+		protected float constraintRelativeCooccurrenceConformanceTop = -1;
+		protected float constraintRelativeCooccurrenceConformanceBottom = -1;
+		protected float modelRelativeCooccurrenceConformanceTop = -1;
+		protected float modelRelativeCooccurrenceConformanceBottom = -1;
 
 		protected List<String> traceLabelsAsList = new ArrayList<String>();
 		
@@ -78,188 +75,153 @@ public class ConformanceAnalysis extends AbstractAnalysis {
 			this.traceProfile = traceProfile;
 		}
 
-		public float getConstraintRelativeCooccurrenceCompliance() {
-			return constraintRelativeCooccurrenceCompliance;
+		public float getConstraintRelativeCooccurrenceConformance() {
+			return constraintRelativeCooccurrenceConformance;
 		}
 
 
-		public void setConstraintRelativeCooccurrenceCompliance(
-				float constraintRelativeCooccurrenceCompliance) {
-			this.constraintRelativeCooccurrenceCompliance = constraintRelativeCooccurrenceCompliance;
+		public void setConstraintRelativeCooccurrenceConformance(
+				float constraintRelativeCooccurrenceConformance) {
+			this.constraintRelativeCooccurrenceConformance = constraintRelativeCooccurrenceConformance;
 		}
 
 
-		public float getModelRelativeCooccurrenceCompliance() {
-			return modelRelativeCooccurrenceCompliance;
+		public float getModelRelativeCooccurrenceConformance() {
+			return modelRelativeCooccurrenceConformance;
 		}
 
 
-		public void setModelRelativeCooccurrenceCompliance(
-				float modelRelativeCooccurrenceCompliance) {
-			this.modelRelativeCooccurrenceCompliance = modelRelativeCooccurrenceCompliance;
+		public void setModelRelativeCooccurrenceConformance(
+				float modelRelativeCooccurrenceConformance) {
+			this.modelRelativeCooccurrenceConformance = modelRelativeCooccurrenceConformance;
 		}
 
 
-		public float getConstraintRelativeCompliance() {
-			return constraintRelativeOverallCompliance;
+		public float getConstraintRelativeConformance() {
+			return constraintRelativeOverallConformance;
 		}
 
 
-		public void setConstraintRelativeCompliance(float constraintRelativeCompliance) {
-			this.constraintRelativeOverallCompliance = constraintRelativeCompliance;
+		public void setConstraintRelativeConformance(float constraintRelativeConformance) {
+			this.constraintRelativeOverallConformance = constraintRelativeConformance;
 		}
 
 
-		public float getModelRelativeCompliance() {
-			return modelRelativeOverallCompliance;
+		public float getModelRelativeConformance() {
+			return modelRelativeOverallConformance;
 		}
 
 
-		public void setModelRelativeCompliance(float modelRelativeCompliance) {
-			this.modelRelativeOverallCompliance = modelRelativeCompliance;
+		public void setModelRelativeConformance(float modelRelativeConformance) {
+			this.modelRelativeOverallConformance = modelRelativeConformance;
 		}
 
-		public float getConstraintRelativeCooccurrenceComplianceTop() {
-			return constraintRelativeCooccurrenceComplianceTop;
+		public float getConstraintRelativeCooccurrenceConformanceTop() {
+			return constraintRelativeCooccurrenceConformanceTop;
 		}
 
-		public void setConstraintRelativeCooccurrenceComplianceTop(
-				float constraintRelativeCooccurrenceComplianceTop) {
-			this.constraintRelativeCooccurrenceComplianceTop = constraintRelativeCooccurrenceComplianceTop;
+		public void setConstraintRelativeCooccurrenceConformanceTop(
+				float constraintRelativeCooccurrenceConformanceTop) {
+			this.constraintRelativeCooccurrenceConformanceTop = constraintRelativeCooccurrenceConformanceTop;
 		}
 
-		public float getConstraintRelativeCooccurrenceComplianceBottom() {
-			return constraintRelativeCooccurrenceComplianceBottom;
+		public float getConstraintRelativeCooccurrenceConformanceBottom() {
+			return constraintRelativeCooccurrenceConformanceBottom;
 		}
 
-		public void setConstraintRelativeCooccurrenceComplianceBottom(
-				float constraintRelativeCooccurrenceComplianceBottom) {
-			this.constraintRelativeCooccurrenceComplianceBottom = constraintRelativeCooccurrenceComplianceBottom;
+		public void setConstraintRelativeCooccurrenceConformanceBottom(
+				float constraintRelativeCooccurrenceConformanceBottom) {
+			this.constraintRelativeCooccurrenceConformanceBottom = constraintRelativeCooccurrenceConformanceBottom;
 		}
 
-		public float getModelRelativeCooccurrenceComplianceTop() {
-			return modelRelativeCooccurrenceComplianceTop;
+		public float getModelRelativeCooccurrenceConformanceTop() {
+			return modelRelativeCooccurrenceConformanceTop;
 		}
 
-		public void setModelRelativeCooccurrenceComplianceTop(
-				float modelRelativeCooccurrenceComplianceTop) {
-			this.modelRelativeCooccurrenceComplianceTop = modelRelativeCooccurrenceComplianceTop;
+		public void setModelRelativeCooccurrenceConformanceTop(
+				float modelRelativeCooccurrenceConformanceTop) {
+			this.modelRelativeCooccurrenceConformanceTop = modelRelativeCooccurrenceConformanceTop;
 		}
 
-		public float getModelRelativeCooccurrenceComplianceBottom() {
-			return modelRelativeCooccurrenceComplianceBottom;
+		public float getModelRelativeCooccurrenceConformanceBottom() {
+			return modelRelativeCooccurrenceConformanceBottom;
 		}
 
-		public void setModelRelativeCooccurrenceComplianceBottom(
-				float modelRelativeCooccurrenceComplianceBottom) {
-			this.modelRelativeCooccurrenceComplianceBottom = modelRelativeCooccurrenceComplianceBottom;
+		public void setModelRelativeCooccurrenceConformanceBottom(
+				float modelRelativeCooccurrenceConformanceBottom) {
+			this.modelRelativeCooccurrenceConformanceBottom = modelRelativeCooccurrenceConformanceBottom;
 		}
 
-		public float getConstraintRelativeBehaviouralProfileCompliance() {
-			return constraintRelativeBehaviouralProfileCompliance;
+		public float getConstraintRelativeBehaviouralProfileConformance() {
+			return constraintRelativeBehaviouralProfileConformance;
 		}
 
-		public void setConstraintRelativeBehaviouralProfileCompliance(
-				float constraintRelativeBehaviouralProfileCompliance) {
-			this.constraintRelativeBehaviouralProfileCompliance = constraintRelativeBehaviouralProfileCompliance;
+		public void setConstraintRelativeBehaviouralProfileConformance(
+				float constraintRelativeBehaviouralProfileConformance) {
+			this.constraintRelativeBehaviouralProfileConformance = constraintRelativeBehaviouralProfileConformance;
 		}
 
-		public float getModelRelativeBehaviouralProfileCompliance() {
-			return modelRelativeBehaviouralProfileCompliance;
+		public float getModelRelativeBehaviouralProfileConformance() {
+			return modelRelativeBehaviouralProfileConformance;
 		}
 
-		public void setModelRelativeBehaviouralProfileCompliance(
-				float modelRelativeBehaviouralProfileCompliance) {
-			this.modelRelativeBehaviouralProfileCompliance = modelRelativeBehaviouralProfileCompliance;
+		public void setModelRelativeBehaviouralProfileConformance(
+				float modelRelativeBehaviouralProfileConformance) {
+			this.modelRelativeBehaviouralProfileConformance = modelRelativeBehaviouralProfileConformance;
 		}
 
-		public float getConstraintRelativeBehaviouralProfileComplianceTop() {
-			return constraintRelativeBehaviouralProfileComplianceTop;
+		public float getConstraintRelativeBehaviouralProfileConformanceTop() {
+			return constraintRelativeBehaviouralProfileConformanceTop;
 		}
 
-		public void setConstraintRelativeBehaviouralProfileComplianceTop(
-				float constraintRelativeBehaviouralProfileComplianceTop) {
-			this.constraintRelativeBehaviouralProfileComplianceTop = constraintRelativeBehaviouralProfileComplianceTop;
+		public void setConstraintRelativeBehaviouralProfileConformanceTop(
+				float constraintRelativeBehaviouralProfileConformanceTop) {
+			this.constraintRelativeBehaviouralProfileConformanceTop = constraintRelativeBehaviouralProfileConformanceTop;
 		}
 
-		public float getConstraintRelativeBehaviouralProfileComplianceBottom() {
-			return constraintRelativeBehaviouralProfileComplianceBottom;
+		public float getConstraintRelativeBehaviouralProfileConformanceBottom() {
+			return constraintRelativeBehaviouralProfileConformanceBottom;
 		}
 
-		public void setConstraintRelativeBehaviouralProfileComplianceBottom(
-				float constraintRelativeBehaviouralProfileComplianceBottom) {
-			this.constraintRelativeBehaviouralProfileComplianceBottom = constraintRelativeBehaviouralProfileComplianceBottom;
+		public void setConstraintRelativeBehaviouralProfileConformanceBottom(
+				float constraintRelativeBehaviouralProfileConformanceBottom) {
+			this.constraintRelativeBehaviouralProfileConformanceBottom = constraintRelativeBehaviouralProfileConformanceBottom;
 		}
 
-		public float getModelRelativeBehaviouralProfileComplianceTop() {
-			return modelRelativeBehaviouralProfileComplianceTop;
+		public float getModelRelativeBehaviouralProfileConformanceTop() {
+			return modelRelativeBehaviouralProfileConformanceTop;
 		}
 
-		public void setModelRelativeBehaviouralProfileComplianceTop(
-				float modelRelativeBehaviouralProfileComplianceTop) {
-			this.modelRelativeBehaviouralProfileComplianceTop = modelRelativeBehaviouralProfileComplianceTop;
+		public void setModelRelativeBehaviouralProfileConformanceTop(
+				float modelRelativeBehaviouralProfileConformanceTop) {
+			this.modelRelativeBehaviouralProfileConformanceTop = modelRelativeBehaviouralProfileConformanceTop;
 		}
 
-		public float getModelRelativeBehaviouralProfileComplianceBottom() {
-			return modelRelativeBehaviouralProfileComplianceBottom;
+		public float getModelRelativeBehaviouralProfileConformanceBottom() {
+			return modelRelativeBehaviouralProfileConformanceBottom;
 		}
 
-		public void setModelRelativeBehaviouralProfileComplianceBottom(
-				float modelRelativeBehaviouralProfileComplianceBottom) {
-			this.modelRelativeBehaviouralProfileComplianceBottom = modelRelativeBehaviouralProfileComplianceBottom;
+		public void setModelRelativeBehaviouralProfileConformanceBottom(
+				float modelRelativeBehaviouralProfileConformanceBottom) {
+			this.modelRelativeBehaviouralProfileConformanceBottom = modelRelativeBehaviouralProfileConformanceBottom;
 		}
 
 	}
 	
-	public ConformanceAnalysis() {
+	public ConformanceAnalysis(CausalBehaviouralProfile<NetSystem, LabelEntity> profile) {
 		super();
-	}
-	
-	public void init(CausalBehaviouralProfile<PetriNet, LabelEntity> profile) {
-		
 		this.baseProfile = profile;
-		
-		for (Node t : this.baseProfile.getModel().getObservableTransitions())
-			modelLabels.add(t.getLabel());
-		
-//		int count = profile.getModel().getObservableTransitions().size();
-//		this.modelCooccurrencesForLabels = new boolean[count][count];
-//
-//		/*
-//		 * Set co-occurrences between labels for model
-//		 */
-//		for (int i=0; i<count; i++)
-//			for (int j=0; j<count; j++)
-//				modelCooccurrencesForLabels[i][j] = false;
-//		
-//		
-//		for(Transition n1 : profile.getModel().getObservableTransitions()) {
-//			for(Transition n2 : profile.getModel().getObservableTransitions()) {
-//				String label1 = n1.getLabel();
-//				String label2 = n2.getLabel();
-//				if (profile.areCooccurring(n1, n2))
-//					setCooccurrence(label1,label2,true);
-//			}
-//		}
 	}
 	
-	protected void setCooccurrence(String a1, String a2, boolean value) {
-		modelCooccurrencesForLabels[modelLabels.indexOf(a1)][modelLabels.indexOf(a2)] = value;
-	}
-	
-	protected boolean getCooccurrence(String a1, String a2) {
-		return modelCooccurrencesForLabels[modelLabels.indexOf(a1)][modelLabels.indexOf(a2)];
-	}
-	
-	public void addLogAnalysisTask(BehaviouralProfile<Trace,LabelEntity> logProfile) {
-		TraceAnalysisTask task = new TraceAnalysisTask(logProfile);
+	public void addTrace(BehaviouralProfile<Trace,LabelEntity> traceProfile) {
+		TraceAnalysisTask task = new TraceAnalysisTask(traceProfile);
 		this.traceAnalysisTasks.add(task);
-		this.rootCauseAnalysis.addTrace(logProfile);
+		this.rootCauseAnalysis.addTrace(traceProfile);
 	}
 	
-	public void setRelationsForLogAnalysisTasksAndComputeBPCompliance() {
+	public void computeBPConformance() {
 		for (TraceAnalysisTask p : this.traceAnalysisTasks) {
-			setRelationsForAnalysisTaskAndComputeBPCompliance(p);
+			computeBPConformance(p);
 		}
 	}
 
@@ -291,7 +253,7 @@ public class ConformanceAnalysis extends AbstractAnalysis {
 		return false;
 	}
 	
-	protected void setRelationsForAnalysisTaskAndComputeBPCompliance(TraceAnalysisTask pair) {	
+	protected void computeBPConformance(TraceAnalysisTask pair) {	
 
 		float consistentPairs = 0;
 		float consistentNonInterleavingPairs = 0;
@@ -347,13 +309,13 @@ public class ConformanceAnalysis extends AbstractAnalysis {
 			
 			float countPairs = pair.getTraceLabelsAsList().size() * pair.getTraceLabelsAsList().size();
 			
-			pair.setModelRelativeBehaviouralProfileComplianceTop(consistentPairs);
-			pair.setModelRelativeBehaviouralProfileComplianceBottom(countPairs);
-			pair.setConstraintRelativeBehaviouralProfileComplianceTop(consistentNonInterleavingPairs);
-			pair.setConstraintRelativeBehaviouralProfileComplianceBottom(nonInterleavingPairs);
+			pair.setModelRelativeBehaviouralProfileConformanceTop(consistentPairs);
+			pair.setModelRelativeBehaviouralProfileConformanceBottom(countPairs);
+			pair.setConstraintRelativeBehaviouralProfileConformanceTop(consistentNonInterleavingPairs);
+			pair.setConstraintRelativeBehaviouralProfileConformanceBottom(nonInterleavingPairs);
 
-			pair.setModelRelativeBehaviouralProfileCompliance(consistentPairs / countPairs);
-			pair.setConstraintRelativeBehaviouralProfileCompliance(consistentNonInterleavingPairs / nonInterleavingPairs);
+			pair.setModelRelativeBehaviouralProfileConformance(consistentPairs / countPairs);
+			pair.setConstraintRelativeBehaviouralProfileConformance(consistentNonInterleavingPairs / nonInterleavingPairs);
 
 			
 		} catch (Exception e) {
@@ -365,14 +327,14 @@ public class ConformanceAnalysis extends AbstractAnalysis {
 	public void saveResults(String fileName) {
 		
 		String[] captions = new String[]{
-				"Log ID", 
+				"Trace ID", 
 				"Number of Matched Tasks", 
-				"Constraint-Rel BP Compliance",
-				"Model-Rel BP Compliance",
-				"Constraint-Rel Co-occurrence Compliance",
-				"Model-Rel Co-occurrence Compliance",
-				"Constraint-Rel Overall Compliance",
-				"Model-Rel Overall Compliance"
+				"Constraint-Rel BP Conformance",
+				"Model-Rel BP Conformance",
+				"Constraint-Rel Co-occurrence Conformance",
+				"Model-Rel Co-occurrence Conformance",
+				"Constraint-Rel Overall Conformance",
+				"Model-Rel Overall Conformance"
 				};
 		
 		Set<String[]> rows = new HashSet<String[]>();
@@ -381,12 +343,12 @@ public class ConformanceAnalysis extends AbstractAnalysis {
 			String[] row = new String[8];
 			row[0] = String.valueOf(pair.getTraceProfile().getModel().getId());
 			row[1] = String.valueOf(pair.getTraceLabelsAsList().size());
-			row[2] = String.valueOf(pair.getConstraintRelativeBehaviouralProfileCompliance());
-			row[3] = String.valueOf(pair.getModelRelativeBehaviouralProfileCompliance());
-			row[4] = String.valueOf(pair.getConstraintRelativeCooccurrenceCompliance());
-			row[5] = String.valueOf(pair.getModelRelativeCooccurrenceCompliance());
-			row[6] = String.valueOf(pair.getConstraintRelativeCompliance());
-			row[7] = String.valueOf(pair.getModelRelativeCompliance());
+			row[2] = String.valueOf(pair.getConstraintRelativeBehaviouralProfileConformance());
+			row[3] = String.valueOf(pair.getModelRelativeBehaviouralProfileConformance());
+			row[4] = String.valueOf(pair.getConstraintRelativeCooccurrenceConformance());
+			row[5] = String.valueOf(pair.getModelRelativeCooccurrenceConformance());
+			row[6] = String.valueOf(pair.getConstraintRelativeConformance());
+			row[7] = String.valueOf(pair.getModelRelativeConformance());
 			rows.add(row);
 		}
 		super.writeResultsToFile(fileName,captions,rows);
@@ -396,20 +358,21 @@ public class ConformanceAnalysis extends AbstractAnalysis {
 		this.rootCauseAnalysis.saveResults(fileName);
 	}	
 
-	private boolean isExpected(List<String> log, String expectedLogTask) {
+	private boolean isExpected(List<String> trace, String expectedTraceTask) {
 		
-		for (String logTask1 : log) {
-			for (String logTask2 : log) {
-				if (logTask1!=expectedLogTask && logTask2!=expectedLogTask) {
+		for (String traceTask1 : trace) {
+			for (String traceTask2 : trace) {
+				if (traceTask1!=expectedTraceTask && traceTask2!=expectedTraceTask) {
 					
-					RelSetType relExpLog2 = this.baseProfile.getRelationForEntities(
-							new LabelEntity(expectedLogTask),new LabelEntity(logTask2));
-					RelSetType relLog1Log2 = this.baseProfile.getRelationForEntities(
-							new LabelEntity(logTask1),new LabelEntity(logTask2));
+					RelSetType relExpTrace2 = this.baseProfile.getRelationForEntities(
+							new LabelEntity(expectedTraceTask),new LabelEntity(traceTask2));
+					RelSetType relObs1Trace2 = this.baseProfile.getRelationForEntities(
+							new LabelEntity(traceTask1),new LabelEntity(traceTask2));
 					
-					if (relExpLog2.equals(RelSetType.Order)
-							&& this.baseProfile.areCooccurring(new LabelEntity(logTask1), new LabelEntity(expectedLogTask))
-							&& (logTask1.equals(logTask2) || relLog1Log2.equals(RelSetType.Order)))
+					if (relExpTrace2.equals(RelSetType.Order)
+							&& this.baseProfile.areCooccurring(
+									new LabelEntity(traceTask1),new LabelEntity(expectedTraceTask))
+							&& (traceTask1.equals(traceTask2) || relObs1Trace2.equals(RelSetType.Order)))
 						return true;
 				}
 			}
@@ -418,39 +381,36 @@ public class ConformanceAnalysis extends AbstractAnalysis {
 		return false;
 	}
 
-	public void computeCooccurrenceCompliance() {
+	public void computeCooccurrenceConformance() {
 		for (TraceAnalysisTask p : this.traceAnalysisTasks) {
 			
 			BehaviouralProfile<Trace, LabelEntity> traceProfile = p.getTraceProfile();
 			
-			/*
-			 * Build EA_L
-			 */
-			Set<String> EA_L = new HashSet<String>();
+			Set<String> eA = new HashSet<String>();
 
-			for (int i=0; i<modelLabels.size(); i++) {
-				if (IGNORED_LABELS.contains(modelLabels.get(i)))
+			for (LabelEntity e : this.baseProfile.getEntities()) {
+				if (IGNORED_LABEL_SUBSTRINGS.contains(e.getLabel()))
 						continue;
-				if (traceProfile.getEntities().contains(new LabelEntity(modelLabels.get(i)))
-						|| isExpected(p.getTraceLabelsAsList(),modelLabels.get(i)))
-					EA_L.add(modelLabels.get(i));
+				if (traceProfile.getEntities().contains(e)
+						|| isExpected(p.getTraceLabelsAsList(),e.getLabel()))
+					eA.add(e.getLabel());
 			}
 
 			int topConstraintRel = 0;
 			int topModelRel = 0;
 
 			int bottomConstraintRel = 0;
-			int bottomModelRel = EA_L.size() * EA_L.size() - EA_L.size();
+			int bottomModelRel = eA.size() * eA.size() - eA.size();
 			
-			for (String s1 : EA_L) {
-				for (String s2 : EA_L) {
+			for (String s1 : eA) {
+				for (String s2 : eA) {
 					if (s1.equals(s2))
 						continue;
 					
-					if (IGNORED_LABELS.contains(s1) || IGNORED_LABELS.contains(s2))
+					if (IGNORED_LABEL_SUBSTRINGS.contains(s1) || IGNORED_LABEL_SUBSTRINGS.contains(s2))
 							continue;
 					
-					if (getCooccurrence(s1,s2)) {
+					if (this.baseProfile.areCooccurring(new LabelEntity(s1),new LabelEntity(s2))) {
 						bottomConstraintRel++;
 						if (traceProfile.getEntities().contains(new LabelEntity(s2))) {
 							topConstraintRel++;
@@ -466,31 +426,35 @@ public class ConformanceAnalysis extends AbstractAnalysis {
 				}
 			}
 			
-			p.setModelRelativeCooccurrenceComplianceTop(topModelRel);
-			p.setModelRelativeCooccurrenceComplianceBottom(bottomModelRel);
-			p.setConstraintRelativeCooccurrenceComplianceTop(topConstraintRel);
-			p.setConstraintRelativeCooccurrenceComplianceBottom(bottomConstraintRel);
+			p.setModelRelativeCooccurrenceConformanceTop(topModelRel);
+			p.setModelRelativeCooccurrenceConformanceBottom(bottomModelRel);
+			p.setConstraintRelativeCooccurrenceConformanceTop(topConstraintRel);
+			p.setConstraintRelativeCooccurrenceConformanceBottom(bottomConstraintRel);
 			
-			p.setModelRelativeCooccurrenceCompliance((float) topModelRel / bottomModelRel);
+			p.setModelRelativeCooccurrenceConformance((float) topModelRel / bottomModelRel);
 			
 			if (bottomConstraintRel==0)
-				p.setConstraintRelativeCooccurrenceCompliance(1.0f);
+				p.setConstraintRelativeCooccurrenceConformance(1.0f);
 			else
-				p.setConstraintRelativeCooccurrenceCompliance((float) topConstraintRel / bottomConstraintRel);
+				p.setConstraintRelativeCooccurrenceConformance((float) topConstraintRel / bottomConstraintRel);
 		}
 	}
 
-	public void computeOverallCompliance() {
+	public void computeOverallConformance() {
 		for (TraceAnalysisTask p : this.traceAnalysisTasks) {
-			float constraintRelativeCompliance = (p.getConstraintRelativeBehaviouralProfileComplianceTop()  + p.getConstraintRelativeCooccurrenceComplianceTop())
-			/(p.getConstraintRelativeBehaviouralProfileComplianceBottom() + p.getConstraintRelativeCooccurrenceComplianceBottom());
-			float modelRelativeCompliance = (p.getModelRelativeBehaviouralProfileComplianceTop()  + p.getModelRelativeCooccurrenceComplianceTop())
-			/(p.getModelRelativeBehaviouralProfileComplianceBottom() + p.getModelRelativeCooccurrenceComplianceBottom());
+			float constraintRelativeConformance = (p.getConstraintRelativeBehaviouralProfileConformanceTop()  + p.getConstraintRelativeCooccurrenceConformanceTop())
+			/(p.getConstraintRelativeBehaviouralProfileConformanceBottom() + p.getConstraintRelativeCooccurrenceConformanceBottom());
+			float modelRelativeConformance = (p.getModelRelativeBehaviouralProfileConformanceTop()  + p.getModelRelativeCooccurrenceConformanceTop())
+			/(p.getModelRelativeBehaviouralProfileConformanceBottom() + p.getModelRelativeCooccurrenceConformanceBottom());
 			
-			p.setConstraintRelativeCompliance(constraintRelativeCompliance);
-			p.setModelRelativeCompliance(modelRelativeCompliance);
+			p.setConstraintRelativeConformance(constraintRelativeConformance);
+			p.setModelRelativeConformance(modelRelativeConformance);
 		}
 	}
 
+	public Set<TraceAnalysisTask> getAnalysisTasks() {
+		return this.traceAnalysisTasks;
+	}
+	
 }
 

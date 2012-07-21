@@ -1,0 +1,60 @@
+Trace;First Task;Second Task;Expected Relation;Found Relation
+3;G;O;->;<-
+2;G;D;>>;Violation
+2;G;F;<-;->
+5;C;E;>>;Violation
+5;D;A;>>;Violation
+3;D;E;>>;Violation
+5;F;A;>>;Violation
+3;F;E;>>;Violation
+2;C;B;||;->
+3;G;E;>>;Violation
+4;E;A;>>;Violation
+5;F;I;>>;Violation
+3;C;D;>>;Violation
+3;J;G;||;->
+3;B;G;||;->
+5;G;E;>>;Violation
+3;E;D;>>;Violation
+3;H;G;||;->
+3;G;D;>>;Violation
+4;I;A;>>;Violation
+5;I;A;>>;Violation
+5;G;A;>>;Violation
+3;F;C;>>;Violation
+5;D;I;>>;Violation
+2;C;D;>>;Violation
+2;E;D;>>;Violation
+2;B;F;||;->
+5;G;I;>>;Violation
+3;D;C;>>;Violation
+3;G;H; +;<-
+3;G;C;>>;Violation
+5;F;E;>>;Violation
+2;G;E;>>;Violation
+5;E;I;>>;Violation
+3;F;D;>>;Violation
+2;D;E;>>;Violation
+4;C;A;>>;Violation
+2;B;C; +;<-
+2;F;E;>>;Violation
+2;C;E;>>;Violation
+5;D;E;>>;Violation
+5;C;A;>>;Violation
+2;F;D;>>;Violation
+2;F;G;->;<-
+3;C;E;>>;Violation
+2;B;G;||;->
+5;C;I;>>;Violation
+3;G;F;>>;Violation
+2;G;B; +;<-
+3;G;J; +;<-
+3;O;G;<-;->
+3;D;F;>>;Violation
+5;E;A;>>;Violation
+3;C;F;>>;Violation
+5;A;I;>>;Violation
+3;G;B; +;<-
+3;E;F;>>;Violation
+3;E;C;>>;Violation
+2;F;B; +;<-
