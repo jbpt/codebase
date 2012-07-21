@@ -30,7 +30,8 @@ public class ConformanceAnalysisTest {
 		NetSystem net = serializer.parse("src/org/jbpt/test/petri/behaviour/conf_test.pnml");
 		
 		/*
-		 * Create example traces
+		 * Create example traces, same as used as examples in 
+		 * "Process Compliance Analysis based on Behavioural Profiles"
 		 */
 		String t1[] = {"I","A","E","C","D","F","G","O"};		
 		String t2[] = {"I","A","C","B","G","F","O"};
@@ -78,24 +79,33 @@ public class ConformanceAnalysisTest {
 		CausalBehaviouralProfile<Trace, TraceEntry> trace4Profile = CBPCreatorTrace.getInstance().deriveCausalBehaviouralProfile(trace4);
 		CausalBehaviouralProfile<Trace, TraceEntry> trace5Profile = CBPCreatorTrace.getInstance().deriveCausalBehaviouralProfile(trace5);
 		
+		/*
+		 * Abstract profiles to labels
+		 */
 		CausalBehaviouralProfile<Trace, LabelEntity> trace1ProfileOnLabels = CBPForTraceLabelAbstractor.abstractCBPForTraceToLabels(trace1Profile);
 		CausalBehaviouralProfile<Trace, LabelEntity> trace2ProfileOnLabels = CBPForTraceLabelAbstractor.abstractCBPForTraceToLabels(trace2Profile);
 		CausalBehaviouralProfile<Trace, LabelEntity> trace3ProfileOnLabels = CBPForTraceLabelAbstractor.abstractCBPForTraceToLabels(trace3Profile);
 		CausalBehaviouralProfile<Trace, LabelEntity> trace4ProfileOnLabels = CBPForTraceLabelAbstractor.abstractCBPForTraceToLabels(trace4Profile);
 		CausalBehaviouralProfile<Trace, LabelEntity> trace5ProfileOnLabels = CBPForTraceLabelAbstractor.abstractCBPForTraceToLabels(trace5Profile);
-		
+
+		/*
+		 * Add to analysis 
+		 */
 		conformanceAnalysis.addTrace(trace1ProfileOnLabels);
 		conformanceAnalysis.addTrace(trace2ProfileOnLabels);
 		conformanceAnalysis.addTrace(trace3ProfileOnLabels);
 		conformanceAnalysis.addTrace(trace4ProfileOnLabels);
 		conformanceAnalysis.addTrace(trace5ProfileOnLabels);
 		
+		/*
+		 * Do the analysis 
+		 */
 		conformanceAnalysis.computeBPConformance();
 		conformanceAnalysis.computeCooccurrenceConformance();
 		conformanceAnalysis.computeOverallConformance();
 
 		/*
-		 * Check obtained results
+		 * Write obtained results
 		 */
 		conformanceAnalysis.saveResults("src/org/jbpt/test/petri/behaviour/conf_test.csv");
 		
@@ -109,6 +119,9 @@ public class ConformanceAnalysisTest {
 			4;3;1.0;1.0;0.625;0.75;0.8;0.85714287
 		 */
 		
+		/*
+		 * Check obtained results
+		 */
 		Assert.assertEquals(5, conformanceAnalysis.getAnalysisTasks().size());
 		
 		int checked = 0;
