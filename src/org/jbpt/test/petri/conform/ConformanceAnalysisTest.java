@@ -1,4 +1,4 @@
-package org.jbpt.test.petri.behaviour;
+package org.jbpt.test.petri.conform;
 
 import junit.framework.Assert;
 
@@ -10,7 +10,7 @@ import org.jbpt.bp.construct.CBPCreatorTrace;
 import org.jbpt.bp.construct.CBPCreatorUnfolding;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Node;
-import org.jbpt.petri.behavior.ConformanceAnalysis;
+import org.jbpt.petri.conform.ConformanceAnalysis;
 import org.jbpt.petri.io.PNMLSerializer;
 import org.jbpt.petri.log.Trace;
 import org.jbpt.petri.log.TraceEntry;
@@ -27,7 +27,7 @@ public class ConformanceAnalysisTest {
 		 * Load the net that is used as a running example in 
 		 * "Process Compliance Analysis based on Behavioural Profiles"
 		 */
-		NetSystem net = serializer.parse("src/org/jbpt/test/petri/behaviour/conf_test.pnml");
+		NetSystem net = serializer.parse("src/org/jbpt/test/petri/conform/conf_test.pnml");
 		
 		/*
 		 * Create example traces, same as used as examples in 
@@ -107,7 +107,7 @@ public class ConformanceAnalysisTest {
 		/*
 		 * Write obtained results
 		 */
-		conformanceAnalysis.saveResults("src/org/jbpt/test/petri/behaviour/conf_test.csv");
+		conformanceAnalysis.saveResults("src/org/jbpt/test/petri/conform/conf_test.csv");
 		
 		/*
 		 * Correct results:

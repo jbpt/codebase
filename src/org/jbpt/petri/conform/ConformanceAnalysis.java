@@ -1,4 +1,4 @@
-package org.jbpt.petri.behavior;
+package org.jbpt.petri.conform;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -10,6 +10,7 @@ import org.jbpt.bp.BehaviouralProfile;
 import org.jbpt.bp.CausalBehaviouralProfile;
 import org.jbpt.bp.RelSetType;
 import org.jbpt.petri.NetSystem;
+import org.jbpt.petri.behavior.AbstractAnalysis;
 import org.jbpt.petri.log.Trace;
 
 public class ConformanceAnalysis extends AbstractAnalysis {
