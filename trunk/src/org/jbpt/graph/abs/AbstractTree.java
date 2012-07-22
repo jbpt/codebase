@@ -1,7 +1,10 @@
 package org.jbpt.graph.abs;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -98,5 +101,89 @@ public class AbstractTree<V extends IVertex> extends AbstractDirectedGraph<IDire
 	@Override
 	public String toDOT() {
 		return new DotSerializer().serialize(this,false);
+	}
+
+	@Override
+	public V getLCA(V v1, V v2) {
+		if (v1==null || v2==null) return null;
+		if (!this.getVertices().contains(v1) || 
+				!this.getVertices().contains(v2)) return null;
+		
+		if (v1.equals(v2)) return v1;
+		
+		List<V> path1 = this.getPathFromRootToVertex(v1);
+		List<V> path2 = this.getPathFromRootToVertex(v2);
+		
+		V result = null;
+		for (int i=0; i<path1.size(); i++) {
+			if (i>=path2.size()) break;
+			if (path1.get(i).equals(path2.get(i))) result = path1.get(i);
+			else break;
+		}
+		
+		return result;
+	}
+
+	@Override
+	public boolean isChild(V v1, V v2) {
+		if (v1==null || v2==null) return false;
+		if (!this.getVertices().contains(v1) || 
+				!this.getVertices().contains(v2)) return false;
+		
+		if (v1.equals(v2)) return false;
+		
+		return this.getDirectSuccessors(v2).contains(v1);
+	}
+
+	@Override
+	public boolean isParent(V v1, V v2) {
+		if (v1==null || v2==null) return false;
+		if (!this.getVertices().contains(v1) || 
+				!this.getVertices().contains(v2)) return false;
+		
+		if (v1.equals(v2)) return false;
+		
+		return this.getDirectPredecessors(v2).contains(v1);
+	}
+
+	@Override
+	public boolean isDescendant(V v1, V v2) {
+		if (v1==null || v2==null) return false;
+		if (!this.getVertices().contains(v1) || 
+				!this.getVertices().contains(v2)) return false;
+		
+		if (v1.equals(v2)) return false;
+		return this.getPathFromRootToVertex(v1).contains(v2);
+	}
+
+	@Override
+	public boolean isAncestor(V v1, V v2) {
+		if (v1==null || v2==null) return false;
+		if (!this.getVertices().contains(v1) || 
+				!this.getVertices().contains(v2)) return false;
+		
+		if (v1.equals(v2)) return false;
+		return this.getPathFromRootToVertex(v2).contains(v1);
+	}
+	
+	/**
+	 * Get path from the root of this tree to a given vertex of this tree. 
+	 * @param v Vertex of this tree.
+	 * @return List of vertices from the root of this tree to the given vertex of this tree.
+	 */
+	protected List<V> getPathFromRootToVertex(V v) {
+		List<V> result = new ArrayList<V>();
+		
+		if (v==null) return result;
+		if (!this.getVertices().contains(v)) return result;
+		
+		result.add(v);
+		while (!this.getDirectPredecessors(v).isEmpty()) {
+			v = this.getFirstDirectPredecessor(v);
+			result.add(v);
+		}
+		
+		Collections.reverse(result);
+		return result;
 	}
 }
