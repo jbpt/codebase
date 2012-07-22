@@ -7,8 +7,11 @@ import java.util.Map;
 
 import org.jbpt.bp.BehaviouralProfile;
 import org.jbpt.bp.RelSetType;
+import org.jbpt.petri.Flow;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Node;
+import org.jbpt.petri.Place;
+import org.jbpt.petri.Transition;
 import org.jbpt.petri.wft.WFTree;
 
 
@@ -24,24 +27,21 @@ import org.jbpt.petri.wft.WFTree;
  * 
  * Implemented as a singleton, use <code>getInstance()</code>.
  * 
- * @author matthias.weidlich
- *
+ * @author Matthias Weidlich
  */
-public class BPCreatorTree extends AbstractRelSetCreator implements RelSetCreator<NetSystem, Node> {
+public class BPCreatorTree extends AbstractRelSetCreator implements RelSetCreator<NetSystem,Node> {
 	
 	private static BPCreatorTree eInstance;
 	
 	public static BPCreatorTree getInstance() {
 		if (eInstance == null)
-			eInstance  = new BPCreatorTree();
+			eInstance = new BPCreatorTree();
 		return eInstance;
 	}
 	
-	private BPCreatorTree() {
-		
-	}
+	private BPCreatorTree() {}
 	
-	public BehaviouralProfile<NetSystem, Node> deriveRelationSet(NetSystem pn) {
+	public BehaviouralProfile<NetSystem,Node> deriveRelationSet(NetSystem pn) {
 		return deriveRelationSet(pn, new ArrayList<Node>(pn.getTransitions()));
 	}
 	
@@ -65,7 +65,7 @@ public class BPCreatorTree extends AbstractRelSetCreator implements RelSetCreato
 		}
 
 		
-		WFTree wfTree = new WFTree(netClone);
+		WFTree<Flow,Node,Place,Transition> wfTree = new WFTree<Flow,Node,Place,Transition>(netClone);
 		
 		BehaviouralProfile<NetSystem, Node> profile = new BehaviouralProfile<NetSystem, Node>(pn,nodes);
 		RelSetType[][] matrix = profile.getMatrix();
@@ -81,6 +81,7 @@ public class BPCreatorTree extends AbstractRelSetCreator implements RelSetCreato
 				if (index2 > index1)
 					continue;
 				
+				// TODO Implement missing methods in this class (not in WFTree)!
 				if (wfTree.areExclusive(nodeMapping.get(t1), nodeMapping.get(t2))) {
 					super.setMatrixEntry(matrix, index1, index2, RelSetType.Exclusive);
 				}

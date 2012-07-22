@@ -14,9 +14,9 @@ import org.jbpt.utils.DotSerializer;
 
 
 /**
- * Abstract tree implementation.
+ * Abstract tree implementation.<br/><br/>
  * 
- * Implemented as a directed graph.
+ * Implemented as a directed graph. 
  * For every edge of the graph source vertex represents parent vertex and target vertex represents child vertex.
  * 
  * @author Artem Polyvyanyy
@@ -75,7 +75,7 @@ public class AbstractTree<V extends IVertex> extends AbstractDirectedGraph<IDire
 
 	@Override
 	public Set<V> getChildren(V v) {
-		// TODO: super.getDirectSuccessors(v) must return a set
+		// TODO: super.getDirectSuccessors(v) must return a set of vertices
 		return new HashSet<V>(super.getDirectSuccessors(v));
 	}
 
@@ -111,8 +111,8 @@ public class AbstractTree<V extends IVertex> extends AbstractDirectedGraph<IDire
 		
 		if (v1.equals(v2)) return v1;
 		
-		List<V> path1 = this.getPathFromRootToVertex(v1);
-		List<V> path2 = this.getPathFromRootToVertex(v2);
+		List<V> path1 = this.getDownwardPath(this.getRoot(),v1);
+		List<V> path2 = this.getDownwardPath(this.getRoot(),v2);
 		
 		V result = null;
 		for (int i=0; i<path1.size(); i++) {
@@ -153,7 +153,7 @@ public class AbstractTree<V extends IVertex> extends AbstractDirectedGraph<IDire
 				!this.getVertices().contains(v2)) return false;
 		
 		if (v1.equals(v2)) return false;
-		return this.getPathFromRootToVertex(v1).contains(v2);
+		return this.getDownwardPath(this.getRoot(),v1).contains(v2);
 	}
 
 	@Override
@@ -163,26 +163,25 @@ public class AbstractTree<V extends IVertex> extends AbstractDirectedGraph<IDire
 				!this.getVertices().contains(v2)) return false;
 		
 		if (v1.equals(v2)) return false;
-		return this.getPathFromRootToVertex(v2).contains(v1);
+		return this.getDownwardPath(this.getRoot(),v2).contains(v1);
 	}
-	
-	/**
-	 * Get path from the root of this tree to a given vertex of this tree. 
-	 * @param v Vertex of this tree.
-	 * @return List of vertices from the root of this tree to the given vertex of this tree.
-	 */
-	protected List<V> getPathFromRootToVertex(V v) {
+
+	@Override
+	public List<V> getDownwardPath(V v1, V v2) {		
 		List<V> result = new ArrayList<V>();
 		
-		if (v==null) return result;
-		if (!this.getVertices().contains(v)) return result;
+		if (v1==null || v2==null) return result;
+		if (!this.getVertices().contains(v1) || 
+				!this.getVertices().contains(v2)) return result;
 		
+		V v = v2;
 		result.add(v);
 		while (!this.getDirectPredecessors(v).isEmpty()) {
 			v = this.getFirstDirectPredecessor(v);
 			result.add(v);
 		}
 		
+		if (!result.contains(v1)) return new ArrayList<V>();
 		Collections.reverse(result);
 		return result;
 	}
