@@ -15,10 +15,10 @@ import org.jbpt.alignment.LabelEntity;
 import org.jbpt.bp.BehaviouralProfile;
 import org.jbpt.bp.CausalBehaviouralProfile;
 import org.jbpt.bp.RelSetType;
-import org.jbpt.petri.behavior.AbstractAnalysis;
 import org.jbpt.petri.log.Trace;
+import org.jbpt.utils.IOUtils;
 
-public class ConformanceRootCauseAnalysis extends AbstractAnalysis {
+public class ConformanceRootCauseAnalysis {
 	
 	protected final static int CONSTANT_HIGH_SUPPORT = 30;
 	
@@ -295,7 +295,7 @@ public class ConformanceRootCauseAnalysis extends AbstractAnalysis {
 		for (RootCauseAnalysisForTrace a : this.traceAnalyses.values())
 			rows.addAll(a.getResultsOnConstraintViolations());
 		
-		super.writeResultsToFile(fileNameTracePairs,captions,rows);
+		IOUtils.writeResultsToFile(fileNameTracePairs,captions,rows);
 		
 		String fileNameTraceTasks = fileName.replace(".csv", "") + "_trace_act.csv";
 
@@ -310,7 +310,7 @@ public class ConformanceRootCauseAnalysis extends AbstractAnalysis {
 		for (RootCauseAnalysisForTrace a : this.traceAnalyses.values())
 			rows.addAll(a.getResultsOnTaskViolations());
 		
-		super.writeResultsToFile(fileNameTraceTasks,captions,rows);
+		IOUtils.writeResultsToFile(fileNameTraceTasks,captions,rows);
 
 		String fileNameGlobalSupport = fileName.replace(".csv", "") + "_global_support.csv";
 		
@@ -332,7 +332,7 @@ public class ConformanceRootCauseAnalysis extends AbstractAnalysis {
 			rows.add(row);
 		}
 		
-		super.writeResultsToFile(fileNameGlobalSupport,captions,rows);
+		IOUtils.writeResultsToFile(fileNameGlobalSupport,captions,rows);
 
 		String fileNameGlobalConfidence = fileName.replace(".csv", "") + "_global_confidence.csv";
 		
@@ -360,7 +360,7 @@ public class ConformanceRootCauseAnalysis extends AbstractAnalysis {
 			rows.add(row);
 		}
 		
-		super.writeResultsToFile(fileNameGlobalConfidence,captions,rows);
+		IOUtils.writeResultsToFile(fileNameGlobalConfidence,captions,rows);
 
 		/*
 		 * Build up matrix for transitive reduction
