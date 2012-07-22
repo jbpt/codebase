@@ -10,10 +10,10 @@ import org.jbpt.bp.BehaviouralProfile;
 import org.jbpt.bp.CausalBehaviouralProfile;
 import org.jbpt.bp.RelSetType;
 import org.jbpt.petri.NetSystem;
-import org.jbpt.petri.behavior.AbstractAnalysis;
 import org.jbpt.petri.log.Trace;
+import org.jbpt.utils.IOUtils;
 
-public class ConformanceAnalysis extends AbstractAnalysis {
+public class ConformanceAnalysis {
 	
 	protected static Set<String> IGNORED_LABEL_SUBSTRINGS = new HashSet<String>();
 	
@@ -352,7 +352,7 @@ public class ConformanceAnalysis extends AbstractAnalysis {
 			row[7] = String.valueOf(pair.getModelRelativeConformance());
 			rows.add(row);
 		}
-		super.writeResultsToFile(fileName,captions,rows);
+		IOUtils.writeResultsToFile(fileName,captions,rows);
 		
 		this.rootCauseAnalysis.computeGlobalSupport();
 		this.rootCauseAnalysis.computeConfidenceForViolationPairs();
