@@ -1,7 +1,9 @@
 package org.jbpt.petri.wft;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.jbpt.algo.tree.rpst.RPST;
 import org.jbpt.algo.tree.rpst.RPSTNode;
@@ -97,18 +99,36 @@ public class WFTree<F extends IFlow<N>, N extends INode,
 	public WFTreeLoopOrientationType getLoopOrientationType(RPSTNode<F,N> node) {
 		if (this.isRoot(node)) return WFTreeLoopOrientationType.UNDEFINED;
 		
+		WFTreeLoopOrientationType type = this.loop2type.get(node);
+		if (type!=null) return type;
+		
 		if (this.getRefinedBondType(this.getParent(node))!=WFTreeBondType.LOOP)
 			return WFTreeLoopOrientationType.UNDEFINED;
-
-		if (node.getEntry().equals(this.getParent(node).getEntry()))
-			return WFTreeLoopOrientationType.FORWARD;
 		
-		if (node.getEntry().equals(this.getParent(node).getExit()))
-			return WFTreeLoopOrientationType.BACKWARD;
+		if (node.getEntry().equals(this.getParent(node).getEntry())) {
+			type = WFTreeLoopOrientationType.FORWARD;
+			this.loop2type.put(node,type);
+			return type;
+		}
+		
+		if (node.getEntry().equals(this.getParent(node).getExit())) {
+			type = WFTreeLoopOrientationType.BACKWARD;
+			this.loop2type.put(node,type);
+			return type;
+		}	
 		
 		return WFTreeLoopOrientationType.UNDEFINED;
 	}
 	
+	public Set<RPSTNode<F,N>> getRPSTNodes(WFTreeBondType type) {
+		Set<RPSTNode<F,N>> result = new HashSet<RPSTNode<F,N>>();
+		for (RPSTNode<F,N> node : this.getVertices())
+			if (this.getRefinedBondType(node)==type)
+				result.add(node);
+		
+		return result;
+	}
+
 	/*protected NetSystem wf;
 	private RPST<Flow, Node> rpst;
 	

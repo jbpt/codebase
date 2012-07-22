@@ -14,6 +14,7 @@ import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
 import org.jbpt.petri.structure.PetriNetStructuralClassChecks;
 import org.jbpt.petri.wft.WFTree;
+import org.jbpt.petri.wft.WFTreeBondType;
 import org.jbpt.utils.IOUtils;
 
 public class WFTreeTest extends TestCase {
@@ -84,24 +85,30 @@ public class WFTreeTest extends TestCase {
 		
 		assertTrue(PetriNetStructuralClassChecks.isWorkflowNet(net));
 		
-		WFTree<Flow,Node,Place,Transition> wftree = new WFTree<Flow,Node,Place,Transition>(net);
-		IOUtils.toFile("rpst.dot", wftree.toDOT());
-		wftree.debug();
+		WFTree<Flow,Node,Place,Transition> wfTree = new WFTree<Flow,Node,Place,Transition>(net);
+		IOUtils.toFile("rpst.dot", wfTree.toDOT());
+		wfTree.debug();
 		
-		performBasicChecks(net,wftree);
-		assertEquals(44,wftree.getRPSTNodes().size());
-		assertEquals(28,wftree.getRPSTNodes(TCType.TRIVIAL).size());
-		assertEquals(3,wftree.getRPSTNodes(TCType.BOND).size());
-		assertEquals(12,wftree.getRPSTNodes(TCType.POLYGON).size());
-		assertEquals(1,wftree.getRPSTNodes(TCType.RIGID).size());
+		performBasicChecks(net,wfTree);
+		assertEquals(44,wfTree.getRPSTNodes().size());
+		assertEquals(28,wfTree.getRPSTNodes(TCType.TRIVIAL).size());
+		assertEquals(3,wfTree.getRPSTNodes(TCType.BOND).size());
+		assertEquals(12,wfTree.getRPSTNodes(TCType.POLYGON).size());
+		assertEquals(1,wfTree.getRPSTNodes(TCType.RIGID).size());
+		
+		assertEquals(1,wfTree.getRPSTNodes(WFTreeBondType.LOOP).size());
+		assertEquals(1,wfTree.getRPSTNodes(WFTreeBondType.PLACE_BORDERED).size());
+		assertEquals(1,wfTree.getRPSTNodes(WFTreeBondType.TRANSITION_BORDERED).size());
+		assertEquals(2,wfTree.getChildren(wfTree.getRPSTNodes(WFTreeBondType.LOOP).iterator().next()).size());
+		assertEquals(4,wfTree.getDownwardPath(wfTree.getRoot(),wfTree.getRPSTNodes(WFTreeBondType.LOOP).iterator().next()).size());
 	}
 	
-	private void performBasicChecks(PetriNet net, WFTree<Flow,Node,Place,Transition> wftree) {
-		for (RPSTNode<Flow,Node> node : wftree.getRPSTNodes()) {
+	private void performBasicChecks(PetriNet net, WFTree<Flow,Node,Place,Transition> wfTree) {
+		for (RPSTNode<Flow,Node> node : wfTree.getRPSTNodes()) {
 			assertTrue(net.getEdges().containsAll(node.getFragment()));
 			
 			Collection<Flow> edges = new ArrayList<Flow>();
-			for (RPSTNode<Flow,Node> child : wftree.getChildren(node)) {
+			for (RPSTNode<Flow,Node> child : wfTree.getChildren(node)) {
 				edges.addAll(child.getFragment());
 			}
 			
