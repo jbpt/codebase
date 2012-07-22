@@ -19,7 +19,7 @@ import org.jbpt.graph.abs.AbstractDirectedGraph;
  */
 public class PetriNet extends AbstractDirectedGraph<Flow,Node> implements IPetriNet<Flow,Node,Place,Transition> {
 
-	// Directed graph algorithms 
+	// Directed graph algorithms
 	public static DirectedGraphAlgorithms<Flow,Node> DGA = new DirectedGraphAlgorithms<Flow,Node>();
 	
 	/**

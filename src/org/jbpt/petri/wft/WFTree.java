@@ -1,7 +1,6 @@
 package org.jbpt.petri.wft;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.jbpt.algo.tree.rpst.RPST;
@@ -25,16 +24,17 @@ import org.jbpt.petri.ITransition;
  * @author Artem Polyvyanyy
  * @author Matthias Weidlich
  */
-public class WFTree extends RPST<IFlow<INode>, INode>{
+public class WFTree<F extends IFlow<N>, N extends INode,
+					P extends IPlace, T extends ITransition> extends RPST<F,N> {
 
-	Map<RPSTNode<IFlow<INode>,INode>,WFTreeBondType> bond2type = null;
-	Map<RPSTNode<IFlow<INode>,INode>,WFTreeLoopOrientationType> loop2type = null;
+	Map<RPSTNode<F,N>,WFTreeBondType> bond2type = null;
+	Map<RPSTNode<F,N>,WFTreeLoopOrientationType> loop2type = null;
 	
-	public WFTree(IPetriNet<IFlow<INode>,INode,IPlace,ITransition> net) {
+	public WFTree(IPetriNet<F,N,P,T> net) {
 		super(net);
 		
-		this.bond2type = new HashMap<RPSTNode<IFlow<INode>,INode>,WFTreeBondType>();
-		this.loop2type = new HashMap<RPSTNode<IFlow<INode>,INode>,WFTreeLoopOrientationType>();
+		this.bond2type = new HashMap<RPSTNode<F,N>,WFTreeBondType>();
+		this.loop2type = new HashMap<RPSTNode<F,N>,WFTreeLoopOrientationType>();
 	}
 	
 	/**
@@ -47,7 +47,7 @@ public class WFTree extends RPST<IFlow<INode>, INode>{
 	 * @param node Node of this WF-tree.
 	 * @return Refined type of this WF-tree bond node; WFTreeBondType.UNDEFINED if the type cannot be determined.
 	 */
-	public WFTreeBondType getRefinedBondType(RPSTNode<IFlow<INode>,INode> node) {
+	public WFTreeBondType getRefinedBondType(RPSTNode<F,N> node) {
 		if (node.getType()!=TCType.BOND)
 			return WFTreeBondType.UNDEFINED;
 		else {
@@ -60,24 +60,21 @@ public class WFTree extends RPST<IFlow<INode>, INode>{
 				if (entry==null || exit == null)
 					return WFTreeBondType.UNDEFINED;
 				
+				for (RPSTNode<F,N> child : this.getChildren(node)) {
+					if (child.getEntry().equals(node.getExit())) {
+						type = WFTreeBondType.LOOP;
+						this.bond2type.put(node,type);
+						return type;
+					}
+				}
+				
 				if (entry instanceof ITransition && exit instanceof ITransition) {
 					type = WFTreeBondType.TRANSITION_BORDERED;
 					this.bond2type.put(node,type);
 					return type;
 				}
-
+				
 				if (entry instanceof IPlace && exit instanceof IPlace) {
-					Iterator<RPSTNode<IFlow<INode>,INode>> i = this.getChildren(node).iterator();
-					RPSTNode<IFlow<INode>,INode> first = i.next();
-					while (i.hasNext()) {
-						RPSTNode<IFlow<INode>,INode> next = i.next();
-						if (first.getEntry().equals(next.getExit())) {
-							type = WFTreeBondType.LOOP;
-							this.bond2type.put(node,type);
-							return type;
-						}
-					}
-					
 					type = WFTreeBondType.PLACE_BORDERED;
 					this.bond2type.put(node,type);
 					return type;
@@ -86,6 +83,30 @@ public class WFTree extends RPST<IFlow<INode>, INode>{
 				return WFTreeBondType.UNDEFINED;
 			}
 		}
+	}
+	
+	/**
+	 * Get loop orientation type of a WF-tree node.<br/>
+	 * Loop orientation type is defined if parent of the given node is of type loop.<br/>
+	 * WFTreeLoopOrientationType.FORWAD if entry of the given node is equal to the entry of the parent loop node.
+	 * WFTreeLoopOrientationType.BACKWARD if if entry of the given node is equal to the exit of the parent loop node.
+	 * 
+	 * @param node Node of this WF-tree.
+	 * @return Loop orientation type of the given node; WFTreeLoopOrientationType.UNDEFINED if the type cannot be determined.
+	 */
+	public WFTreeLoopOrientationType getLoopOrientationType(RPSTNode<F,N> node) {
+		if (this.isRoot(node)) return WFTreeLoopOrientationType.UNDEFINED;
+		
+		if (this.getRefinedBondType(this.getParent(node))!=WFTreeBondType.LOOP)
+			return WFTreeLoopOrientationType.UNDEFINED;
+
+		if (node.getEntry().equals(this.getParent(node).getEntry()))
+			return WFTreeLoopOrientationType.FORWARD;
+		
+		if (node.getEntry().equals(this.getParent(node).getExit()))
+			return WFTreeLoopOrientationType.BACKWARD;
+		
+		return WFTreeLoopOrientationType.UNDEFINED;
 	}
 	
 	/*protected NetSystem wf;

@@ -218,7 +218,6 @@ public class RPSTTest extends TestCase {
 		
 		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
 		IOUtils.toFile("rpst.dot", rpst.toDOT());
-		rpst.debug();
 		
 		for (RPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
 			System.out.print(node.getName() + ": ");
