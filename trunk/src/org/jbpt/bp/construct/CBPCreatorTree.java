@@ -10,7 +10,6 @@ import org.jbpt.bp.CausalBehaviouralProfile;
 import org.jbpt.bp.RelSetType;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Node;
-import org.jbpt.petri.wft.WFTree;
 
 
 
@@ -52,7 +51,7 @@ public class CBPCreatorTree extends AbstractRelSetCreator implements CBPCreator<
 		}
 
 		
-		WFTree wfTree = new WFTree(netClone);
+		WFTreeHandler wfTreeHandler = new WFTreeHandler(netClone);
 		
 		CausalBehaviouralProfile<NetSystem, Node> profile = new CausalBehaviouralProfile<NetSystem, Node>(pn,nodes);
 		RelSetType[][] matrix = profile.getMatrix();
@@ -63,7 +62,7 @@ public class CBPCreatorTree extends AbstractRelSetCreator implements CBPCreator<
 			for(Node t2 : profile.getEntities()) {
 				int index2 = profile.getEntities().indexOf(t2);
 				
-				if (wfTree.areCooccurring(nodeMapping.get(t1), nodeMapping.get(t2)))
+				if (wfTreeHandler.areCooccurring(nodeMapping.get(t1), nodeMapping.get(t2)))
 					cooccurrenceMatrix[index1][index2] = true;
 				
 				/*
@@ -73,14 +72,14 @@ public class CBPCreatorTree extends AbstractRelSetCreator implements CBPCreator<
 				if (index2 > index1)
 					continue;
 				
-				if (wfTree.areExclusive(nodeMapping.get(t1), nodeMapping.get(t2))) {
+				if (wfTreeHandler.areExclusive(nodeMapping.get(t1), nodeMapping.get(t2))) {
 					super.setMatrixEntry(matrix, index1, index2, RelSetType.Exclusive);
 				}
-				else if (wfTree.areInterleaving(nodeMapping.get(t1), nodeMapping.get(t2))) {
+				else if (wfTreeHandler.areInterleaving(nodeMapping.get(t1), nodeMapping.get(t2))) {
 					super.setMatrixEntry(matrix, index1, index2, RelSetType.Interleaving);
 				}
-				else if (wfTree.areInOrder(nodeMapping.get(t1), nodeMapping.get(t2))) {
-					if (wfTree.areInStrictOrder(nodeMapping.get(t1), nodeMapping.get(t2)))
+				else if (wfTreeHandler.areInOrder(nodeMapping.get(t1), nodeMapping.get(t2))) {
+					if (wfTreeHandler.areInStrictOrder(nodeMapping.get(t1), nodeMapping.get(t2)))
 						super.setMatrixEntryOrder(matrix, index1, index2);
 					else
 						super.setMatrixEntryOrder(matrix, index2, index1);
@@ -110,7 +109,7 @@ public class CBPCreatorTree extends AbstractRelSetCreator implements CBPCreator<
 		if (netClone == null)
 			netClone = pn;
 		
-		WFTree wfTree = new WFTree(netClone);
+		WFTreeHandler wfTreeHandler = new WFTreeHandler(netClone);
 
 		/*
 		 * Get the behavioural profile
@@ -125,7 +124,7 @@ public class CBPCreatorTree extends AbstractRelSetCreator implements CBPCreator<
 			for(Node t2 : profile.getEntities()) {
 				int index2 = profile.getEntities().indexOf(t2);
 				
-				if (wfTree.areCooccurring(nodeMapping.get(t1), nodeMapping.get(t2)))
+				if (wfTreeHandler.areCooccurring(nodeMapping.get(t1), nodeMapping.get(t2)))
 					cooccurrenceMatrix[index1][index2] = true;
 			}
 		}
