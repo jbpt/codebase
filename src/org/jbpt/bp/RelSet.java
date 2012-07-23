@@ -341,11 +341,11 @@ public class RelSet<M,N extends IEntity> implements IEntityModel<N> {
 		for(N n1 : sharedEntities) {
 			for(N n2 : sharedEntities) {
 				equal &= this.getRelationForEntities(n1, n2).equals(relationSet.getRelationForEntities(n1, n2));
-//				if (!this.getRelationForEntities(n1, n2).equals(profile.getRelationForEntities(n1, n2))) {
+//				if (!this.getRelationForEntities(n1, n2).equals(relationSet.getRelationForEntities(n1, n2))) {
 //					System.out.println(n1);
 //					System.out.println(n2);
 //					System.out.println(this.getRelationForEntities(n1, n2));
-//					System.out.println(profile.getRelationForEntities(n1, n2));
+//					System.out.println(relationSet.getRelationForEntities(n1, n2));
 //					
 //				}
 				if (!equal)

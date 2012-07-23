@@ -7,12 +7,8 @@ import java.util.Map;
 
 import org.jbpt.bp.BehaviouralProfile;
 import org.jbpt.bp.RelSetType;
-import org.jbpt.petri.Flow;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Node;
-import org.jbpt.petri.Place;
-import org.jbpt.petri.Transition;
-import org.jbpt.petri.wft.WFTree;
 
 
 /**
@@ -65,7 +61,7 @@ public class BPCreatorTree extends AbstractRelSetCreator implements RelSetCreato
 		}
 
 		
-		WFTree<Flow,Node,Place,Transition> wfTree = new WFTree<Flow,Node,Place,Transition>(netClone);
+		WFTreeHandler wfTreeHandler = new WFTreeHandler(netClone);
 		
 		BehaviouralProfile<NetSystem, Node> profile = new BehaviouralProfile<NetSystem, Node>(pn,nodes);
 		RelSetType[][] matrix = profile.getMatrix();
@@ -81,15 +77,14 @@ public class BPCreatorTree extends AbstractRelSetCreator implements RelSetCreato
 				if (index2 > index1)
 					continue;
 				
-				// TODO Implement missing methods in this class (not in WFTree)!
-				if (wfTree.areExclusive(nodeMapping.get(t1), nodeMapping.get(t2))) {
+				if (wfTreeHandler.areExclusive(nodeMapping.get(t1), nodeMapping.get(t2))) {
 					super.setMatrixEntry(matrix, index1, index2, RelSetType.Exclusive);
 				}
-				else if (wfTree.areInterleaving(nodeMapping.get(t1), nodeMapping.get(t2))) {
+				else if (wfTreeHandler.areInterleaving(nodeMapping.get(t1), nodeMapping.get(t2))) {
 					super.setMatrixEntry(matrix, index1, index2, RelSetType.Interleaving);
 				}
-				else if (wfTree.areInOrder(nodeMapping.get(t1), nodeMapping.get(t2))) {
-					if (wfTree.areInStrictOrder(nodeMapping.get(t1), nodeMapping.get(t2)))
+				else if (wfTreeHandler.areInOrder(nodeMapping.get(t1), nodeMapping.get(t2))) {
+					if (wfTreeHandler.areInStrictOrder(nodeMapping.get(t1), nodeMapping.get(t2)))
 						super.setMatrixEntryOrder(matrix, index1, index2);
 					else
 						super.setMatrixEntryOrder(matrix, index2, index1);
