@@ -93,6 +93,8 @@ public class WoflanSerializer {
 				
 				line = bufRead.readLine();
 			}
+			
+			bufRead.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
