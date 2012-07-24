@@ -8,9 +8,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jbpt.petri.Marking;
-import org.jbpt.petri.NetSystem;
-import org.jbpt.petri.PetriNet;
+import org.jbpt.petri.IFlow;
+import org.jbpt.petri.IMarking;
+import org.jbpt.petri.INetSystem;
+import org.jbpt.petri.INode;
+import org.jbpt.petri.IPetriNet;
+import org.jbpt.petri.IPlace;
+import org.jbpt.petri.ITransition;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
 
@@ -31,8 +35,8 @@ public class Unfolding {
 	public static long time_cutoff = 0;
 	
 	// originative net system
-	protected NetSystem sys = null;
-	protected List<Transition> totalOrderTs = null;
+	protected INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> sys = null;
+	protected List<ITransition> totalOrderTs = null;
 	protected UnfoldingSetup setup = null;
 
 	// unfolding
@@ -71,7 +75,7 @@ public class Unfolding {
 	 * 
 	 * @param pn net system to unfold
 	 */
-	public Unfolding(NetSystem sys) {
+	public Unfolding(INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> sys) {
 		this(sys, new UnfoldingSetup());
 	}
 	
@@ -81,10 +85,10 @@ public class Unfolding {
 	 * @param pn net system to unfold
 	 * @param setup unfolding configuration
 	 */
-	public Unfolding(NetSystem sys, UnfoldingSetup setup) {
+	public Unfolding(INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> sys, UnfoldingSetup setup) {
 		this.sys = sys;
 		initialBP = new Cut(this.sys);
-		this.totalOrderTs = new ArrayList<Transition>(sys.getTransitions());
+		this.totalOrderTs = new ArrayList<ITransition>(sys.getTransitions());
 		this.setup = setup;
 		
 		// construct unfolding
@@ -99,11 +103,11 @@ public class Unfolding {
 		if (this.sys==null) return;
 
 		// CONSTRUCT INITIAL BRANCHING PROCESS
-		Marking M0 = this.sys.getMarking();
-		for (Place p : this.sys.getPlaces()) {
+		IMarking<IPlace> M0 = this.sys.getMarking();
+		for (IPlace p : this.sys.getPlaces()) {
 			Integer n = M0.get(p);
 			for (int i = 0; i<n; i++) {
-				Condition c = new Condition(p,null);
+				Condition c = new Condition((Place)p,null);
 				this.addCondition(c);
 				initialBP.add(c);
 			}
@@ -176,10 +180,10 @@ public class Unfolding {
 		Set<Event> result = new HashSet<Event>();
 		
 		// iterate over all transitions of the originative net
-		for (Transition t : this.sys.getTransitions()) {
+		for (ITransition t : this.sys.getTransitions()) {
 			// iterate over all places in the preset
-			Collection<Place> pre = this.sys.getPreset(t);
-			Place p = pre.iterator().next();
+			Collection<IPlace> pre = this.sys.getPreset(t);
+			Place p = (Place) pre.iterator().next();
 			// get cuts that contain conditions that correspond to the place
 			Collection<Cut> cuts = this.getCutsWithPlace(p);
 			// iterate over cuts
@@ -199,7 +203,7 @@ public class Unfolding {
 						}
 					}
 					if (!flag) { // we found possible extension !!!
-						Event e = new Event(this,t,coset);
+						Event e = new Event(this,(Transition)t,coset);
 						result.add(e);
 					}
 				}
@@ -390,10 +394,10 @@ public class Unfolding {
 	 * @param ps collection of places
 	 * @return co-set of conditions that correspond to places in the collection; null if not every place has a corresponding condition 
 	 */
-	protected Coset containsPlaces(Cut cut, Collection<Place> ps) {
+	protected Coset containsPlaces(Cut cut, Collection<IPlace> ps) {
 		Coset result = new Coset(this.sys);
 		
-		for (Place p : ps) {
+		for (IPlace p : ps) {
 			boolean flag = false;
 			for (Condition c : cut) {
 				if (c.getPlace().equals(p)) {
@@ -484,8 +488,8 @@ public class Unfolding {
 		
 		// add conditions that correspond to post-places of transition that corresponds to new event
 		Coset postConds = new Coset(this.sys);								// collection of new post conditions
-		for (Place s : this.sys.getPostset(e.getTransition())) {	// iterate over places in the postset
-			Condition c = new Condition(s,e);	 					// construct new condition
+		for (IPlace s : this.sys.getPostset(e.getTransition())) {	// iterate over places in the postset
+			Condition c = new Condition((Place)s,e);	 					// construct new condition
 			postConds.add(c);
 			this.addCondition(c);									// add condition to unfolding
 		}
@@ -591,7 +595,7 @@ public class Unfolding {
 	 * Get originative net system
 	 * @return originative net system
 	 */
-	public NetSystem getNetSystem() {
+	public INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> getNetSystem() {
 		return this.sys;
 	}
 	
@@ -599,7 +603,7 @@ public class Unfolding {
 	 * Get originative Petri net
 	 * @return originative Petrin net
 	 */
-	public PetriNet getPetriNet() {
+	public IPetriNet<IFlow<INode>, INode, IPlace, ITransition> getPetriNet() {
 		return this.sys;
 	}
 	

@@ -8,12 +8,16 @@ import java.util.Map;
 import org.jbpt.bp.BehaviouralProfile;
 import org.jbpt.bp.CausalBehaviouralProfile;
 import org.jbpt.bp.RelSetType;
-import org.jbpt.petri.NetSystem;
-import org.jbpt.petri.Node;
+import org.jbpt.petri.IFlow;
+import org.jbpt.petri.IMarking;
+import org.jbpt.petri.INetSystem;
+import org.jbpt.petri.INode;
+import org.jbpt.petri.IPlace;
+import org.jbpt.petri.ITransition;
 
 
 
-public class CBPCreatorTree extends AbstractRelSetCreator implements CBPCreator<NetSystem, Node> {
+public class CBPCreatorTree extends AbstractRelSetCreator implements CBPCreator<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> {
 	
 	private static CBPCreatorTree eInstance;
 	
@@ -27,11 +31,16 @@ public class CBPCreatorTree extends AbstractRelSetCreator implements CBPCreator<
 		
 	}
 	
-	public CausalBehaviouralProfile<NetSystem, Node> deriveCausalBehaviouralProfile(NetSystem pn) {
-		return deriveCausalBehaviouralProfile(pn, new ArrayList<Node>(pn.getTransitions()));
+	@Override
+	public CausalBehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> deriveCausalBehaviouralProfile(
+			INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> pn) {
+		return deriveCausalBehaviouralProfile(pn, new ArrayList<INode>(pn.getTransitions()));
 	}
 	
-	public CausalBehaviouralProfile<NetSystem, Node> deriveCausalBehaviouralProfile(NetSystem pn, Collection<Node> nodes) {
+	@Override
+	public CausalBehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> deriveCausalBehaviouralProfile(
+			INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> pn,
+			Collection<INode> nodes) {
 
 		/*
 		 * The construction of the WF-tree may augment the original net. Therefore,
@@ -39,27 +48,27 @@ public class CBPCreatorTree extends AbstractRelSetCreator implements CBPCreator<
 		 * clone method that provides us with an according node mapping between the 
 		 * original net and the clone.
 		 */
-		NetSystem netClone = null;
-		Map<Node, Node> nodeMapping = new HashMap<Node, Node>();
+		INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> netClone = null;
+		Map<INode, INode> nodeMapping = new HashMap<>();
 		netClone = pn.clone(nodeMapping);
 	
 		// Fall back to original net
 		if (netClone == null) {
 			netClone = pn;
-			for (Node n : pn.getNodes())
+			for (INode n : pn.getNodes())
 				nodeMapping.put(n, n);
 		}
 
 		
 		WFTreeHandler wfTreeHandler = new WFTreeHandler(netClone);
 		
-		CausalBehaviouralProfile<NetSystem, Node> profile = new CausalBehaviouralProfile<NetSystem, Node>(pn,nodes);
+		CausalBehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> profile = new CausalBehaviouralProfile<>(pn,nodes);
 		RelSetType[][] matrix = profile.getMatrix();
 		boolean[][] cooccurrenceMatrix = profile.getCooccurrenceMatrix();
 
-		for(Node t1 : profile.getEntities()) {
+		for(INode t1 : profile.getEntities()) {
 			int index1 = profile.getEntities().indexOf(t1);
-			for(Node t2 : profile.getEntities()) {
+			for(INode t2 : profile.getEntities()) {
 				int index2 = profile.getEntities().indexOf(t2);
 				
 				if (wfTreeHandler.areCooccurring(nodeMapping.get(t1), nodeMapping.get(t2)))
@@ -91,9 +100,11 @@ public class CBPCreatorTree extends AbstractRelSetCreator implements CBPCreator<
 		return profile;
 	}
 
-	public CausalBehaviouralProfile<NetSystem, Node> deriveCausalBehaviouralProfile(BehaviouralProfile<NetSystem, Node> bp) {
+	@Override
+	public CausalBehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> deriveCausalBehaviouralProfile(
+			BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> bp) {
 		
-		NetSystem pn = bp.getModel();
+		INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> pn = bp.getModel();
 		
 		/*
 		 * The construction of the WF-tree may augment the original net. Therefore,
@@ -101,8 +112,8 @@ public class CBPCreatorTree extends AbstractRelSetCreator implements CBPCreator<
 		 * clone method that provides us with an according node mapping between the 
 		 * original net and the clone.
 		 */
-		NetSystem netClone = null;
-		Map<Node, Node> nodeMapping = new HashMap<Node, Node>();
+		INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> netClone = null;
+		Map<INode, INode> nodeMapping = new HashMap<INode, INode>();
 		netClone = pn.clone(nodeMapping);
 
 		// Fall back to original net
@@ -114,14 +125,14 @@ public class CBPCreatorTree extends AbstractRelSetCreator implements CBPCreator<
 		/*
 		 * Get the behavioural profile
 		 */
-		CausalBehaviouralProfile<NetSystem, Node> profile = new CausalBehaviouralProfile<NetSystem, Node>(pn, bp.getEntities());
+		CausalBehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> profile = new CausalBehaviouralProfile<>(pn, bp.getEntities());
 		profile.setMatrix(bp.getMatrix());	
 
 		boolean[][] cooccurrenceMatrix = profile.getCooccurrenceMatrix();
 
-		for(Node t1 : profile.getEntities()) {
+		for(INode t1 : profile.getEntities()) {
 			int index1 = profile.getEntities().indexOf(t1);
-			for(Node t2 : profile.getEntities()) {
+			for(INode t2 : profile.getEntities()) {
 				int index2 = profile.getEntities().indexOf(t2);
 				
 				if (wfTreeHandler.areCooccurring(nodeMapping.get(t1), nodeMapping.get(t2)))
@@ -131,5 +142,7 @@ public class CBPCreatorTree extends AbstractRelSetCreator implements CBPCreator<
 	
 		return profile;
 	}
+
+
 
 }

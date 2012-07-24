@@ -10,8 +10,12 @@ import java.util.Set;
 
 import org.jbpt.bp.BehaviouralProfile;
 import org.jbpt.bp.CausalBehaviouralProfile;
-import org.jbpt.petri.NetSystem;
-import org.jbpt.petri.Node;
+import org.jbpt.petri.IFlow;
+import org.jbpt.petri.IMarking;
+import org.jbpt.petri.INetSystem;
+import org.jbpt.petri.INode;
+import org.jbpt.petri.IPlace;
+import org.jbpt.petri.ITransition;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
 import org.jbpt.petri.unfolding.OccurrenceNet;
@@ -22,7 +26,7 @@ import org.jbpt.petri.unfolding.order.EsparzaAdequateOrderForArbitrarySystems;
 
 
 public class CBPCreatorUnfolding extends AbstractRelSetCreator implements
-		CBPCreator<NetSystem, Node> {
+		CBPCreator<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> {
 	
 	
 	private static CBPCreatorUnfolding eInstance;
@@ -37,11 +41,11 @@ public class CBPCreatorUnfolding extends AbstractRelSetCreator implements
 		
 	}
 	
-	protected NetSystem augmentedNet;
+	protected INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> augmentedNet;
 	
-	protected Map<Node,Node> augmentationFunction;
+	protected Map<INode,INode> augmentationFunction;
 	
-	protected Map<Transition,Set<Node>> cutOfLocalConfContainsAugmentedPlaceForTransition;
+	protected Map<ITransition,Set<INode>> cutOfLocalConfContainsAugmentedPlaceForTransition;
 
 	// the unfolding
 	protected Unfolding unfolding;
@@ -50,13 +54,15 @@ public class CBPCreatorUnfolding extends AbstractRelSetCreator implements
 	protected OccurrenceNet occurrenceNet;
 	
 	protected boolean[][] eventContinuationMatrix;
-	protected List<Transition> transitionsForEventContinutationMatrix;
+	protected List<ITransition> transitionsForEventContinutationMatrix;
 
 	protected boolean[][] transitiveCausalityMatrixUnfolding; 
-	protected List<Transition> nodesForTransitiveCausalityMatrixUnfolding;
+	protected List<ITransition> nodesForTransitiveCausalityMatrixUnfolding;
 
-	public CausalBehaviouralProfile<NetSystem, Node> deriveCausalBehaviouralProfile(NetSystem pn) {
-		return deriveCausalBehaviouralProfile(pn, new ArrayList<Node>(pn.getTransitions()));
+	@Override
+	public CausalBehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> deriveCausalBehaviouralProfile(
+			INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> pn) {
+		return deriveCausalBehaviouralProfile(pn, new ArrayList<INode>(pn.getTransitions()));
 	}
 
 	protected void clear() {
@@ -65,20 +71,20 @@ public class CBPCreatorUnfolding extends AbstractRelSetCreator implements
 		this.occurrenceNet = null; 
 		
 		this.augmentedNet = null;
-		this.augmentationFunction = new HashMap<Node, Node>();
+		this.augmentationFunction = new HashMap<>();
 		
 		this.transitiveCausalityMatrixUnfolding = null;
-		this.nodesForTransitiveCausalityMatrixUnfolding = new ArrayList<Transition>();
+		this.nodesForTransitiveCausalityMatrixUnfolding = new ArrayList<>();
 
 		this.eventContinuationMatrix = null;
-		this.transitionsForEventContinutationMatrix = new ArrayList<Transition>();
+		this.transitionsForEventContinutationMatrix = new ArrayList<>();
 		
-		this.cutOfLocalConfContainsAugmentedPlaceForTransition = new HashMap<Transition, Set<Node>>();
+		this.cutOfLocalConfContainsAugmentedPlaceForTransition = new HashMap<>();
 	}
 
-	protected CausalBehaviouralProfile<NetSystem, Node> deriveCooccurrence(CausalBehaviouralProfile<NetSystem, Node> profile) {
+	protected CausalBehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> deriveCooccurrence(CausalBehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> profile) {
 		
-		NetSystem pn = profile.getModel();
+		INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> pn = profile.getModel();
 		
 		boolean[][] cooccurrenceMatrix = profile.getCooccurrenceMatrix();
 
@@ -90,14 +96,14 @@ public class CBPCreatorUnfolding extends AbstractRelSetCreator implements
 		 * and unfold the clone. We use a dedicated clone method that provides us with 
 		 * an according node mapping between the original net and the clone.
 		 */
-		NetSystem netClone = null;
-		Map<Node, Node> nodeMapping = new HashMap<Node, Node>();
-		netClone = (NetSystem) pn.clone(nodeMapping);
+		INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> netClone = null;
+		Map<INode, INode> nodeMapping = new HashMap<>();
+		netClone = (INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>) pn.clone(nodeMapping);
 		
 		// Fall back to original net
 		if (netClone == null) {
 			netClone = pn;
-			for (Node n : pn.getNodes())
+			for (INode n : pn.getNodes())
 				nodeMapping.put(n, n);
 		}
 
@@ -125,9 +131,9 @@ public class CBPCreatorUnfolding extends AbstractRelSetCreator implements
 		
 		this.deriveCutOfLocalConfContainsAugmentedPlaceForTransition();
 
-		for(Node t1 : profile.getEntities()) {
+		for(INode t1 : profile.getEntities()) {
 			int index1 = profile.getEntities().indexOf(t1);
-			for(Node t2 : profile.getEntities()) {
+			for(INode t2 : profile.getEntities()) {
 				int index2 = profile.getEntities().indexOf(t2);
 	
 				if (t1.equals(t2)) {
@@ -135,13 +141,13 @@ public class CBPCreatorUnfolding extends AbstractRelSetCreator implements
 				}
 				else {
 					boolean check = true;
-					for (Transition e : this.occurrenceNet.getTransitions()) {
+					for (ITransition e : this.occurrenceNet.getTransitions()) {
 						if (this.cutOfLocalConfContainsAugmentedPlaceForTransition.get(e).contains(nodeMapping.get(t1))
 								&& !this.cutOfLocalConfContainsAugmentedPlaceForTransition.get(e).contains(nodeMapping.get(t2))) {
 //							Node t_e = this.unfoldingNodesToNetNodes.get(e);
 //							System.out.println("check " + e + " " + t_e);
 							boolean foundOneForE = false;
-							for (Transition f : this.occurrenceNet.getTransitions()) {
+							for (ITransition f : this.occurrenceNet.getTransitions()) {
 								if (this.augmentationFunction.containsKey(this.occurrenceNet.getEvent(f).getTransition())) {
 									if (this.augmentationFunction.get(this.occurrenceNet.getEvent(f).getTransition()).equals(nodeMapping.get(t2))
 										&& (e.equals(f) || isEventContinuation(e,f))) {
@@ -164,10 +170,11 @@ public class CBPCreatorUnfolding extends AbstractRelSetCreator implements
 	}
 
 	@Override
-	public CausalBehaviouralProfile<NetSystem, Node> deriveCausalBehaviouralProfile(NetSystem pn,
-			Collection<Node> nodes) {
+	public CausalBehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> deriveCausalBehaviouralProfile(
+			INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> pn,
+			Collection<INode> nodes) {
 		
-		CausalBehaviouralProfile<NetSystem, Node> profile = new CausalBehaviouralProfile<NetSystem, Node>(pn,nodes);
+		CausalBehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> profile = new CausalBehaviouralProfile<>(pn,nodes);
 		profile.setMatrix(BPCreatorUnfolding.getInstance().deriveRelationSet(pn, nodes).getMatrix());
 		
 		return deriveCooccurrence(profile);
@@ -175,12 +182,12 @@ public class CBPCreatorUnfolding extends AbstractRelSetCreator implements
 	}
  		
 	protected void deriveCutOfLocalConfContainsAugmentedPlaceForTransition() {
-		for (Transition e : this.occurrenceNet.getTransitions()) {
-			for (Place c : this.occurrenceNet.getCutInducedByLocalConfiguration(e)) {
+		for (ITransition e : this.occurrenceNet.getTransitions()) {
+			for (IPlace c : this.occurrenceNet.getCutInducedByLocalConfiguration(e)) {
 				if (this.augmentationFunction.containsKey(this.occurrenceNet.getCondition(c).getPlace())) {
 					
 					if (!cutOfLocalConfContainsAugmentedPlaceForTransition.containsKey(e))
-						this.cutOfLocalConfContainsAugmentedPlaceForTransition.put(e, new HashSet<Node>());
+						this.cutOfLocalConfContainsAugmentedPlaceForTransition.put(e, new HashSet<INode>());
 					
 					this.cutOfLocalConfContainsAugmentedPlaceForTransition.get(e).add(this.augmentationFunction.get(this.occurrenceNet.getCondition(c).getPlace()));
 				}
@@ -189,20 +196,20 @@ public class CBPCreatorUnfolding extends AbstractRelSetCreator implements
 	}	
 	
 	@Override
-	public CausalBehaviouralProfile<NetSystem, Node> deriveCausalBehaviouralProfile(
-			BehaviouralProfile<NetSystem, Node> profile) {
+	public CausalBehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> deriveCausalBehaviouralProfile(
+			BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> profile) {
 		
-		CausalBehaviouralProfile<NetSystem, Node> cProfile = new CausalBehaviouralProfile<NetSystem, Node>(profile.getModel(),profile.getEntities());
+		CausalBehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> cProfile = new CausalBehaviouralProfile<>(profile.getModel(),profile.getEntities());
 		cProfile.setMatrix(profile.getMatrix());
 		
 		return deriveCooccurrence(cProfile);
 	}
 
-	protected void createAugmentedNet(NetSystem pn) {
+	protected void createAugmentedNet(INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> pn) {
 
 		this.augmentedNet = pn;
 		
-		for (Transition t : pn.getTransitions()) {
+		for (ITransition t : pn.getTransitions()) {
 			Transition tstar = new Transition("AUG-T(" + t.getName() +"-star)");
 			Place p_t = new Place("AUG-H2(" + t.getName() +")");
 			Place p_tstar = new Place("AUG-H1(" + t.getName() +"-star)");
@@ -219,10 +226,10 @@ public class CBPCreatorUnfolding extends AbstractRelSetCreator implements
 			pn.addFlow(tstar, p_t);
 			pn.addFlow(tstar, p_aug);
 			
-			for (Node pre : pn.getDirectPredecessors(t))
+			for (INode pre : pn.getDirectPredecessors(t))
 				pn.addFlow((Place)pre, tstar);
 			
-			for (Node post : pn.getDirectSuccessors(t))
+			for (INode post : pn.getDirectSuccessors(t))
 				pn.addFlow(tstar, (Place)post);
 
 			pn.addFlow(p_t, t);
@@ -238,8 +245,8 @@ public class CBPCreatorUnfolding extends AbstractRelSetCreator implements
 		this.transitionsForEventContinutationMatrix.addAll(this.occurrenceNet.getTransitions());
 		this.eventContinuationMatrix = new boolean[this.transitionsForEventContinutationMatrix.size()][this.transitionsForEventContinutationMatrix.size()];
 
-		for (Transition e1 : this.transitionsForEventContinutationMatrix) {
-			for (Transition e2 : this.transitionsForEventContinutationMatrix) {
+		for (ITransition e1 : this.transitionsForEventContinutationMatrix) {
+			for (ITransition e2 : this.transitionsForEventContinutationMatrix) {
 				if (this.occurrenceNet.getOrderingRelation(e1,e2).equals(OrderingRelation.CAUSAL) 
 						|| (!e1.equals(e2) && this.occurrenceNet.getOrderingRelation(e1,e2).equals(OrderingRelation.CONCURRENT))) {
 					this.eventContinuationMatrix[this.transitionsForEventContinutationMatrix.indexOf(e1)][this.transitionsForEventContinutationMatrix.indexOf(e2)] = true;
@@ -251,7 +258,7 @@ public class CBPCreatorUnfolding extends AbstractRelSetCreator implements
 		}
 	}
 	
-	protected boolean isEventContinuation(Transition e, Transition f) {
+	protected boolean isEventContinuation(ITransition e, ITransition f) {
 		return this.eventContinuationMatrix[this.transitionsForEventContinutationMatrix.indexOf(e)][this.transitionsForEventContinutationMatrix.indexOf(f)];
 	}
 
@@ -269,14 +276,14 @@ public class CBPCreatorUnfolding extends AbstractRelSetCreator implements
 			transitiveCausalityMatrixUnfolding[source][target] = true;
 		}
 		
-		for (Transition eCut : this.occurrenceNet.getCutoffEvents()) {
-			Transition eCor = this.occurrenceNet.getCorrespondingEvent(eCut);
+		for (ITransition eCut : this.occurrenceNet.getCutoffEvents()) {
+			ITransition eCor = this.occurrenceNet.getCorrespondingEvent(eCut);
 			
 			// Corresponding event may be cut-off either
 			while (this.occurrenceNet.getCutoffEvents().contains(eCor))
 				eCor = this.occurrenceNet.getCorrespondingEvent(eCor);
 
-			for (Transition eCut2 : this.occurrenceNet.getCutoffEvents()) {
+			for (ITransition eCut2 : this.occurrenceNet.getCutoffEvents()) {
 				if (this.occurrenceNet.getOrderingRelation(eCor,eCut2).equals(OrderingRelation.CAUSAL)) {
 					int source = nodesForTransitiveCausalityMatrixUnfolding.indexOf(eCor);
 					int target = nodesForTransitiveCausalityMatrixUnfolding.indexOf(eCut2);
@@ -305,10 +312,10 @@ public class CBPCreatorUnfolding extends AbstractRelSetCreator implements
 		return matrix;
 	}
 	
-	private boolean isCausalViaSequenceOfCutOffs(Transition src, Transition tar) {
-		for (Transition eCut : this.occurrenceNet.getCutoffEvents()) {
-			for (Transition eCut2 : this.occurrenceNet.getCutoffEvents()) {
-				Transition eCor = this.occurrenceNet.getCorrespondingEvent(eCut2);
+	private boolean isCausalViaSequenceOfCutOffs(ITransition src, ITransition tar) {
+		for (ITransition eCut : this.occurrenceNet.getCutoffEvents()) {
+			for (ITransition eCut2 : this.occurrenceNet.getCutoffEvents()) {
+				ITransition eCor = this.occurrenceNet.getCorrespondingEvent(eCut2);
 				if ((src.equals(eCut) || this.occurrenceNet.getOrderingRelation(src,eCut).equals(OrderingRelation.CAUSAL)) 
 						&& this.isPathInTransitiveCausalityMatrix(eCut,eCor)
 						&& (this.occurrenceNet.getOrderingRelation(eCor,tar).equals(OrderingRelation.CAUSAL) ||
@@ -320,9 +327,10 @@ public class CBPCreatorUnfolding extends AbstractRelSetCreator implements
 		return false;
 	}
 	
-	private boolean isPathInTransitiveCausalityMatrix(Transition node1, Transition node2) {
+	private boolean isPathInTransitiveCausalityMatrix(ITransition node1, ITransition node2) {
 		return transitiveCausalityMatrixUnfolding[this.nodesForTransitiveCausalityMatrixUnfolding.indexOf(node1)][this.nodesForTransitiveCausalityMatrixUnfolding.indexOf(node2)];
 	}
+
 
 
 }

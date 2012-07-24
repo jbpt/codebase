@@ -6,8 +6,12 @@ import java.util.List;
 
 import org.jbpt.bp.RelSet;
 import org.jbpt.bp.RelSetType;
-import org.jbpt.petri.NetSystem;
-import org.jbpt.petri.Node;
+import org.jbpt.petri.IFlow;
+import org.jbpt.petri.IMarking;
+import org.jbpt.petri.INetSystem;
+import org.jbpt.petri.INode;
+import org.jbpt.petri.IPlace;
+import org.jbpt.petri.ITransition;
 import org.jbpt.petri.Transition;
 import org.jbpt.petri.unfolding.OccurrenceNet;
 import org.jbpt.petri.unfolding.OrderingRelation;
@@ -35,7 +39,7 @@ import org.jbpt.petri.unfolding.order.EsparzaAdequateOrderForArbitrarySystems;
  * @author matthias.weidlich
  *
  */
-public class RelSetCreatorUnfolding extends AbstractRelSetCreator implements RelSetCreator<NetSystem, Node> {
+public class RelSetCreatorUnfolding extends AbstractRelSetCreator implements RelSetCreator<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> {
 
 	private static RelSetCreatorUnfolding eInstance;
 	
@@ -56,40 +60,42 @@ public class RelSetCreatorUnfolding extends AbstractRelSetCreator implements Rel
 	protected OccurrenceNet occurrenceNet;
 
 	protected long[][] stepMatrix; 
-	protected List<Transition> nodesForStepMatrix;
+	protected List<ITransition> nodesForStepMatrix;
 		
 	// captures the order for transitions
 	protected boolean[][] baseOrderMatrixForTransitions; 
 	
 	// list to have identifiers for the transitions in the matrix
-	protected List<Transition> transitionsForBaseOrderMatrix;
+	protected List<ITransition> transitionsForBaseOrderMatrix;
 	
 	protected void clear() {
 		this.unfolding = null;
 		this.occurrenceNet = null;
 		this.stepMatrix = null;
-		this.nodesForStepMatrix = new ArrayList<Transition>();
+		this.nodesForStepMatrix = new ArrayList<>();
 		this.baseOrderMatrixForTransitions = null; 
-		this.transitionsForBaseOrderMatrix = new ArrayList<Transition>();
+		this.transitionsForBaseOrderMatrix = new ArrayList<>();
 	}
 
 	@Override
-	public RelSet<NetSystem, Node> deriveRelationSet(NetSystem pn) {
-		return deriveRelationSet(pn, new ArrayList<Node>(pn.getTransitions()));
+	public RelSet<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> deriveRelationSet(
+			INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> pn) {
+		return deriveRelationSet(pn, new ArrayList<INode>(pn.getTransitions()));
 	}
 	
-	public RelSet<NetSystem, Node> deriveRelationSet(NetSystem pn, int lookAhead) {
-		return deriveRelationSet(pn, new ArrayList<Node>(pn.getTransitions()),lookAhead);
+	public RelSet<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> deriveRelationSet(INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> pn, int lookAhead) {
+		return deriveRelationSet(pn, new ArrayList<INode>(pn.getTransitions()),lookAhead);
 	}
 
 	@Override
-	public RelSet<NetSystem, Node> deriveRelationSet(NetSystem pn,
-			Collection<Node> nodes) {
+	public RelSet<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> deriveRelationSet(
+			INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> pn,
+			Collection<INode> nodes) {
 		return deriveRelationSet(pn, nodes, RelSet.RELATION_FAR_LOOKAHEAD);
 	}
 	
-	public RelSet<NetSystem, Node> deriveRelationSet(NetSystem pn,
-			Collection<Node> nodes, int lookAhead) {
+	public RelSet<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> deriveRelationSet(INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> pn,
+			Collection<INode> nodes, int lookAhead) {
 		
 		// clear internal data structures
 		clear();
@@ -113,18 +119,18 @@ public class RelSetCreatorUnfolding extends AbstractRelSetCreator implements Rel
 		/*
 		 * Init rel set
 		 */
-		RelSet<NetSystem, Node> rs = new RelSet<NetSystem, Node>(pn,nodes,lookAhead);
+		RelSet<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> rs = new RelSet<>(pn,nodes,lookAhead);
 		RelSetType[][] matrix = rs.getMatrix();
 		
-		for (Node t : nodes)
+		for (INode t : nodes)
 			if (t instanceof Transition)
 				this.transitionsForBaseOrderMatrix.add((Transition)t);
 		
 		this.deriveBaseOrderRelation(rs);
 
-		for(Node t1 : rs.getEntities()) {
+		for(INode t1 : rs.getEntities()) {
 			int index1 = rs.getEntities().indexOf(t1);
-			for(Node t2 : rs.getEntities()) {
+			for(INode t2 : rs.getEntities()) {
 				int index2 = rs.getEntities().indexOf(t2);
 				
 				/*
@@ -148,12 +154,12 @@ public class RelSetCreatorUnfolding extends AbstractRelSetCreator implements Rel
 		return rs;
 	}
 		
-	protected void deriveBaseOrderRelation(RelSet<NetSystem, Node> rs) {
+	protected void deriveBaseOrderRelation(RelSet<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> rs) {
 		
 		baseOrderMatrixForTransitions = new boolean[this.transitionsForBaseOrderMatrix.size()][this.transitionsForBaseOrderMatrix.size()];
 		
-		for (Transition e1 : this.occurrenceNet.getTransitions()) {
-			for (Transition e2 : this.occurrenceNet.getTransitions()) {
+		for (ITransition e1 : this.occurrenceNet.getTransitions()) {
+			for (ITransition e2 : this.occurrenceNet.getTransitions()) {
 				if (getDistanceInStepMatrix(e1, e2) <= rs.getLookAhead())
 					if (this.transitionsForBaseOrderMatrix.contains(this.occurrenceNet.getEvent(e1).getTransition()) &&
 							this.transitionsForBaseOrderMatrix.contains(this.occurrenceNet.getEvent(e2).getTransition()))
@@ -164,7 +170,7 @@ public class RelSetCreatorUnfolding extends AbstractRelSetCreator implements Rel
 		}
 	}
 	
-	private long getDistanceInStepMatrix(Transition node1, Transition node2) {
+	private long getDistanceInStepMatrix(ITransition node1, ITransition node2) {
 		if (!node1.equals(node2) && this.unfolding.getOrderingRelation(
 				this.occurrenceNet.getEvent(node1),
 				this.occurrenceNet.getEvent(node2)).equals(OrderingRelation.CONCURRENT)) 
@@ -173,7 +179,7 @@ public class RelSetCreatorUnfolding extends AbstractRelSetCreator implements Rel
 		return stepMatrix[this.nodesForStepMatrix.indexOf(node1)][this.nodesForStepMatrix.indexOf(node2)];
 	}
 
-	private boolean isBaseOrder(Node n1, Node n2) {
+	private boolean isBaseOrder(INode n1, INode n2) {
 		return baseOrderMatrixForTransitions[this.transitionsForBaseOrderMatrix.indexOf(n1)][this.transitionsForBaseOrderMatrix.indexOf(n2)];
 	}
 	
@@ -189,9 +195,9 @@ public class RelSetCreatorUnfolding extends AbstractRelSetCreator implements Rel
 		/*
 		 * First, init matrix
 		 */
-		for (Transition e1 : this.occurrenceNet.getTransitions()) {
+		for (ITransition e1 : this.occurrenceNet.getTransitions()) {
 			int iE1 = this.nodesForStepMatrix.indexOf(e1);
-			for (Transition e2 : this.occurrenceNet.getTransitions()) {				
+			for (ITransition e2 : this.occurrenceNet.getTransitions()) {				
 				int iE2 = this.nodesForStepMatrix.indexOf(e2);
 				this.stepMatrix[iE1][iE2]= 999999999;
 			}
@@ -200,11 +206,11 @@ public class RelSetCreatorUnfolding extends AbstractRelSetCreator implements Rel
 		/*
 		 * Second, direct successors
 		 */
-		for (Transition e1 : this.occurrenceNet.getTransitions()) {
+		for (ITransition e1 : this.occurrenceNet.getTransitions()) {
 			int iE1 = this.nodesForStepMatrix.indexOf(e1);
-			for (Transition e2 : this.occurrenceNet.getTransitions()) {				
+			for (ITransition e2 : this.occurrenceNet.getTransitions()) {				
 				int iE2 = this.nodesForStepMatrix.indexOf(e2);
-				for (Node c : this.occurrenceNet.getPreset(e2)) {
+				for (INode c : this.occurrenceNet.getPreset(e2)) {
 					if (this.occurrenceNet.getPreset(c).contains(e1))
 						this.stepMatrix[iE1][iE2] = 1;
 				}
@@ -214,17 +220,17 @@ public class RelSetCreatorUnfolding extends AbstractRelSetCreator implements Rel
 		/*
 		 * Third, init distance for cut-offs.
 		 */
-		for (Transition cutE : this.occurrenceNet.getCutoffEvents()) {
+		for (ITransition cutE : this.occurrenceNet.getCutoffEvents()) {
 			int iCutE = this.nodesForStepMatrix.indexOf(cutE);
-			Transition corE = this.occurrenceNet.getCorrespondingEvent(cutE);
+			ITransition corE = this.occurrenceNet.getCorrespondingEvent(cutE);
 			
 			// Corresponding event may be cut-off either
 			while (this.occurrenceNet.getCutoffEvents().contains(corE))
 				corE = this.occurrenceNet.getCorrespondingEvent(corE);
 			
 			// There may be multiple events following the corresponding condition
-			for (Node c : this.occurrenceNet.getPostset(corE)) {
-				for (Node e : this.occurrenceNet.getPostset(c)) {
+			for (INode c : this.occurrenceNet.getPostset(corE)) {
+				for (INode e : this.occurrenceNet.getPostset(c)) {
 					int iE = this.nodesForStepMatrix.indexOf(e);
 					this.stepMatrix[iCutE][iE] = 1;
 				}
@@ -236,13 +242,14 @@ public class RelSetCreatorUnfolding extends AbstractRelSetCreator implements Rel
 		 * path allowed (parameter r).
 		 */
 		for (int r = 0; r < this.nodesForStepMatrix.size(); r++) {
-			for (Transition e1 : this.occurrenceNet.getTransitions()) {
+			for (ITransition e1 : this.occurrenceNet.getTransitions()) {
 				int iE1 = this.nodesForStepMatrix.indexOf(e1);
-				for (Transition e2 : this.occurrenceNet.getTransitions()) {
+				for (ITransition e2 : this.occurrenceNet.getTransitions()) {
 					int iE2 = this.nodesForStepMatrix.indexOf(e2);
 					this.stepMatrix[iE1][iE2] = Math.min(this.stepMatrix[iE1][iE2], this.stepMatrix[iE1][r] + this.stepMatrix[r][iE2]);
 				}
 			}
 		}
 	}
+
 }

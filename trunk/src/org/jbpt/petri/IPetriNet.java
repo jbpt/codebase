@@ -354,4 +354,10 @@ public interface IPetriNet<F extends IFlow<N>, N extends INode, P extends IPlace
 	 */
 	public void doTRestrict();
 
+	public T createTransition();
+	public P createPlace();
+	public F createFlow(N from, N to);
+	public IPetriNet<F,N,P,T> createPetriNet();
+
+	
 }

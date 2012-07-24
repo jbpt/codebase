@@ -9,7 +9,12 @@ import org.jbpt.alignment.LabelEntity;
 import org.jbpt.bp.BehaviouralProfile;
 import org.jbpt.bp.CausalBehaviouralProfile;
 import org.jbpt.bp.RelSetType;
-import org.jbpt.petri.NetSystem;
+import org.jbpt.petri.IFlow;
+import org.jbpt.petri.IMarking;
+import org.jbpt.petri.INetSystem;
+import org.jbpt.petri.INode;
+import org.jbpt.petri.IPlace;
+import org.jbpt.petri.ITransition;
 import org.jbpt.petri.log.Trace;
 import org.jbpt.utils.IOUtils;
 
@@ -25,7 +30,7 @@ public class ConformanceAnalysis {
 	
 	protected Set<TraceAnalysisTask> traceAnalysisTasks = new HashSet<TraceAnalysisTask>();
 	
-	protected CausalBehaviouralProfile<NetSystem, LabelEntity> baseProfile;
+	protected CausalBehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, LabelEntity> baseProfile;
 	
 	protected ConformanceRootCauseAnalysis rootCauseAnalysis = new ConformanceRootCauseAnalysis();
 	
@@ -209,7 +214,7 @@ public class ConformanceAnalysis {
 
 	}
 	
-	public ConformanceAnalysis(CausalBehaviouralProfile<NetSystem, LabelEntity> profile) {
+	public ConformanceAnalysis(CausalBehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, LabelEntity> profile) {
 		super();
 		this.baseProfile = profile;
 	}

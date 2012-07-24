@@ -7,14 +7,18 @@ import java.util.Set;
 import org.jbpt.bp.BehaviouralProfile;
 import org.jbpt.bp.CausalBehaviouralProfile;
 import org.jbpt.bp.RelSetType;
-import org.jbpt.petri.NetSystem;
-import org.jbpt.petri.Node;
+import org.jbpt.petri.IFlow;
+import org.jbpt.petri.IMarking;
+import org.jbpt.petri.INetSystem;
+import org.jbpt.petri.INode;
+import org.jbpt.petri.IPlace;
+import org.jbpt.petri.ITransition;
 import org.jbpt.petri.structure.PetriNetPathUtils;
 import org.jbpt.petri.structure.PetriNetStructuralClassChecks;
 
 
 
-public class CBPCreatorNet extends AbstractRelSetCreator implements CBPCreator<NetSystem, Node> {
+public class CBPCreatorNet extends AbstractRelSetCreator implements CBPCreator<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> {
 
 	private static CBPCreatorNet eInstance;
 	
@@ -28,11 +32,16 @@ public class CBPCreatorNet extends AbstractRelSetCreator implements CBPCreator<N
 		
 	}
 		
-	public CausalBehaviouralProfile<NetSystem, Node> deriveCausalBehaviouralProfile(NetSystem pn) {
+	@Override
+	public CausalBehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> deriveCausalBehaviouralProfile(
+			INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> pn) {
 		return deriveCausalBehaviouralProfile(pn, pn.getNodes());
 	}
 	
-	public CausalBehaviouralProfile<NetSystem, Node> deriveCausalBehaviouralProfile(NetSystem pn, Collection<Node> nodes) {
+	@Override
+	public CausalBehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> deriveCausalBehaviouralProfile(
+			INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> pn,
+			Collection<INode> nodes) {
 		
 		/*
 		 * Check assumptions for the net
@@ -44,7 +53,7 @@ public class CBPCreatorNet extends AbstractRelSetCreator implements CBPCreator<N
 		/*
 		 * Compute the behavioural profile using BPCreatorNet
 		 */
-		CausalBehaviouralProfile<NetSystem, Node> profile = new CausalBehaviouralProfile<NetSystem, Node>(pn, nodes);
+		CausalBehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> profile = new CausalBehaviouralProfile<>(pn, nodes);
 		profile.setMatrix(BPCreatorNet.getInstance().deriveRelationSet(pn).getMatrix());	
 
 		/*
@@ -55,14 +64,14 @@ public class CBPCreatorNet extends AbstractRelSetCreator implements CBPCreator<N
 		return profile;
 	}
 	
-	protected void fillCooccurrence(NetSystem pn, CausalBehaviouralProfile<NetSystem, Node> profile) {
+	protected void fillCooccurrence(INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> pn, CausalBehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> profile) {
 		/*
 		 * Compute co-occurrence if net is T-net
 		 */
 		if (PetriNetStructuralClassChecks.isTNet(pn)) {
-			for(Node n1 : profile.getEntities()) {
+			for(INode n1 : profile.getEntities()) {
 				int index1 = profile.getEntities().indexOf(n1);
-				for(Node n2 : profile.getEntities()) {
+				for(INode n2 : profile.getEntities()) {
 					int index2 = profile.getEntities().indexOf(n2);
 					profile.getCooccurrenceMatrix()[index1][index2] = true;
 				}
@@ -72,12 +81,12 @@ public class CBPCreatorNet extends AbstractRelSetCreator implements CBPCreator<N
 		 * Compute co-occurrence if net is S-net
 		 */
 		else if (PetriNetStructuralClassChecks.isSNet(pn)) {
-			Map<Node,Set<Node>> dominators = PetriNetPathUtils.getDominators(pn);
-			Map<Node,Set<Node>> postdominators = PetriNetPathUtils.getPostDominators(pn);
+			Map<INode,Set<INode>> dominators = PetriNetPathUtils.getDominators(pn);
+			Map<INode,Set<INode>> postdominators = PetriNetPathUtils.getPostDominators(pn);
 			
-			for(Node n1 : profile.getEntities()) {
+			for(INode n1 : profile.getEntities()) {
 				int index1 = profile.getEntities().indexOf(n1);
-				for(Node n2 : profile.getEntities()) {
+				for(INode n2 : profile.getEntities()) {
 					int index2 = profile.getEntities().indexOf(n2);
 					if (dominators.get(n1).contains(n2) || postdominators.get(n1).contains(n2))
 						profile.getCooccurrenceMatrix()[index1][index2] = true;
@@ -88,9 +97,9 @@ public class CBPCreatorNet extends AbstractRelSetCreator implements CBPCreator<N
 		 * Compute co-occurrence if net is acyclic.
 		 */
 		else if (!PetriNetPathUtils.isCyclic(pn)) {
-			for(Node n1 : profile.getEntities()) {
+			for(INode n1 : profile.getEntities()) {
 				int index1 = profile.getEntities().indexOf(n1);
-				for(Node n2 : profile.getEntities()) {
+				for(INode n2 : profile.getEntities()) {
 					int index2 = profile.getEntities().indexOf(n2);
 					/*
 					 * Trivial case, a node is co-occurring with itself
@@ -106,7 +115,7 @@ public class CBPCreatorNet extends AbstractRelSetCreator implements CBPCreator<N
 						 * Check whether all nodes exclusive to n2 are also exclusive to n1
 						 */
 						boolean allExclusive = true;
-						for(Node n3 : profile.getEntitiesInRelation(n2, RelSetType.Exclusive)) {
+						for(INode n3 : profile.getEntitiesInRelation(n2, RelSetType.Exclusive)) {
 							allExclusive &= profile.areExclusive(n1, n3);
 						}
 						if (allExclusive)
@@ -117,19 +126,22 @@ public class CBPCreatorNet extends AbstractRelSetCreator implements CBPCreator<N
 		}
 	}
 
-	public CausalBehaviouralProfile<NetSystem, Node> deriveCausalBehaviouralProfile(BehaviouralProfile<NetSystem, Node> bp) {
+	@Override
+	public CausalBehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> deriveCausalBehaviouralProfile(
+			BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> bp) {
 		
-		NetSystem pn = bp.getModel();
+		INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> pn = bp.getModel();
 
 		/*
 		 * Get the behavioural profile
 		 */
-		CausalBehaviouralProfile<NetSystem, Node> profile = new CausalBehaviouralProfile<NetSystem, Node>(pn, bp.getEntities());
+		CausalBehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> profile = new CausalBehaviouralProfile<>(pn, bp.getEntities());
 		profile.setMatrix(bp.getMatrix());	
 			
 		fillCooccurrence(pn, profile);
 	
 		return profile;
 	}
+
 
 }

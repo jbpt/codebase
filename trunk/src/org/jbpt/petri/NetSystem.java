@@ -11,7 +11,7 @@ import java.util.Set;
  * 
  * @author Artem Polyvyanyy
  */
-public class NetSystem extends PetriNet implements INetSystem<Flow,Node,Place,Transition,Marking> {
+public class NetSystem extends PetriNet implements INetSystem<IFlow<INode>,INode,IPlace,ITransition,IMarking<IPlace>> {
 	
 	protected Marking M = null;
 	
@@ -24,29 +24,29 @@ public class NetSystem extends PetriNet implements INetSystem<Flow,Node,Place,Tr
 	}
 	
 	@Override
-	public Node removeNode(Node n) {
-		Node result = super.removeNode(n);
-		if (result!=null && n instanceof Place) {
-			this.M.remove((Place)n);
+	public INode removeNode(INode n) {
+		INode result = super.removeNode(n);
+		if (result!=null && n instanceof IPlace) {
+			this.M.remove((IPlace)n);
 		}
 		return result;
 	}
 
 	@Override
-	public Collection<Node> removeNodes(Collection<Node> ns) {
-		Collection<Node> result = super.removeNodes(ns);
+	public Collection<INode> removeNodes(Collection<INode> ns) {
+		Collection<INode> result = super.removeNodes(ns);
 		if (result!=null) {
-			for (Node n : result) {
-				if (n instanceof Place)
-					this.M.remove((Place)n);
+			for (INode n : result) {
+				if (n instanceof IPlace)
+					this.M.remove((IPlace)n);
 			}
 		}
 		return result;
 	}
 
 	@Override
-	public Place removePlace(Place p) {
-		Place result = super.removePlace(p);
+	public IPlace removePlace(IPlace p) {
+		IPlace result = super.removePlace(p);
 		if (result!=null) {
 			this.M.remove(p);
 		}
@@ -54,10 +54,10 @@ public class NetSystem extends PetriNet implements INetSystem<Flow,Node,Place,Tr
 	}
 
 	@Override
-	public Collection<Place> removePlaces(Collection<Place> ps) {
-		Collection<Place> result = super.removePlaces(ps);
+	public Collection<IPlace> removePlaces(Collection<IPlace> ps) {
+		Collection<IPlace> result = super.removePlaces(ps);
 		if (result!=null) {
-			for (Place p : result) {
+			for (IPlace p : result) {
 				this.M.remove(p);
 			}
 		}
@@ -70,16 +70,16 @@ public class NetSystem extends PetriNet implements INetSystem<Flow,Node,Place,Tr
 	}
 
 	@Override
-	public Set<Place> getMarkedPlaces() {
+	public Set<IPlace> getMarkedPlaces() {
 		return this.M.keySet();
 	}
 
 	@Override
-	public Set<Transition> getEnabledTransitions() {
-		Set<Transition> result = new HashSet<Transition>();
-		Set<Place> marked = new HashSet<Place>(this.getMarkedPlaces());
+	public Set<ITransition> getEnabledTransitions() {
+		Set<ITransition> result = new HashSet<ITransition>();
+		Set<IPlace> marked = new HashSet<IPlace>(this.getMarkedPlaces());
 		
-		for (Transition t : this.getTransitions()) {
+		for (ITransition t : this.getTransitions()) {
 			if (marked.containsAll(this.getPreset(t)))
 				result.add(t);
 		}
@@ -88,10 +88,10 @@ public class NetSystem extends PetriNet implements INetSystem<Flow,Node,Place,Tr
 	}
 
 	@Override
-	public boolean isEnabled(Transition t) {
+	public boolean isEnabled(ITransition t) {
 		if (!this.getTransitions().contains(t)) return false;
 		
-		for (Place p : this.getPreset(t))
+		for (IPlace p : this.getPreset(t))
 			if (!this.isMarked(p))
 				return false;
 			
@@ -99,20 +99,20 @@ public class NetSystem extends PetriNet implements INetSystem<Flow,Node,Place,Tr
 	}
 	
 	@Override
-	public boolean isMarked(Place p) {
+	public boolean isMarked(IPlace p) {
 		return this.M.isMarked(p);
 	}
 
 	@Override
-	public boolean fire(Transition t) {
+	public boolean fire(ITransition t) {
 		if (!this.getTransitions().contains(t)) return false;
 		
 		if (!this.isEnabled(t)) return false;
 		
-		for (Place p : this.getPreset(t))
+		for (IPlace p : this.getPreset(t))
 			this.M.put(p, this.M.get(p)-1);
 		
-		for (Place p : this.getPostset(t))
+		for (IPlace p : this.getPostset(t))
 			this.M.put(p, this.M.get(p)+1);
 		
 		return true;
@@ -127,7 +127,7 @@ public class NetSystem extends PetriNet implements INetSystem<Flow,Node,Place,Tr
 		result += "\n";
 		result += "node [shape=circle];\n";
 		
-		for (Place p : this.getPlaces()) {
+		for (IPlace p : this.getPlaces()) {
 			Integer n = this.M.get(p);
 			String label = ((n == 0) || (n == null)) ? p.getLabel() : p.getLabel() + "[" + n.toString() + "]"; 
 			result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".3\"];\n", p.getId().replace("-", ""), label);
@@ -136,7 +136,7 @@ public class NetSystem extends PetriNet implements INetSystem<Flow,Node,Place,Tr
 		result += "\n";
 		result += "node [shape=box];\n";
 		
-		for (Transition t : this.getTransitions()) {
+		for (ITransition t : this.getTransitions()) {
 			String fillColor = this.isEnabled(t) ? " fillcolor=\"#9ACD32\"" : "";
 			if (t.getName()=="")
 				result += String.format("\tn%s[label=\"%s\" width=\".3\""+fillColor+" height=\".1\"];\n", t.getId().replace("-", ""), t.getName());
@@ -145,7 +145,7 @@ public class NetSystem extends PetriNet implements INetSystem<Flow,Node,Place,Tr
 		}
 		
 		result += "\n";
-		for (Flow f: this.getFlow()) {
+		for (IFlow<INode> f: this.getFlow()) {
 			result += String.format("\tn%s->n%s;\n", f.getSource().getId().replace("-", ""), f.getTarget().getId().replace("-", ""));
 		}
 		result += "}\n";
@@ -155,7 +155,7 @@ public class NetSystem extends PetriNet implements INetSystem<Flow,Node,Place,Tr
 	
 	@Override
 	public NetSystem clone() {
-		Map<Node,Node> nodeMapping = new HashMap<Node,Node>();
+		Map<INode,INode> nodeMapping = new HashMap<INode,INode>();
 		NetSystem clone = (NetSystem) super.clone(nodeMapping);
 		cloneHelper(clone, nodeMapping);
 		
@@ -163,9 +163,9 @@ public class NetSystem extends PetriNet implements INetSystem<Flow,Node,Place,Tr
 	}
 	
 	@Override
-	public NetSystem clone(Map<Node,Node> nodeMapping) {
+	public NetSystem clone(Map<INode,INode> nodeMapping) {
 		if (nodeMapping==null)
-			nodeMapping = new HashMap<Node,Node>();
+			nodeMapping = new HashMap<INode,INode>();
 		
 		NetSystem clone = (NetSystem) super.clone(nodeMapping);
 		cloneHelper(clone,nodeMapping);
@@ -179,41 +179,46 @@ public class NetSystem extends PetriNet implements INetSystem<Flow,Node,Place,Tr
 	 * @param clone A clone object.
 	 * @param nodeMapping Mapping of nodes of the original net system to nodes of its clone object. 
 	 */
-	private void cloneHelper(NetSystem clone, Map<Node,Node> nodeMapping) {
+	private void cloneHelper(NetSystem clone, Map<INode,INode> nodeMapping) {
 		// clone the marking 
 		Marking cMarking = new Marking(clone);
 		clone.M = cMarking;
 		// initialise marking according to original net system
-		for (Place p : this.getMarkedPlaces()) 
-			clone.putTokens((Place) nodeMapping.get(p), this.getTokens(p));
+		for (IPlace p : this.getMarkedPlaces()) 
+			clone.putTokens((IPlace) nodeMapping.get(p), this.getTokens(p));
 	}
 
 	@Override
-	public Integer putTokens(Place p, Integer tokens) {
+	public Integer putTokens(IPlace p, Integer tokens) {
 		return this.M.put(p, tokens);
 	}
 	
 
 	@Override
-	public Integer getTokens(Place p) {
+	public Integer getTokens(IPlace p) {
 		return this.M.get(p);
 	}
 	
 	@Override
 	public void loadNaturalMarking() {
 		this.M.clear();
-		for (Place p : this.getSourcePlaces()) {
+		for (IPlace p : this.getSourcePlaces()) {
 			this.M.put(p,1);
 		}
 	}
 	
 	@Override
-	public void loadMarking(Marking newMarking) {
+	public void loadMarking(IMarking<IPlace> newMarking) {
 		if (newMarking.getPetriNet()!=this) return;
 		
 		this.M.clear();
-		for (Map.Entry<Place,Integer> entry : newMarking.entrySet()) {
-			this.M.put(entry.getKey(),entry.getValue());
-		}
+		for (IPlace p : this.getPlaces())
+			this.M.put(p,newMarking.get(p));
 	}
+
+	@Override
+	public INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> createNetSystem() {
+		return new NetSystem();
+	}
+
 }

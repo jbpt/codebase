@@ -3,6 +3,7 @@ package org.jbpt.petri.unfolding.order;
 import java.util.List;
 import java.util.Set;
 
+import org.jbpt.petri.ITransition;
 import org.jbpt.petri.Transition;
 import org.jbpt.petri.unfolding.Event;
 import org.jbpt.petri.unfolding.LocalConfiguration;
@@ -37,8 +38,8 @@ public class EsparzaAdequateTotalOrderForSafeSystems extends AdequateOrder {
 		for (int i=0; i<foata1.size(); i++) {
 			boolean flag = true;
 			for (int j=0; j<i; j++) {
-				List<Transition> pvec1 = lc1.getQuasiParikhVector(foata1.get(j));
-				List<Transition> pvec2 = lc2.getQuasiParikhVector(foata2.get(j));
+				List<ITransition> pvec1 = lc1.getQuasiParikhVector(foata1.get(j));
+				List<ITransition> pvec2 = lc2.getQuasiParikhVector(foata2.get(j));
 				
 				int comp = compareQuasiParikhVectors(lc1,pvec1,pvec2);
 				if (comp!=0) {
@@ -48,8 +49,8 @@ public class EsparzaAdequateTotalOrderForSafeSystems extends AdequateOrder {
 			}
 			
 			if (flag) {
-				List<Transition> pvec1 = lc1.getQuasiParikhVector(foata1.get(i));
-				List<Transition> pvec2 = lc2.getQuasiParikhVector(foata2.get(i));
+				List<ITransition> pvec1 = lc1.getQuasiParikhVector(foata1.get(i));
+				List<ITransition> pvec2 = lc2.getQuasiParikhVector(foata2.get(i));
 				int comp = compareQuasiParikhVectors(lc1,pvec1,pvec2);
 				if (comp==0) return -1;
 			}
@@ -66,12 +67,12 @@ public class EsparzaAdequateTotalOrderForSafeSystems extends AdequateOrder {
 	 * @param pvec2 vector
 	 * @return -1,0,1 if pvec1 is smaller, equal, or larger than pvec2, respectively
 	 */
-	private int compareQuasiParikhVectors(LocalConfiguration lc, List<Transition> pvec1, List<Transition> pvec2) {
+	private int compareQuasiParikhVectors(LocalConfiguration lc, List<ITransition> pvec1, List<ITransition> pvec2) {
 		int n = pvec1.size();
 		if (pvec2.size()<n) n = pvec2.size();
 		
 		for (int i = 0; i<n; i++) {
-			Integer comp = lc.compareTransitions(pvec1.get(i), pvec2.get(i));
+			Integer comp = lc.compareTransitions((Transition)pvec1.get(i), (Transition)pvec2.get(i));
 			if (comp<0) return -1;
 			if (comp>0) return 1;
 		}
@@ -89,8 +90,8 @@ public class EsparzaAdequateTotalOrderForSafeSystems extends AdequateOrder {
 	 * @return -1,0,1 if pvec1 is smaller, equal, or larger than pvec2, respectively
 	 */
 	private int compareQuasiParikhVectors(LocalConfiguration lc1, LocalConfiguration lc2) {
-		List<Transition> pvec1 = lc1.getQuasiParikhVector();
-		List<Transition> pvec2 = lc2.getQuasiParikhVector();
+		List<ITransition> pvec1 = lc1.getQuasiParikhVector();
+		List<ITransition> pvec2 = lc2.getQuasiParikhVector();
 		
 		return this.compareQuasiParikhVectors(lc1, pvec1, pvec2);
 	}

@@ -12,9 +12,12 @@ import junit.framework.TestCase;
 import org.jbpt.algo.graph.DirectedGraphAlgorithms;
 import org.jbpt.algo.tree.tctree.TCTree;
 import org.jbpt.algo.tree.tctree.TCType;
-import org.jbpt.petri.Flow;
-import org.jbpt.petri.NetSystem;
-import org.jbpt.petri.Node;
+import org.jbpt.petri.IFlow;
+import org.jbpt.petri.IMarking;
+import org.jbpt.petri.INetSystem;
+import org.jbpt.petri.INode;
+import org.jbpt.petri.IPlace;
+import org.jbpt.petri.ITransition;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
 import org.jbpt.petri.structure.PetriNetStructuralClassChecks;
@@ -28,7 +31,7 @@ public class TCTreeExtensiveTest extends TestCase {
 
 	protected static final String MODELS_DIR = "models/process_json/allmodels";
 	
-	protected final DirectedGraphAlgorithms<Flow,Node> DGA = new DirectedGraphAlgorithms<Flow,Node>(); 
+	protected final DirectedGraphAlgorithms<IFlow<INode>,INode> DGA = new DirectedGraphAlgorithms<>(); 
 	
 	public void test() throws Exception {
 		FileWriter csvStream = new FileWriter("stats.csv");
@@ -48,24 +51,24 @@ public class TCTreeExtensiveTest extends TestCase {
 				IOUtils.toFile(name+".dot", p.toDOT());
 				bat.write("dot -Tpng -o"+name+".png "+name+".dot\n");
 				
-				NetSystem sys = ProcessModel2NetSystem.transform(p);
+				INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> sys = ProcessModel2NetSystem.transform(p);
 				int cp = 1; int ct = 1;
-				for (Place place : sys.getPlaces()) place.setName("p"+cp++);
-				for (Transition trans : sys.getTransitions()) trans.setName("t"+ct++);
+				for (IPlace place : sys.getPlaces()) place.setName("p"+cp++);
+				for (ITransition trans : sys.getTransitions()) trans.setName("t"+ct++);
 				sys.loadNaturalMarking();
 				
 				assertTrue(PetriNetStructuralClassChecks.isWorkflowNet(sys));
 				Transition t = new Transition("BACK");
 				sys.addFlow((Place)DGA.getSinks(sys).iterator().next(),t);
-				Flow back = sys.addFlow(t,(Place)DGA.getSources(sys).iterator().next());
+				IFlow<INode> back = sys.addFlow(t,(Place)DGA.getSources(sys).iterator().next());
 				
-				TCTree<Flow,Node> tctree = new TCTree<Flow,Node>(sys,back);
+				TCTree<IFlow<INode>,INode> tctree = new TCTree<>(sys,back);
 				long start = System.nanoTime();
-				new TCTree<Flow,Node>(sys,back);
-				new TCTree<Flow,Node>(sys,back);
-				new TCTree<Flow,Node>(sys,back);
-				new TCTree<Flow,Node>(sys,back);
-				tctree = new TCTree<Flow,Node>(sys,back);
+				new TCTree<IFlow<INode>,INode>(sys,back);
+				new TCTree<IFlow<INode>,INode>(sys,back);
+				new TCTree<IFlow<INode>,INode>(sys,back);
+				new TCTree<IFlow<INode>,INode>(sys,back);
+				tctree = new TCTree<>(sys,back);
 				long stop = System.nanoTime();
 				long time = (stop - start) / 5;
 				

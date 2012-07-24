@@ -13,6 +13,7 @@ import org.jbpt.algo.graph.GraphAlgorithms;
 import org.jbpt.graph.abs.AbstractDirectedGraph;
 import org.jbpt.hypergraph.abs.IVertex;
 import org.jbpt.hypergraph.abs.Vertex;
+import org.jbpt.petri.ITransition;
 import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
@@ -520,7 +521,7 @@ public class ProcessModel extends AbstractDirectedGraph<ControlFlow<FlowNode>, F
 			for (FlowNode flowNode : nodes1) {
 				if(flowNode instanceof Activity) {
 					while(this.getFirstDirectSuccessor(flowNode) instanceof Activity) {
-						for (Transition transition : pn.getSinkTransitions()) {
+						for (ITransition transition : pn.getSinkTransitions()) {
 							if (transition.getName().equalsIgnoreCase(flowNode.getName())) {
 								Place p = new Place();
 								pn.addFlow(transition, p);
@@ -558,7 +559,7 @@ public class ProcessModel extends AbstractDirectedGraph<ControlFlow<FlowNode>, F
 					}
 					if(this.getIncomingEdges(gw).size() == 1 && this.getOutgoingEdges(gw).size() > 1) { //split
 						if(gw instanceof AndGateway) { //and split
-							for (Transition transition : pn.getSinkTransitions()) {
+							for (ITransition transition : pn.getSinkTransitions()) {
 								for (FlowNode flowNode : nodes2) {
 									if(flowNode instanceof Activity) {
 										if (transition.getName().equalsIgnoreCase(flowNode.getName())) {
@@ -608,7 +609,7 @@ public class ProcessModel extends AbstractDirectedGraph<ControlFlow<FlowNode>, F
 								}
 							}
 						} else if(gw instanceof XorGateway) { //xor split
-							for (Transition transition : pn.getSinkTransitions()) {
+							for (ITransition transition : pn.getSinkTransitions()) {
 								for (FlowNode flowNode : nodes2) {
 									if(flowNode instanceof Activity) {
 										if (transition.getName().equalsIgnoreCase(flowNode.getName())) {
@@ -668,7 +669,7 @@ public class ProcessModel extends AbstractDirectedGraph<ControlFlow<FlowNode>, F
 								Transition t1 = new Transition(this.getFirstDirectSuccessor(gw).getName());
 								Transition t2 = new Transition();
 								t2.setDescription(gw.getName());
-								for (Transition transition : pn.getSinkTransitions()) {
+								for (ITransition transition : pn.getSinkTransitions()) {
 									if(this.getFirstDirectSuccessor(gw) instanceof Activity) {
 										for (FlowNode flowNode : nodes2) {
 											if(flowNode instanceof Activity) {
@@ -725,7 +726,7 @@ public class ProcessModel extends AbstractDirectedGraph<ControlFlow<FlowNode>, F
 								Transition t2 = new Transition();
 								t2.setDescription(gw.getName());
 								Place p = new Place();
-								for (Transition transition : pn.getSinkTransitions()) {
+								for (ITransition transition : pn.getSinkTransitions()) {
 									if(this.getFirstDirectSuccessor(gw) instanceof Activity) {
 										for (FlowNode flowNode : nodes2) {											
 											if(flowNode instanceof Activity) {
@@ -794,7 +795,7 @@ public class ProcessModel extends AbstractDirectedGraph<ControlFlow<FlowNode>, F
 			nodes1.addAll(nodes3);
 			nodes3.clear();
 		}
-		for (Transition t : pn.getSinkTransitions()) {
+		for (ITransition t : pn.getSinkTransitions()) {
 			pn.addFlow(t, new Place());
 		}
 		return pn;

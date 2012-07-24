@@ -17,6 +17,13 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.jbpt.petri.Flow;
+import org.jbpt.petri.IFlow;
+import org.jbpt.petri.IMarking;
+import org.jbpt.petri.INetSystem;
+import org.jbpt.petri.INode;
+import org.jbpt.petri.IPetriNet;
+import org.jbpt.petri.IPlace;
+import org.jbpt.petri.ITransition;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Node;
 import org.jbpt.petri.PetriNet;
@@ -281,7 +288,7 @@ public class PNMLSerializer extends DefaultHandler
 	 * @return PNML string
 	 * @throws SerializationException 
 	 */
-	public static String serializePetriNet(NetSystem net, int tool) throws SerializationException {
+	public static String serializePetriNet(INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> net, int tool) throws SerializationException {
 		Document doc = PNMLSerializer.serialize(net, tool);
 		if (doc == null) {
 			return null;
@@ -320,7 +327,7 @@ public class PNMLSerializer extends DefaultHandler
 	 * @param tool integer indicating the tool
 	 * @return Document object
 	 */
-	public static Document serialize(NetSystem net, int tool) throws SerializationException {
+	public static Document serialize(INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> net, int tool) throws SerializationException {
 		if (net == null) {
 			return null;
 		}
@@ -347,14 +354,14 @@ public class PNMLSerializer extends DefaultHandler
 		Element page = doc.createElement("page");
 		page.setAttribute("id", "page0");
 		netNode.appendChild(page);
-		for (Place place:net.getPlaces()) {
-			addPlace(doc, page, net, place);
+		for (IPlace place:net.getPlaces()) {
+			addPlace(doc, page, net, (Place) place);
 		}
-		for (Transition trans:net.getTransitions()) {
-			addTransition(doc, page, trans);
+		for (ITransition trans:net.getTransitions()) {
+			addTransition(doc, page, (Transition) trans);
 		}
-		for (Flow flow:net.getFlow()) {
-			addFlow(doc, page, flow);
+		for (IFlow<INode> flow:net.getFlow()) {
+			addFlow(doc, page, (Flow) flow);
 		}
 		if (tool == LOLA)
 			addFinalMarkings(doc, page, net);
@@ -379,7 +386,7 @@ public class PNMLSerializer extends DefaultHandler
 		return elem;
 	}
 
-	private static void addPlace(Document doc, Element parent, NetSystem net, Place place) {
+	private static void addPlace(Document doc, Element parent, INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> net, Place place) {
 		Element elem = doc.createElement("place");
 		elem.setAttribute("id", place.getId());
 		if (!place.getName().equals(""))
@@ -414,9 +421,9 @@ public class PNMLSerializer extends DefaultHandler
 	 * @param parent
 	 * @param net
 	 */
-	private static void addFinalMarkings(Document doc, Element parent, PetriNet net) {
+	private static void addFinalMarkings(Document doc, Element parent, IPetriNet<IFlow<INode>, INode, IPlace, ITransition> net) {
 		Element finalMarkings = doc.createElement("finalmarkings");
-		for (Place place:net.getSinkPlaces()) {
+		for (IPlace place:net.getSinkPlaces()) {
 			Element elem = addElementWithText(doc, finalMarkings, "place", "1");
 			elem.setAttribute("idref", place.getId());
 			Element marking = doc.createElement("marking");

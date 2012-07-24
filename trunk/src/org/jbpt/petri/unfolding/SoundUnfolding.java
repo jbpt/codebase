@@ -5,11 +5,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.jbpt.algo.graph.DirectedGraphAlgorithms;
-import org.jbpt.petri.Flow;
-import org.jbpt.petri.NetSystem;
-import org.jbpt.petri.Node;
+import org.jbpt.petri.IFlow;
+import org.jbpt.petri.IMarking;
+import org.jbpt.petri.INetSystem;
+import org.jbpt.petri.INode;
+import org.jbpt.petri.IPlace;
+import org.jbpt.petri.ITransition;
 import org.jbpt.petri.Place;
-import org.jbpt.petri.Transition;
 import org.jbpt.petri.structure.PetriNetStructuralClassChecks;
 import org.jbpt.petri.unfolding.order.UnfoldingAdequateOrder;
 
@@ -26,18 +28,18 @@ public class SoundUnfolding extends ProperUnfolding {
 	private Set<Condition> unsafe	= null;
 	private Set<Condition> deadlock	= null;
 	
-	protected static DirectedGraphAlgorithms<Flow,Node> dga = new DirectedGraphAlgorithms<Flow,Node>();
+	protected static DirectedGraphAlgorithms<IFlow<INode>,INode> dga = new DirectedGraphAlgorithms<>();
 	
 	protected SoundUnfolding() {}
 
-	public SoundUnfolding(NetSystem sys) {
+	public SoundUnfolding(INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> sys) {
 		if (!PetriNetStructuralClassChecks.isFreeChoice(sys)) throw new IllegalArgumentException("Net must be free choice!");
 		if (!PetriNetStructuralClassChecks.isWorkflowNet(sys)) throw new IllegalArgumentException("Net must be a WF-net!");
 		if (dga.isAcyclic(sys)) throw new IllegalArgumentException("Net must be acyclic!");
 		
 		this.sys = sys;
 		this.initialBP = new Cut(this.sys);
-		this.totalOrderTs = new ArrayList<Transition>(this.sys.getTransitions());
+		this.totalOrderTs = new ArrayList<ITransition>(this.sys.getTransitions());
 		
 		UnfoldingSetup setup = new UnfoldingSetup();
 		setup.ADEQUATE_ORDER = new UnfoldingAdequateOrder();
@@ -79,20 +81,20 @@ public class SoundUnfolding extends ProperUnfolding {
 			this.deadlock = new HashSet<Condition>();			
 			OccurrenceNet BP = this.getOccurrenceNet();
 			
-			for (Place p : BP.getPlaces()) {
-				if (BP.getPostset(p).isEmpty() && !this.sys.getPostset(BP.getCondition(p).getPlace()).isEmpty()) {
-					this.deadlock.add(BP.getCondition(p));
+			for (IPlace p : BP.getPlaces()) {
+				if (BP.getPostset(p).isEmpty() && !this.sys.getPostset(BP.getCondition((Place)p).getPlace()).isEmpty()) {
+					this.deadlock.add(BP.getCondition((Place)p));
 				}
 			}
 						
-			for (Place p : BP.getPlaces()) {
-				for (Transition t : BP.getPostset(p)){					
-					for (Place p1 : BP.getPreset(t)) {
+			for (IPlace p : BP.getPlaces()) {
+				for (ITransition t : BP.getPostset(p)){					
+					for (IPlace p1 : BP.getPreset(t)) {
 						if (p.equals(p1)) continue;
 						
-						for (Place p2 : BP.getSinkPlaces()) {
-							if (BP.getOrderingRelation(p,p2)==OrderingRelation.CONFLICT && BP.getOrderingRelation(p1,p2)==OrderingRelation.CONCURRENT) {
-								this.deadlock.add(BP.getCondition(p));
+						for (IPlace p2 : BP.getSinkPlaces()) {
+							if (BP.getOrderingRelation((Place)p,(Place)p2)==OrderingRelation.CONFLICT && BP.getOrderingRelation((Place)p1,(Place)p2)==OrderingRelation.CONCURRENT) {
+								this.deadlock.add(BP.getCondition((Place)p));
 							}
 						}
 					}

@@ -5,6 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jbpt.petri.IFlow;
+import org.jbpt.petri.IMarking;
+import org.jbpt.petri.INetSystem;
+import org.jbpt.petri.INode;
+import org.jbpt.petri.IPlace;
+import org.jbpt.petri.ITransition;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Node;
 import org.jbpt.petri.Place;
@@ -19,10 +25,10 @@ import org.jbpt.throwable.TransformationException;
 
 public class ProcessModel2NetSystem {
 	
-	public static NetSystem transform(ProcessModel pm) throws TransformationException {
+	public static INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> transform(ProcessModel pm) throws TransformationException {
 		if (pm.getGateways(OrGateway.class).size() > 0) throw new TransformationException();
 		
-		NetSystem sys = new NetSystem();
+		INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> sys = new NetSystem();
 		
 		sys.setId(pm.getId());
 		sys.setName(pm.getName());
@@ -124,7 +130,7 @@ public class ProcessModel2NetSystem {
 		return (node instanceof XorGateway);
 	}
 	
-	private static Node getNode(FlowNode node, NetSystem sys, Map<FlowNode,Node> map) {
+	private static Node getNode(FlowNode node, INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> sys, Map<FlowNode,Node> map) {
 		Node res = map.get(node);
 		if (res==null) {
 			if (isXORGateway(node)) res = new Place();

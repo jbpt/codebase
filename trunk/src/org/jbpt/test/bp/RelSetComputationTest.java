@@ -5,8 +5,13 @@ import junit.framework.TestCase;
 import org.jbpt.bp.RelSet;
 import org.jbpt.bp.RelSetType;
 import org.jbpt.bp.construct.RelSetCreatorUnfolding;
+import org.jbpt.petri.IFlow;
+import org.jbpt.petri.IMarking;
+import org.jbpt.petri.INetSystem;
+import org.jbpt.petri.INode;
+import org.jbpt.petri.IPlace;
+import org.jbpt.petri.ITransition;
 import org.jbpt.petri.NetSystem;
-import org.jbpt.petri.Node;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
 
@@ -79,7 +84,7 @@ public class RelSetComputationTest extends TestCase {
 		/*
 		 * Get alpha relations
 		 */
-		RelSet<NetSystem, Node> relSet = RelSetCreatorUnfolding.getInstance().deriveRelationSet(net,1);
+		RelSet<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> relSet = RelSetCreatorUnfolding.getInstance().deriveRelationSet(net,1);
 		
 		assertTrue(relSet.getEntities().size() == 8);
 
@@ -232,7 +237,7 @@ public class RelSetComputationTest extends TestCase {
 		/*
 		 * Get alpha relations
 		 */
-		RelSet<NetSystem, Node> relSet = RelSetCreatorUnfolding.getInstance().deriveRelationSet(net,1);
+		RelSet<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> relSet = RelSetCreatorUnfolding.getInstance().deriveRelationSet(net,1);
 		
 		assertTrue(relSet.getEntities().size() == 10);
 
