@@ -1,5 +1,6 @@
 package org.jbpt.petri;
 
+import java.util.Map;
 import java.util.Set;
 
 public interface INetSystem<F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition, M extends IMarking<P>> extends IPetriNet<F,N,P,T> {
@@ -81,4 +82,7 @@ public interface INetSystem<F extends IFlow<N>, N extends INode, P extends IPlac
 	 */
 	public boolean isMarked(P place);
 
+	public INetSystem<F, N, P, T, M> clone(Map<N, N> nodeMapping);
+	
+	public INetSystem<F, N, P, T, M> createNetSystem();
 }

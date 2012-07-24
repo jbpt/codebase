@@ -64,4 +64,7 @@ public interface IMarking<P extends IPlace> {
 	 * @return <tt>true</tt> if this marking does not mark any place; <tt>false</tt> otherwise.
 	 */
 	public boolean isEmpty();
+
+	public IPetriNet<IFlow<INode>, INode, IPlace, ITransition> getPetriNet();
+
 }

@@ -2,9 +2,12 @@ package org.jbpt.test.petri;
 
 import junit.framework.TestCase;
 
-import org.jbpt.petri.NetSystem;
-import org.jbpt.petri.Place;
-import org.jbpt.petri.Transition;
+import org.jbpt.petri.IFlow;
+import org.jbpt.petri.IMarking;
+import org.jbpt.petri.INetSystem;
+import org.jbpt.petri.INode;
+import org.jbpt.petri.IPlace;
+import org.jbpt.petri.ITransition;
 import org.jbpt.petri.behavior.Completion;
 import org.jbpt.pm.Activity;
 import org.jbpt.pm.AndGateway;
@@ -43,10 +46,10 @@ public class CompletionTest extends TestCase {
 		
 		IOUtils.toFile("model.dot", p.toDOT());
 		
-		NetSystem sys = ProcessModel2NetSystem.transform(p);
+		INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> sys = ProcessModel2NetSystem.transform(p);
 		int cp = 1; int ct = 1;
-		for (Place place : sys.getPlaces()) place.setName("p"+cp++);
-		for (Transition trans : sys.getTransitions()) trans.setName("t"+ct++);
+		for (IPlace place : sys.getPlaces()) place.setName("p"+cp++);
+		for (ITransition trans : sys.getTransitions()) trans.setName("t"+ct++);
 		IOUtils.toFile("net.dot", sys.toDOT());
 		
 		Completion comp = new Completion();

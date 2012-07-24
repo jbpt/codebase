@@ -7,13 +7,15 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jbpt.algo.graph.TransitiveClosure;
-import org.jbpt.petri.Flow;
-import org.jbpt.petri.NetSystem;
-import org.jbpt.petri.Node;
+import org.jbpt.petri.IFlow;
+import org.jbpt.petri.IMarking;
+import org.jbpt.petri.INetSystem;
+import org.jbpt.petri.INode;
+import org.jbpt.petri.IPlace;
+import org.jbpt.petri.ITransition;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
 import org.jbpt.petri.unfolding.SoundUnfoldingMSMS;
-import org.jbpt.utils.IOUtils;
 
 /**
  * This class implements completion methods for multi-terminal nets described in:
@@ -36,7 +38,7 @@ public class Completion {
 	 * @assumption A given net is acyclic.
 	 * @assumption A given net is sound.
 	 */
-	public void completeSources(NetSystem sys) {
+	public void completeSources(INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> sys) {
 		if (sys.getSourcePlaces().size()==1) return;
 		
 		sys.loadNaturalMarking();
@@ -58,14 +60,14 @@ public class Completion {
 	 * @assumption A given net is acyclic.
 	 * @assumption A given net is sound.
 	 */
-	public void completeSinks(NetSystem sys) {
-		TransitiveClosure<Flow,Node> tc = new TransitiveClosure<Flow,Node>(sys);
-		Map<Place,Set<Place>> p2ps = new HashMap<Place,Set<Place>>();
-		Map<Place,Set<Transition>> p2ts = new HashMap<Place,Set<Transition>>();
+	public void completeSinks(INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> sys) {
+		TransitiveClosure<IFlow<INode>,INode> tc = new TransitiveClosure<>(sys);
+		Map<IPlace,Set<IPlace>> p2ps = new HashMap<>();
+		Map<IPlace,Set<ITransition>> p2ts = new HashMap<>();
 		
-		for (Place p : sys.getPlaces()) {
-			Set<Place> set = new HashSet<Place>();
-			for (Place pp : sys.getPlaces()) {
+		for (IPlace p : sys.getPlaces()) {
+			Set<IPlace> set = new HashSet<>();
+			for (IPlace pp : sys.getPlaces()) {
 				if (tc.hasPath(pp,p))
 					set.add(pp);
 				
@@ -73,11 +75,11 @@ public class Completion {
 			p2ps.put(p,set);
 		}
 		
-		for (Place p : sys.getPlaces()) {
-			Set<Transition> set = new HashSet<Transition>();
-			Set<Place> ps = p2ps.get(p);
+		for (IPlace p : sys.getPlaces()) {
+			Set<ITransition> set = new HashSet<>();
+			Set<IPlace> ps = p2ps.get(p);
 			
-			for (Transition tt : sys.getTransitions()) {
+			for (ITransition tt : sys.getTransitions()) {
 				if (ps.containsAll(sys.getPreset(tt)) && this.areDisjoint(ps,sys.getPostset(tt))) {
 					set.add(tt);
 				}
@@ -86,26 +88,26 @@ public class Completion {
 			p2ts.put(p,set);
 		}
 		
-		for (Place p : sys.getSinkPlaces()) {
-			for (Transition t : p2ts.get(p))
+		for (IPlace p : sys.getSinkPlaces()) {
+			for (ITransition t : p2ts.get(p))
 				sys.addFlow(t,p);
 		}
 		
 		Transition t = new Transition();
-		for (Place p : sys.getSinkPlaces()) sys.addFlow(p,t);
+		for (IPlace p : sys.getSinkPlaces()) sys.addFlow(p,t);
 		Place p = new Place();
 		sys.addFlow(t,p);
 	}
 	
-	private boolean areDisjoint(Set<Place> ps, Collection<Place> postset) {
-		for (Place p : postset)
+	private boolean areDisjoint(Set<IPlace> ps, Collection<IPlace> postset) {
+		for (IPlace p : postset)
 			if (ps.contains(p))
 					return false;
 			
 		return true;
 	}
 
-	public void complete(NetSystem sys) {
+	public void complete(INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> sys) {
 		this.completeSources(sys);
 		this.completeSinks(sys);
 	}

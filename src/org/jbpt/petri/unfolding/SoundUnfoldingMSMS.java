@@ -9,10 +9,13 @@ import java.util.Set;
 
 import org.jbpt.algo.CombinationGenerator;
 import org.jbpt.algo.graph.TransitiveClosure;
-import org.jbpt.petri.Flow;
-import org.jbpt.petri.NetSystem;
-import org.jbpt.petri.Node;
-import org.jbpt.petri.PetriNet;
+import org.jbpt.petri.IFlow;
+import org.jbpt.petri.IMarking;
+import org.jbpt.petri.INetSystem;
+import org.jbpt.petri.INode;
+import org.jbpt.petri.IPetriNet;
+import org.jbpt.petri.IPlace;
+import org.jbpt.petri.ITransition;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
 import org.jbpt.petri.unfolding.order.EsparzaAdequateOrderForArbitrarySystems;
@@ -25,21 +28,21 @@ import org.jbpt.petri.unfolding.order.EsparzaAdequateOrderForArbitrarySystems;
  */
 public class SoundUnfoldingMSMS extends SoundUnfolding {
 
-	protected NetSystem originativeSystem = null;
-	protected Map<Node,Node> nodeMapping = null;
+	protected INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> originativeSystem = null;
+	protected Map<INode,INode> nodeMapping = null;
 	
 	/**
 	 * @assumption Net system is free-choice
 	 * @assumption Net system is multi-terminal
 	 * @assumption Net system is acyclic
 	 */
-	public SoundUnfoldingMSMS(NetSystem sys) {		
+	public SoundUnfoldingMSMS(INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> sys) {		
 		this.originativeSystem = sys;
-		this.nodeMapping = new HashMap<Node,Node>();
+		this.nodeMapping = new HashMap<>();
 		
 		this.sys = this.constructAugmentedVersion();
 		this.initialBP = new Cut(this.sys);
-		this.totalOrderTs = new ArrayList<Transition>(this.sys.getTransitions());
+		this.totalOrderTs = new ArrayList<ITransition>(this.sys.getTransitions());
 		
 		UnfoldingSetup setup = new UnfoldingSetup();
 		setup.ADEQUATE_ORDER = new EsparzaAdequateOrderForArbitrarySystems();
@@ -58,18 +61,18 @@ public class SoundUnfoldingMSMS extends SoundUnfolding {
 	 * - Add a fresh flow from s to every start transition
 	 * - For every start transition t_c, add fresh flow from t_c to every place in c
 	 */
-	private NetSystem constructAugmentedVersion() {
-		NetSystem result = this.originativeSystem.clone(this.nodeMapping);
+	private INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> constructAugmentedVersion() {
+		INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> result = this.originativeSystem.clone(this.nodeMapping);
 		
-		Collection<Place> sources = result.getSourcePlaces();
+		Collection<IPlace> sources = result.getSourcePlaces();
 		Place s = new Place();
 		for (int i=0; i<sources.size(); i++) {
-			CombinationGenerator<Place> cg = new CombinationGenerator<Place>(sources, i+1);
+			CombinationGenerator<IPlace> cg = new CombinationGenerator<IPlace>(sources, i+1);
 			while (cg.hasMore()) {
-				Collection<Place> comb = cg.getNextCombination();
+				Collection<IPlace> comb = cg.getNextCombination();
 				Transition t = new Transition();
 				result.addFlow(s,t);
-				for (Place p : comb) {
+				for (IPlace p : comb) {
 					result.addFlow(t,p);
 				}
 			}
@@ -80,14 +83,14 @@ public class SoundUnfoldingMSMS extends SoundUnfolding {
 	}
 	
 	@Override
-	public NetSystem getNetSystem() {
+	public INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> getNetSystem() {
 		return this.originativeSystem;
 	}
 	
 	@Override
 	public boolean isSound() {
-		Collection<Transition> augTs = new ArrayList<Transition>(this.sys.getTransitions());
-		Collection<Transition> augStartTs = new ArrayList<Transition>(this.sys.getPostset(this.sys.getSourcePlaces().iterator().next()));
+		Collection<ITransition> augTs = new ArrayList<>(this.sys.getTransitions());
+		Collection<ITransition> augStartTs = new ArrayList<>(this.sys.getPostset(this.sys.getSourcePlaces().iterator().next()));
 		augTs.removeAll(augStartTs);
 		
 		Set<Condition> cs = new HashSet<Condition>(this.getLocallyUnsafeConditions());
@@ -115,11 +118,11 @@ public class SoundUnfoldingMSMS extends SoundUnfolding {
 		//errors.addAll(this.getLocalDeadlockConditions());
 		
 		OccurrenceNet occ = this.getOccurrenceNet();
-		Collection<Transition> starts = new ArrayList<Transition>(occ.getPostset(occ.getSourcePlaces().iterator().next()));
-		Collection<Transition> correctStarts = new ArrayList<Transition>();
-		TransitiveClosure<Flow,Node> tc = new TransitiveClosure<Flow,Node>(occ);
+		Collection<ITransition> starts = new ArrayList<>(occ.getPostset(occ.getSourcePlaces().iterator().next()));
+		Collection<ITransition> correctStarts = new ArrayList<>();
+		TransitiveClosure<IFlow<INode>,INode> tc = new TransitiveClosure<>(occ);
 		
-		for (Transition start : starts) {
+		for (ITransition start : starts) {
 			boolean flag = true;
 			for (Condition error : errors) {
 				if (tc.hasPath(start, occ.getPlace(error))) {
@@ -134,11 +137,11 @@ public class SoundUnfoldingMSMS extends SoundUnfolding {
 		
 		Place src = new Place();
 		this.originativeSystem.addPlace(src);
-		for (Transition start : correctStarts) {
+		for (ITransition start : correctStarts) {
 			Transition t = new Transition();
 			this.originativeSystem.addFlow(src,t);
-			for (Place p : occ.getPostset(start)) {
-				Place pp = this.getOriginativePlace(occ,p);
+			for (IPlace p : occ.getPostset(start)) {
+				Place pp = this.getOriginativePlace(occ,(Place)p);
 				this.originativeSystem.addFlow(t,pp);
 			}
 		}
@@ -147,7 +150,7 @@ public class SoundUnfoldingMSMS extends SoundUnfolding {
 	
 	private Place getOriginativePlace(OccurrenceNet occ, Place p) {
 		Place pp = occ.getCondition(p).getPlace(); // place in this.sys
-		for (Map.Entry<Node,Node> entry : this.nodeMapping.entrySet()) {
+		for (Map.Entry<INode,INode> entry : this.nodeMapping.entrySet()) {
 			if (entry.getValue().equals(pp))
 				return (Place) entry.getKey();
 		}
@@ -158,7 +161,7 @@ public class SoundUnfoldingMSMS extends SoundUnfolding {
 	 * Get original net without augmentation
 	 * @return original net
 	 */
-	public PetriNet getOriginalNet() {
+	public IPetriNet<IFlow<INode>, INode, IPlace, ITransition> getOriginalNet() {
 		return this.originativeSystem;
 	}
 }

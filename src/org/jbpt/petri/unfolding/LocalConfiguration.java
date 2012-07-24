@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.jbpt.petri.ITransition;
 import org.jbpt.petri.Marking;
 import org.jbpt.petri.Transition;
 
@@ -24,7 +25,7 @@ public class LocalConfiguration extends HashSet<Event> {
 	private Event e = null;			// event
 	private Cut C = null;			// cut
 	private Marking M = null;		// marking of cut
-	private List<Transition> vec = null;	// quasi Parikh vector
+	private List<ITransition> vec = null;	// quasi Parikh vector
 	private List<Set<Event>> foata = null;	// Foata normal form
 	
 	/**
@@ -79,16 +80,16 @@ public class LocalConfiguration extends HashSet<Event> {
 		return this.M;
 	}
 	
-	class ParikhComparator implements Comparator<Transition> {
+	class ParikhComparator implements Comparator<ITransition> {
 		
-		private List<Transition> totalOrderTs = null;
+		private List<ITransition> totalOrderTs = null;
 		
-		public ParikhComparator(List<Transition> totalOrderTs) {
+		public ParikhComparator(List<ITransition> totalOrderTs) {
 			this.totalOrderTs = totalOrderTs;
 		}
 		
 		@Override
-		public int compare(Transition t1, Transition t2) {
+		public int compare(ITransition t1, ITransition t2) {
 			int i1 = this.totalOrderTs.indexOf(t1);
 			int i2 = this.totalOrderTs.indexOf(t2);
 			if (i1<i2) return -1;
@@ -98,9 +99,9 @@ public class LocalConfiguration extends HashSet<Event> {
 		}
 	}
 	
-	public List<Transition> getQuasiParikhVector() {
+	public List<ITransition> getQuasiParikhVector() {
 		if (this.vec == null) {
-			this.vec = new ArrayList<Transition>();
+			this.vec = new ArrayList<ITransition>();
 			for (Event e : this) this.vec.add(e.getTransition());
 			Collections.sort(this.vec, new ParikhComparator(this.unf.totalOrderTs));
 		}
@@ -109,8 +110,8 @@ public class LocalConfiguration extends HashSet<Event> {
 	}
 	
 	// TODO cache this
-	public List<Transition> getQuasiParikhVector(Collection<Event> es) {
-		List<Transition> result = new ArrayList<Transition>();
+	public List<ITransition> getQuasiParikhVector(Collection<Event> es) {
+		List<ITransition> result = new ArrayList<>();
 		for (Event e : es) result.add(e.getTransition());
 		Collections.sort(result, new ParikhComparator(this.unf.totalOrderTs));
 		return result;

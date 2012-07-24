@@ -9,8 +9,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import org.jbpt.petri.INode;
+import org.jbpt.petri.IPlace;
+import org.jbpt.petri.ITransition;
 import org.jbpt.petri.NetSystem;
-import org.jbpt.petri.Node;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
 
@@ -105,22 +107,22 @@ public class WoflanSerializer {
 			BufferedWriter bufWriter = new BufferedWriter(output);
 			
 			bufWriter.write("\n");
-			for (Place p : sys.getPlaces()) {
+			for (IPlace p : sys.getPlaces()) {
 				if (sys.getMarking().get(p) > 0)
 					bufWriter.write("place \"" + formatId(p.getId()) + "\" init "+sys.getMarking().get(p)+";\n");
 				else
 					bufWriter.write("place \"" + formatId(p.getId()) + "\";\n");
 			}
 			bufWriter.write("\n");
-			for (Transition t : sys.getTransitions()) {
+			for (ITransition t : sys.getTransitions()) {
 				bufWriter.write("trans \"" + formatId(t.getId()) + "\"\n");
 				bufWriter.write("in ");
-				for (Node n : sys.getDirectPredecessors(t)) {
+				for (INode n : sys.getDirectPredecessors(t)) {
 					bufWriter.write("\"" + formatId(n.getId()) + "\" ");
 				}
 				bufWriter.write("\n");
 				bufWriter.write("out ");
-				for (Node n : sys.getDirectSuccessors(t)) {
+				for (INode n : sys.getDirectSuccessors(t)) {
 					bufWriter.write("\"" + formatId(n.getId()) + "\" ");
 				}
 				bufWriter.write("\n;\n");

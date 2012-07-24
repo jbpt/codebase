@@ -9,8 +9,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jbpt.petri.IFlow;
+import org.jbpt.petri.IMarking;
+import org.jbpt.petri.INetSystem;
+import org.jbpt.petri.INode;
+import org.jbpt.petri.IPlace;
+import org.jbpt.petri.ITransition;
 import org.jbpt.petri.NetSystem;
-import org.jbpt.petri.Transition;
 import org.jbpt.pm.ProcessModel;
 import org.jbpt.pm.structure.ProcessModel2NetSystem;
 import org.jbpt.throwable.TransformationException;
@@ -24,7 +29,7 @@ import org.jbpt.throwable.TransformationException;
  */
 public class BisimilarityChecker2 {
 
-	private NetSystem net1, net2;
+	private INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> net1, net2;
 	private boolean areBisimilar = false;
 	private Map<String, BitSet> nameMap;
 	private int n;
@@ -33,15 +38,15 @@ public class BisimilarityChecker2 {
 		this(ProcessModel2NetSystem.transform(process1), ProcessModel2NetSystem.transform(process2));
 	}
 	
-	public BisimilarityChecker2(NetSystem net1, NetSystem net2) {
+	public BisimilarityChecker2(INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> net1, INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> net2) {
 		this.net1 = net1;
 		this.net2 = net2;
 		this.compare();
 	}
 	
-	private List<String> getNames(NetSystem net) {
+	private List<String> getNames(INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> net) {
 		ArrayList<String> names = new ArrayList<String>();
-		for (Transition t:net.getTransitions()) {
+		for (ITransition t:net.getTransitions()) {
 			if (!t.getName().equals(""))
 				names.add(t.getName());
 		}
@@ -69,9 +74,9 @@ public class BisimilarityChecker2 {
 	 * @param trans - all yet found transitions
 	 * @param currentState
 	 */
-	private void dfs(NetSystem net, Map<BitSet, Set<BitSet>> trans, BitSet currentState) {
-		Collection<Transition> enabled = net.getEnabledTransitions();
-		for (Transition v:enabled) {
+	private void dfs(INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> net, Map<BitSet, Set<BitSet>> trans, BitSet currentState) {
+		Collection<ITransition> enabled = net.getEnabledTransitions();
+		for (ITransition v:enabled) {
 			BitSet nextState = null;
 			if (!v.getName().equals("")) {
 				// we are just interested in labeled transitions...
@@ -99,7 +104,7 @@ public class BisimilarityChecker2 {
 	 * @param net
 	 * @return the state transition relation
 	 */
-	private Map<BitSet, Set<BitSet>> createStateTransitions(NetSystem net) {
+	private Map<BitSet, Set<BitSet>> createStateTransitions(INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> net) {
 		Map<BitSet, Set<BitSet>> transitions = new HashMap<BitSet, Set<BitSet>>();
 		net.loadNaturalMarking();
 		dfs(net, transitions, new BitSet(n));

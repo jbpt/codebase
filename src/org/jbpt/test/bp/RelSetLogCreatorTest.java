@@ -1,5 +1,7 @@
 package org.jbpt.test.bp;
 
+import junit.framework.TestCase;
+
 import org.jbpt.alignment.LabelEntity;
 import org.jbpt.bp.RelSet;
 import org.jbpt.bp.RelSetLabelAbstractor;
@@ -8,8 +10,6 @@ import org.jbpt.bp.construct.RelSetCreatorLog;
 import org.jbpt.petri.log.Log;
 import org.jbpt.petri.log.Trace;
 import org.jbpt.petri.log.TraceEntry;
-
-import junit.framework.TestCase;
 
 
 public class RelSetLogCreatorTest extends TestCase {

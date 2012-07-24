@@ -7,8 +7,10 @@ import junit.framework.TestCase;
 
 import org.jbpt.algo.tree.rpst.RPSTNode;
 import org.jbpt.algo.tree.tctree.TCType;
-import org.jbpt.petri.Flow;
-import org.jbpt.petri.Node;
+import org.jbpt.petri.IFlow;
+import org.jbpt.petri.INode;
+import org.jbpt.petri.IPlace;
+import org.jbpt.petri.ITransition;
 import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
@@ -85,7 +87,7 @@ public class WFTreeTest extends TestCase {
 		
 		assertTrue(PetriNetStructuralClassChecks.isWorkflowNet(net));
 		
-		WFTree<Flow,Node,Place,Transition> wfTree = new WFTree<Flow,Node,Place,Transition>(net);
+		WFTree<IFlow<INode>,INode,IPlace,ITransition> wfTree = new WFTree<>(net);
 		IOUtils.toFile("rpst.dot", wfTree.toDOT());
 		wfTree.debug();
 		
@@ -103,12 +105,12 @@ public class WFTreeTest extends TestCase {
 		assertEquals(4,wfTree.getDownwardPath(wfTree.getRoot(),wfTree.getRPSTNodes(WFTreeBondType.LOOP).iterator().next()).size());
 	}
 	
-	private void performBasicChecks(PetriNet net, WFTree<Flow,Node,Place,Transition> wfTree) {
-		for (RPSTNode<Flow,Node> node : wfTree.getRPSTNodes()) {
+	private void performBasicChecks(PetriNet net, WFTree<IFlow<INode>,INode,IPlace,ITransition> wfTree) {
+		for (RPSTNode<IFlow<INode>,INode> node : wfTree.getRPSTNodes()) {
 			assertTrue(net.getEdges().containsAll(node.getFragment()));
 			
-			Collection<Flow> edges = new ArrayList<Flow>();
-			for (RPSTNode<Flow,Node> child : wfTree.getChildren(node)) {
+			Collection<IFlow<INode>> edges = new ArrayList<>();
+			for (RPSTNode<IFlow<INode>,INode> child : wfTree.getChildren(node)) {
 				edges.addAll(child.getFragment());
 			}
 			

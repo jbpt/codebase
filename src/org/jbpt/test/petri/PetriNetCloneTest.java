@@ -2,6 +2,7 @@ package org.jbpt.test.petri;
 
 import junit.framework.TestCase;
 
+import org.jbpt.petri.IPlace;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
@@ -72,7 +73,7 @@ public class PetriNetCloneTest extends TestCase {
 		assertEquals(14, clone.getFlow().size());
 		
 		int count = 0;
-		for (Place p : clone.getPlaces()) {
+		for (IPlace p : clone.getPlaces()) {
 			if (clone.getTokens(p) > 0) {
 				assertEquals(3, clone.getTokens(p).intValue());
 				assertEquals(1, clone.getDirectPredecessors(p).size()); 
