@@ -29,19 +29,19 @@ public class PetriNetStructuralClassChecks {
 	 * @param net Petri net
 	 * @return <code>true</code> if net is free-choice; <code>false</code> otherwise
 	 */
-	public static boolean isFreeChoice(PetriNet net) {
-		for (Place p : net.getPlaces()) {
-			if (net.getPostset(p).size()>1) {
-				Set<Place> z = new HashSet<Place>();
-				for (Transition t : net.getPostset(p)) {
-					z.addAll(net.getPreset(t));
-				}
-				if (z.size()>1) return false;
-			}
-		}
-		
-		return true;
-	}
+//	public static boolean isFreeChoice(PetriNet net) {
+//		for (Place p : net.getPlaces()) {
+//			if (net.getPostset(p).size()>1) {
+//				Set<Place> z = new HashSet<Place>();
+//				for (Transition t : net.getPostset(p)) {
+//					z.addAll(net.getPreset(t));
+//				}
+//				if (z.size()>1) return false;
+//			}
+//		}
+//		
+//		return true;
+//	}
 
 	/**
 	 * Check if Petri net is free-choice.
@@ -49,11 +49,11 @@ public class PetriNetStructuralClassChecks {
 	 * @param net Petri net
 	 * @return <code>true</code> if net is free-choice; <code>false</code> otherwise
 	 */
-	public static boolean isFreeChoice(IPetriNet<IFlow<INode>, INode, IPlace, ITransition> net) {
-		for (IPlace p : net.getPlaces()) {
+	public static <N extends IPetriNet<Flow,Node,Place,Transition>> boolean isFreeChoice(N net) {
+		for (Place p : net.getPlaces()) {
 			if (net.getPostset(p).size()>1) {
 				Set<IPlace> z = new HashSet<>();
-				for (ITransition t : net.getPostset(p)) {
+				for (Transition t : net.getPostset(p)) {
 					z.addAll(net.getPreset(t));
 				}
 				if (z.size()>1) return false;
