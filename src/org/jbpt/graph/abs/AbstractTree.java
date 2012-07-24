@@ -176,7 +176,7 @@ public class AbstractTree<V extends IVertex> extends AbstractDirectedGraph<IDire
 		
 		V v = v2;
 		result.add(v);
-		while (!this.getDirectPredecessors(v).isEmpty()) {
+		while (!this.getDirectPredecessors(v).isEmpty() && !result.contains(v1)) {
 			v = this.getFirstDirectPredecessor(v);
 			result.add(v);
 		}
