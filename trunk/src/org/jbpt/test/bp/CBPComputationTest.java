@@ -314,6 +314,7 @@ public class CBPComputationTest extends TestCase {
 		assertEquals(RelSetType.Order, bp.getRelationForEntities(a, f));
 		assertEquals(RelSetType.Order, bp.getRelationForEntities(c, f));
 		assertEquals(RelSetType.Order, bp.getRelationForEntities(a, f));
+		assertEquals(RelSetType.Order, bp.getRelationForEntities(a, b));
 		assertEquals(RelSetType.ReverseOrder, bp.getRelationForEntities(i, a));
 		assertEquals(RelSetType.ReverseOrder, bp.getRelationForEntities(j, a));
 		

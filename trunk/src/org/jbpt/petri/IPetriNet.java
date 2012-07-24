@@ -29,6 +29,15 @@ public interface IPetriNet<F extends IFlow<N>, N extends INode, P extends IPlace
 	public F addFlow(T transition, P place);
 
 	/**
+	 * Add flow to this net. 
+	 * 
+	 * @param node Source node.
+	 * @param node Target node.
+	 * @return Flow added to this net; <tt>null</tt> if no flow was added.  
+	 */
+	public F addFreshFlow(N source, N target);
+
+	/**
 	 * Add node to this net.
 	 * 
 	 * @param node Node to add. 
@@ -354,9 +363,34 @@ public interface IPetriNet<F extends IFlow<N>, N extends INode, P extends IPlace
 	 */
 	public void doTRestrict();
 
+	/**
+	 * Factory method to provide a transition of the Petri net implementation
+	 * 
+	 * @return a transition
+	 */
 	public T createTransition();
+
+	/**
+	 * Factory method to provide a place of the Petri net implementation
+	 * 
+	 * @return a place
+	 */
 	public P createPlace();
+	
+	/**
+	 * Factory method to provide a flow of the Petri net implementation
+	 * 
+	 * @param from, origin of flow
+	 * @param to, target of flow
+	 * @return a flow from [from] to [to] 
+	 */
 	public F createFlow(N from, N to);
+	
+	/**
+	 * Factory method to provide a Petri net of the according implementation
+	 * 
+	 * @return a Petri net
+	 */
 	public IPetriNet<F,N,P,T> createPetriNet();
 
 	
