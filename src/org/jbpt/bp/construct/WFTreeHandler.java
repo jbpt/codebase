@@ -1,6 +1,5 @@
 package org.jbpt.bp.construct;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,6 +24,7 @@ import org.jbpt.petri.IPetriNet;
 import org.jbpt.petri.IPlace;
 import org.jbpt.petri.ITransition;
 import org.jbpt.petri.structure.PetriNetStructuralClassChecks;
+import org.jbpt.petri.structure.PetriNetUtils;
 import org.jbpt.petri.wft.WFTree;
 import org.jbpt.petri.wft.WFTreeBondType;
 import org.jbpt.petri.wft.WFTreeLoopOrientationType;
@@ -39,10 +39,12 @@ public class WFTreeHandler {
 	private Map<RPSTNode<IFlow<INode>, INode>,CausalBehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode>> node2cbp = new HashMap<>();
 	private Map<BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode>,Map<INode,INode>> bp2nodemapping = new HashMap<>();
 	
-	
-	private Map<RPSTNode<IFlow<INode>, INode>,Vector<RPSTNode<IFlow<INode>, INode>>> orderedPNodes = new HashMap<>();
-
 	public WFTreeHandler(IPetriNet<IFlow<INode>, INode, IPlace, ITransition> net) {
+		
+		/*
+		 * Isolate the transitions that we are interested in
+		 */
+		PetriNetUtils.isolateTransitions(net);
 		
 		/*
 		 * Create the WFTree
@@ -52,14 +54,8 @@ public class WFTreeHandler {
 		/*
 		 * Check the net for requirements
 		 */
-		
 		if (!PetriNetStructuralClassChecks.isWorkflowNet((IPetriNet<IFlow<INode>, INode, IPlace, ITransition>)this.wfTree.getGraph())) throw new IllegalArgumentException();
 		if (!PetriNetStructuralClassChecks.isExtendedFreeChoice((IPetriNet<IFlow<INode>, INode, IPlace, ITransition>)this.wfTree.getGraph())) throw new IllegalArgumentException();
-		
-		/*
-		 * order polygones
-		 */
-		orderPNodes(this.wfTree.getRoot());
 		
 		/*
 		 * track transitions in the tree
@@ -69,52 +65,7 @@ public class WFTreeHandler {
 				node2wfTreeNode.put((ITransition) node.getEntry(), node);
 
 	}
-	
-	
-	private void orderPNodes(RPSTNode<IFlow<INode>, INode> node) {
-		if (node.getType() == TCType.POLYGON) {
-			Vector<RPSTNode<IFlow<INode>, INode>> orderedChildren = new Vector<>();
-			Collection<RPSTNode<IFlow<INode>, INode>> childrenCopy = new ArrayList<>(this.wfTree.getChildren(node));
-			
-			INode entry = node.getEntry();
-			while (childrenCopy.size()!=0) {
-				boolean found = false;
-				for (RPSTNode<IFlow<INode>, INode> child: childrenCopy)
-					if (child.getEntry().equals(entry)) {
-						orderedChildren.add(child);
-						childrenCopy.remove(child);
-						entry = child.getExit();
-						found = true;
-						break;
-					}
-				if (!found) {
-					orderedChildren.addAll(childrenCopy);
-					break;
-				}
-			}
-			
-			orderedPNodes.put(node, orderedChildren);
-		}
-		
-		// call recursively
-		for (RPSTNode<IFlow<INode>, INode> child: this.wfTree.getChildren(node))
-			orderPNodes(child);
-	}
 
-	/**
-	 * Get order of a node in a parent sequence
-	 * A partial function, defined for nodes with a parent node of type polygon
-	 * @param node a node to get position for 
-	 * @return position of a node in a parent sequence (S) node starting from 0, or -1 if order is not defined for this node 
-	 */
-	public int getOrder(RPSTNode<IFlow<INode>, INode> node) {
-		if (this.wfTree.getParent(node)==null || this.wfTree.getParent(node).getType()!=TCType.POLYGON || !orderedPNodes.containsKey(this.wfTree.getParent(node)))
-			return -1;
-		
-		return orderedPNodes.get(this.wfTree.getParent(node)).lastIndexOf(node);
-	}
-	
-		
 	private boolean areInSeries(RPSTNode<IFlow<INode>, INode> lca, RPSTNode<IFlow<INode>, INode> a, RPSTNode<IFlow<INode>, INode> b) {
 		if (lca.getType()!=TCType.POLYGON) return false;
 		
@@ -123,7 +74,11 @@ public class WFTreeHandler {
 		
 		if (pathA.size()<2 || pathB.size()<2) return false;
 		
-		if (getOrder(pathA.get(1))<getOrder(pathB.get(1)))
+		List<RPSTNode<IFlow<INode>, INode>> children = this.wfTree.getPolygonChildren(lca);
+		System.out.println(children.indexOf(pathA.get(1)));
+		System.out.println(children.indexOf(pathB.get(1)));
+		
+		if (children.indexOf(pathA.get(1))<children.indexOf(pathB.get(1)))
 			return true;
 		
 		return false;
