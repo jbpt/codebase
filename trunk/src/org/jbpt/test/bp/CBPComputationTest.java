@@ -12,9 +12,9 @@ import org.jbpt.bp.construct.CBPCreatorTree;
 import org.jbpt.bp.construct.CBPCreatorUnfolding;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Node;
+import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
-import org.jbpt.petri.structure.PetriNetStructuralClassChecks;
 
 public class CBPComputationTest extends TestCase {
 
@@ -294,10 +294,10 @@ public class CBPComputationTest extends TestCase {
 		/*
 		 * Generic tests for net structure
 		 */
-		assertTrue(PetriNetStructuralClassChecks.isExtendedFreeChoice(net));
-		assertTrue(PetriNetStructuralClassChecks.isWorkflowNet(net));
-		assertFalse(PetriNetStructuralClassChecks.isSNet(net));
-		assertFalse(PetriNetStructuralClassChecks.isTNet(net));
+		//assertTrue(PetriNet.StructuralClassChecks.isExtendedFreeChoice(net));
+		assertTrue(PetriNet.StructuralClassChecks.isWorkflowNet(net));
+		assertFalse(PetriNet.StructuralClassChecks.isSNet(net));
+		assertFalse(PetriNet.StructuralClassChecks.isTNet(net));
 		
 		/*
 		 * Tests for behavioural profile

@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
-import org.jbpt.petri.structure.PetriNetStructuralClassChecks;
 import org.junit.Test;
 
 /**
@@ -28,8 +27,8 @@ public class StructuralClassTest {
 		assertEquals(3,pn.getVertices().size());
 		assertEquals(2,pn.getFlow().size());
 		
-		assertTrue(PetriNetStructuralClassChecks.isFreeChoice(pn));
-		assertTrue(PetriNetStructuralClassChecks.isWorkflowNet(pn));
+		assertTrue(PetriNet.StructuralClassChecks.isFreeChoice(pn));
+		assertTrue(PetriNet.StructuralClassChecks.isWorkflowNet(pn));
 		
 		assertEquals(3,pn.getVertices().size());
 		assertEquals(2,pn.getFlow().size());

@@ -6,9 +6,9 @@ import org.jbpt.bp.BehaviouralProfile;
 import org.jbpt.bp.RelSetType;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Node;
+import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.behavior.ConcurrencyRelation;
 import org.jbpt.petri.structure.PetriNetPathUtils;
-import org.jbpt.petri.structure.PetriNetStructuralClassChecks;
 
 
 /**
@@ -45,8 +45,8 @@ public class BPCreatorNet extends AbstractRelSetCreator implements RelSetCreator
 		/*
 		 * Check some of the assumptions.
 		 */
-		if (!PetriNetStructuralClassChecks.isExtendedFreeChoice(pn)) throw new IllegalArgumentException();
-		if (!PetriNetStructuralClassChecks.isWorkflowNet(pn)) throw new IllegalArgumentException();
+		//if (!PetriNet.StructuralClassChecks.isExtendedFreeChoice(pn)) throw new IllegalArgumentException();
+		if (!PetriNet.StructuralClassChecks.isWorkflowNet(pn)) throw new IllegalArgumentException();
 
 		BehaviouralProfile<NetSystem, Node> profile = new BehaviouralProfile<NetSystem, Node>(pn,nodes);
 		RelSetType[][] matrix = profile.getMatrix();

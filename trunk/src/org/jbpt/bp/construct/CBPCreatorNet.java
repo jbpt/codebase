@@ -9,8 +9,8 @@ import org.jbpt.bp.CausalBehaviouralProfile;
 import org.jbpt.bp.RelSetType;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Node;
+import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.structure.PetriNetPathUtils;
-import org.jbpt.petri.structure.PetriNetStructuralClassChecks;
 
 
 
@@ -37,9 +37,9 @@ public class CBPCreatorNet extends AbstractRelSetCreator implements CBPCreator<N
 		/*
 		 * Check assumptions for the net
 		 */
-		if (!PetriNetStructuralClassChecks.isWorkflowNet(pn)) throw new IllegalArgumentException();
-		if (!PetriNetStructuralClassChecks.isExtendedFreeChoice(pn)) throw new IllegalArgumentException();
-		if (PetriNetPathUtils.isCyclic(pn) && (!PetriNetStructuralClassChecks.isTNet(pn) && !PetriNetStructuralClassChecks.isSNet(pn))) throw new IllegalArgumentException();
+		if (!PetriNet.StructuralClassChecks.isWorkflowNet(pn)) throw new IllegalArgumentException();
+		if (!PetriNet.StructuralClassChecks.isExtendedFreeChoice(pn)) throw new IllegalArgumentException();
+		if (PetriNetPathUtils.isCyclic(pn) && (!PetriNet.StructuralClassChecks.isTNet(pn) && !PetriNet.StructuralClassChecks.isSNet(pn))) throw new IllegalArgumentException();
 
 		/*
 		 * Compute the behavioural profile using BPCreatorNet
@@ -59,7 +59,7 @@ public class CBPCreatorNet extends AbstractRelSetCreator implements CBPCreator<N
 		/*
 		 * Compute co-occurrence if net is T-net
 		 */
-		if (PetriNetStructuralClassChecks.isTNet(pn)) {
+		if (PetriNet.StructuralClassChecks.isTNet(pn)) {
 			for(Node n1 : profile.getEntities()) {
 				int index1 = profile.getEntities().indexOf(n1);
 				for(Node n2 : profile.getEntities()) {
@@ -71,7 +71,7 @@ public class CBPCreatorNet extends AbstractRelSetCreator implements CBPCreator<N
 		/*
 		 * Compute co-occurrence if net is S-net
 		 */
-		else if (PetriNetStructuralClassChecks.isSNet(pn)) {
+		else if (PetriNet.StructuralClassChecks.isSNet(pn)) {
 			Map<Node,Set<Node>> dominators = PetriNetPathUtils.getDominators(pn);
 			Map<Node,Set<Node>> postdominators = PetriNetPathUtils.getPostDominators(pn);
 			
