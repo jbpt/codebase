@@ -1,6 +1,7 @@
 package org.jbpt.petri;
 
 import java.util.Collection;
+import java.util.Set;
 
 import org.jbpt.graph.abs.IDirectedGraph;
 
@@ -157,42 +158,42 @@ public interface IPetriNet<F extends IFlow<N>, N extends INode, P extends IPlace
 	 * 
 	 * @return Nodes of this net.
 	 */
-	public Collection<N> getNodes();
+	public Set<N> getNodes();
 
 	/**
 	 * Get places of this net.
 	 * 
 	 * @return Places of this net.
 	 */
-	public Collection<P> getPlaces();
+	public Set<P> getPlaces();
 
 	/**
 	 * Get transitions of this net.
 	 * 
 	 * @return Transitions of this net.
 	 */
-	public Collection<T> getTransitions();
+	public Set<T> getTransitions();
 
 	/**
 	 * Get flow relation of this net. 
 	 * 
 	 * @return Flow relation of this net.
 	 */
-	public Collection<F> getFlow();
+	public Set<F> getFlow();
 
 	/**
 	 * Get silent transitions of this net.
 	 * 
 	 * @return Silent transitions of this net.
 	 */
-	public Collection<T> getSilentTransitions();
+	public Set<T> getSilentTransitions();
 
 	/**
 	 * Get observable transitions of this net.
 	 * 
 	 * @return Observable transitions of this net.
 	 */
-	public Collection<T> getObservableTransitions();
+	public Set<T> getObservableTransitions();
 
 	/**
 	 * Get postset of a given transition.
@@ -200,7 +201,7 @@ public interface IPetriNet<F extends IFlow<N>, N extends INode, P extends IPlace
 	 * @param transition Transition.
 	 * @return Postset of the given transition.
 	 */
-	public Collection<P> getPostset(T transition);
+	public Set<P> getPostset(T transition);
 
 	/**
 	 * Get postset of given transitions.
@@ -208,7 +209,7 @@ public interface IPetriNet<F extends IFlow<N>, N extends INode, P extends IPlace
 	 * @param transitions Transitions.
 	 * @return Postset of the given transitions.
 	 */
-	public Collection<P> getPostsetPlaces(Collection<T> transitions);
+	public Set<P> getPostsetPlaces(Collection<T> transitions);
 
 	/**
 	 * Get postset of a given place
@@ -216,7 +217,7 @@ public interface IPetriNet<F extends IFlow<N>, N extends INode, P extends IPlace
 	 * @param place Place.
 	 * @return Postset of the given place.
 	 */
-	public Collection<T> getPostset(P place);
+	public Set<T> getPostset(P place);
 
 	/**
 	 * Get postset of given places.
@@ -224,7 +225,7 @@ public interface IPetriNet<F extends IFlow<N>, N extends INode, P extends IPlace
 	 * @param places Places.
 	 * @return Postset of the given places.
 	 */
-	public Collection<T> getPostsetTransitions(Collection<P> places);
+	public Set<T> getPostsetTransitions(Collection<P> places);
 
 	/**
 	 * Get postset of a given node.
@@ -232,7 +233,7 @@ public interface IPetriNet<F extends IFlow<N>, N extends INode, P extends IPlace
 	 * @param node Node.
 	 * @return Postset of the given node.
 	 */
-	public Collection<N> getPostset(N node);
+	public Set<N> getPostset(N node);
 
 	/**
 	 * Get postset of given nodes.
@@ -240,7 +241,7 @@ public interface IPetriNet<F extends IFlow<N>, N extends INode, P extends IPlace
 	 * @param nodes Nodes.
 	 * @return Postset of given nodes.
 	 */
-	public Collection<N> getPostset(Collection<N> nodes);
+	public Set<N> getPostset(Collection<N> nodes);
 
 	/**
 	 * Get preset of a given transition.
@@ -248,7 +249,7 @@ public interface IPetriNet<F extends IFlow<N>, N extends INode, P extends IPlace
 	 * @param transition Transition.
 	 * @return Preset of the given transition.
 	 */
-	public Collection<P> getPreset(T transition);
+	public Set<P> getPreset(T transition);
 
 	/**
 	 * Get preset of given transitions.
@@ -256,7 +257,7 @@ public interface IPetriNet<F extends IFlow<N>, N extends INode, P extends IPlace
 	 * @param transitions Transitions.
 	 * @return Preset of given transitions.
 	 */
-	public Collection<P> getPresetPlaces(Collection<T> transitions);
+	public Set<P> getPresetPlaces(Collection<T> transitions);
 
 	/**
 	 * Get preset of a given place.
@@ -264,7 +265,7 @@ public interface IPetriNet<F extends IFlow<N>, N extends INode, P extends IPlace
 	 * @param place Place.
 	 * @return Preset of the given place.
 	 */
-	public Collection<T> getPreset(P place);
+	public Set<T> getPreset(P place);
 
 	/**
 	 * Get preset of given places.
@@ -272,7 +273,7 @@ public interface IPetriNet<F extends IFlow<N>, N extends INode, P extends IPlace
 	 * @param places Places.
 	 * @return Preset of the given places.
 	 */
-	public Collection<T> getPresetTransitions(Collection<P> places);
+	public Set<T> getPresetTransitions(Collection<P> places);
 
 	/**
 	 * Get preset of a given node.
@@ -280,7 +281,7 @@ public interface IPetriNet<F extends IFlow<N>, N extends INode, P extends IPlace
 	 * @param node Node.
 	 * @return Preset of the given node.
 	 */
-	public Collection<N> getPreset(N node);
+	public Set<N> getPreset(N node);
 
 	/**
 	 * Get preset of the given nodes.
@@ -288,7 +289,7 @@ public interface IPetriNet<F extends IFlow<N>, N extends INode, P extends IPlace
 	 * @param nodes Nodes.
 	 * @return Preset of the given nodes.
 	 */
-	public Collection<N> getPreset(Collection<N> nodes);
+	public Set<N> getPreset(Collection<N> nodes);
 
 	/**
 	 * Get source nodes of this net. 
@@ -296,7 +297,7 @@ public interface IPetriNet<F extends IFlow<N>, N extends INode, P extends IPlace
 	 * 
 	 * @return Source nodes of this net.
 	 */
-	public Collection<N> getSourceNodes();
+	public Set<N> getSourceNodes();
 
 	/**
 	 * Get source places of this net. 
@@ -304,7 +305,7 @@ public interface IPetriNet<F extends IFlow<N>, N extends INode, P extends IPlace
 	 * 
 	 * @return Source places of this net.
 	 */
-	public Collection<P> getSourcePlaces();
+	public Set<P> getSourcePlaces();
 
 	/**
 	 * Get source transitions of this net.
@@ -312,7 +313,7 @@ public interface IPetriNet<F extends IFlow<N>, N extends INode, P extends IPlace
 	 * 
 	 * @return Source transitions of this net.
 	 */
-	public Collection<T> getSourceTransitions();
+	public Set<T> getSourceTransitions();
 
 	/**
 	 * Get sink nodes of this net. 
@@ -320,7 +321,7 @@ public interface IPetriNet<F extends IFlow<N>, N extends INode, P extends IPlace
 	 * 
 	 * @return Sink nodes of this net.
 	 */
-	public Collection<N> getSinkNodes();
+	public Set<N> getSinkNodes();
 
 	/**
 	 * Get sink places of this net.
@@ -328,7 +329,7 @@ public interface IPetriNet<F extends IFlow<N>, N extends INode, P extends IPlace
 	 * 
 	 * @return Sink places of this net.
 	 */
-	public Collection<P> getSinkPlaces();
+	public Set<P> getSinkPlaces();
 
 	/**
 	 * Get sink transitions of this net.
@@ -336,21 +337,21 @@ public interface IPetriNet<F extends IFlow<N>, N extends INode, P extends IPlace
 	 * 
 	 * @return Sink transitions of this net.
 	 */
-	public Collection<T> getSinkTransitions();
+	public Set<T> getSinkTransitions();
 
 	/**
 	 * Get minimal nodes of this net (alias of {@link getSourceNodes}).
 	 * 
 	 * @return Minimal nodes of this net.
 	 */
-	public Collection<N> getMin();
+	public Set<N> getMin();
 
 	/**
 	 * Get maximal nodes of this net (alias of {@link getSinkNodes}).
 	 * 
 	 * @return Maximal nodes of this net.
 	 */
-	public Collection<N> getMax();
+	public Set<N> getMax();
 
 	/**
 	 * Factory method to provide a transition of the Petri net implementation.
