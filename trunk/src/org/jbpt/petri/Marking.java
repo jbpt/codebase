@@ -12,15 +12,15 @@ import java.util.Set;
  * @author Christian Wiggert
  * @author Artem Polyvyanyy
  */
-public class Marking extends HashMap<IPlace,Integer> implements IMarking<IPlace> {
+public class Marking extends HashMap<Place,Integer> implements IMarking<Place> {
 
 	private static final long serialVersionUID = -2144274745926614966L;
 	
 	// associated net
-	private IPetriNet<IFlow<INode>, INode, IPlace, ITransition> net = null;
+	private PetriNet net = null;
 	
 	@Override
-	public Integer put(IPlace p, Integer tokens) {
+	public Integer put(Place p, Integer tokens) {
 		if (p==null) return 0;
 		if (!this.net.contains(p)) throw new IllegalArgumentException("Proposed place is not part of the associated net!");
 		
@@ -40,25 +40,25 @@ public class Marking extends HashMap<IPlace,Integer> implements IMarking<IPlace>
 	 * @param net A net to associate marking with.
 	 * @throws IllegalArgumentException if a given net is set to <tt>null</tt>.
 	 */
-	public Marking(IPetriNet<IFlow<INode>, INode, IPlace, ITransition> net) {
+	public Marking(PetriNet net) {
 		if (net==null) throw new IllegalArgumentException("PetriNet object expected but was NULL!");
 		this.net = net;
 	}
 	
-	public IPetriNet<IFlow<INode>, INode, IPlace, ITransition> getPetriNet() {
+	public PetriNet getPetriNet() {
 		return this.net;
 	}
 
 	@Override
-	public boolean isMarked(IPlace place) {
+	public boolean isMarked(Place place) {
 		return this.get(place) > 0;
 	}
 
 	@Override
-	public Collection<IPlace> toMultiSet() {
-		Collection<IPlace> result = new ArrayList<IPlace>();
+	public Collection<Place> toMultiSet() {
+		Collection<Place> result = new ArrayList<Place>();
 		
-		for (Map.Entry<IPlace, Integer> entry : this.entrySet()) {
+		for (Map.Entry<Place, Integer> entry : this.entrySet()) {
 			for (int i = 0; i < entry.getValue(); i++) {
 				result.add(entry.getKey());
 			}
@@ -68,12 +68,12 @@ public class Marking extends HashMap<IPlace,Integer> implements IMarking<IPlace>
 	}
 
 	@Override
-	public Integer remove(IPlace place) {
+	public Integer remove(Place place) {
 		return super.remove(place);
 	}
 
 	@Override
-	public Integer get(IPlace place) {
+	public Integer get(Place place) {
 		Integer i = super.get(place);
 		return i == null ? 0 : i; 
 	}
@@ -91,7 +91,7 @@ public class Marking extends HashMap<IPlace,Integer> implements IMarking<IPlace>
 	/**
 	 * Removes all tokens from a given place of the associated net.
 	 * 
-	 * @param place IPlace of the associated net.
+	 * @param place Place of the associated net.
 	 * @return The number of tokens previously contained in the given place, or <tt>null</tt> there was no token at the given place. 
 	 */
 	@Override
@@ -107,8 +107,8 @@ public class Marking extends HashMap<IPlace,Integer> implements IMarking<IPlace>
 	 * @throws NullPointerException if the specified map is null.
 	 */
 	@Override
-	public void putAll(Map<? extends IPlace, ? extends Integer> m) {
-		for (Map.Entry<? extends IPlace, ? extends Integer> entry : m.entrySet()) {
+	public void putAll(Map<? extends Place, ? extends Integer> m) {
+		for (Map.Entry<? extends Place, ? extends Integer> entry : m.entrySet()) {
 			this.put(entry.getKey(), entry.getValue());
 		}
 	}
@@ -116,12 +116,12 @@ public class Marking extends HashMap<IPlace,Integer> implements IMarking<IPlace>
 	/**
 	 * Get number of tokens at a place.
 	 * 
-	 * @param p IPlace of the associated net.
+	 * @param p Place of the associated net.
 	 * @return Number of tokens at the place.
 	 */
 	@Override
 	public Integer get(Object p) {
-		if (!(p instanceof IPlace)) return 0; 
+		if (!(p instanceof Place)) return 0; 
 		Integer i = super.get(p);
 		return i == null ? 0 : i;
 	}
@@ -142,7 +142,7 @@ public class Marking extends HashMap<IPlace,Integer> implements IMarking<IPlace>
 	 * @return The set of pairs where every pair specifies a marked place of the associated net and the number of tokens at the place.
 	 */
 	@Override
-	public Set<Map.Entry<IPlace,Integer>> entrySet() {
+	public Set<Map.Entry<Place,Integer>> entrySet() {
 		return super.entrySet();
 	}
 	
@@ -153,7 +153,7 @@ public class Marking extends HashMap<IPlace,Integer> implements IMarking<IPlace>
 		Marking that = (Marking) o;
 		if (this.size()!=that.size()) return false;
 		
-		for (Map.Entry<IPlace, Integer> i : this.entrySet()) {
+		for (Map.Entry<Place, Integer> i : this.entrySet()) {
 			Integer value = that.get(i.getKey());
 			if (value == null) return false;
 			if (!i.getValue().equals(value)) return false;
@@ -168,7 +168,7 @@ public class Marking extends HashMap<IPlace,Integer> implements IMarking<IPlace>
 		
 		result -= this.net.hashCode();
 		
-		for (IPlace p : this.net.getPlaces())
+		for (Place p : this.net.getPlaces())
 			result += 17 * p.hashCode() * this.get(p);
 		
 		return result;

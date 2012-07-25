@@ -7,12 +7,9 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
-import org.jbpt.petri.IFlow;
-import org.jbpt.petri.IMarking;
-import org.jbpt.petri.INetSystem;
-import org.jbpt.petri.INode;
-import org.jbpt.petri.IPlace;
-import org.jbpt.petri.ITransition;
+import org.jbpt.petri.NetSystem;
+import org.jbpt.petri.Place;
+import org.jbpt.petri.Transition;
 import org.jbpt.petri.unfolding.SoundUnfolding;
 import org.jbpt.pm.ProcessModel;
 import org.jbpt.pm.io.JSON2Process;
@@ -31,10 +28,10 @@ public class SoundUnfoldingExtensiveTestA extends TestCase {
 		for (String name : modelsDir.list()) {
 			if (name.endsWith(".json")) {
 				ProcessModel p = loadProcess(MODELS_DIR + File.separator + name);
-				INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> net = ProcessModel2NetSystem.transform(p);
+				NetSystem net = ProcessModel2NetSystem.transform(p);
 				int cp = 1; int ct = 1;
-				for (IPlace place : net.getPlaces()) place.setName("p"+cp++);
-				for (ITransition trans : net.getTransitions()) trans.setName("t"+ct++);
+				for (Place place : net.getPlaces()) place.setName("p"+cp++);
+				for (Transition trans : net.getTransitions()) trans.setName("t"+ct++);
 				net.loadNaturalMarking();
 				
 				SoundUnfolding unf = new SoundUnfolding(net);

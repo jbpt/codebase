@@ -8,12 +8,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.jbpt.petri.IFlow;
-import org.jbpt.petri.INode;
-import org.jbpt.petri.IPetriNet;
-import org.jbpt.petri.IPlace;
-import org.jbpt.petri.ITransition;
 import org.jbpt.petri.Marking;
+import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.Place;
 
 
@@ -26,9 +22,9 @@ public class Coset extends TreeSet<Condition> {
 	private static final long serialVersionUID = 1L;
 	private final static CosetComparator coset_comparator = new CosetComparator();
 	
-	private IPetriNet<IFlow<INode>, INode, IPlace, ITransition> net = null;
+	private PetriNet net = null;
 	
-	public Coset(IPetriNet<IFlow<INode>, INode, IPlace, ITransition> net) {
+	public Coset(PetriNet net) {
 		this.net = net;
 	}
 	
@@ -90,7 +86,7 @@ public class Coset extends TreeSet<Condition> {
 		return this.p2cs.keySet();
 	}
 	
-	public IPetriNet<IFlow<INode>, INode, IPlace, ITransition> getPetriNet() {
+	public PetriNet getPetriNet() {
 		return this.net;
 	}
 	

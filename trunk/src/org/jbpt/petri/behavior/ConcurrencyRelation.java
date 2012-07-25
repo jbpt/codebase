@@ -8,13 +8,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jbpt.petri.IFlow;
-import org.jbpt.petri.IMarking;
-import org.jbpt.petri.INetSystem;
-import org.jbpt.petri.INode;
-import org.jbpt.petri.IPlace;
-import org.jbpt.petri.ITransition;
+import org.jbpt.petri.NetSystem;
+import org.jbpt.petri.Node;
+import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.Place;
+import org.jbpt.petri.Transition;
 import org.jbpt.petri.structure.PetriNetStructuralClassChecks;
 
 
@@ -38,17 +36,17 @@ public class ConcurrencyRelation {
 	 */
 	private class NodePair {
 		
-		private INode n1;
-		private INode n2;
+		private Node n1;
+		private Node n2;
 		
-		public NodePair(INode n1, INode n2) {
+		public NodePair(Node n1, Node n2) {
 			this.n1 = n1;
 			this.n2 = n2;
 		}
 		
-		public INode getFirstNode() {return this.n1;}
+		public Node getFirstNode() {return this.n1;}
 		
-		public INode getSecondNode() {return this.n2;}
+		public Node getSecondNode() {return this.n2;}
 		
 		public String toString() {
 			return "(" + this.n1.toString() + " | " + this.n2.toString() + ")";
@@ -58,12 +56,12 @@ public class ConcurrencyRelation {
 	/**
 	 * The Petri net for which the concurrency relation is defined.
 	 */
-	private INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> sys;
+	private NetSystem sys;
 	
 	/**
 	 * All nodes of the Petri net in a list.
 	 */
-	private List<INode> nodes;
+	private List<Node> nodes;
 	
 	/**
 	 * The actual concurrency matrix for the nodes of the Petri net.
@@ -73,18 +71,18 @@ public class ConcurrencyRelation {
 	/**
 	 * Helper map only needed during computation of the concurrency relation.
 	 */
-	private Map<INode,Set<INode>> indirectPlaces;
+	private Map<Node,Set<Node>> indirectPlaces;
 
 	/**
 	 * Create a concurrency relation for a given Petri net.
 	 * 
 	 * @param the Petri net
 	 */
-	public ConcurrencyRelation(INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> sys) {
+	public ConcurrencyRelation(NetSystem sys) {
 		this.sys = sys;
 		this.matrix = null;
-		this.nodes = new ArrayList<>(this.sys.getNodes());
-		this.indirectPlaces = new HashMap<>();
+		this.nodes = new ArrayList<Node>(this.sys.getNodes());
+		this.indirectPlaces = new HashMap<Node, Set<Node>>();
 	}
 	
 	/**
@@ -95,7 +93,7 @@ public class ConcurrencyRelation {
 	 * @param n2
 	 * @return true, if both nodes are concurrent.
 	 */
-	public boolean areConcurrent(INode n1, INode n2) {
+	public boolean areConcurrent(Node n1, Node n2) {
 		if (this.matrix == null)
 			calculateConcurrencyMatrix();
 
@@ -128,10 +126,10 @@ public class ConcurrencyRelation {
 	 * @param a collection of nodes
 	 * @return true, if the node is concurrent to all nodes in the collection
 	 */
-	protected boolean nodeConcurrentToNodes(INode n, Collection<INode> nodes) {
+	protected boolean nodeConcurrentToNodes(Node n, Collection<Node> nodes) {
 		boolean conc = true;
 		int i = this.nodes.indexOf(n);
-		for(INode n2 : nodes) {
+		for(Node n2 : nodes) {
 			int j = this.nodes.indexOf(n2);
 			conc &= this.matrix[i][j];
 		}
@@ -142,8 +140,8 @@ public class ConcurrencyRelation {
 	 * Set all nodes pairwise concurrent in the concurrency matrix.
 	 * @param nodes
 	 */
-	protected void setAllNodesConcurrent(Collection<INode> nodes) {
-		for(INode n : nodes) {
+	protected void setAllNodesConcurrent(Collection<Node> nodes) {
+		for(Node n : nodes) {
 			setNodeConcurrentToNodes(n,nodes);
 		}
 	}
@@ -153,8 +151,8 @@ public class ConcurrencyRelation {
 	 * @param a single node
 	 * @param a collection of nodes
 	 */
-	protected void setNodeConcurrentToNodes(INode n, Collection<INode> nodes) {
-		for(INode n2 : nodes) {
+	protected void setNodeConcurrentToNodes(Node n, Collection<Node> nodes) {
+		for(Node n2 : nodes) {
 			setNodesConcurrent(n,n2);
 		}
 	}
@@ -164,7 +162,7 @@ public class ConcurrencyRelation {
 	 * @param n1
 	 * @param n2
 	 */
-	protected void setNodesConcurrent(INode n1, INode n2) {
+	protected void setNodesConcurrent(Node n1, Node n2) {
 		if (n1.equals(n2))
 			return;
 		
@@ -180,26 +178,26 @@ public class ConcurrencyRelation {
 	 */
 	protected void processConcNodes(Set<NodePair> concNodes, boolean isFC) {
 		for(NodePair pair : concNodes) {
-			INode x = pair.getFirstNode();
-			INode p = pair.getSecondNode();
+			Node x = pair.getFirstNode();
+			Node p = pair.getSecondNode();
 
 			// optimization for free-choice nets
 			if (isFC) {
 				if (!this.sys.getPostset(p).isEmpty()) {
-					INode t = this.sys.getPostset(p).iterator().next();
+					Node t = this.sys.getPostset(p).iterator().next();
 					if (nodeConcurrentToNodes(x, this.sys.getPreset(t))) {
-						Collection<INode> sucP = this.sys.getPostset(p);
+						Collection<Node> sucP = this.sys.getPostset(p);
 						
 						Set<NodePair> concNodes2 = new HashSet<NodePair>();
 
 						if (x instanceof Place) {
-							for(INode u : sucP) {
+							for(Node u : sucP) {
 								if (!areConcurrent(x,u)) 
 									concNodes2.add(new NodePair(u,x));
 							}
 						}
 						
-						for(INode pp : this.indirectPlaces.get(p)) {
+						for(Node pp : this.indirectPlaces.get(p)) {
 							if (!areConcurrent(x,pp)) {
 								concNodes2.add(new NodePair(x,pp));
 								if (x instanceof Place)
@@ -215,13 +213,13 @@ public class ConcurrencyRelation {
 				}
 			}
 			else {
-				for (INode t : this.sys.getPostset(p)) {
+				for (Node t : this.sys.getPostset(p)) {
 					if (nodeConcurrentToNodes(x, this.sys.getPreset(t))) {
 						
-						Collection<INode> sucT = this.sys.getPostset(t);
+						Collection<Node> sucT = this.sys.getPostset(t);
 						Set<NodePair> concNodes2 = new HashSet<NodePair>();
 											
-						for(INode s : sucT) {
+						for(Node s : sucT) {
 							if (!areConcurrent(x,s)) {
 								concNodes2.add(new NodePair(x,s));
 								if (x instanceof Place)
@@ -243,7 +241,7 @@ public class ConcurrencyRelation {
 		}
 	}
 	
-	protected void addAllCombinations(Set<NodePair> combinations, List<INode> nodes) {
+	protected void addAllCombinations(Set<NodePair> combinations, List<Node> nodes) {
 		for (int i = 0; i < nodes.size(); i++) {
 			for (int j = i + 1; j < nodes.size(); j++) {
 				combinations.add(new NodePair(nodes.get(i), nodes.get(j)));
@@ -268,14 +266,12 @@ public class ConcurrencyRelation {
 		/*
 		 * Initialization of the algorithm
 		 */
-		List<INode> initialPlaces = new ArrayList<>();
-		initialPlaces.addAll(this.sys.getMarkedPlaces());
+		List<Node> initialPlaces = new ArrayList<Node>(this.sys.getMarkedPlaces());
 		setAllNodesConcurrent(initialPlaces);
 		addAllCombinations(concNodes,initialPlaces);
 		
-		for(ITransition t1 : this.sys.getTransitions()) {
-			List<INode> outPlaces = new ArrayList<>();
-			outPlaces.addAll(this.sys.getPostset(t1));
+		for(Transition t1 : this.sys.getTransitions()) {
+			List<Node> outPlaces = new ArrayList<Node>(this.sys.getPostset(t1));
 			setAllNodesConcurrent(outPlaces);
 			addAllCombinations(concNodes,outPlaces);
 		}
@@ -286,11 +282,11 @@ public class ConcurrencyRelation {
 		 * succeeding a certain place.
 		 */
 		if (PetriNetStructuralClassChecks.isExtendedFreeChoice(sys)) {
-			for (INode n : this.nodes) {
+			for (Node n : this.nodes) {
 				if (n instanceof Place) {
-					Set<INode> nodes = new HashSet<>();
-					for (INode t2 : this.sys.getPostset(n)) {
-						for (INode n2 : this.sys.getPostset(t2)) {
+					Set<Node> nodes = new HashSet<Node>();
+					for (Node t2 : this.sys.getPostset(n)) {
+						for (Node n2 : this.sys.getPostset(t2)) {
 							nodes.add(n2);
 						}
 					}
@@ -328,7 +324,7 @@ public class ConcurrencyRelation {
 
 	 * @return Petri net
 	 */
-	public INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> getNet() {
+	public PetriNet getNet() {
 		return this.sys;
 	}
 	
@@ -346,8 +342,8 @@ public class ConcurrencyRelation {
 			return false;
 		
 		boolean equal = true;
-		for(INode n1 : this.nodes) {
-			for(INode n2 : this.nodes) {
+		for(Node n1 : this.nodes) {
+			for(Node n2 : this.nodes) {
 				equal &= (this.areConcurrent(n1, n2) == relation.areConcurrent(n1, n2));
 			}
 		}

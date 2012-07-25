@@ -9,12 +9,7 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.concurrent.TimeoutException;
 
-import org.jbpt.petri.IFlow;
-import org.jbpt.petri.IMarking;
-import org.jbpt.petri.INetSystem;
-import org.jbpt.petri.INode;
-import org.jbpt.petri.IPlace;
-import org.jbpt.petri.ITransition;
+import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.io.PNMLSerializer;
 import org.jbpt.throwable.SerializationException;
@@ -35,7 +30,7 @@ public class LolaSoundnessChecker {
 	 * @throws SerializationException 
 	 * @throws IOException 
 	 */
-	public static LolaSoundnessCheckerResult analyzeSoundness(INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> net) throws SerializationException, IOException {
+	public static LolaSoundnessCheckerResult analyzeSoundness(NetSystem net) throws SerializationException, IOException {
 		String pnml = PNMLSerializer.serializePetriNet(net, PNMLSerializer.LOLA);
 		LolaSoundnessCheckerResult result = new LolaSoundnessCheckerResult();
 		

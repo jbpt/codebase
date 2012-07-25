@@ -5,14 +5,9 @@ import java.util.Collection;
 import java.util.List;
 
 import org.jbpt.bp.BehaviouralProfile;
-import org.jbpt.bp.RelSet;
 import org.jbpt.bp.RelSetType;
-import org.jbpt.petri.IFlow;
-import org.jbpt.petri.IMarking;
-import org.jbpt.petri.INetSystem;
-import org.jbpt.petri.INode;
-import org.jbpt.petri.IPlace;
-import org.jbpt.petri.ITransition;
+import org.jbpt.petri.NetSystem;
+import org.jbpt.petri.Node;
 import org.jbpt.petri.Transition;
 import org.jbpt.petri.unfolding.OccurrenceNet;
 import org.jbpt.petri.unfolding.OrderingRelation;
@@ -39,7 +34,7 @@ import org.jbpt.petri.unfolding.order.EsparzaAdequateOrderForArbitrarySystems;
  * @author matthias.weidlich
  *
  */
-public class BPCreatorUnfolding extends AbstractRelSetCreator implements RelSetCreator<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> {
+public class BPCreatorUnfolding extends AbstractRelSetCreator implements RelSetCreator<NetSystem, Node> {
 
 	private static BPCreatorUnfolding eInstance;
 	
@@ -57,7 +52,7 @@ public class BPCreatorUnfolding extends AbstractRelSetCreator implements RelSetC
 	protected boolean[][] weakOrderMatrixForTransitions; 
 	
 	// list to have identifiers for the transitions in the matrix
-	protected List<ITransition> transitionsForWeakOrderMatrix;
+	protected List<Transition> transitionsForWeakOrderMatrix;
 
 	// the unfolding
 	protected Unfolding unfolding;
@@ -66,27 +61,25 @@ public class BPCreatorUnfolding extends AbstractRelSetCreator implements RelSetC
 	protected OccurrenceNet occurrenceNet;
 
 	protected boolean[][] transitiveCausalityMatrixUnfolding; 
-	protected List<ITransition> nodesForTransitiveCausalityMatrixUnfolding;
+	protected List<Transition> nodesForTransitiveCausalityMatrixUnfolding;
 
 	protected void clear() {
 		this.unfolding = null;
 		this.occurrenceNet = null;
 		this.transitiveCausalityMatrixUnfolding = null;
-		this.nodesForTransitiveCausalityMatrixUnfolding = new ArrayList<>();
+		this.nodesForTransitiveCausalityMatrixUnfolding = new ArrayList<Transition>();
 		this.weakOrderMatrixForTransitions = null; 
-		this.transitionsForWeakOrderMatrix = new ArrayList<>();
+		this.transitionsForWeakOrderMatrix = new ArrayList<Transition>();
 	}
 
 	@Override
-	public RelSet<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> deriveRelationSet(
-			INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> pn) {
-		return deriveRelationSet(pn, new ArrayList<INode>(pn.getTransitions()));
+	public BehaviouralProfile<NetSystem, Node> deriveRelationSet(NetSystem pn) {
+		return deriveRelationSet(pn, new ArrayList<Node>(pn.getTransitions()));
 	}
 	
 	@Override
-	public RelSet<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> deriveRelationSet(
-			INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> pn,
-			Collection<INode> nodes) {
+	public BehaviouralProfile<NetSystem, Node> deriveRelationSet(NetSystem pn,
+			Collection<Node> nodes) {
 				
 		// clear internal data structures
 		clear();
@@ -106,18 +99,18 @@ public class BPCreatorUnfolding extends AbstractRelSetCreator implements RelSetC
 		this.deriveTransitiveCutoffRelation();
 
 		
-		BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> profile = new BehaviouralProfile<>(pn,nodes);
+		BehaviouralProfile<NetSystem, Node> profile = new BehaviouralProfile<NetSystem, Node>(pn,nodes);
 		RelSetType[][] matrix = profile.getMatrix();
 		
-		for (INode t : nodes)
+		for (Node t : nodes)
 			if (t instanceof Transition)
 				this.transitionsForWeakOrderMatrix.add((Transition)t);
 		
 		this.deriveWeakOrderRelation();
 
-		for(INode t1 : profile.getEntities()) {
+		for(Node t1 : profile.getEntities()) {
 			int index1 = profile.getEntities().indexOf(t1);
-			for(INode t2 : profile.getEntities()) {
+			for(Node t2 : profile.getEntities()) {
 				int index2 = profile.getEntities().indexOf(t2);
 				
 				/*
@@ -145,8 +138,8 @@ public class BPCreatorUnfolding extends AbstractRelSetCreator implements RelSetC
 		
 		weakOrderMatrixForTransitions = new boolean[this.transitionsForWeakOrderMatrix.size()][this.transitionsForWeakOrderMatrix.size()];
 		
-		for (ITransition e1 : this.occurrenceNet.getTransitions()) {
-			for (ITransition e2 : this.occurrenceNet.getTransitions()) {
+		for (Transition e1 : this.occurrenceNet.getTransitions()) {
+			for (Transition e2 : this.occurrenceNet.getTransitions()) {
 				if (this.occurrenceNet.getOrderingRelation(e1,e2).equals(OrderingRelation.CAUSAL)
 						|| (!e1.equals(e2) && this.occurrenceNet.getOrderingRelation(e1,e2).equals(OrderingRelation.CONCURRENT))) {
 					weakOrderMatrixForTransitions[this.transitionsForWeakOrderMatrix.indexOf(this.occurrenceNet.getEvent(e1).getTransition())]
@@ -160,32 +153,32 @@ public class BPCreatorUnfolding extends AbstractRelSetCreator implements RelSetC
 		}
 	}
 	
-	private boolean isWeakOrder(INode n1, INode n2) {
+	private boolean isWeakOrder(Node n1, Node n2) {
 		return weakOrderMatrixForTransitions[this.transitionsForWeakOrderMatrix.indexOf(n1)][this.transitionsForWeakOrderMatrix.indexOf(n2)];
 	}
 	
 	private void deriveTransitiveCutoffRelation() {
 		
 		this.nodesForTransitiveCausalityMatrixUnfolding.addAll(this.occurrenceNet.getCutoffEvents());
-		for (ITransition t : this.occurrenceNet.getCutoffEvents())
+		for (Transition t : this.occurrenceNet.getCutoffEvents())
 			this.nodesForTransitiveCausalityMatrixUnfolding.add(this.occurrenceNet.getCorrespondingEvent(t));
 		
 		this.transitiveCausalityMatrixUnfolding = new boolean[nodesForTransitiveCausalityMatrixUnfolding.size()][nodesForTransitiveCausalityMatrixUnfolding.size()];
 
-		for (ITransition eCut : this.occurrenceNet.getCutoffEvents()) {
+		for (Transition eCut : this.occurrenceNet.getCutoffEvents()) {
 			int source = nodesForTransitiveCausalityMatrixUnfolding.indexOf(eCut);
 			int target = nodesForTransitiveCausalityMatrixUnfolding.indexOf(this.occurrenceNet.getCorrespondingEvent(eCut));
 			transitiveCausalityMatrixUnfolding[source][target] = true;
 		}
 		
-		for (ITransition eCut : this.occurrenceNet.getCutoffEvents()) {
-			ITransition eCor = this.occurrenceNet.getCorrespondingEvent(eCut);
+		for (Transition eCut : this.occurrenceNet.getCutoffEvents()) {
+			Transition eCor = this.occurrenceNet.getCorrespondingEvent(eCut);
 			
 			// Corresponding event may be cut-off either
 			while (this.occurrenceNet.getCutoffEvents().contains(eCor))
 				eCor = this.occurrenceNet.getCorrespondingEvent(eCor);
 
-			for (ITransition eCut2 : this.occurrenceNet.getCutoffEvents()) {
+			for (Transition eCut2 : this.occurrenceNet.getCutoffEvents()) {
 				if (this.occurrenceNet.getOrderingRelation(eCor,eCut2).equals(OrderingRelation.CAUSAL)) {
 					int source = nodesForTransitiveCausalityMatrixUnfolding.indexOf(eCor);
 					int target = nodesForTransitiveCausalityMatrixUnfolding.indexOf(eCut2);
@@ -214,10 +207,10 @@ public class BPCreatorUnfolding extends AbstractRelSetCreator implements RelSetC
 		return matrix;
 	}
 	
-	private boolean isCausalViaSequenceOfCutOffs(ITransition src, ITransition tar) {
-		for (ITransition eCut : this.occurrenceNet.getCutoffEvents()) {
-			for (ITransition eCut2 : this.occurrenceNet.getCutoffEvents()) {
-				ITransition eCor = this.occurrenceNet.getCorrespondingEvent(eCut2);
+	private boolean isCausalViaSequenceOfCutOffs(Transition src, Transition tar) {
+		for (Transition eCut : this.occurrenceNet.getCutoffEvents()) {
+			for (Transition eCut2 : this.occurrenceNet.getCutoffEvents()) {
+				Transition eCor = this.occurrenceNet.getCorrespondingEvent(eCut2);
 				if ((src.equals(eCut) || this.occurrenceNet.getOrderingRelation(src,eCut).equals(OrderingRelation.CAUSAL)) 
 						&& this.isPathInTransitiveCausalityMatrix(eCut,eCor)
 						&& (this.occurrenceNet.getOrderingRelation(eCor,tar).equals(OrderingRelation.CAUSAL) ||
@@ -229,7 +222,7 @@ public class BPCreatorUnfolding extends AbstractRelSetCreator implements RelSetC
 		return false;
 	}
 	
-	private boolean isPathInTransitiveCausalityMatrix(ITransition node1, ITransition node2) {
+	private boolean isPathInTransitiveCausalityMatrix(Transition node1, Transition node2) {
 		return transitiveCausalityMatrixUnfolding[this.nodesForTransitiveCausalityMatrixUnfolding.indexOf(node1)][this.nodesForTransitiveCausalityMatrixUnfolding.indexOf(node2)];
 	}
 

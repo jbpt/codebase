@@ -3,14 +3,9 @@ package org.jbpt.bp.construct;
 import java.util.Collection;
 
 import org.jbpt.bp.BehaviouralProfile;
-import org.jbpt.bp.RelSet;
 import org.jbpt.bp.RelSetType;
-import org.jbpt.petri.IFlow;
-import org.jbpt.petri.IMarking;
-import org.jbpt.petri.INetSystem;
-import org.jbpt.petri.INode;
-import org.jbpt.petri.IPlace;
-import org.jbpt.petri.ITransition;
+import org.jbpt.petri.NetSystem;
+import org.jbpt.petri.Node;
 import org.jbpt.petri.behavior.ConcurrencyRelation;
 import org.jbpt.petri.structure.PetriNetPathUtils;
 import org.jbpt.petri.structure.PetriNetStructuralClassChecks;
@@ -27,7 +22,7 @@ import org.jbpt.petri.structure.PetriNetStructuralClassChecks;
  * @author matthias.weidlich
  *
  */
-public class BPCreatorNet extends AbstractRelSetCreator implements RelSetCreator<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> {
+public class BPCreatorNet extends AbstractRelSetCreator implements RelSetCreator<NetSystem, Node> {
 	
 	private static BPCreatorNet eInstance;
 	
@@ -41,31 +36,26 @@ public class BPCreatorNet extends AbstractRelSetCreator implements RelSetCreator
 		
 	}
 
-	@Override
-	public RelSet<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> deriveRelationSet(
-			INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> model) {
-		return deriveRelationSet(model, model.getNodes());
+	public BehaviouralProfile<NetSystem, Node> deriveRelationSet(NetSystem pn) {
+		return deriveRelationSet(pn, pn.getNodes());
 	}
 	
-	@Override
-	public RelSet<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> deriveRelationSet(
-			INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> model,
-			Collection<INode> entities) {
+	public BehaviouralProfile<NetSystem, Node> deriveRelationSet(NetSystem pn, Collection<Node> nodes) {
 		
 		/*
 		 * Check some of the assumptions.
 		 */
-		if (!PetriNetStructuralClassChecks.isExtendedFreeChoice(model)) throw new IllegalArgumentException();
-		if (!PetriNetStructuralClassChecks.isWorkflowNet(model)) throw new IllegalArgumentException();
+		if (!PetriNetStructuralClassChecks.isExtendedFreeChoice(pn)) throw new IllegalArgumentException();
+		if (!PetriNetStructuralClassChecks.isWorkflowNet(pn)) throw new IllegalArgumentException();
 
-		BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> profile = new BehaviouralProfile<>(model,entities);
+		BehaviouralProfile<NetSystem, Node> profile = new BehaviouralProfile<NetSystem, Node>(pn,nodes);
 		RelSetType[][] matrix = profile.getMatrix();
 		
-		ConcurrencyRelation concurrencyRelation = new ConcurrencyRelation(model);
+		ConcurrencyRelation concurrencyRelation = new ConcurrencyRelation(pn);
 		
-		for(INode n1 : profile.getEntities()) {
+		for(Node n1 : profile.getEntities()) {
 			int index1 = profile.getEntities().indexOf(n1);
-			for(INode n2 : profile.getEntities()) {
+			for(Node n2 : profile.getEntities()) {
 				int index2 = profile.getEntities().indexOf(n2);
 				/*
 				 * The matrix is symmetric. Therefore, we need to traverse only 
@@ -77,7 +67,7 @@ public class BPCreatorNet extends AbstractRelSetCreator implements RelSetCreator
 				 * What about the relation of a node to itself?
 				 */
 				if (index1 == index2) {
-					if (PetriNetPathUtils.hasDirectedNonEmptyPath(model,n1,n2))
+					if (PetriNetPathUtils.hasDirectedNonEmptyPath(pn,n1,n2))
 						matrix[index1][index1] = RelSetType.Interleaving;
 					else
 						matrix[index1][index1] = RelSetType.Exclusive;
@@ -85,19 +75,19 @@ public class BPCreatorNet extends AbstractRelSetCreator implements RelSetCreator
 				/*
 				 * Check all cases for two distinct nodes of the net
 				 */
-				else if (PetriNetPathUtils.hasDirectedNonEmptyPath(model,n1,n2) && PetriNetPathUtils.hasDirectedNonEmptyPath(model,n2,n1)) {
+				else if (PetriNetPathUtils.hasDirectedNonEmptyPath(pn,n1,n2) && PetriNetPathUtils.hasDirectedNonEmptyPath(pn,n2,n1)) {
 					super.setMatrixEntry(matrix,index1,index2,RelSetType.Interleaving);
 				}
 				else if (concurrencyRelation.areConcurrent(index1,index2)) {
 					super.setMatrixEntry(matrix,index1,index2,RelSetType.Interleaving);
 				}
-				else if (!concurrencyRelation.areConcurrent(index1,index2) && !PetriNetPathUtils.hasDirectedNonEmptyPath(model,n1,n2) && !PetriNetPathUtils.hasDirectedNonEmptyPath(model,n2,n1)) {
+				else if (!concurrencyRelation.areConcurrent(index1,index2) && !PetriNetPathUtils.hasDirectedNonEmptyPath(pn,n1,n2) && !PetriNetPathUtils.hasDirectedNonEmptyPath(pn,n2,n1)) {
 					super.setMatrixEntry(matrix,index1,index2,RelSetType.Exclusive);
 				}
-				else if (PetriNetPathUtils.hasDirectedNonEmptyPath(model,n1,n2) && !PetriNetPathUtils.hasDirectedNonEmptyPath(model,n2,n1)) {
+				else if (PetriNetPathUtils.hasDirectedNonEmptyPath(pn,n1,n2) && !PetriNetPathUtils.hasDirectedNonEmptyPath(pn,n2,n1)) {
 					super.setMatrixEntryOrder(matrix,index1,index2);
 				}
-				else if (PetriNetPathUtils.hasDirectedNonEmptyPath(model,n2,n1) && !PetriNetPathUtils.hasDirectedNonEmptyPath(model,n1,n2)) {
+				else if (PetriNetPathUtils.hasDirectedNonEmptyPath(pn,n2,n1) && !PetriNetPathUtils.hasDirectedNonEmptyPath(pn,n1,n2)) {
 					super.setMatrixEntryOrder(matrix,index2,index1);
 				}
 			}
@@ -105,7 +95,4 @@ public class BPCreatorNet extends AbstractRelSetCreator implements RelSetCreator
 		
 		return profile;
 	}
-
-
-
 }

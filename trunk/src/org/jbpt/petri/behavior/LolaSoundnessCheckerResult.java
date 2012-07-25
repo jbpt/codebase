@@ -3,12 +3,6 @@ package org.jbpt.petri.behavior;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.jbpt.petri.IFlow;
-import org.jbpt.petri.IMarking;
-import org.jbpt.petri.INetSystem;
-import org.jbpt.petri.INode;
-import org.jbpt.petri.IPlace;
-import org.jbpt.petri.ITransition;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
@@ -21,14 +15,14 @@ import org.jbpt.petri.Transition;
 public class LolaSoundnessCheckerResult {
 
 	 private boolean boundedness = false;
-	 private Collection<ITransition> deadTransitions = new ArrayList<>();
+	 private Collection<Transition> deadTransitions = new ArrayList<Transition>();
 	 private boolean liveness = false;
 	 private boolean quasiLiveness = false;
 	 private boolean relaxedSoundness = false;
 	 private boolean soundness = false;
 	 private boolean transitioncover = false;
-	 private Collection<IPlace> unboundedPlaces = new ArrayList<>();
-	 private Collection<ITransition> uncoveredTransitions = new ArrayList<>();
+	 private Collection<Place> unboundedPlaces = new ArrayList<Place>();
+	 private Collection<Transition> uncoveredTransitions = new ArrayList<Transition>();
 	 private boolean weaksoundness = false;
 	 
 	 /**
@@ -55,21 +49,21 @@ public class LolaSoundnessCheckerResult {
 	/**
 	 * @return the dead transitions
 	 */
-	public Collection<ITransition> getDeadTransitions() {
+	public Collection<Transition> getDeadTransitions() {
 		return deadTransitions;
 	}
 
 	/**
 	 * @return the unbounded places
 	 */
-	public Collection<IPlace> getUnboundedPlaces() {
+	public Collection<Place> getUnboundedPlaces() {
 		return unboundedPlaces;
 	}
 	
 	/**
 	 * @return the uncovered transitions
 	 */
-	public Collection<ITransition> getUncoveredTransitions() {
+	public Collection<Transition> getUncoveredTransitions() {
 		return uncoveredTransitions;
 	}
 
@@ -126,7 +120,7 @@ public class LolaSoundnessCheckerResult {
 	 * Parses the response from LoLA.
 	 * @param response from LoLA
 	 */
-	 public void parseResult(String lolaResponse, INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> analyzedNet) {
+	 public void parseResult(String lolaResponse, NetSystem analyzedNet) {
 		 if (lolaResponse.toLowerCase().matches(".*warning.*")) {
 			 throw new IllegalArgumentException("Warning in response!");
 		 }
@@ -195,7 +189,7 @@ public class LolaSoundnessCheckerResult {
 	/**
 	 * @param deadTransitions the dead transitions to set
 	 */
-	public void setDeadTransitions(Collection<ITransition> deadTransitions) {
+	public void setDeadTransitions(Collection<Transition> deadTransitions) {
 		this.deadTransitions = deadTransitions;
 	}
 
@@ -230,14 +224,14 @@ public class LolaSoundnessCheckerResult {
 	/**
 	 * @param unboundedPlaces the unbounded places to set
 	 */
-	public void setUnboundedPlaces(Collection<IPlace> unboundedPlaces) {
+	public void setUnboundedPlaces(Collection<Place> unboundedPlaces) {
 		this.unboundedPlaces = unboundedPlaces;
 	}
 
 	/**
 	 * @param uncoveredTransitions the uncovered transitions to set
 	 */
-	public void setUncoveredTransitions(Collection<ITransition> uncoveredTransitions) {
+	public void setUncoveredTransitions(Collection<Transition> uncoveredTransitions) {
 		this.uncoveredTransitions = uncoveredTransitions;
 	}
 
@@ -280,15 +274,15 @@ public class LolaSoundnessCheckerResult {
 	 * @param analyzedNet {@link NetSystem} to look for {@link Place}s
 	 * @return a {@link Collection} of {@link Place}s with the given names from the given {@link NetSystem}
 	 */
-	private Collection<IPlace> getPlaces(String[] placeNames, INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> analyzedNet) {
-		Collection<IPlace> result = new ArrayList<>();
-		Collection<IPlace> places = analyzedNet.getPlaces();
+	private Collection<Place> getPlaces(String[] placeNames, NetSystem analyzedNet) {
+		Collection<Place> result = new ArrayList<Place>();
+		Collection<Place> places = analyzedNet.getPlaces();
 		for(int i = 1; i < placeNames.length; i += 2) {
 			if(placeNames[i].equals("")) {
 				//impossible to find correct place
 				continue;
 			}
-			for(IPlace place : places) {
+			for(Place place : places) {
 				if(place.getId().equals(placeNames[i])) {
 					result.add(place);
 				}
@@ -303,15 +297,15 @@ public class LolaSoundnessCheckerResult {
 	 * @param analyzedNet {@link NetSystem} to look for {@link Transition}s
 	 * @return a {@link Collection} of {@link Transition}s with the given names from the given {@link NetSystem}
 	 */
-	private Collection<ITransition> getTransitions(String[] transitionNames, INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> analyzedNet) {
-		Collection<ITransition> result = new ArrayList<>();
-		Collection<ITransition> transitions = analyzedNet.getTransitions();
+	private Collection<Transition> getTransitions(String[] transitionNames, NetSystem analyzedNet) {
+		Collection<Transition> result = new ArrayList<Transition>();
+		Collection<Transition> transitions = analyzedNet.getTransitions();
 		for(int i = 1; i < transitionNames.length; i += 2) {
 			if(transitionNames[i].equals("")) {
 				//impossible to find correct transition
 				continue;
 			}
-			for(ITransition transition : transitions) {
+			for(Transition transition : transitions) {
 				if(transition.getId().equals(transitionNames[i])) {
 					result.add(transition);
 				}

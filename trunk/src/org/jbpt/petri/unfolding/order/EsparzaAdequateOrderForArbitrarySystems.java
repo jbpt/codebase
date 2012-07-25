@@ -2,7 +2,6 @@ package org.jbpt.petri.unfolding.order;
 
 import java.util.List;
 
-import org.jbpt.petri.ITransition;
 import org.jbpt.petri.Transition;
 import org.jbpt.petri.unfolding.LocalConfiguration;
 
@@ -20,11 +19,11 @@ public class EsparzaAdequateOrderForArbitrarySystems extends AdequateOrder {
 	public boolean isSmaller(LocalConfiguration lc1, LocalConfiguration lc2) {
 		if (lc1.size() < lc2.size()) return true;
 		else if (lc1.size() == lc2.size()) {
-			List<ITransition> pvec1 = lc1.getQuasiParikhVector();
-			List<ITransition> pvec2 = lc2.getQuasiParikhVector();
+			List<Transition> pvec1 = lc1.getQuasiParikhVector();
+			List<Transition> pvec2 = lc2.getQuasiParikhVector();
 			
 			for (int i = 0; i<pvec1.size(); i++) {
-				Integer comp = lc1.compareTransitions((Transition)pvec1.get(i), (Transition)pvec2.get(i));
+				Integer comp = lc1.compareTransitions(pvec1.get(i), pvec2.get(i));
 				if (comp<0) return true;
 				if (comp!=0) return false;
 			}

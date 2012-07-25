@@ -11,13 +11,8 @@ import org.jbpt.bp.sim.ExtendedInterleavingSimilarity;
 import org.jbpt.bp.sim.ExtendedOrderSimilarity;
 import org.jbpt.bp.sim.InterleavingSimilarity;
 import org.jbpt.bp.sim.OrderSimilarity;
-import org.jbpt.petri.IFlow;
-import org.jbpt.petri.IMarking;
-import org.jbpt.petri.INetSystem;
-import org.jbpt.petri.INode;
-import org.jbpt.petri.IPlace;
-import org.jbpt.petri.ITransition;
 import org.jbpt.petri.NetSystem;
+import org.jbpt.petri.Node;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
 import org.junit.Test;
@@ -99,22 +94,17 @@ public class BPSimTest extends TestCase {
 		net2.addFlow(y, p23);
 		net2.addFlow(z, p24);
 		
-		BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> bp1 = 
-				(BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode>)
-				BPCreatorUnfolding.getInstance().deriveRelationSet(net1);
-		BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> bp2 = 
-				(BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode>)
-				BPCreatorUnfolding.getInstance().deriveRelationSet(net2);
+		BehaviouralProfile<NetSystem, Node> bp1 = BPCreatorUnfolding.getInstance().deriveRelationSet(net1);
+		BehaviouralProfile<NetSystem, Node> bp2 = BPCreatorUnfolding.getInstance().deriveRelationSet(net2);
 		
-		Alignment<BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>,INode>, INode> al = 
-				new Alignment<BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>,INode>, INode>(bp1, bp2);
+		Alignment<BehaviouralProfile<NetSystem,Node>, Node> al = new Alignment<BehaviouralProfile<NetSystem,Node>, Node>(bp1, bp2);
 		
-		ExclusivenessSimilarity<BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode>, INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> ex = new ExclusivenessSimilarity<BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode>, INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode>();
-		OrderSimilarity<BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode>, INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> so = new OrderSimilarity<BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode>, INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode>();
-		InterleavingSimilarity<BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode>, INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> io = new InterleavingSimilarity<BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode>, INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode>();
-		ExtendedOrderSimilarity<BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode>, INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> eso = new ExtendedOrderSimilarity<BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode>, INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode>();
-		ExtendedInterleavingSimilarity<BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode>, INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> eio = new ExtendedInterleavingSimilarity<BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode>, INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode>();
-		AggregatedSimilarity<BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode>, INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> agg = new AggregatedSimilarity<BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode>, INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode>();
+		ExclusivenessSimilarity<BehaviouralProfile<NetSystem,Node>, NetSystem, Node>         ex = new ExclusivenessSimilarity<BehaviouralProfile<NetSystem,Node>, NetSystem, Node> ();
+		OrderSimilarity<BehaviouralProfile<NetSystem,Node>, NetSystem, Node>                 so = new OrderSimilarity<BehaviouralProfile<NetSystem,Node>, NetSystem, Node>();
+		InterleavingSimilarity<BehaviouralProfile<NetSystem,Node>, NetSystem, Node>          io = new InterleavingSimilarity<BehaviouralProfile<NetSystem,Node>, NetSystem, Node>();
+		ExtendedOrderSimilarity<BehaviouralProfile<NetSystem,Node>, NetSystem, Node>        eso = new ExtendedOrderSimilarity<BehaviouralProfile<NetSystem,Node>, NetSystem, Node>();
+		ExtendedInterleavingSimilarity<BehaviouralProfile<NetSystem,Node>, NetSystem, Node> eio = new ExtendedInterleavingSimilarity<BehaviouralProfile<NetSystem,Node>, NetSystem, Node>();
+		AggregatedSimilarity<BehaviouralProfile<NetSystem,Node>, NetSystem, Node>           agg = new AggregatedSimilarity<BehaviouralProfile<NetSystem,Node>, NetSystem, Node>();
 		
 		agg.weightExSim = 1;
 		agg.weightSoSim = 1;

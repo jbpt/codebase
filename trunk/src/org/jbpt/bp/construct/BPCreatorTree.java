@@ -6,14 +6,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jbpt.bp.BehaviouralProfile;
-import org.jbpt.bp.RelSet;
 import org.jbpt.bp.RelSetType;
-import org.jbpt.petri.IFlow;
-import org.jbpt.petri.IMarking;
-import org.jbpt.petri.INetSystem;
-import org.jbpt.petri.INode;
-import org.jbpt.petri.IPlace;
-import org.jbpt.petri.ITransition;
+import org.jbpt.petri.NetSystem;
+import org.jbpt.petri.Node;
 
 
 /**
@@ -30,7 +25,7 @@ import org.jbpt.petri.ITransition;
  * 
  * @author Matthias Weidlich
  */
-public class BPCreatorTree extends AbstractRelSetCreator implements RelSetCreator<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>,INode> {
+public class BPCreatorTree extends AbstractRelSetCreator implements RelSetCreator<NetSystem,Node> {
 	
 	private static BPCreatorTree eInstance;
 	
@@ -42,16 +37,11 @@ public class BPCreatorTree extends AbstractRelSetCreator implements RelSetCreato
 	
 	private BPCreatorTree() {}
 	
-	@Override
-	public RelSet<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> deriveRelationSet(
-			INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> pn) {
-		return deriveRelationSet(pn, new ArrayList<INode>(pn.getTransitions()));
+	public BehaviouralProfile<NetSystem,Node> deriveRelationSet(NetSystem pn) {
+		return deriveRelationSet(pn, new ArrayList<Node>(pn.getTransitions()));
 	}
 	
-	@Override
-	public RelSet<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> deriveRelationSet(
-			INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> pn,
-			Collection<INode> nodes) {
+	public BehaviouralProfile<NetSystem, Node> deriveRelationSet(NetSystem pn, Collection<Node> nodes) {
 
 		/*
 		 * The construction of the WF-tree may augment the original net. Therefore,
@@ -59,26 +49,26 @@ public class BPCreatorTree extends AbstractRelSetCreator implements RelSetCreato
 		 * clone method that provides us with an according node mapping between the 
 		 * original net and the clone.
 		 */
-		INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> netClone = null;
-		Map<INode, INode> nodeMapping = new HashMap<>();
+		NetSystem netClone = null;
+		Map<Node, Node> nodeMapping = new HashMap<Node, Node>();
 		netClone = pn.clone(nodeMapping);
 		
 		// Fall back to original net
 		if (netClone == null) {
 			netClone = pn;
-			for (INode n : pn.getNodes())
+			for (Node n : pn.getNodes())
 				nodeMapping.put(n,n);
 		}
 
 		
 		WFTreeHandler wfTreeHandler = new WFTreeHandler(netClone);
 		
-		BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> profile = new BehaviouralProfile<>(pn,nodes);
+		BehaviouralProfile<NetSystem, Node> profile = new BehaviouralProfile<NetSystem, Node>(pn,nodes);
 		RelSetType[][] matrix = profile.getMatrix();
 
-		for(INode t1 : profile.getEntities()) {
+		for(Node t1 : profile.getEntities()) {
 			int index1 = profile.getEntities().indexOf(t1);
-			for(INode t2 : profile.getEntities()) {
+			for(Node t2 : profile.getEntities()) {
 				int index2 = profile.getEntities().indexOf(t2);
 				/*
 				 * The matrix is symmetric. Therefore, we need to traverse only 
@@ -104,5 +94,4 @@ public class BPCreatorTree extends AbstractRelSetCreator implements RelSetCreato
 		
 		return profile;
 	}
-
 }

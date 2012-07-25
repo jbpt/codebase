@@ -12,12 +12,11 @@ import junit.framework.TestCase;
 import org.jbpt.algo.graph.DirectedGraphAlgorithms;
 import org.jbpt.algo.tree.rpst.RPST;
 import org.jbpt.algo.tree.tctree.TCType;
-import org.jbpt.petri.IFlow;
-import org.jbpt.petri.IMarking;
-import org.jbpt.petri.INetSystem;
-import org.jbpt.petri.INode;
-import org.jbpt.petri.IPlace;
-import org.jbpt.petri.ITransition;
+import org.jbpt.petri.Flow;
+import org.jbpt.petri.NetSystem;
+import org.jbpt.petri.Node;
+import org.jbpt.petri.Place;
+import org.jbpt.petri.Transition;
 import org.jbpt.petri.structure.PetriNetStructuralClassChecks;
 import org.jbpt.pm.ProcessModel;
 import org.jbpt.pm.io.JSON2Process;
@@ -29,7 +28,7 @@ public class RPSTExtensiveTest extends TestCase {
 
 	protected static final String MODELS_DIR = "models/process_json/allmodels";
 	
-	protected final DirectedGraphAlgorithms<IFlow<INode>,INode> DGA = new DirectedGraphAlgorithms<>(); 
+	protected final DirectedGraphAlgorithms<Flow,Node> DGA = new DirectedGraphAlgorithms<Flow,Node>(); 
 	
 	public void test() throws Exception {
 		FileWriter csvStream = new FileWriter("stats.csv");
@@ -49,21 +48,21 @@ public class RPSTExtensiveTest extends TestCase {
 				IOUtils.toFile(name+".dot", p.toDOT());
 				bat.write("dot -Tpng -o"+name+".png "+name+".dot\n");
 				
-				INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> sys = ProcessModel2NetSystem.transform(p);
+				NetSystem sys = ProcessModel2NetSystem.transform(p);
 				int cp = 1; int ct = 1;
-				for (IPlace place : sys.getPlaces()) place.setName("p"+cp++);
-				for (ITransition trans : sys.getTransitions()) trans.setName("t"+ct++);
+				for (Place place : sys.getPlaces()) place.setName("p"+cp++);
+				for (Transition trans : sys.getTransitions()) trans.setName("t"+ct++);
 				sys.loadNaturalMarking();
 				
 				assertTrue(PetriNetStructuralClassChecks.isWorkflowNet(sys));
 				
-				RPST<IFlow<INode>,INode> rpst = new RPST<>(sys);
+				RPST<Flow,Node> rpst = new RPST<Flow,Node>(sys);
 				long start = System.nanoTime();
-				new RPST<IFlow<INode>,INode>(sys);
-				new RPST<IFlow<INode>,INode>(sys);
-				new RPST<IFlow<INode>,INode>(sys);
-				new RPST<IFlow<INode>,INode>(sys);
-				rpst = new RPST<>(sys);
+				new RPST<Flow,Node>(sys);
+				new RPST<Flow,Node>(sys);
+				new RPST<Flow,Node>(sys);
+				new RPST<Flow,Node>(sys);
+				rpst = new RPST<Flow,Node>(sys);
 				long stop = System.nanoTime();
 				long time = (stop - start) / 5;
 				

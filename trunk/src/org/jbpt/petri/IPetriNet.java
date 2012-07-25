@@ -8,6 +8,7 @@ import org.jbpt.graph.abs.IDirectedGraph;
  * PetriNet interface.
  *
  * @author Artem Polyvyanyy
+ * @author Matthias Weidlich
  */
 public interface IPetriNet<F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition> extends IDirectedGraph<F,N> {
 	/**
@@ -358,40 +359,29 @@ public interface IPetriNet<F extends IFlow<N>, N extends INode, P extends IPlace
 	public boolean isTRestricted();
 
 	/**
-	 * T-restrict this net, \ie add a single input/output place to transitions with empty preset/postset. 
+	 * T-restrict this net, i.e., add a single input/output place to transitions with empty preset/postset. 
 	 * A net is T-restricted if presets and postsets of all transitions are not empty. 
 	 */
 	public void doTRestrict();
 
 	/**
-	 * Factory method to provide a transition of the Petri net implementation
+	 * Factory method to provide a transition of the Petri net implementation.
 	 * 
-	 * @return a transition
+	 * @return A fresh transition.
 	 */
 	public T createTransition();
 
 	/**
-	 * Factory method to provide a place of the Petri net implementation
+	 * Factory method to provide a place of the Petri net implementation.
 	 * 
-	 * @return a place
+	 * @return A fresh place.
 	 */
 	public P createPlace();
 	
 	/**
-	 * Factory method to provide a flow of the Petri net implementation
+	 * Factory method to provide a Petri net of the according implementation.
 	 * 
-	 * @param from, origin of flow
-	 * @param to, target of flow
-	 * @return a flow from [from] to [to] 
-	 */
-	public F createFlow(N from, N to);
-	
-	/**
-	 * Factory method to provide a Petri net of the according implementation
-	 * 
-	 * @return a Petri net
+	 * @return A fresh Petri net.
 	 */
 	public IPetriNet<F,N,P,T> createPetriNet();
-
-	
 }

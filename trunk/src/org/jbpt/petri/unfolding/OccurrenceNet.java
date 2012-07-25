@@ -7,11 +7,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.jbpt.petri.IFlow;
-import org.jbpt.petri.INode;
-import org.jbpt.petri.IPetriNet;
-import org.jbpt.petri.IPlace;
-import org.jbpt.petri.ITransition;
+import org.jbpt.petri.Flow;
+import org.jbpt.petri.Node;
 import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
@@ -65,15 +62,15 @@ public class OccurrenceNet extends PetriNet {
 		return this.unf;
 	}
 	
-	public IPetriNet<IFlow<INode>, INode, IPlace, ITransition> getOriginativeNet() {
+	public PetriNet getOriginativeNet() {
 		return this.unf.getNetSystem();
 	}
 	
-	public Event getEvent(ITransition t) {
+	public Event getEvent(Transition t) {
 		return this.t2e.get(t);
 	}
 	
-	public Condition getCondition(IPlace p) {
+	public Condition getCondition(Place p) {
 		return this.p2c.get(p);
 	}
 	
@@ -85,17 +82,17 @@ public class OccurrenceNet extends PetriNet {
 		return this.e2t.get(e);
 	}
 	
-	public BPNode getUnfoldingNode(INode n) {
-		if (n instanceof IPlace)
-			return this.getCondition((IPlace)n);
+	public BPNode getUnfoldingNode(Node n) {
+		if (n instanceof Place)
+			return this.getCondition((Place) n);
 		
-		if (n instanceof ITransition)
-			return this.getEvent((ITransition)n);
+		if (n instanceof Transition)
+			return this.getEvent((Transition) n);
 		
 		return null;
 	}
 	
-	public OrderingRelation getOrderingRelation(INode n1, INode n2) {
+	public OrderingRelation getOrderingRelation(Node n1, Node n2) {
 		BPNode bpn1 = this.getUnfoldingNode(n1);
 		BPNode bpn2 = this.getUnfoldingNode(n2);
 		
@@ -111,15 +108,15 @@ public class OccurrenceNet extends PetriNet {
 		return result;
 	}
 	
-	public ITransition getCorrespondingEvent(ITransition t) {
+	public Transition getCorrespondingEvent(Transition t) {
 		return e2t.get(this.unf.getCorrespondingEvent(t2e.get(t)));
 	}
 	
-	public boolean isCutoffEvent(ITransition t) {
+	public boolean isCutoffEvent(Transition t) {
 		return this.unf.isCutoffEvent(t2e.get(t));
 	}
 	
-	public Set<Place> getCutInducedByLocalConfiguration(ITransition t) {
+	public Set<Place> getCutInducedByLocalConfiguration(Transition t) {
 		Set<Place> result = new HashSet<Place>();
 		
 		BPNode n = this.getUnfoldingNode(t);
@@ -161,7 +158,7 @@ public class OccurrenceNet extends PetriNet {
 		result += "\n";
 		result += "node [shape=circle];\n";
 		
-		for (IPlace p : this.getPlaces()) {
+		for (Place p : this.getPlaces()) {
 			if (ps.contains(p))
 				result += String.format("\tn%s[label=\"%s\" width=\".5\" height=\".5\" fillcolor=red];\n", p.getId().replace("-", ""), p.getName());
 			else
@@ -172,8 +169,8 @@ public class OccurrenceNet extends PetriNet {
 		result += "\n";
 		result += "node [shape=box];\n";
 		
-		for (ITransition t : this.getTransitions()) {
-			if (this.isCutoffEvent((Transition)t)) {
+		for (Transition t : this.getTransitions()) {
+			if (this.isCutoffEvent(t)) {
 				if (t.getName()=="") result += String.format("\tn%s[label=\"%s\" width=\".5\" height=\".1\" fillcolor=orange];\n", t.getId().replace("-", ""), t.getName());
 				else result += String.format("\tn%s[label=\"%s\" width=\".5\" height=\".5\" fillcolor=orange];\n", t.getId().replace("-", ""), t.getName());	
 			}
@@ -184,7 +181,7 @@ public class OccurrenceNet extends PetriNet {
 		}
 		
 		result += "\n";
-		for (IFlow<INode> f: this.getFlow()) {
+		for (Flow f: this.getFlow()) {
 			result += String.format("\tn%s->n%s;\n", f.getSource().getId().replace("-", ""), f.getTarget().getId().replace("-", ""));
 		}
 		
@@ -215,19 +212,19 @@ public class OccurrenceNet extends PetriNet {
 	 * Re-wire cutoff event
 	 * @param cutoff cutoff event
 	 */
-	public void rewire(ITransition cutoff) {
-		ITransition corr = this.getCorrespondingEvent(cutoff);
+	public void rewire(Transition cutoff) {
+		Transition corr = this.getCorrespondingEvent(cutoff);
 		if (corr == null) return;
 		
 		if (this.getPostset(cutoff).size()>1) {			
-			ITransition t = this.getPreset(this.getPreset(cutoff).iterator().next()).iterator().next();
+			Transition t = this.getPreset(this.getPreset(cutoff).iterator().next()).iterator().next();
 			this.removeTransition(cutoff);
 			this.removePlaces(this.getPostset(t));
-			for (IPlace p : this.getPreset(corr)) this.addFlow(cutoff,p);
+			for (Place p : this.getPreset(corr)) this.addFlow(cutoff,p);
 		}
 		else {
 			this.removePlaces(this.getPostset(cutoff));
-			for (IPlace p : this.getPostset(corr)) this.addFlow(cutoff,p);
+			for (Place p : this.getPostset(corr)) this.addFlow(cutoff,p);
 		}
 	}
 	
