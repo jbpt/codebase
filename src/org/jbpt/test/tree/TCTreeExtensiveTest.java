@@ -15,9 +15,9 @@ import org.jbpt.algo.tree.tctree.TCType;
 import org.jbpt.petri.Flow;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Node;
+import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
-import org.jbpt.petri.structure.PetriNetStructuralClassChecks;
 import org.jbpt.pm.ProcessModel;
 import org.jbpt.pm.io.JSON2Process;
 import org.jbpt.pm.structure.ProcessModel2NetSystem;
@@ -54,7 +54,7 @@ public class TCTreeExtensiveTest extends TestCase {
 				for (Transition trans : sys.getTransitions()) trans.setName("t"+ct++);
 				sys.loadNaturalMarking();
 				
-				assertTrue(PetriNetStructuralClassChecks.isWorkflowNet(sys));
+				assertTrue(PetriNet.StructuralClassChecks.isWorkflowNet(sys));
 				Transition t = new Transition("BACK");
 				sys.addFlow((Place)DGA.getSinks(sys).iterator().next(),t);
 				Flow back = sys.addFlow(t,(Place)DGA.getSources(sys).iterator().next());

@@ -1,19 +1,12 @@
 package org.jbpt.petri.structure;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.jbpt.algo.graph.DirectedGraphAlgorithms;
-import org.jbpt.petri.Flow;
 import org.jbpt.petri.IFlow;
 import org.jbpt.petri.INode;
 import org.jbpt.petri.IPetriNet;
 import org.jbpt.petri.IPlace;
 import org.jbpt.petri.ITransition;
-import org.jbpt.petri.Node;
-import org.jbpt.petri.PetriNet;
-import org.jbpt.petri.Place;
-import org.jbpt.petri.Transition;
+
 
 /**
  * Petri net structural class checks.
@@ -21,87 +14,41 @@ import org.jbpt.petri.Transition;
  * @author Artem Polyvyanyy
  * @author Matthias Weidlich
  */
-public class PetriNetStructuralClassChecks {
+public class PetriNetStructuralClassChecks<F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition> {
 	
-	/**
-	 * Check if Petri net is free-choice.
-	 * 
-	 * @param net Petri net
-	 * @return <code>true</code> if net is free-choice; <code>false</code> otherwise
-	 */
-//	public static boolean isFreeChoice(PetriNet net) {
-//		for (Place p : net.getPlaces()) {
-//			if (net.getPostset(p).size()>1) {
-//				Set<Place> z = new HashSet<Place>();
-//				for (Transition t : net.getPostset(p)) {
-//					z.addAll(net.getPreset(t));
-//				}
-//				if (z.size()>1) return false;
-//			}
-//		}
-//		
-//		return true;
-//	}
+	private DirectedGraphAlgorithms<F,N> dga = new DirectedGraphAlgorithms<F,N>();
 
 	/**
-	 * Check if Petri net is free-choice.
+	 * Check if a given Petri net is free-choice. 
+	 * A net is free-choice if and only if for every its place p that has multiple output transitions holds *(p*)={p}.
 	 * 
-	 * @param net Petri net
-	 * @return <code>true</code> if net is free-choice; <code>false</code> otherwise
+	 * @param net A Petri net.
+	 * @return <tt>true</tt> if the net is free-choice; otherwise <tt>false</tt>. 
 	 */
-	public static <N extends IPetriNet<Flow,Node,Place,Transition>> boolean isFreeChoice(N net) {
-		for (Place p : net.getPlaces()) {
-			if (net.getPostset(p).size()>1) {
-				Set<IPlace> z = new HashSet<>();
-				for (Transition t : net.getPostset(p)) {
-					z.addAll(net.getPreset(t));
-				}
-				if (z.size()>1) return false;
-			}
+	public boolean isFreeChoice(IPetriNet<F,N,P,T> net) {
+		for (P p : net.getPlaces()) {
+			if (net.getPostset(p).size()>1)
+			if (net.getPresetPlaces(net.getPostset(p)).size()!=1) return false;
 		}
 		
 		return true;
 	}
 
 	/**
-	 * Checks if Petri net is extended free-choice. 
+	 * Check if a given Petri net is extended free-choice.  
 	 * A Petri net is extended free-choice if all transitions that share a place in their presets have to coincide w.r.t. their presets.
 	 * 
-	 * @param net Petri net
-	 * @return <code>true</code> if net is extended free-choice; <code>false</code> otherwise
+	 * @param net A Petri net.
+	 * @return <tt>true</tt> if the net is extended free-choice; otherwise <tt>false</tt>. 
 	 */
-	public static boolean isExtendedFreeChoice(PetriNet net) {
+	public boolean isExtendedFreeChoice(IPetriNet<F,N,P,T> net) {
 		boolean isFC = true;
 		
 		outer:
-		for (Transition t1 : net.getTransitions()) {
-			for (Transition t2 : net.getTransitions()) {
-				for (Place p : net.getPlaces()) {
-					if (net.getDirectPredecessors(t1).contains(p) && net.getDirectPredecessors(t2).contains(p))
-						isFC &= net.getPreset(t1).equals(net.getPreset(t2));
-					if (!isFC) 
-						break outer;
-				}
-			}
-		}
-		return isFC;
-	}
-
-	/**
-	 * Checks if Petri net is extended free-choice. 
-	 * A Petri net is extended free-choice if all transitions that share a place in their presets have to coincide w.r.t. their presets.
-	 * 
-	 * @param net Petri net
-	 * @return <code>true</code> if net is extended free-choice; <code>false</code> otherwise
-	 */
-	public static boolean isExtendedFreeChoice(IPetriNet<IFlow<INode>, INode, IPlace, ITransition> net) {
-		boolean isFC = true;
-		
-		outer:
-		for (ITransition t1 : net.getTransitions()) {
-			for (ITransition t2 : net.getTransitions()) {
-				for (IPlace p : net.getPlaces()) {
-					if (net.getDirectPredecessors(t1).contains(p) && net.getDirectPredecessors(t2).contains(p))
+		for (T t1 : net.getTransitions()) {
+			for (T t2 : net.getTransitions()) {
+				for (P p : net.getPlaces()) {
+					if (net.getPostset(t1).contains(p) && net.getPostset(t2).contains(p))
 						isFC &= net.getPreset(t1).equals(net.getPreset(t2));
 					if (!isFC) 
 						break outer;
@@ -112,88 +59,45 @@ public class PetriNetStructuralClassChecks {
 	}
 	
 	/**
-	 * Checks if Petri net is S-net.
-	 * S-net has no conflict places (neither forward, nor backward).
+	 * Check if a given Petri net is S-net. 
+	 * A net is an S-net if and only if every its transition has exactly one input place and exactly one output place. 
 	 * 
-	 * @param net Petri net
-	 * @return <code>true</code> if net is S-net; <code>false</code> otherwise
+	 * @param net A Petri net.
+	 * @return <tt>true</tt> if the net is S-net; otherwise <tt>false</tt>;
 	 */
-	public static boolean isSNet(PetriNet net) {
-		boolean result = true;
-		for (Place p : net.getPlaces())
-			result &= (net.getPreset(p).size()<=1) && (net.getPostset(p).size()<=1);
-		return result;	
+	public boolean isSNet(IPetriNet<F,N,P,T> net) {
+		for (T t : net.getTransitions())
+			if (net.getPreset(t).size()!=1 || net.getPostset(t).size()!=1)
+				return false;
+		
+		return true;
 	}
 
 	/**
-	 * Checks if Petri net is S-net.
-	 * S-net has no conflict places (neither forward, nor backward).
+	 * Check if a given Petri net is T-net. 
+	 * A net is a T-net if and only if every its place has exactly one input transition and exactly one output transition.
 	 * 
-	 * @param net Petri net
-	 * @return <code>true</code> if net is S-net; <code>false</code> otherwise
+	 * @param net A Petri net
+	 * @return <tt>true</tt> if the net is T-net; otherwise <tt>false</tt>;
 	 */
-	public static boolean isSNet(IPetriNet<IFlow<INode>, INode, IPlace, ITransition> net) {
-		boolean result = true;
-		for (IPlace p : net.getPlaces())
-			result &= (net.getPreset(p).size()<=1) && (net.getPostset(p).size()<=1);
-		return result;	
+	public boolean isTNet(IPetriNet<F,N,P,T> net) {
+		for (P p : net.getPlaces())
+			if (net.getPreset(p).size()!=1 || net.getPostset(p).size()!=1)
+				return false;
+		
+		return true;
 	}
 
 	/**
-	 * Checks if Petri net is T-net.
-	 * S-net has no branching transitions (neither forward, nor backward).
+	 * Check if a given Petri net is a workflow net (WF-net). 
 	 * 
-	 * @param net Petri net
-	 * @return <code>true</code> if net is T-net; <code>false</code> otherwise
+	 * A WF-net has exactly one source place, exactly one sink place, and
+	 * every node is on a path from the source to the sink. 
+	 * 
+	 * @param net A Petri net.
+	 * @return <tt>true</tt> if the net is a WF-net; otherwise <tt>false</tt>. 
 	 */
-	public static boolean isTNet(PetriNet net) {
-		boolean result = true;
-		for (Transition t : net.getTransitions())
-			result &= (net.getPreset(t).size()<=1) && (net.getPostset(t).size()<=1);
-		return result;	
-	}
-
-	/**
-	 * Checks if Petri net is T-net.
-	 * S-net has no branching transitions (neither forward, nor backward).
-	 * 
-	 * @param net Petri net
-	 * @return <code>true</code> if net is T-net; <code>false</code> otherwise
-	 */
-	public static boolean isTNet(IPetriNet<IFlow<INode>, INode, IPlace, ITransition> net) {
-		boolean result = true;
-		for (ITransition t : net.getTransitions())
-			result &= (net.getPreset(t).size()<=1) && (net.getPostset(t).size()<=1);
-		return result;	
-	}
-
-	/**
-	 * Test if Petri net is a workflow net. 
-	 * 
-	 * Workflow net has exactly one source and exactly one sink place. 
-	 * Moreover, every node is on a path from the source to the sink. 
-	 * 
-	 * @param net Petri net
-	 * @return <code>true</code> if the net is a workflow net; <code>false</code> otherwise. 
-	 */
-	public static boolean isWorkflowNet(PetriNet net) {
-		if (net==null) return false;
-		DirectedGraphAlgorithms<Flow,Node> dga = new DirectedGraphAlgorithms<Flow,Node>();
-		return dga.isTwoTerminal(net);
-	}
-
-	/**
-	 * Test if Petri net is a workflow net. 
-	 * 
-	 * Workflow net has exactly one source and exactly one sink place. 
-	 * Moreover, every node is on a path from the source to the sink. 
-	 * 
-	 * @param net Petri net
-	 * @return <code>true</code> if the net is a workflow net; <code>false</code> otherwise. 
-	 */
-	public static boolean isWorkflowNet(IPetriNet<IFlow<INode>, INode, IPlace, ITransition> net) {
-		if (net==null) return false;
-		DirectedGraphAlgorithms<IFlow<INode>,INode> dga = new DirectedGraphAlgorithms<>();
-		return dga.isTwoTerminal(net);
+	public boolean isWorkflowNet(IPetriNet<F,N,P,T> net) {
+		return this.dga.isTwoTerminal(net);
 	}
 }

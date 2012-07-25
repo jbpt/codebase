@@ -9,18 +9,26 @@ import java.util.Set;
 
 import org.jbpt.algo.graph.DirectedGraphAlgorithms;
 import org.jbpt.graph.abs.AbstractDirectedGraph;
+import org.jbpt.petri.structure.PetriNetStructuralClassChecks;
 
 /**
- * Implementation of a Petri net. 
+ * An implementation of IPetriNet interface. 
  * 
  * @author Artem Polyvyanyy
  * @author Matthias Weidlich
  * @author Andreas Meyer
  */
 public class PetriNet extends AbstractDirectedGraph<Flow,Node> implements IPetriNet<Flow,Node,Place,Transition> {
-
-	// Directed graph algorithms
-	public static DirectedGraphAlgorithms<Flow,Node> DGA = new DirectedGraphAlgorithms<Flow,Node>();
+	
+	/**
+	 * Singleton for performing directed graph algorithms on PetriNet objects.
+	 */
+	public static DirectedGraphAlgorithms<Flow,Node> DirectedGraphAlgorithms = new DirectedGraphAlgorithms<Flow,Node>();
+	
+	/**
+	 * Singleton for performing structural class checks on PetriNet objects.
+	 */
+	public static PetriNetStructuralClassChecks<Flow,Node,Place,Transition> StructuralClassChecks = new PetriNetStructuralClassChecks<Flow,Node,Place,Transition>();
 	
 	/**
 	 * Empty constructor.
@@ -328,7 +336,7 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> implements IPetri
 	
 	@Override
 	public Collection<Node> getSourceNodes() {
-		return PetriNet.DGA.getSources(this);
+		return PetriNet.DirectedGraphAlgorithms.getSources(this);
 	}
 	
 	@Override
@@ -355,7 +363,7 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> implements IPetri
 	
 	@Override
 	public Collection<Node> getSinkNodes() {
-		return PetriNet.DGA.getSinks(this);
+		return PetriNet.DirectedGraphAlgorithms.getSinks(this);
 	}
 	
 	@Override

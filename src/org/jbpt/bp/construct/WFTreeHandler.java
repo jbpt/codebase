@@ -22,7 +22,6 @@ import org.jbpt.petri.Node;
 import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
-import org.jbpt.petri.structure.PetriNetStructuralClassChecks;
 import org.jbpt.petri.structure.PetriNetUtils;
 import org.jbpt.petri.wft.WFTree;
 import org.jbpt.petri.wft.WFTreeBondType;
@@ -54,8 +53,8 @@ public class WFTreeHandler {
 		/*
 		 * Check the net for requirements
 		 */
-		if (!PetriNetStructuralClassChecks.isWorkflowNet((PetriNet)this.wfTree.getGraph())) throw new IllegalArgumentException();
-		if (!PetriNetStructuralClassChecks.isExtendedFreeChoice((PetriNet)this.wfTree.getGraph())) throw new IllegalArgumentException();
+		if (!PetriNet.StructuralClassChecks.isWorkflowNet((PetriNet)this.wfTree.getGraph())) throw new IllegalArgumentException();
+		//if (!PetriNet.StructuralClassChecks.isExtendedFreeChoice((PetriNet)this.wfTree.getGraph())) throw new IllegalArgumentException();
 		
 		/*
 		 * track transitions in the tree

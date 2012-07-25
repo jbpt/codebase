@@ -8,9 +8,9 @@ import org.jbpt.algo.graph.DirectedGraphAlgorithms;
 import org.jbpt.petri.Flow;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Node;
+import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
-import org.jbpt.petri.structure.PetriNetStructuralClassChecks;
 import org.jbpt.petri.unfolding.order.UnfoldingAdequateOrder;
 
 
@@ -31,8 +31,8 @@ public class SoundUnfolding extends ProperUnfolding {
 	protected SoundUnfolding() {}
 
 	public SoundUnfolding(NetSystem sys) {
-		if (!PetriNetStructuralClassChecks.isFreeChoice(sys)) throw new IllegalArgumentException("Net must be free choice!");
-		if (!PetriNetStructuralClassChecks.isWorkflowNet(sys)) throw new IllegalArgumentException("Net must be a WF-net!");
+		if (!PetriNet.StructuralClassChecks.isFreeChoice(sys)) throw new IllegalArgumentException("Net must be free choice!");
+		if (!PetriNet.StructuralClassChecks.isWorkflowNet(sys)) throw new IllegalArgumentException("Net must be a WF-net!");
 		if (dga.isAcyclic(sys)) throw new IllegalArgumentException("Net must be acyclic!");
 		
 		this.sys = sys;

@@ -12,7 +12,6 @@ import org.jbpt.petri.Node;
 import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
-import org.jbpt.petri.structure.PetriNetStructuralClassChecks;
 import org.jbpt.petri.wft.WFTree;
 import org.jbpt.petri.wft.WFTreeBondType;
 import org.jbpt.utils.IOUtils;
@@ -83,7 +82,7 @@ public class WFTreeTest extends TestCase {
 		net.addFlow(p12,tK);
 		net.addFlow(tK,p13);
 		
-		assertTrue(PetriNetStructuralClassChecks.isWorkflowNet(net));
+		assertTrue(PetriNet.StructuralClassChecks.isWorkflowNet(net));
 		
 		WFTree<Flow,Node,Place,Transition> wfTree = new WFTree<Flow,Node,Place,Transition>(net);
 		IOUtils.toFile("rpst.dot", wfTree.toDOT());
