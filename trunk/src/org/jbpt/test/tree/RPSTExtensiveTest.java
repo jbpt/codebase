@@ -54,7 +54,7 @@ public class RPSTExtensiveTest extends TestCase {
 				for (Transition trans : sys.getTransitions()) trans.setName("t"+ct++);
 				sys.loadNaturalMarking();
 				
-				assertTrue(PetriNet.StructuralChecks.isWorkflowNet(sys));
+				assertTrue(PetriNet.STRUCTURAL_CHECKS.isWorkflowNet(sys));
 				
 				RPST<Flow,Node> rpst = new RPST<Flow,Node>(sys);
 				long start = System.nanoTime();

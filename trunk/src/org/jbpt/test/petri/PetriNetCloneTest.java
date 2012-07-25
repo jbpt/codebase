@@ -59,10 +59,10 @@ public class PetriNetCloneTest extends TestCase {
 		net.addFlow(p4, f);
 		net.addFlow(f, p7);
 		
-		assertTrue(PetriNet.StructuralChecks.isExtendedFreeChoice(net));
-		assertTrue(PetriNet.StructuralChecks.isWorkflowNet(net));
-		assertFalse(PetriNet.StructuralChecks.isSNet(net));
-		assertFalse(PetriNet.StructuralChecks.isTNet(net));
+		assertTrue(PetriNet.STRUCTURAL_CHECKS.isExtendedFreeChoice(net));
+		assertTrue(PetriNet.STRUCTURAL_CHECKS.isWorkflowNet(net));
+		assertFalse(PetriNet.STRUCTURAL_CHECKS.isSNet(net));
+		assertFalse(PetriNet.STRUCTURAL_CHECKS.isTNet(net));
 		assertFalse(PetriNetPathUtils.isCyclic(net));
 		
 		NetSystem clone = net.clone();
@@ -82,10 +82,10 @@ public class PetriNetCloneTest extends TestCase {
 		}
 		assertEquals(1, count);
 						
-		assertTrue(PetriNet.StructuralChecks.isExtendedFreeChoice(clone));
-		assertTrue(PetriNet.StructuralChecks.isWorkflowNet(clone));
-		assertFalse(PetriNet.StructuralChecks.isSNet(clone));
-		assertFalse(PetriNet.StructuralChecks.isTNet(clone));
+		assertTrue(PetriNet.STRUCTURAL_CHECKS.isExtendedFreeChoice(clone));
+		assertTrue(PetriNet.STRUCTURAL_CHECKS.isWorkflowNet(clone));
+		assertFalse(PetriNet.STRUCTURAL_CHECKS.isSNet(clone));
+		assertFalse(PetriNet.STRUCTURAL_CHECKS.isTNet(clone));
 		assertFalse(PetriNetPathUtils.isCyclic(net));
 		
 	}
