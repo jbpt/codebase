@@ -34,7 +34,7 @@ public class PetriNetUtils {
 	public static void relinkIncomingArcs(PetriNet net, Node from, Node to) {
 		for (Flow f : net.getFlow()) {
 			if (f.getTarget().equals(from)) {
-				net.addFreshFlow(f.getSource(), to);
+				net.addFlow(f.getSource(), to);
 				net.removeEdge(f);
 			}
 		}
@@ -43,7 +43,7 @@ public class PetriNetUtils {
 	public static void relinkOutgoingArcs(PetriNet net, Node from, Node to) {
 		for (Flow f : net.getFlow()) {
 			if (f.getSource().equals(from)) {
-				net.addFreshFlow(to, f.getTarget());
+				net.addFlow(to, f.getTarget());
 				net.removeEdge(f);
 			}
 		}

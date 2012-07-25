@@ -328,7 +328,7 @@ public class WFTreeHandler {
 			
 			for(Flow f : subnet.getEdges()) {
 //				if (net.getNodes().contains(nodeCopies.get(f.getSource())) && net.getNodes().contains(nodeCopies.get(f.getTarget()))) {
-					net.addFreshFlow(nodeCopies.get(f.getSource()), nodeCopies.get(f.getTarget()));
+					net.addFlow(nodeCopies.get(f.getSource()), nodeCopies.get(f.getTarget()));
 //				}
 			}
 		} catch (Exception e) {
@@ -347,10 +347,10 @@ public class WFTreeHandler {
 				Transition initT = new Transition();
 				net.addNode(initT);
 				net.addFlow(init, initT);
-				net.addFreshFlow(initT, entryNode);
+				net.addFlow(initT, entryNode);
 			}
 			else
-				net.addFreshFlow(init, entryNode);
+				net.addFlow(init, entryNode);
 		}
 		
 		if (net.getDirectSuccessors(exitNode).size() != 0 || (exitNode instanceof Transition)) {
@@ -360,11 +360,11 @@ public class WFTreeHandler {
 			if (exitNode instanceof Place) {
 				Transition exitT = new Transition();
 				net.addNode(exitT);
-				net.addFreshFlow(exitNode, exitT);
+				net.addFlow(exitNode, exitT);
 				net.addFlow(exitT, exit);
 			}
 			else
-				net.addFreshFlow(exitNode, exit);
+				net.addFlow(exitNode, exit);
 		}
 		
 		BehaviouralProfile<NetSystem, Node> bp = BPCreatorNet.getInstance().deriveRelationSet(net);
