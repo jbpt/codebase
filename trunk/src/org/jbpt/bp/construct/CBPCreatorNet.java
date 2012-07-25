@@ -10,7 +10,6 @@ import org.jbpt.bp.RelSetType;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Node;
 import org.jbpt.petri.PetriNet;
-import org.jbpt.petri.structure.PetriNetPathUtils;
 
 
 
@@ -39,7 +38,7 @@ public class CBPCreatorNet extends AbstractRelSetCreator implements CBPCreator<N
 		 */
 		if (!PetriNet.STRUCTURAL_CHECKS.isWorkflowNet(pn)) throw new IllegalArgumentException();
 		if (!PetriNet.STRUCTURAL_CHECKS.isExtendedFreeChoice(pn)) throw new IllegalArgumentException();
-		if (PetriNetPathUtils.isCyclic(pn) && (!PetriNet.STRUCTURAL_CHECKS.isTNet(pn) && !PetriNet.STRUCTURAL_CHECKS.isSNet(pn))) throw new IllegalArgumentException();
+		if (PetriNet.DIRECTED_GRAPH_ALGORITHMS.isCyclic(pn) && (!PetriNet.STRUCTURAL_CHECKS.isTNet(pn) && !PetriNet.STRUCTURAL_CHECKS.isSNet(pn))) throw new IllegalArgumentException();
 
 		/*
 		 * Compute the behavioural profile using BPCreatorNet
@@ -72,8 +71,8 @@ public class CBPCreatorNet extends AbstractRelSetCreator implements CBPCreator<N
 		 * Compute co-occurrence if net is S-net
 		 */
 		else if (PetriNet.STRUCTURAL_CHECKS.isSNet(pn)) {
-			Map<Node,Set<Node>> dominators = PetriNetPathUtils.getDominators(pn);
-			Map<Node,Set<Node>> postdominators = PetriNetPathUtils.getPostDominators(pn);
+			Map<Node,Set<Node>> dominators = PetriNet.DIRECTED_GRAPH_ALGORITHMS.getDominators(pn,false);
+			Map<Node,Set<Node>> postdominators = PetriNet.DIRECTED_GRAPH_ALGORITHMS.getDominators(pn,true);
 			
 			for(Node n1 : profile.getEntities()) {
 				int index1 = profile.getEntities().indexOf(n1);
@@ -87,7 +86,7 @@ public class CBPCreatorNet extends AbstractRelSetCreator implements CBPCreator<N
 		/*
 		 * Compute co-occurrence if net is acyclic.
 		 */
-		else if (!PetriNetPathUtils.isCyclic(pn)) {
+		else if (!PetriNet.DIRECTED_GRAPH_ALGORITHMS.isCyclic(pn)) {
 			for(Node n1 : profile.getEntities()) {
 				int index1 = profile.getEntities().indexOf(n1);
 				for(Node n2 : profile.getEntities()) {

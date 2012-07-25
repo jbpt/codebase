@@ -25,7 +25,6 @@ import org.jbpt.petri.Transition;
 import org.jbpt.petri.wft.WFTree;
 import org.jbpt.petri.wft.WFTreeBondType;
 import org.jbpt.petri.wft.WFTreeLoopOrientationType;
-import org.jbpt.utils.IOUtils;
 
 public class WFTreeHandler {
 
