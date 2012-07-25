@@ -10,13 +10,8 @@ import org.jbpt.bp.construct.BPCreatorTree;
 import org.jbpt.bp.construct.BPCreatorUnfolding;
 import org.jbpt.bp.construct.CBPCreatorTree;
 import org.jbpt.bp.construct.CBPCreatorUnfolding;
-import org.jbpt.petri.IFlow;
-import org.jbpt.petri.IMarking;
-import org.jbpt.petri.INetSystem;
-import org.jbpt.petri.INode;
-import org.jbpt.petri.IPlace;
-import org.jbpt.petri.ITransition;
 import org.jbpt.petri.NetSystem;
+import org.jbpt.petri.Node;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
 import org.jbpt.petri.structure.PetriNetStructuralClassChecks;
@@ -60,7 +55,7 @@ public class CBPComputationTest extends TestCase {
 		net.addFlow(p3, e);
 		net.addFlow(e, p4);
 		
-		CausalBehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> cbp = CBPCreatorUnfolding.getInstance().deriveCausalBehaviouralProfile(net);
+		CausalBehaviouralProfile<NetSystem, Node> cbp = CBPCreatorUnfolding.getInstance().deriveCausalBehaviouralProfile(net);
 
 		assertTrue(cbp.areCooccurring(a, a));
 		assertFalse(cbp.areCooccurring(a, b));
@@ -164,7 +159,7 @@ public class CBPComputationTest extends TestCase {
 		net.addFlow(p9, j);
 		net.addFlow(j, p10);
 		
-		CausalBehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> cbp = CBPCreatorUnfolding.getInstance().deriveCausalBehaviouralProfile(net);
+		CausalBehaviouralProfile<NetSystem, Node> cbp = CBPCreatorUnfolding.getInstance().deriveCausalBehaviouralProfile(net);
 
 		assertTrue(cbp.areCooccurring(a, a));
 		assertTrue(cbp.areCooccurring(b, b));
@@ -307,9 +302,7 @@ public class CBPComputationTest extends TestCase {
 		/*
 		 * Tests for behavioural profile
 		 */
-		BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> bp = 
-				(BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode>)
-				BPCreatorNet.getInstance().deriveRelationSet(net);
+		BehaviouralProfile<NetSystem, Node> bp = BPCreatorNet.getInstance().deriveRelationSet(net);
 
 		assertEquals(RelSetType.Order, bp.getRelationForEntities(a, f));
 		assertEquals(RelSetType.Order, bp.getRelationForEntities(c, f));
@@ -329,22 +322,18 @@ public class CBPComputationTest extends TestCase {
 		assertEquals(RelSetType.Interleaving, bp.getRelationForEntities(b, e));
 		assertEquals(RelSetType.Interleaving, bp.getRelationForEntities(d, b));
 		
-		BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> bp2 = 
-				(BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode>)
-				BPCreatorTree.getInstance().deriveRelationSet(net);
+		BehaviouralProfile<NetSystem, Node> bp2 = BPCreatorTree.getInstance().deriveRelationSet(net);
 		
 		assertTrue(bp2.equalsForSharedEntities(bp));
 		
-		BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> bp3 = 
-				(BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode>)
-				BPCreatorUnfolding.getInstance().deriveRelationSet(net);
+		BehaviouralProfile<NetSystem, Node> bp3 = BPCreatorUnfolding.getInstance().deriveRelationSet(net);
 		
 		assertTrue(bp3.equalsForSharedEntities(bp));
 		
 		/*
 		 * Tests for co-occurrence relation of the causal behavioural profile
 		 */
-		CausalBehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> cbp = CBPCreatorTree.getInstance().deriveCausalBehaviouralProfile(net);
+		CausalBehaviouralProfile<NetSystem, Node> cbp = CBPCreatorTree.getInstance().deriveCausalBehaviouralProfile(net);
 		assertTrue(cbp.areCooccurring(a, a));
 		assertTrue(cbp.areCooccurring(d, d));
 		assertTrue(cbp.areCooccurring(i, i));

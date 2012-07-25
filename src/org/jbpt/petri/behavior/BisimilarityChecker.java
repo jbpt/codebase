@@ -5,12 +5,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.jbpt.hypergraph.abs.Vertex;
-import org.jbpt.petri.IFlow;
-import org.jbpt.petri.IMarking;
-import org.jbpt.petri.INetSystem;
-import org.jbpt.petri.INode;
-import org.jbpt.petri.IPlace;
-import org.jbpt.petri.ITransition;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Transition;
 import org.jbpt.pm.ProcessModel;
@@ -48,20 +42,20 @@ public class BisimilarityChecker {
 	 * @param net2
 	 * @return true if both nets behave equally
 	 */
-	public static boolean areBisimilar(INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> net1, INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> net2) {
+	public static boolean areBisimilar(NetSystem net1, NetSystem net2) {
 		net1.loadNaturalMarking();
 		net2.loadNaturalMarking();
 		//Marking marking1 = net1.getMarking();
 		//Marking marking2 = net2.getMarking();
-		Collection<ITransition> enabled1 = net1.getEnabledTransitions();
-		Collection<ITransition> enabled2 = net2.getEnabledTransitions();
-		for (ITransition v:enabled1) {
+		Collection<Transition> enabled1 = net1.getEnabledTransitions();
+		Collection<Transition> enabled2 = net2.getEnabledTransitions();
+		for (Transition v:enabled1) {
 			// check every path on its own
 			if (!check(net1, net2, v))
 				return false;
 		}
 		// test also the other way
-		for (ITransition v:enabled2) {
+		for (Transition v:enabled2) {
 			if (!check(net2, net1, v))
 				return false;
 		}
@@ -74,9 +68,9 @@ public class BisimilarityChecker {
 	 * @param label
 	 * @return true if Transition was fired
 	 */
-	private static boolean fire(INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> net, String label) {
-		Collection<ITransition> enabled = net.getEnabledTransitions();
-		for (ITransition v:enabled) {
+	private static boolean fire(NetSystem net, String label) {
+		Collection<Transition> enabled = net.getEnabledTransitions();
+		for (Transition v:enabled) {
 			if (!v.getName().equals("")) {
 				// it is no unlabeled transition
 				if (v.getName().equals(label)) {
@@ -96,14 +90,14 @@ public class BisimilarityChecker {
 	 * @param label of the transition
 	 * @return true if transition was found and fired
 	 */
-	private static boolean find(INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> net, String label) {
+	private static boolean find(NetSystem net, String label) {
 		// check if the transition is there
 		if (fire(net, label))
 			return true;
 		// otherwise run some unlabeled transitions
-		Collection<ITransition> unlabeled = getUnlabeledEnabledTransitions(net);
+		Collection<Transition> unlabeled = getUnlabeledEnabledTransitions(net);
 		//Marking marking = net.getMarking();
-		for (ITransition v:unlabeled) {
+		for (Transition v:unlabeled) {
 			net.fire(v);
 			if (find(net, label))
 				return true;
@@ -119,7 +113,7 @@ public class BisimilarityChecker {
 	 * @param v - the {@link Vertex} to be fired
 	 * @return true if both nets behave similar
 	 */
-	private static boolean check(INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> net1, INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> net2, ITransition v) {
+	private static boolean check(NetSystem net1, NetSystem net2, Transition v) {
 		net1.fire(v);
 		//Marking marking1 = net1.getMarking();
 		//Marking marking2 = net2.getMarking();
@@ -133,8 +127,8 @@ public class BisimilarityChecker {
 			//marking2 = net2.getMarking();
 		}
 		// run next transition in line
-		Collection<ITransition> enabled = net1.getEnabledTransitions();
-		for (ITransition next:enabled) {
+		Collection<Transition> enabled = net1.getEnabledTransitions();
+		for (Transition next:enabled) {
 			// reset the net for the next run
 			//marking1.apply();
 			//marking2.apply();
@@ -150,9 +144,9 @@ public class BisimilarityChecker {
 	 * @param net - a {@link NetSystem}
 	 * @return set of transitions
 	 */
-	private static Set<ITransition> getUnlabeledEnabledTransitions(INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> net) {
-		Set<ITransition> trans = new HashSet<>();
-		for (ITransition v:net.getEnabledTransitions()) {
+	private static Set<Transition> getUnlabeledEnabledTransitions(NetSystem net) {
+		Set<Transition> trans = new HashSet<Transition>();
+		for (Transition v:net.getEnabledTransitions()) {
 			if (v.getName().equals(""))
 				trans.add(v);
 		}

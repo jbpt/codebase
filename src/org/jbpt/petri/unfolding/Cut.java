@@ -2,11 +2,7 @@ package org.jbpt.petri.unfolding;
 
 import java.util.Collection;
 
-import org.jbpt.petri.IFlow;
-import org.jbpt.petri.INode;
-import org.jbpt.petri.IPetriNet;
-import org.jbpt.petri.IPlace;
-import org.jbpt.petri.ITransition;
+import org.jbpt.petri.PetriNet;
 
 
 /**
@@ -17,11 +13,11 @@ import org.jbpt.petri.ITransition;
 public class Cut extends Coset {
 	private static final long serialVersionUID = 1L;
 	
-	public Cut(IPetriNet<IFlow<INode>, INode, IPlace, ITransition> net) {
+	public Cut(PetriNet net) {
 		super(net);
 	}
 	
-	public Cut(IPetriNet<IFlow<INode>, INode, IPlace, ITransition> net, Collection<Condition> cut) {
+	public Cut(PetriNet net, Collection<Condition> cut) {
 		super(net);
 		this.addAll(cut);
 	}

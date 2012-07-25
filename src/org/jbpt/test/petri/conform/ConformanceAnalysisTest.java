@@ -8,13 +8,8 @@ import org.jbpt.bp.CBPRestrictedLabelAbstractor;
 import org.jbpt.bp.CausalBehaviouralProfile;
 import org.jbpt.bp.construct.CBPCreatorTrace;
 import org.jbpt.bp.construct.CBPCreatorUnfolding;
-import org.jbpt.petri.IFlow;
-import org.jbpt.petri.IMarking;
-import org.jbpt.petri.INetSystem;
-import org.jbpt.petri.INode;
-import org.jbpt.petri.IPlace;
-import org.jbpt.petri.ITransition;
 import org.jbpt.petri.NetSystem;
+import org.jbpt.petri.Node;
 import org.jbpt.petri.conform.ConformanceAnalysis;
 import org.jbpt.petri.io.PNMLSerializer;
 import org.jbpt.petri.log.Trace;
@@ -60,14 +55,14 @@ public class ConformanceAnalysisTest {
 		 * Tree method is more efficient, but currently broken
 		 * So, we rely on unfolding method 
 		 */
-		CausalBehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> baseProfile = 
+		CausalBehaviouralProfile<NetSystem, Node> baseProfile = 
 				//CBPCreatorTree.getInstance().deriveCausalBehaviouralProfile(net);
 				CBPCreatorUnfolding.getInstance().deriveCausalBehaviouralProfile(net);
 		
 		/*
 		 * Abstract the CBP to labels
 		 */
-		CausalBehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, LabelEntity> baseProfileOnLabels = 
+		CausalBehaviouralProfile<NetSystem, LabelEntity> baseProfileOnLabels = 
 				CBPRestrictedLabelAbstractor.abstractCBPToLabels(baseProfile);
 		
 		/*

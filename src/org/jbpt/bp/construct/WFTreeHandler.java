@@ -16,13 +16,12 @@ import org.jbpt.bp.BehaviouralProfile;
 import org.jbpt.bp.CausalBehaviouralProfile;
 import org.jbpt.bp.RelSetType;
 import org.jbpt.graph.abs.IGraph;
-import org.jbpt.petri.IFlow;
-import org.jbpt.petri.IMarking;
-import org.jbpt.petri.INetSystem;
-import org.jbpt.petri.INode;
-import org.jbpt.petri.IPetriNet;
-import org.jbpt.petri.IPlace;
-import org.jbpt.petri.ITransition;
+import org.jbpt.petri.Flow;
+import org.jbpt.petri.NetSystem;
+import org.jbpt.petri.Node;
+import org.jbpt.petri.PetriNet;
+import org.jbpt.petri.Place;
+import org.jbpt.petri.Transition;
 import org.jbpt.petri.structure.PetriNetStructuralClassChecks;
 import org.jbpt.petri.structure.PetriNetUtils;
 import org.jbpt.petri.wft.WFTree;
@@ -31,15 +30,16 @@ import org.jbpt.petri.wft.WFTreeLoopOrientationType;
 
 public class WFTreeHandler {
 
-	private WFTree<IFlow<INode>, INode, IPlace, ITransition> wfTree = null;
+	private WFTree<Flow,Node,Place,Transition> wfTree = null;
 
-	private Map<INode, RPSTNode<IFlow<INode>, INode>> node2wfTreeNode = new HashMap<>();
+	private Map<Node, RPSTNode<Flow, Node>> node2wfTreeNode = new HashMap<>();
 	
-	private Map<RPSTNode<IFlow<INode>, INode>,BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode>> node2bp = new HashMap<>();
-	private Map<RPSTNode<IFlow<INode>, INode>,CausalBehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode>> node2cbp = new HashMap<>();
-	private Map<BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode>,Map<INode,INode>> bp2nodemapping = new HashMap<>();
+	private Map<RPSTNode<Flow, Node>,BehaviouralProfile<NetSystem, Node>> node2bp = new HashMap<>();
+	private Map<RPSTNode<Flow, Node>,CausalBehaviouralProfile<NetSystem, Node>> node2cbp = new HashMap<>();
+	private Map<BehaviouralProfile<NetSystem, Node>,Map<Node,Node>> bp2nodemapping = new HashMap<>();	
+	private Map<RPSTNode<Flow, Node>,Vector<RPSTNode<Flow, Node>>> orderedPNodes = new HashMap<>();
 	
-	public WFTreeHandler(IPetriNet<IFlow<INode>, INode, IPlace, ITransition> net) {
+	public WFTreeHandler(PetriNet net) {
 		
 		/*
 		 * Isolate the transitions that we are interested in
@@ -54,27 +54,40 @@ public class WFTreeHandler {
 		/*
 		 * Check the net for requirements
 		 */
-		if (!PetriNetStructuralClassChecks.isWorkflowNet((IPetriNet<IFlow<INode>, INode, IPlace, ITransition>)this.wfTree.getGraph())) throw new IllegalArgumentException();
-		if (!PetriNetStructuralClassChecks.isExtendedFreeChoice((IPetriNet<IFlow<INode>, INode, IPlace, ITransition>)this.wfTree.getGraph())) throw new IllegalArgumentException();
+		if (!PetriNetStructuralClassChecks.isWorkflowNet((PetriNet)this.wfTree.getGraph())) throw new IllegalArgumentException();
+		if (!PetriNetStructuralClassChecks.isExtendedFreeChoice((PetriNet)this.wfTree.getGraph())) throw new IllegalArgumentException();
 		
 		/*
 		 * track transitions in the tree
 		 */
-		for (RPSTNode<IFlow<INode>, INode> node: this.wfTree.getRPSTNodes())
-			if (node.getEntry() instanceof ITransition)
-				node2wfTreeNode.put((ITransition) node.getEntry(), node);
+		for (RPSTNode<Flow, Node> node: this.wfTree.getRPSTNodes())
+			if (node.getEntry() instanceof Transition)
+				node2wfTreeNode.put((Transition) node.getEntry(), node);
 
 	}
 
-	private boolean areInSeries(RPSTNode<IFlow<INode>, INode> lca, RPSTNode<IFlow<INode>, INode> a, RPSTNode<IFlow<INode>, INode> b) {
+	/**
+	 * Get order of a node in a parent sequence
+	 * A partial function, defined for nodes with a parent node of type polygon
+	 * @param node a node to get position for 
+	 * @return position of a node in a parent sequence (S) node starting from 0, or -1 if order is not defined for this node 
+	 */
+	public int getOrder(RPSTNode<Flow, Node> node) {
+		if (this.wfTree.getParent(node)==null || this.wfTree.getParent(node).getType()!=TCType.POLYGON || !orderedPNodes.containsKey(this.wfTree.getParent(node)))
+			return -1;
+		
+		return orderedPNodes.get(this.wfTree.getParent(node)).lastIndexOf(node);
+	}
+	
+	private boolean areInSeries(RPSTNode<Flow, Node> lca, RPSTNode<Flow, Node> a, RPSTNode<Flow, Node> b) {
 		if (lca.getType()!=TCType.POLYGON) return false;
 		
-		List<RPSTNode<IFlow<INode>, INode>> pathA = this.wfTree.getDownwardPath(lca, a);
-		List<RPSTNode<IFlow<INode>, INode>> pathB = this.wfTree.getDownwardPath(lca, b);
+		List<RPSTNode<Flow, Node>> pathA = this.wfTree.getDownwardPath(lca, a);
+		List<RPSTNode<Flow, Node>> pathB = this.wfTree.getDownwardPath(lca, b);
 		
 		if (pathA.size()<2 || pathB.size()<2) return false;
 		
-		List<RPSTNode<IFlow<INode>, INode>> children = this.wfTree.getPolygonChildren(lca);
+		List<RPSTNode<Flow,Node>> children = this.wfTree.getPolygonChildren(lca);
 		System.out.println(children.indexOf(pathA.get(1)));
 		System.out.println(children.indexOf(pathB.get(1)));
 		
@@ -91,14 +104,14 @@ public class WFTreeHandler {
 	 * @param t2 Petri net node
 	 * @return true if t1->t2, false otherwise
 	 */
-	public boolean areInStrictOrder(INode t1, INode t2) {
-		RPSTNode<IFlow<INode>, INode> alpha = node2wfTreeNode.get(t1);
-		RPSTNode<IFlow<INode>, INode> beta  = node2wfTreeNode.get(t2);
+	public boolean areInStrictOrder(Node t1, Node t2) {
+		RPSTNode<Flow, Node> alpha = node2wfTreeNode.get(t1);
+		RPSTNode<Flow, Node> beta  = node2wfTreeNode.get(t2);
 		if (alpha.equals(beta)) return false; // as easy as that
-		RPSTNode<IFlow<INode>, INode> gamma = this.wfTree.getLCA(alpha, beta);
+		RPSTNode<Flow, Node> gamma = this.wfTree.getLCA(alpha, beta);
 		
 		// check path from ROOT to gamma
-		List<RPSTNode<IFlow<INode>, INode>> path = this.wfTree.getDownwardPath(this.wfTree.getRoot(), gamma);
+		List<RPSTNode<Flow, Node>> path = this.wfTree.getDownwardPath(this.wfTree.getRoot(), gamma);
 		
 		// check path from ROOT to parent of gamma
 		for (int i=0; i<path.size()-1; i++) {
@@ -120,7 +133,7 @@ public class WFTreeHandler {
 	 * @param t2 Petri net node
 	 * @return true if t1->t2 or t2->t1, false otherwise
 	 */
-	public boolean areInOrder(INode t1, INode t2) {
+	public boolean areInOrder(Node t1, Node t2) {
 		return areInStrictOrder(t1, t2) || areInStrictOrder(t2, t1);
 	}
 	
@@ -130,13 +143,13 @@ public class WFTreeHandler {
 	 * @param t2 Petri net node
 	 * @return true if t1+t2, false otherwise
 	 */
-	public boolean areExclusive(INode t1, INode t2) {
-		RPSTNode<IFlow<INode>, INode> alpha = node2wfTreeNode.get(t1);
-		RPSTNode<IFlow<INode>, INode> beta  = node2wfTreeNode.get(t2);
-		RPSTNode<IFlow<INode>, INode> gamma = this.wfTree.getLCA(alpha, beta);
+	public boolean areExclusive(Node t1, Node t2) {
+		RPSTNode<Flow, Node> alpha = node2wfTreeNode.get(t1);
+		RPSTNode<Flow, Node> beta  = node2wfTreeNode.get(t2);
+		RPSTNode<Flow, Node> gamma = this.wfTree.getLCA(alpha, beta);
 		
 		// check path from ROOT to gamma
-		List<RPSTNode<IFlow<INode>, INode>> path = this.wfTree.getDownwardPath(this.wfTree.getRoot(), gamma);
+		List<RPSTNode<Flow, Node>> path = this.wfTree.getDownwardPath(this.wfTree.getRoot(), gamma);
 		
 		// check path from ROOT to parent of gamma
 		for (int i=0; i<path.size()-1; i++) {
@@ -160,17 +173,17 @@ public class WFTreeHandler {
 	 * @param t2 Petri net node
 	 * @return true if t1||t2, false otherwise
 	 */
-	public boolean areInterleaving(INode t1, INode t2) {
-		RPSTNode<IFlow<INode>, INode> alpha = node2wfTreeNode.get(t1);
-		RPSTNode<IFlow<INode>, INode> beta  = node2wfTreeNode.get(t2);
-		RPSTNode<IFlow<INode>, INode> gamma = this.wfTree.getLCA(alpha, beta);
+	public boolean areInterleaving(Node t1, Node t2) {
+		RPSTNode<Flow, Node> alpha = node2wfTreeNode.get(t1);
+		RPSTNode<Flow, Node> beta  = node2wfTreeNode.get(t2);
+		RPSTNode<Flow, Node> gamma = this.wfTree.getLCA(alpha, beta);
 		
 		// Get path from ROOT to gamma
-		List<RPSTNode<IFlow<INode>, INode>> path = this.wfTree.getDownwardPath(this.wfTree.getRoot(), gamma);
+		List<RPSTNode<Flow, Node>> path = this.wfTree.getDownwardPath(this.wfTree.getRoot(), gamma);
 		
 		  
 		if (alpha.equals(beta)) { // x||x ?
-			for (RPSTNode<IFlow<INode>, INode> node: path) {
+			for (RPSTNode<Flow, Node> node: path) {
 				if (this.wfTree.getRefinedBondType(node)==WFTreeBondType.LOOP) return true;
 				if (node.getType()==TCType.RIGID) return false;
 			}
@@ -196,16 +209,16 @@ public class WFTreeHandler {
 	 * @param t2 Petri net node
 	 * @return true if t1>>t2, false otherwise
 	 */
-	public boolean areCooccurring(INode t1, INode t2) {
-		RPSTNode<IFlow<INode>, INode> alpha = node2wfTreeNode.get(t1);
-		RPSTNode<IFlow<INode>, INode> beta  = node2wfTreeNode.get(t2);
+	public boolean areCooccurring(Node t1, Node t2) {
+		RPSTNode<Flow, Node> alpha = node2wfTreeNode.get(t1);
+		RPSTNode<Flow, Node> beta  = node2wfTreeNode.get(t2);
 		if (alpha.equals(beta)) return true; // as easy as that
-		RPSTNode<IFlow<INode>, INode> gamma = this.wfTree.getLCA(alpha, beta);
+		RPSTNode<Flow, Node> gamma = this.wfTree.getLCA(alpha, beta);
 		
 		if (gamma.getType()==TCType.RIGID) return areCooccurringUType(t1, t2, gamma); 
 		
 		// check path from gamma to beta
-		List<RPSTNode<IFlow<INode>, INode>> path = this.wfTree.getDownwardPath(gamma, beta);
+		List<RPSTNode<Flow, Node>> path = this.wfTree.getDownwardPath(gamma, beta);
 		
 		for (int i=0; i < path.size()-1; i++) {
 			if	(!(
@@ -217,11 +230,11 @@ public class WFTreeHandler {
 				// check if child on the path to beta is always reached, if yes continue with for loop
 				if (path.get(i).getType()==TCType.RIGID) {
 					
-					INode entryOfUtype = path.get(i).getEntry();
+					Node entryOfUtype = path.get(i).getEntry();
 					boolean allCooccurring = true; 
 					
-					if (entryOfUtype instanceof IPlace) {
-						for (INode n : this.wfTree.getGraph().getDirectSuccessors(entryOfUtype)) {
+					if (entryOfUtype instanceof Place) {
+						for (Node n : this.wfTree.getGraph().getDirectSuccessors(entryOfUtype)) {
 							//check only if succeeding node is in the U type fragment!
 							if (this.wfTree.getDownwardPath(path.get(i),node2wfTreeNode.get(n)).isEmpty())
 								continue;
@@ -251,23 +264,23 @@ public class WFTreeHandler {
 	 * @param child Child of the parent tree node
 	 * @return true if child is in some loop, false otherwise
 	 */
-	private boolean isChildInLoop(RPSTNode<IFlow<INode>, INode> parent, RPSTNode<IFlow<INode>, INode> child) {
-		Set<INode> visited = new HashSet<>();
-		Collection<RPSTNode<IFlow<INode>, INode>> searchGraph = this.wfTree.getChildren(parent);
-		Queue<INode> queue = new LinkedList<>();
+	private boolean isChildInLoop(RPSTNode<Flow, Node> parent, RPSTNode<Flow, Node> child) {
+		Set<Node> visited = new HashSet<>();
+		Collection<RPSTNode<Flow, Node>> searchGraph = this.wfTree.getChildren(parent);
+		Queue<Node> queue = new LinkedList<>();
 		
-		INode start = child.getExit();
-		INode end = child.getEntry();
+		Node start = child.getExit();
+		Node end = child.getEntry();
 		
 		visited.add(start);
 		queue.add(start);
 		
 		while (queue.size()>0) {
-			INode n = queue.poll();
+			Node n = queue.poll();
 			
-			for (RPSTNode<IFlow<INode>, INode> edge: searchGraph) {
+			for (RPSTNode<Flow, Node> edge: searchGraph) {
 				if (edge.getEntry() == n) {
-					INode k = edge.getExit();
+					Node k = edge.getExit();
 					
 					if (!visited.contains(k)) {
 						if (k.equals(end)) return true;					
@@ -282,12 +295,12 @@ public class WFTreeHandler {
 		return false;
 	}
 	
-	private BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> getBPForFragment(RPSTNode<IFlow<INode>, INode> treeNode) {
+	private BehaviouralProfile<NetSystem, Node> getBPForFragment(RPSTNode<Flow, Node> treeNode) {
 
 		/*
 		 * The subnet we are interested in. It represents the fragment.
 		 */
-		IGraph<IFlow<INode>, INode> subnet = treeNode.getFragment().getGraph();
+		IGraph<Flow, Node> subnet = treeNode.getFragment().getGraph();
 		
 		/*
 		 * A new net, which will be a clone of the subnet. We do not use the
@@ -295,31 +308,27 @@ public class WFTreeHandler {
 		 * of both nets.
 		 * 
 		 */
-		@SuppressWarnings("unchecked")
-		INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> net = ((INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>) this.wfTree.getGraph()).createNetSystem();
+		NetSystem net = new NetSystem();
 		
-		Map<INode,INode> nodeCopies = new HashMap<>();
+		Map<Node,Node> nodeCopies = new HashMap<>();
 
 		try {
-			for (INode n : subnet.getVertices()) {
-				if (n instanceof IPlace) {
-					IPlace c = (IPlace) ((IPlace) n).clone();
+			for (Node n : subnet.getVertices()) {
+				if (n instanceof Place) {
+					Place c = (Place) ((Place) n).clone();
 					net.addNode(c);
 					nodeCopies.put(n, c);
 				}
 				else {
-					ITransition c = (ITransition) ((ITransition) n).clone();
+					Transition c = (Transition) ((Transition) n).clone();
 					net.addNode(c);
 					nodeCopies.put(n, c);
 				}
 			}
 			
-			for(IFlow<INode> f : subnet.getEdges()) {
+			for(Flow f : subnet.getEdges()) {
 //				if (net.getNodes().contains(nodeCopies.get(f.getSource())) && net.getNodes().contains(nodeCopies.get(f.getTarget()))) {
-				if (nodeCopies.get(f.getSource()) instanceof IPlace)
-					net.addFlow((IPlace)nodeCopies.get(f.getSource()), (ITransition)nodeCopies.get(f.getTarget()));
-				else 
-					net.addFlow((ITransition)nodeCopies.get(f.getSource()), (IPlace)nodeCopies.get(f.getTarget()));
+					net.addFreshFlow(nodeCopies.get(f.getSource()), nodeCopies.get(f.getTarget()));
 //				}
 			}
 		} catch (Exception e) {
@@ -327,44 +336,38 @@ public class WFTreeHandler {
 		}
 
 		
-		INode entryNode = treeNode.getEntry();
-		INode exitNode = treeNode.getExit();
+		Node entryNode = treeNode.getEntry();
+		Node exitNode = treeNode.getExit();
 		
-		if (net.getDirectPredecessors(entryNode).size() != 0 || (entryNode instanceof ITransition)) {
-			@SuppressWarnings("unchecked")
-			IPlace init = ((INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>) this.wfTree.getGraph()).createPlace();
+		if (net.getDirectPredecessors(entryNode).size() != 0 || (entryNode instanceof Transition)) {
+			Place init = new Place();
 			net.addNode(init);
 			
-			if (entryNode instanceof IPlace) {
-				@SuppressWarnings("unchecked")
-				ITransition initT = ((INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>) this.wfTree.getGraph()).createTransition();
+			if (entryNode instanceof Place) {
+				Transition initT = new Transition();
 				net.addNode(initT);
 				net.addFlow(init, initT);
-				net.addFlow(initT, (IPlace)entryNode);
+				net.addFreshFlow(initT, entryNode);
 			}
 			else
-				net.addFlow(init, (ITransition)entryNode);
+				net.addFreshFlow(init, entryNode);
 		}
 		
-		if (net.getDirectSuccessors(exitNode).size() != 0 || (exitNode instanceof ITransition)) {
-			@SuppressWarnings("unchecked")
-			IPlace exit = ((INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>) this.wfTree.getGraph()).createPlace();
+		if (net.getDirectSuccessors(exitNode).size() != 0 || (exitNode instanceof Transition)) {
+			Place exit = new Place();
 			net.addNode(exit);
 			
-			if (exitNode instanceof IPlace) {
-				@SuppressWarnings("unchecked")
-				ITransition exitT = ((INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>) this.wfTree.getGraph()).createTransition();
+			if (exitNode instanceof Place) {
+				Transition exitT = new Transition();
 				net.addNode(exitT);
-				net.addFlow((IPlace)exitNode, exitT);
+				net.addFreshFlow(exitNode, exitT);
 				net.addFlow(exitT, exit);
 			}
 			else
-				net.addFlow((ITransition)exitNode, exit);
+				net.addFreshFlow(exitNode, exit);
 		}
 		
-		BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> bp = 
-				(BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode>)
-				BPCreatorNet.getInstance().deriveRelationSet(net);
+		BehaviouralProfile<NetSystem, Node> bp = BPCreatorNet.getInstance().deriveRelationSet(net);
 		bp2nodemapping.put(bp, nodeCopies);
 		
 		return bp;
@@ -379,11 +382,11 @@ public class WFTreeHandler {
 	 * @param fragment, that contains both nodes
 	 * @return true, if t1 + t2
 	 */
-	private boolean areExclusiveUType(INode t1, INode t2, RPSTNode<IFlow<INode>, INode> fragment) {
+	private boolean areExclusiveUType(Node t1, Node t2, RPSTNode<Flow, Node> fragment) {
 		if (!this.node2bp.containsKey(fragment))
 			this.node2bp.put(fragment, getBPForFragment(fragment));
 		
-		BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> bp = this.node2bp.get(fragment);
+		BehaviouralProfile<NetSystem, Node> bp = this.node2bp.get(fragment);
 		return bp.areExclusive(this.bp2nodemapping.get(bp).get(t1), this.bp2nodemapping.get(bp).get(t2));
 	}
 	
@@ -396,11 +399,11 @@ public class WFTreeHandler {
 	 * @param fragment, that contains both nodes
 	 * @return true, if t1 || t2
 	 */
-	private boolean areInterleavingUType(INode t1, INode t2, RPSTNode<IFlow<INode>, INode> fragment) {
+	private boolean areInterleavingUType(Node t1, Node t2, RPSTNode<Flow, Node> fragment) {
 		if (!this.node2bp.containsKey(fragment))
 			this.node2bp.put(fragment, getBPForFragment(fragment));
 
-		BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> bp = this.node2bp.get(fragment);
+		BehaviouralProfile<NetSystem, Node> bp = this.node2bp.get(fragment);
 		return bp.areInterleaving(this.bp2nodemapping.get(bp).get(t1), this.bp2nodemapping.get(bp).get(t2));
 	}
 	
@@ -413,11 +416,11 @@ public class WFTreeHandler {
 	 * @param fragment, that contains both nodes
 	 * @return true, if t1 -> t2
 	 */
-	private boolean areInStrictOrderUType(INode t1, INode t2, RPSTNode<IFlow<INode>, INode> fragment) {
+	private boolean areInStrictOrderUType(Node t1, Node t2, RPSTNode<Flow, Node> fragment) {
 		if (!this.node2bp.containsKey(fragment))
 			this.node2bp.put(fragment, getBPForFragment(fragment));
 
-		BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> bp = this.node2bp.get(fragment);
+		BehaviouralProfile<NetSystem, Node> bp = this.node2bp.get(fragment);
 		return bp.areInOrder(this.bp2nodemapping.get(bp).get(t1), this.bp2nodemapping.get(bp).get(t2));
 	}
 	
@@ -428,9 +431,9 @@ public class WFTreeHandler {
 	 * @param treeNode representing the fragment
 	 * @return the complete behavioural profile for the fragment
 	 */
-	private CausalBehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> getCBPForFragment(RPSTNode<IFlow<INode>, INode> treeNode) {
-		BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> bp = this.getBPForFragment(treeNode);
-		CausalBehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> cbp = CBPCreatorNet.getInstance().deriveCausalBehaviouralProfile(bp);
+	private CausalBehaviouralProfile<NetSystem, Node> getCBPForFragment(RPSTNode<Flow, Node> treeNode) {
+		BehaviouralProfile<NetSystem, Node> bp = this.getBPForFragment(treeNode);
+		CausalBehaviouralProfile<NetSystem, Node> cbp = CBPCreatorNet.getInstance().deriveCausalBehaviouralProfile(bp);
 		this.bp2nodemapping.put(cbp,this.bp2nodemapping.get(bp));
 		return cbp;
 	}
@@ -444,14 +447,14 @@ public class WFTreeHandler {
 	 * @param fragment, that contains both nodes
 	 * @return true, if t1 >> t2
 	 */
-	private boolean areCooccurringUType(INode t1, INode t2, RPSTNode<IFlow<INode>, INode> fragment) {
+	private boolean areCooccurringUType(Node t1, Node t2, RPSTNode<Flow, Node> fragment) {
 		if (!this.node2cbp.containsKey(fragment))
 			this.node2cbp.put(fragment, getCBPForFragment(fragment));
-		CausalBehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> cbp = this.node2cbp.get(fragment);
+		CausalBehaviouralProfile<NetSystem, Node> cbp = this.node2cbp.get(fragment);
 		return cbp.areCooccurring(this.bp2nodemapping.get(cbp).get(t1), this.bp2nodemapping.get(cbp).get(t2));
 	}
 
-	public RelSetType getRelationForNodes(INode t1, INode t2) {
+	public RelSetType getRelationForNodes(Node t1, Node t2) {
 		if (areExclusive(t1, t2))
 			return RelSetType.Exclusive;
 		if (areInterleaving(t1, t2))

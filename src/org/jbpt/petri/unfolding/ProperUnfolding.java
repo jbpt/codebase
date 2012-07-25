@@ -3,12 +3,7 @@ package org.jbpt.petri.unfolding;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jbpt.petri.IFlow;
-import org.jbpt.petri.IMarking;
-import org.jbpt.petri.INetSystem;
-import org.jbpt.petri.INode;
-import org.jbpt.petri.IPlace;
-import org.jbpt.petri.ITransition;
+import org.jbpt.petri.NetSystem;
 
 
 /**
@@ -22,11 +17,11 @@ public class ProperUnfolding extends Unfolding {
 	
 	protected ProperUnfolding(){}
 
-	public ProperUnfolding(INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> sys) {
+	public ProperUnfolding(NetSystem sys) {
 		super(sys);
 	}
 	
-	public ProperUnfolding(INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> sys, UnfoldingSetup setup) {
+	public ProperUnfolding(NetSystem sys, UnfoldingSetup setup) {
 		super(sys, setup);
 	}
 

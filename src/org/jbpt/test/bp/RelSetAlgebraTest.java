@@ -9,13 +9,8 @@ import org.jbpt.bp.BehaviouralProfile;
 import org.jbpt.bp.RelSetAlgebra;
 import org.jbpt.bp.RelSetType;
 import org.jbpt.bp.construct.BPCreatorUnfolding;
-import org.jbpt.petri.IFlow;
-import org.jbpt.petri.IMarking;
-import org.jbpt.petri.INetSystem;
-import org.jbpt.petri.INode;
-import org.jbpt.petri.IPlace;
-import org.jbpt.petri.ITransition;
 import org.jbpt.petri.NetSystem;
+import org.jbpt.petri.Node;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
 import org.junit.Test;
@@ -92,14 +87,10 @@ public class RelSetAlgebraTest extends TestCase {
 		net2.addFlow(y, p23);
 		net2.addFlow(z, p24);
 		
-		BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> bp1 = 
-				(BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode>)
-				BPCreatorUnfolding.getInstance().deriveRelationSet(net1);
-		BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> bp2 = 
-				(BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode>)
-				BPCreatorUnfolding.getInstance().deriveRelationSet(net2);
+		BehaviouralProfile<NetSystem, Node> bp1 = BPCreatorUnfolding.getInstance().deriveRelationSet(net1);
+		BehaviouralProfile<NetSystem, Node> bp2 = BPCreatorUnfolding.getInstance().deriveRelationSet(net2);
 		
-		Alignment<BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode>, INode> al = new Alignment<BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode>, INode>(bp1, bp2);
+		Alignment<BehaviouralProfile<NetSystem, Node>, Node> al = new Alignment<BehaviouralProfile<NetSystem, Node>, Node>(bp1, bp2);
 		
 		al.addElementaryCorrespondence(a, x);
 		al.addElementaryCorrespondence(b, y);
@@ -111,12 +102,12 @@ public class RelSetAlgebraTest extends TestCase {
 		assertFalse(RelSetAlgebra.isEqual(al));
 		assertTrue(RelSetAlgebra.firstSubsumesSecond(al));
 		
-		BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode>  intersection = new BehaviouralProfile<>(al.getFirstModel().getModel(),new ArrayList<INode>(al.getAlignedEntitiesOfFirstModel()));
+		BehaviouralProfile<NetSystem, Node>  intersection = new BehaviouralProfile<NetSystem,Node>(al.getFirstModel().getModel(),new ArrayList<Node>(al.getAlignedEntitiesOfFirstModel()));
 		RelSetAlgebra.fillIntersection(al, intersection);
 		assertTrue(intersection.getRelationForEntities(b, c).equals(RelSetType.Exclusive));
 		assertTrue(intersection.getRelationForEntities(a, b).equals(RelSetType.Order));
 		
-		BehaviouralProfile<INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>>, INode> union = new BehaviouralProfile<>(al.getFirstModel().getModel(),new ArrayList<INode>(al.getAlignedEntitiesOfFirstModel()));
+		BehaviouralProfile<NetSystem, Node> union = new BehaviouralProfile<NetSystem,Node>(al.getFirstModel().getModel(),new ArrayList<Node>(al.getAlignedEntitiesOfFirstModel()));
 		RelSetAlgebra.fillUnion(al, union);
 		assertTrue(union.getRelationForEntities(b, c).equals(RelSetType.Interleaving));
 		assertTrue(union.getRelationForEntities(a, b).equals(RelSetType.Order));

@@ -4,12 +4,9 @@ import java.io.FileNotFoundException;
 
 import junit.framework.TestCase;
 
-import org.jbpt.petri.IFlow;
-import org.jbpt.petri.IMarking;
-import org.jbpt.petri.INetSystem;
-import org.jbpt.petri.INode;
-import org.jbpt.petri.IPlace;
-import org.jbpt.petri.ITransition;
+import org.jbpt.petri.NetSystem;
+import org.jbpt.petri.Place;
+import org.jbpt.petri.Transition;
 import org.jbpt.petri.unfolding.OccurrenceNet;
 import org.jbpt.petri.unfolding.SoundUnfoldingMSMS;
 import org.jbpt.pm.Activity;
@@ -50,10 +47,10 @@ public class SoundUnfoldingMSMSTest extends TestCase {
 		
 		IOUtils.toFile("model.dot", p.toDOT());
 		
-		INetSystem<IFlow<INode>, INode, IPlace, ITransition, IMarking<IPlace>> net = ProcessModel2NetSystem.transform(p);
+		NetSystem net = ProcessModel2NetSystem.transform(p);
 		int cp = 1; int ct = 1;
-		for (IPlace place : net.getPlaces()) place.setName("p"+cp++);
-		for (ITransition trans : net.getTransitions()) trans.setName("t"+ct++);
+		for (Place place : net.getPlaces()) place.setName("p"+cp++);
+		for (Transition trans : net.getTransitions()) trans.setName("t"+ct++);
 		IOUtils.toFile("net.dot", net.toDOT());
 		
 		SoundUnfoldingMSMS unf = new SoundUnfoldingMSMS(net);
