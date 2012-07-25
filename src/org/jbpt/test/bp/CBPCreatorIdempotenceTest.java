@@ -8,9 +8,9 @@ import org.jbpt.bp.construct.BPCreatorUnfolding;
 import org.jbpt.bp.construct.CBPCreatorTree;
 import org.jbpt.bp.construct.CBPCreatorUnfolding;
 import org.jbpt.petri.NetSystem;
+import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
-import org.jbpt.petri.structure.PetriNetPathUtils;
 
 public class CBPCreatorIdempotenceTest extends TestCase {
 	public void testIdempotenceOfCreatorClasses(){
@@ -113,28 +113,28 @@ public class CBPCreatorIdempotenceTest extends TestCase {
 		assertTrue(net.getPlaces().contains(p10));
 
 		assertTrue(net.getEdges().size() == 22);
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p1, a));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, a, p2));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, a, p3));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p2, b));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p3, c));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, b, p4));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, c, p5));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p5, d));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p5, e));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, d, p6));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, e, p6));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p6, f));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p4, f));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, f, p7));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p7, g));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, g, p8));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p8, h));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, h, p9));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p9, i));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, i, p7));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p9, j));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, j, p10));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, p1, a));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, a, p2));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, a, p3));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, p2, b));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, p3, c));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, b, p4));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, c, p5));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, p5, d));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, p5, e));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, d, p6));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, e, p6));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, p6, f));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, p4, f));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, f, p7));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, p7, g));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, g, p8));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, p8, h));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, h, p9));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, p9, i));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, i, p7));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, p9, j));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, j, p10));
 		
 		/*
 		 * Invoke all creator classes on net, except for CBPCreatorNet since
@@ -174,28 +174,28 @@ public class CBPCreatorIdempotenceTest extends TestCase {
 		assertTrue(net.getPlaces().contains(p10));
 
 		assertTrue(net.getEdges().size() == 22);
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p1, a));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, a, p2));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, a, p3));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p2, b));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p3, c));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, b, p4));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, c, p5));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p5, d));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p5, e));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, d, p6));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, e, p6));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p6, f));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p4, f));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, f, p7));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p7, g));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, g, p8));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p8, h));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, h, p9));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p9, i));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, i, p7));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, p9, j));
-		assertTrue(PetriNetPathUtils.hasDirectedNonEmptyPath(net, j, p10));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, p1, a));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, a, p2));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, a, p3));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, p2, b));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, p3, c));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, b, p4));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, c, p5));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, p5, d));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, p5, e));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, d, p6));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, e, p6));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, p6, f));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, p4, f));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, f, p7));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, p7, g));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, g, p8));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, p8, h));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, h, p9));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, p9, i));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, i, p7));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, p9, j));
+		assertTrue(PetriNet.DIRECTED_GRAPH_ALGORITHMS.hasPath(net, j, p10));
 		
 
 	}

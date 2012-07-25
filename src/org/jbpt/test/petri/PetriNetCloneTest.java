@@ -6,7 +6,6 @@ import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
-import org.jbpt.petri.structure.PetriNetPathUtils;
 
 public class PetriNetCloneTest extends TestCase {
 	
@@ -63,7 +62,7 @@ public class PetriNetCloneTest extends TestCase {
 		assertTrue(PetriNet.STRUCTURAL_CHECKS.isWorkflowNet(net));
 		assertFalse(PetriNet.STRUCTURAL_CHECKS.isSNet(net));
 		assertFalse(PetriNet.STRUCTURAL_CHECKS.isTNet(net));
-		assertFalse(PetriNetPathUtils.isCyclic(net));
+		assertFalse(PetriNet.DIRECTED_GRAPH_ALGORITHMS.isCyclic(net));
 		
 		NetSystem clone = net.clone();
 		
@@ -86,7 +85,7 @@ public class PetriNetCloneTest extends TestCase {
 		assertTrue(PetriNet.STRUCTURAL_CHECKS.isWorkflowNet(clone));
 		assertFalse(PetriNet.STRUCTURAL_CHECKS.isSNet(clone));
 		assertFalse(PetriNet.STRUCTURAL_CHECKS.isTNet(clone));
-		assertFalse(PetriNetPathUtils.isCyclic(net));
+		assertFalse(PetriNet.DIRECTED_GRAPH_ALGORITHMS.isCyclic(net));
 		
 	}
 

@@ -18,7 +18,10 @@ import org.jbpt.test.tree.TCTreeTest;
 import org.jbpt.test.tree.WFTreeTest;
 
 public class AllTests {
-
+	
+	/**
+	 * Please include here all tests that MUST run for every jBPT commit!
+	 */
 	public static Test suite() {		
 		TestSuite suite = new TestSuite(AllTests.class.getName());
 		
