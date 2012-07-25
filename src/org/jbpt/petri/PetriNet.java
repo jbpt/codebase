@@ -47,12 +47,12 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> implements IPetri
 	
 	@Override
 	public Flow addFlow(Place place, Transition transition) {
-		return this.addFlow(place,transition);
+		return this.addFlow((Node)place,(Node)transition);
 	}
 	
 	@Override
 	public Flow addFlow(Transition transition, Place place) {
-		return this.addFlow(transition,place);
+		return this.addFlow((Node)transition,(Node)place);
 	}
 	
 	@Override
