@@ -28,10 +28,10 @@ public interface INetSystem<F extends IFlow<N>, N extends INode, P extends IPlac
 	/**
 	 * Check if a given transition is enabled.
 	 * 
-	 * @param t Transition.
+	 * @param transition Transition.
 	 * @return <tt>true</tt> if transition is enabled; otherwise <tt>false</tt>.
 	 */
-	public boolean isEnabled(T t);
+	public boolean isEnabled(T transition);
 
 	/**
 	 * Fire a transition in this net system. 
@@ -70,9 +70,9 @@ public interface INetSystem<F extends IFlow<N>, N extends INode, P extends IPlac
 	 * Changes marking of this net system to the given one. 
 	 * Note that the new marking must be associated with this net system.
 	 * 
-	 * @param newMarking Marking to use for this net system.
+	 * @param marking Marking to use for this net system.
 	 */
-	public void loadMarking(M newMarking);
+	public void loadMarking(M marking);
 	
 	/**
 	 * Check if a given place is marked, i.e., contains at least one token.

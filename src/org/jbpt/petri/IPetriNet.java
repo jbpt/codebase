@@ -11,6 +11,17 @@ import org.jbpt.graph.abs.IDirectedGraph;
  * @author Matthias Weidlich
  */
 public interface IPetriNet<F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition> extends IDirectedGraph<F,N> {
+	
+	/**
+	 * Add flow to this net. 
+	 * This method ensures net stays bipartite. 
+	 * 
+	 * @param from Source node.
+	 * @param to Target node.
+	 * @return Flow added to this net; <tt>null</tt> if no flow was added.
+	 */
+	public F addFlow(N from, N to);
+	
 	/**
 	 * Add flow to this net. 
 	 * 
@@ -23,20 +34,11 @@ public interface IPetriNet<F extends IFlow<N>, N extends INode, P extends IPlace
 	/**
 	 * Add flow to this net.
 	 * 
-	 * @param from Source transition.
-	 * @param to Target place.
-	 * @return Flow added to this net; <tt>null</tt> if no flow was added. 
+	 * @param transition Source transition.
+	 * @param place Target place.
+	 * @return Flow added to this net; <tt>null</tt> if no flow was added.
 	 */
-	public F addFlow(T transition, P place);
-
-	/**
-	 * Add flow to this net. 
-	 * 
-	 * @param node Source node.
-	 * @param node Target node.
-	 * @return Flow added to this net; <tt>null</tt> if no flow was added.  
-	 */
-	public F addFreshFlow(N source, N target);
+	public F addFlow(T transition, P place);	
 
 	/**
 	 * Add node to this net.
@@ -60,7 +62,7 @@ public interface IPetriNet<F extends IFlow<N>, N extends INode, P extends IPlace
 	 * @param place Place to add.
 	 * @return Place added to this net; <tt>null</tt> if no place was added.
 	 */
-	public P addPlace(P p);
+	public P addPlace(P place);
 
 	/**
 	 * Add places to this net.
@@ -278,7 +280,7 @@ public interface IPetriNet<F extends IFlow<N>, N extends INode, P extends IPlace
 	 * @param node Node.
 	 * @return Preset of the given node.
 	 */
-	public Collection<N> getPreset(N n);
+	public Collection<N> getPreset(N node);
 
 	/**
 	 * Get preset of the given nodes.

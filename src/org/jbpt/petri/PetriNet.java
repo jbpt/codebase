@@ -27,15 +27,8 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> implements IPetri
 	 */
 	public PetriNet(){}
 	
-	/**
-	 * Add flow to this net. 
-	 * The method ensures that the net stays bipartite.
-	 * 
-	 * @param from Source node.
-	 * @param to Target node.
-	 * @return Flow added to the net; <tt>null</tt> if no flow was added.
-	 */
-	public Flow addFreshFlow(Node from, Node to) {
+	@Override
+	public Flow addFlow(Node from, Node to) {
 		if (from == null || to == null) return null;
 		
 		if ((from instanceof Place && to instanceof Transition) ||
@@ -54,12 +47,12 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> implements IPetri
 	
 	@Override
 	public Flow addFlow(Place place, Transition transition) {
-		return this.addFreshFlow(place,transition);
+		return this.addFlow(place,transition);
 	}
 	
 	@Override
 	public Flow addFlow(Transition transition, Place place) {
-		return this.addFreshFlow(transition,place);
+		return this.addFlow(transition,place);
 	}
 	
 	@Override
@@ -418,7 +411,7 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> implements IPetri
 		}
 		
 		for (Flow f : this.getFlow()) {
-			Flow cf = clone.addFreshFlow(nodeMapping.get(f.getSource()),nodeMapping.get(f.getTarget()));
+			Flow cf = clone.addFlow(nodeMapping.get(f.getSource()),nodeMapping.get(f.getTarget()));
 			
 			if (f.getName() != null)
 				cf.setName(new String(f.getName()));
