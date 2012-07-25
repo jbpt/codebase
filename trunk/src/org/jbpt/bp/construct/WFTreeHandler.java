@@ -22,7 +22,7 @@ import org.jbpt.petri.Node;
 import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
-import org.jbpt.petri.structure.PetriNetUtils;
+import org.jbpt.petri.structure.PetriNetTransformations;
 import org.jbpt.petri.wft.WFTree;
 import org.jbpt.petri.wft.WFTreeBondType;
 import org.jbpt.petri.wft.WFTreeLoopOrientationType;
@@ -43,7 +43,7 @@ public class WFTreeHandler {
 		/*
 		 * Isolate the transitions that we are interested in
 		 */
-		PetriNetUtils.isolateTransitions(net);
+		PetriNetTransformations.isolateTransitions(net);
 		
 		/*
 		 * Create the WFTree
@@ -53,7 +53,7 @@ public class WFTreeHandler {
 		/*
 		 * Check the net for requirements
 		 */
-		if (!PetriNet.StructuralClassChecks.isWorkflowNet((PetriNet)this.wfTree.getGraph())) throw new IllegalArgumentException();
+		if (!PetriNet.StructuralChecks.isWorkflowNet((PetriNet)this.wfTree.getGraph())) throw new IllegalArgumentException();
 		//if (!PetriNet.StructuralClassChecks.isExtendedFreeChoice((PetriNet)this.wfTree.getGraph())) throw new IllegalArgumentException();
 		
 		/*

@@ -353,20 +353,6 @@ public interface IPetriNet<F extends IFlow<N>, N extends INode, P extends IPlace
 	public Collection<N> getMax();
 
 	/**
-	 * Check if this net is T-restricted. 
-	 * A net is T-restricted if presets and postsets of all transitions are not empty.
-	 *  
-	 * @return <tt>true</tt> if this net is T-restricted; otherwise <tt>false</tt>.
-	 */
-	public boolean isTRestricted();
-
-	/**
-	 * T-restrict this net, i.e., add a single input/output place to transitions with empty preset/postset. 
-	 * A net is T-restricted if presets and postsets of all transitions are not empty. 
-	 */
-	public void doTRestrict();
-
-	/**
 	 * Factory method to provide a transition of the Petri net implementation.
 	 * 
 	 * @return A fresh transition.

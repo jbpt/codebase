@@ -9,7 +9,7 @@ import java.util.Set;
 
 import org.jbpt.algo.graph.DirectedGraphAlgorithms;
 import org.jbpt.graph.abs.AbstractDirectedGraph;
-import org.jbpt.petri.structure.PetriNetStructuralClassChecks;
+import org.jbpt.petri.structure.PetriNetStructuralChecks;
 
 /**
  * An implementation of IPetriNet interface. 
@@ -28,7 +28,7 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> implements IPetri
 	/**
 	 * Singleton for performing structural class checks on PetriNet objects.
 	 */
-	public static PetriNetStructuralClassChecks<Flow,Node,Place,Transition> StructuralClassChecks = new PetriNetStructuralClassChecks<Flow,Node,Place,Transition>();
+	public static PetriNetStructuralChecks<Flow,Node,Place,Transition> StructuralChecks = new PetriNetStructuralChecks<Flow,Node,Place,Transition>();
 	
 	/**
 	 * Empty constructor.
@@ -399,11 +399,6 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> implements IPetri
 	}
 	
 	@Override
-	public boolean isTRestricted() {
-		return this.getSourceTransitions().isEmpty() && this.getSinkTransitions().isEmpty();
-	}
-	
-	@Override
 	public PetriNet clone() {		
 		PetriNet clone = (PetriNet) super.clone();
 		return this.cloneHelper(clone, new HashMap<Node,Node>());
@@ -464,15 +459,6 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> implements IPetri
 		result += "}\n";
 		
 		return result;
-	}
-
-	@Override
-	public void doTRestrict() {
-		for (Transition transition : this.getSourceTransitions())
-			this.addFlow(new Place(), transition);
-		
-		for (Transition transition : this.getSinkTransitions())
-			this.addFlow(transition, new Place());
 	}
 
 	@Override

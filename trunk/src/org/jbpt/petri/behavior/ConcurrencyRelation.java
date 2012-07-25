@@ -280,7 +280,7 @@ public class ConcurrencyRelation {
 		 * requires the calculation of the set of places indirectly 
 		 * succeeding a certain place.
 		 */
-		if (PetriNet.StructuralClassChecks.isExtendedFreeChoice(sys)) {
+		if (PetriNet.StructuralChecks.isExtendedFreeChoice(sys)) {
 			for (Node n : this.nodes) {
 				if (n instanceof Place) {
 					Set<Node> nodes = new HashSet<Node>();
@@ -298,7 +298,7 @@ public class ConcurrencyRelation {
 		 * Actual algorithm to build up the matrix.
 		 * It runs faster for free-choice nets than for arbitrary nets.
 		 */
-		processConcNodes(concNodes,PetriNet.StructuralClassChecks.isExtendedFreeChoice(sys));
+		processConcNodes(concNodes,PetriNet.StructuralChecks.isExtendedFreeChoice(sys));
 	}
 	
 	public String toString(){

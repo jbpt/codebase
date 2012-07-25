@@ -6,12 +6,17 @@ import java.util.Iterator;
 import java.util.UUID;
 
 import org.jbpt.petri.Flow;
+import org.jbpt.petri.IFlow;
+import org.jbpt.petri.INode;
+import org.jbpt.petri.IPetriNet;
+import org.jbpt.petri.IPlace;
+import org.jbpt.petri.ITransition;
 import org.jbpt.petri.Node;
 import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
 
-public class PetriNetUtils {
+public class PetriNetTransformations<F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition> {
 
 	public static String getId() {
 		return UUID.randomUUID().toString();
@@ -72,6 +77,18 @@ public class PetriNetUtils {
 				net.addFlow(newP, newT);
 			}
 		}
+	}
+	
+	/**
+	 * T-restrict a given Petri net, i.e., add a single input/output place to transitions with empty preset/postset. 
+	 * A net is T-restricted if presets and postsets of all transitions are not empty. 
+	 */
+	public void doTRestrict(IPetriNet<F,N,P,T> net) {
+		for (T t : net.getSourceTransitions())
+			net.addFlow(net.createPlace(), t);
+		
+		for (T t : net.getSinkTransitions())
+			net.addFlow(t, net.createPlace());
 	}
 
 }

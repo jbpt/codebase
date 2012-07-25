@@ -31,8 +31,8 @@ public class SoundUnfolding extends ProperUnfolding {
 	protected SoundUnfolding() {}
 
 	public SoundUnfolding(NetSystem sys) {
-		if (!PetriNet.StructuralClassChecks.isFreeChoice(sys)) throw new IllegalArgumentException("Net must be free choice!");
-		if (!PetriNet.StructuralClassChecks.isWorkflowNet(sys)) throw new IllegalArgumentException("Net must be a WF-net!");
+		if (!PetriNet.StructuralChecks.isFreeChoice(sys)) throw new IllegalArgumentException("Net must be free choice!");
+		if (!PetriNet.StructuralChecks.isWorkflowNet(sys)) throw new IllegalArgumentException("Net must be a WF-net!");
 		if (dga.isAcyclic(sys)) throw new IllegalArgumentException("Net must be acyclic!");
 		
 		this.sys = sys;

@@ -41,7 +41,7 @@ public class BCTreeExtensiveTest extends TestCase {
 				for (Transition trans : sys.getTransitions()) trans.setName("t"+ct++);
 				sys.loadNaturalMarking();
 				
-				assertTrue(PetriNet.StructuralClassChecks.isWorkflowNet(sys));
+				assertTrue(PetriNet.StructuralChecks.isWorkflowNet(sys));
 				
 				BCTree<Flow,Node> bctree = new BCTree<Flow,Node>(sys);
 				start = System.nanoTime();

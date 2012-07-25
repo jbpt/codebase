@@ -295,9 +295,9 @@ public class CBPComputationTest extends TestCase {
 		 * Generic tests for net structure
 		 */
 		//assertTrue(PetriNet.StructuralClassChecks.isExtendedFreeChoice(net));
-		assertTrue(PetriNet.StructuralClassChecks.isWorkflowNet(net));
-		assertFalse(PetriNet.StructuralClassChecks.isSNet(net));
-		assertFalse(PetriNet.StructuralClassChecks.isTNet(net));
+		assertTrue(PetriNet.StructuralChecks.isWorkflowNet(net));
+		assertFalse(PetriNet.StructuralChecks.isSNet(net));
+		assertFalse(PetriNet.StructuralChecks.isTNet(net));
 		
 		/*
 		 * Tests for behavioural profile
