@@ -24,12 +24,6 @@ import org.jbpt.petri.Transition;
  * @author Artem Polyvyanyy
  */
 public class Unfolding {
-	public static long time = 0;
-	public static long time_min = 0;
-	public static long time_add_event = 0;
-	public static long time_extra = 0;
-	public static long time_cutoff = 0;
-	
 	// originative net system
 	protected NetSystem sys = null;
 	protected List<Transition> totalOrderTs = null;
@@ -67,33 +61,35 @@ public class Unfolding {
 	protected Unfolding(){}
 	
 	/**
-	 * Constructor - constructs unfolding of a net system
+	 * Constructor. 
 	 * 
-	 * @param pn net system to unfold
+	 * @param sys A net system to unfold.
 	 */
 	public Unfolding(NetSystem sys) {
 		this(sys, new UnfoldingSetup());
 	}
 	
 	/**
-	 * Constructor - constructs unfolding of a net system
+	 * Constructor.
 	 * 
-	 * @param pn net system to unfold
-	 * @param setup unfolding configuration
+	 * @param sys A net system to unfold.
+	 * @param setup Unfolding setup.
 	 */
 	public Unfolding(NetSystem sys, UnfoldingSetup setup) {
 		this.sys = sys;
-		initialBP = new Cut(this.sys);
+		this.initialBP = new Cut(this.sys);
 		this.totalOrderTs = new ArrayList<Transition>(sys.getTransitions());
 		this.setup = setup;
 		
 		// construct unfolding
-		this.construct();
+		if (this.setup.SAFE_OPTIMIZATION)
+			this.constructSafe();
+		else
+			this.construct();
 	}
 
 	/**
-	 * Construct unfolding
-	 * @throws  
+	 * Construct unfolding ... 
 	 */
 	protected void construct() {
 		if (this.sys==null) return;
@@ -105,40 +101,28 @@ public class Unfolding {
 			for (int i = 0; i<n; i++) {
 				Condition c = new Condition(p,null);
 				this.addCondition(c);
-				initialBP.add(c);
+				this.initialBP.add(c);
 			}
 		}
 		if (!this.addCut(initialBP)) return;
 		
-//		Event cutoffIni = null; Event corrIni = null;					// for special handling of events that induce initial markings
+		//  Event cutoffIni = null; Event corrIni = null;				// for special handling of events that induce initial markings
 		
 		// CONSTRUCT UNFOLDING
 		Set<Event> pe = getPossibleExtensionsA();						// get possible extensions of initial branching process
-//		int changes = 0;												// TODO tmp (opt 1)
-		while (pe.size()>0) { 											// while extensions exist
+		while (!pe.isEmpty()) { 										// while extensions exist
 			if (this.countEvents>=this.setup.MAX_EVENTS) return;		// track number of events in unfolding
-			long start = System.nanoTime();
 			Event e = this.setup.ADEQUATE_ORDER.getMinimal(pe);			// event to use for extending unfolding
-			long end = System.nanoTime();
-			time_min += end - start;
 			
 			if (!this.overlap(cutoff2corr.keySet(),e.getLocalConfiguration())) {
-				start = System.nanoTime();
 				if (!this.addEvent(e)) return;							// add event to unfolding
-				end = System.nanoTime();
-				time_add_event += end - start;
-//				changes++;												// TODO tmp
 				
-				start = System.nanoTime();
 				Event corr = this.checkCutoffA(e);						// check for cutoff event
 				if (corr!=null) this.addCutoff(e,corr);					// e is cutoff event
-				end = System.nanoTime();
-				time_cutoff += end - start;
 				
 				// The following functionality is not captured by Esparza's algorithm !!!
 				// The code handles situation when there exist a cutoff event which induces initial marking
 				// The identification of such cutoff was postponed to the point until second event which induces initial marking is identified
-				//start = System.nanoTime();
 				//if (corrIni == null) {
 					//boolean isCutoffIni = e.getLocalConfiguration().getMarking().equals(this.net.getMarking());
 					//if (cutoffIni == null && isCutoffIni) cutoffIni = e;
@@ -147,32 +131,70 @@ public class Unfolding {
 						//this.cutoff2corr.put(cutoffIni, corrIni);
 					//}
 				//}
-				//end = System.nanoTime();
-				//time_extra += end - start;
 				
-				//IOUtils.toFile("unf"+(this.counter++)+".dot", this.getOccurrenceNet().toDOT());
 				pe = getPossibleExtensionsA();							// get possible extensions of branching process
-				
-				/*for (Event e2 : pe) {
-					System.out.println(e2.hashCode());
-				}
-				System.out.println("-------------------");*/
 			}
 			else {
 				pe.remove(e);
-//				if (pe.isEmpty() && changes!=0) pe = this.getPossibleExtensionsB(pe);	// TODO tmp
-//				changes = 0;															// TODO tmp
+//				if (pe.isEmpty() && changes!=0) pe = this.getPossibleExtensionsB(pe);
+//				changes = 0;	
 			}
-				
+		}
+	}
+	
+	protected void constructSafe() {
+		if (this.sys==null) return;
+
+		// CONSTRUCT INITIAL BRANCHING PROCESS
+		Marking M0 = this.sys.getMarking();
+		for (Place p : this.sys.getPlaces()) {
+			Integer n = M0.get(p);
+			for (int i = 0; i<n; i++) {
+				Condition c = new Condition(p,null);
+				this.addCondition(c);
+				this.initialBP.add(c);
+			}
+		}
+		if (!this.addCut(initialBP)) return;
+		
+		//  Event cutoffIni = null; Event corrIni = null;				// for special handling of events that induce initial markings
+		
+		// CONSTRUCT UNFOLDING
+		Map<Event,Event> cutoffs = new HashMap<Event,Event>(); 
+		Set<Event> pe = getPossibleExtensionsA();						// get possible extensions of initial branching process
+		while (!pe.isEmpty()) { 										// while extensions exist
+			if (this.countEvents >= this.setup.MAX_EVENTS) return;		// track number of events in unfolding
+			Event e = this.setup.ADEQUATE_ORDER.getMinimal(pe);			// event to use for extending unfolding
+			pe.remove(e);
+			
+			Event corr = this.checkCutoffA(e);							// check for cutoff event
+			if (corr!=null) {											// e is cutoff event
+				cutoffs.put(e,corr);
+			}
+			else {
+				if (!this.addEvent(e)) return;							// add event to unfolding
+				pe.addAll(this.updatePossibleExtensions(e));
+			}
+		}
+		
+		// add cutoffs computed earlier
+		for (Map.Entry<Event,Event> entry : cutoffs.entrySet()) {
+			if (!this.addEvent(entry.getKey())) return;
+			this.addCutoff(entry.getKey(),entry.getValue());
 		}
 	}
 
+	private Set<Event> updatePossibleExtensions(Event e) {
+		// TODO
+		return new HashSet<Event>();
+	}
+
 	/**
-	 * Get possible extensions of the unfolding (classical method)
-	 * @return collection of events suitable to extend unfolding
+	 * Get possible extensions of the unfolding (an extensive way).
+	 * 
+	 * @return Set of events suitable to extend unfolding.
 	 */
 	protected Set<Event> getPossibleExtensionsA() {
-		long start = System.nanoTime();
 		Set<Event> result = new HashSet<Event>();
 		
 		// iterate over all transitions of the originative net
@@ -207,24 +229,25 @@ public class Unfolding {
 		}
 		
 		result.addAll(this.getPossibleExtensionsB(result));
-		long end = System.nanoTime();
-		time += (end - start);
+		
 		return result;
 	}
 	
 	/**
-	 * Get possible extensions (extension point)
-	 * @param pe current possible extensions
-	 * @return collection of events suitable to extend unfolding
+	 * Get possible extensions (an extension point).
+	 * 
+	 * @param pe Current possible extensions.
+	 * @return Set of events suitable to extend unfolding.
 	 */
 	protected Set<Event> getPossibleExtensionsB(Set<Event> pe) {
 		return new HashSet<Event>();
 	}
 	
 	/**
-	 * Check whether event is cutoff
-	 * @param e event
-	 * @return corresponding event; null if event is not cutoff
+	 * Check whether a given event is a cutoff event.
+	 * 
+	 * @param e Event
+	 * @return Corresponding event; <tt>null</tt> if event is not cutoff.
 	 */
 	protected Event checkCutoffA(Event e) {
 		LocalConfiguration lce = e.getLocalConfiguration();
@@ -240,12 +263,13 @@ public class Unfolding {
 	}
 	
 	/**
-	 * Perform additional checks for event being cutoff 
-	 * @param e cutoff event
-	 * @param corr corresponding event
-	 * @return corresponding event if e is cutoff; otherwise null
+	 * Perform additional checks for event being cutoff (an extension point).
+	 * 
+	 * @param cutoff Cutoff event.
+	 * @param corr Corresponding event.
+	 * @return Corresponding event if e is cutoff; otherwise <tt>null</tt>.
 	 */
-	protected Event checkCutoffB(Event e, Event corr) {
+	protected Event checkCutoffB(Event cutoff, Event corr) {
 		return corr;
 	}
 	
@@ -430,21 +454,18 @@ public class Unfolding {
 	}
 	
 	/**
-	 * Check if two sets of events overlap
-	 * @param es1 set of events
-	 * @param es2 set of events
-	 * @return true if sets overlap; otherwise false
+	 * Check if two sets of events overlap.
+	 * 
+	 * @param es1 Set of events.
+	 * @param es2 Set of events.
+	 * @return <tt>true</tt> if sets overlap; otherwise <tt>false</tt>.
 	 */
 	protected boolean overlap(Set<Event> es1, Set<Event> es2) {
 		if (es1 == null || es2 == null) return false;
 		
-		for (Event e1 : es1) {
-			for (Event e2 : es2) {
-				if (e1.equals(e2)) {
-					return true;
-				}
-			}
-		}
+		for (Event e1 : es1)
+			if (es2.contains(e1))
+				return true;
 		
 		return false;
 	}

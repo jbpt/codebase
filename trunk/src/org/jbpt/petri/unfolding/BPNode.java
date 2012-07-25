@@ -10,6 +10,8 @@ import org.jbpt.petri.Node;
  */
 public abstract class BPNode extends Vertex {
 	
+	protected int ID = 0;
+	
 	public abstract Node getNode();
 	
 }
