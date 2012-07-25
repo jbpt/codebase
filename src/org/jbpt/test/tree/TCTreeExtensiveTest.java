@@ -54,7 +54,7 @@ public class TCTreeExtensiveTest extends TestCase {
 				for (Transition trans : sys.getTransitions()) trans.setName("t"+ct++);
 				sys.loadNaturalMarking();
 				
-				assertTrue(PetriNet.StructuralChecks.isWorkflowNet(sys));
+				assertTrue(PetriNet.STRUCTURAL_CHECKS.isWorkflowNet(sys));
 				Transition t = new Transition("BACK");
 				sys.addFlow((Place)DGA.getSinks(sys).iterator().next(),t);
 				Flow back = sys.addFlow(t,(Place)DGA.getSources(sys).iterator().next());

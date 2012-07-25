@@ -9,14 +9,19 @@ import org.jbpt.petri.ITransition;
 
 
 /**
- * Petri net structural class checks.
- * 
+ * Collection of methods for performing structural checks on Petri nets.
+ *
+ * @param <F> Flow template.
+ * @param <N> Node template.
+ * @param <P> Place template.
+ * @param <T> Transition template.
+ *
  * @author Artem Polyvyanyy
  * @author Matthias Weidlich
  */
 public class PetriNetStructuralChecks<F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition> {
 	
-	private DirectedGraphAlgorithms<F,N> dga = new DirectedGraphAlgorithms<F,N>();
+	private DirectedGraphAlgorithms<F,N> DGA = new DirectedGraphAlgorithms<F,N>();
 
 	/**
 	 * Check if a given Petri net is free-choice. 
@@ -98,7 +103,7 @@ public class PetriNetStructuralChecks<F extends IFlow<N>, N extends INode, P ext
 	 * @return <tt>true</tt> if the net is a WF-net; otherwise <tt>false</tt>. 
 	 */
 	public boolean isWorkflowNet(IPetriNet<F,N,P,T> net) {
-		return this.dga.isTwoTerminal(net);
+		return this.DGA.isTwoTerminal(net);
 	}
 	
 	/**

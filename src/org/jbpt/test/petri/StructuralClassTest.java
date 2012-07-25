@@ -27,8 +27,8 @@ public class StructuralClassTest {
 		assertEquals(3,pn.getVertices().size());
 		assertEquals(2,pn.getFlow().size());
 		
-		assertTrue(PetriNet.StructuralChecks.isFreeChoice(pn));
-		assertTrue(PetriNet.StructuralChecks.isWorkflowNet(pn));
+		assertTrue(PetriNet.STRUCTURAL_CHECKS.isFreeChoice(pn));
+		assertTrue(PetriNet.STRUCTURAL_CHECKS.isWorkflowNet(pn));
 		
 		assertEquals(3,pn.getVertices().size());
 		assertEquals(2,pn.getFlow().size());

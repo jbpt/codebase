@@ -82,7 +82,7 @@ public class WFTreeTest extends TestCase {
 		net.addFlow(p12,tK);
 		net.addFlow(tK,p13);
 		
-		assertTrue(PetriNet.StructuralChecks.isWorkflowNet(net));
+		assertTrue(PetriNet.STRUCTURAL_CHECKS.isWorkflowNet(net));
 		
 		WFTree<Flow,Node,Place,Transition> wfTree = new WFTree<Flow,Node,Place,Transition>(net);
 		IOUtils.toFile("rpst.dot", wfTree.toDOT());

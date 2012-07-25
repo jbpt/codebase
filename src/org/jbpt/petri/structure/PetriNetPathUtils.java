@@ -38,10 +38,10 @@ public class PetriNetPathUtils {
 	
 	
 	public static Map<Node, Set<Node>> getDominators(PetriNet net) {
-		return PetriNet.DirectedGraphAlgorithms.getDominators(net, false);
+		return PetriNet.DIRECTED_GRAPH_ALGORITHMS.getDominators(net, false);
 	}
 	
 	public static Map<Node, Set<Node>> getPostDominators(PetriNet net) {
-		return PetriNet.DirectedGraphAlgorithms.getDominators(net, true);
+		return PetriNet.DIRECTED_GRAPH_ALGORITHMS.getDominators(net, true);
 	}
 }
