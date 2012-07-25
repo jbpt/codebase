@@ -183,10 +183,36 @@ public class Unfolding {
 			this.addCutoff(entry.getKey(),entry.getValue());
 		}
 	}
+	
+	private Set<Event> UPE = null; 
 
 	private Set<Event> updatePossibleExtensions(Event e) {
-		// TODO
-		return new HashSet<Event>();
+		this.UPE = new HashSet<Event>();
+		
+		Transition u = e.getTransition();
+		Set<Transition> upp = new HashSet<Transition>(this.sys.getPostsetTransitions(this.sys.getPostset(u)));
+		Set<Place> pu = new HashSet<Place>(this.sys.getPreset(u));
+		pu.removeAll(this.sys.getPostset(u));
+		upp.removeAll(this.sys.getPostsetTransitions(pu));
+		
+		for (Transition t : upp) {
+			Collection<Condition> preset = new ArrayList<Condition>();
+			for (Condition b : e.getPostConditions()) {
+				if (this.sys.getPreset(t).contains(b.getPlace()))
+				preset.add(b);
+			}
+			
+			Collection<Condition> C = this.getConcurrentConditions(e);
+			// TODO
+			/*this.cover(C,t,preset);*/
+		}
+		
+		return this.UPE;
+	}
+
+	private Collection<Condition> getConcurrentConditions(Event e) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/**
