@@ -10,14 +10,14 @@ import org.jbpt.petri.Place;
  */
 public class Condition extends BPNode {
 	
-	static private int count = 0; 
-	private int ID = 0;
+	static private int count = 0; 	
 	
 	Place s = null;
 	Event e = null;
 	
 	/**
-	 * Constructor
+	 * Constructor.
+	 * 
 	 * @param place corresponding place in the originative net
 	 * @param event the only event in the preset of the condition
 	 */
