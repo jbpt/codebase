@@ -172,13 +172,14 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> implements IPetri
 	
 	
 	@Override
-	public Collection<Node> getNodes() {
-		return this.getVertices();
+	public Set<Node> getNodes() {
+		// TODO this.getVertices() must return set.
+		return new HashSet<Node>(this.getVertices());
 	}
 	
 	@Override
-	public Collection<Place> getPlaces() {
-		Collection<Place> result = new ArrayList<Place>();
+	public Set<Place> getPlaces() {
+		Set<Place> result = new HashSet<Place>();
 		
 		for (Node node : this.getVertices())
 			if (node instanceof Place)
@@ -188,8 +189,8 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> implements IPetri
 	}
 
 	@Override
-	public Collection<Transition> getTransitions() {
-		Collection<Transition> result = new ArrayList<Transition>();
+	public Set<Transition> getTransitions() {
+		Set<Transition> result = new HashSet<Transition>();
 		
 		for (Node node : this.getVertices())
 			if (node instanceof Transition)
@@ -199,13 +200,14 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> implements IPetri
 	}
 	
 	@Override
-	public Collection<Flow> getFlow() {
-		return this.getEdges();
+	public Set<Flow> getFlow() {
+		// TODO this.getEdges() must return set.
+		return new HashSet<Flow>(this.getEdges());
 	}
 	
 	@Override
-	public Collection<Transition> getSilentTransitions() {
-		Collection<Transition> result = new ArrayList<Transition>();
+	public Set<Transition> getSilentTransitions() {
+		Set<Transition> result = new HashSet<Transition>();
 		
 		for (Node node : this.getVertices())
 			if (node instanceof Transition && node.getLabel().isEmpty())
@@ -215,8 +217,8 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> implements IPetri
 	}
 
 	@Override
-	public Collection<Transition> getObservableTransitions() {
-		Collection<Transition> result = new ArrayList<Transition>();
+	public Set<Transition> getObservableTransitions() {
+		Set<Transition> result = new HashSet<Transition>();
 		
 		for (Node node : this.getVertices())
 			if (node instanceof Transition && !node.getLabel().isEmpty())
@@ -226,8 +228,8 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> implements IPetri
 	}
 	
 	@Override
-	public Collection<Place> getPostset(Transition transition) {
-		Collection<Place> result = new ArrayList<Place>();
+	public Set<Place> getPostset(Transition transition) {
+		Set<Place> result = new HashSet<Place>();
 		for (Node node : this.getDirectSuccessors(transition))
 			if (node instanceof Place)
 				result.add((Place)node);
@@ -236,7 +238,7 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> implements IPetri
 	}
 	
 	@Override
-	public Collection<Place> getPostsetPlaces(Collection<Transition> transitions) {
+	public Set<Place> getPostsetPlaces(Collection<Transition> transitions) {
 		Set<Place> result = new HashSet<Place>();
 		
 		for (Transition transition : transitions)
@@ -248,8 +250,8 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> implements IPetri
 	}
 	
 	@Override
-	public Collection<Transition> getPostset(Place place) {
-		Collection<Transition> result = new ArrayList<Transition>();
+	public Set<Transition> getPostset(Place place) {
+		Set<Transition> result = new HashSet<Transition>();
 		
 		for (Node node : this.getDirectSuccessors(place)) {
 			if (node instanceof Transition)
@@ -260,7 +262,7 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> implements IPetri
 	}
 	
 	@Override
-	public Collection<Transition> getPostsetTransitions(Collection<Place> places) {
+	public Set<Transition> getPostsetTransitions(Collection<Place> places) {
 		Set<Transition> result = new HashSet<Transition>();
 		
 		for (Place place : places)
@@ -272,19 +274,20 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> implements IPetri
 	}
 
 	@Override
-	public Collection<Node> getPostset(Node n) {
-		return this.getDirectSuccessors(n);
+	public Set<Node> getPostset(Node node) {
+		// TODO this.getDirectSuccessors(node) must return set.
+		return new HashSet<Node>(this.getDirectSuccessors(node));
 	}
 	
 	@Override
-	public Collection<Node> getPostset(Collection<Node> nodes) {
-		Collection<Node> result = this.getDirectSuccessors(nodes); 
-		return result == null ? new ArrayList<Node>() : result;
+	public Set<Node> getPostset(Collection<Node> nodes) {
+		// TODO this.getDirectSuccessors(nodes) must return set.
+		return new HashSet<Node>(this.getDirectSuccessors(nodes));
 	}
 	
 	@Override
-	public Collection<Place> getPreset(Transition transition) {
-		Collection<Place> result = new ArrayList<Place>();
+	public Set<Place> getPreset(Transition transition) {
+		Set<Place> result = new HashSet<Place>();
 		
 		for (Node node : this.getDirectPredecessors(transition))
 			if (node instanceof Place)
@@ -294,7 +297,7 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> implements IPetri
 	}
 
 	@Override
-	public Collection<Place> getPresetPlaces(Collection<Transition> transitions) {
+	public Set<Place> getPresetPlaces(Collection<Transition> transitions) {
 		Set<Place> result = new HashSet<Place>();
 		
 		for (Transition transition : transitions)
@@ -306,8 +309,8 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> implements IPetri
 	}
 	
 	@Override
-	public Collection<Transition> getPreset(Place place) {
-		Collection<Transition> result = new ArrayList<Transition>();
+	public Set<Transition> getPreset(Place place) {
+		Set<Transition> result = new HashSet<Transition>();
 		
 		for (Node node : this.getDirectPredecessors(place))
 			if (node instanceof Transition)
@@ -317,7 +320,7 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> implements IPetri
 	}
 	
 	@Override
-	public Collection<Transition> getPresetTransitions(Collection<Place> places) {
+	public Set<Transition> getPresetTransitions(Collection<Place> places) {
 		Set<Transition> result = new HashSet<Transition>();
 		
 		for (Place place : places)
@@ -329,25 +332,25 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> implements IPetri
 	}
 	
 	@Override
-	public Collection<Node> getPreset(Node node) {
-		Collection<Node> result = this.getDirectPredecessors(node); 
-		return result == null ? new ArrayList<Node>() : result;
+	public Set<Node> getPreset(Node node) {
+		// TODO this.getDirectPredecessors(node) must return set
+		return new HashSet<Node>(this.getDirectPredecessors(node));
 	}
 	
 	@Override
-	public Collection<Node> getPreset(Collection<Node> nodes) {
-		Collection<Node> result = this.getDirectPredecessors(nodes); 
-		return result == null ? new ArrayList<Node>() : result;
+	public Set<Node> getPreset(Collection<Node> nodes) {
+		// TODO this.getDirectPredecessors(nodes) must return set
+		return new HashSet<Node>(this.getDirectPredecessors(nodes));
 	}
 	
 	@Override
-	public Collection<Node> getSourceNodes() {
+	public Set<Node> getSourceNodes() {
 		return PetriNet.DIRECTED_GRAPH_ALGORITHMS.getSources(this);
 	}
 	
 	@Override
-	public Collection<Place> getSourcePlaces() {
-		Collection<Place> result = new ArrayList<Place>();
+	public Set<Place> getSourcePlaces() {
+		Set<Place> result = new HashSet<Place>();
 		
 		for (Node node : this.getSourceNodes())
 			if (node instanceof Place)
@@ -357,8 +360,8 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> implements IPetri
 	}
 	
 	@Override
-	public Collection<Transition> getSourceTransitions() {
-		Collection<Transition> result = new ArrayList<Transition>();
+	public Set<Transition> getSourceTransitions() {
+		Set<Transition> result = new HashSet<Transition>();
 		
 		for (Node node : this.getSourceNodes())
 			if (node instanceof Transition)
@@ -368,13 +371,13 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> implements IPetri
 	}
 	
 	@Override
-	public Collection<Node> getSinkNodes() {
+	public Set<Node> getSinkNodes() {
 		return PetriNet.DIRECTED_GRAPH_ALGORITHMS.getSinks(this);
 	}
 	
 	@Override
-	public Collection<Place> getSinkPlaces() {
-		Collection<Place> result = new ArrayList<Place>();
+	public Set<Place> getSinkPlaces() {
+		Set<Place> result = new HashSet<Place>();
 		
 		for (Node node : this.getSinkNodes())
 			if (node instanceof Place)
@@ -384,8 +387,8 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> implements IPetri
 	}
 	
 	@Override
-	public Collection<Transition> getSinkTransitions() {
-		Collection<Transition> result = new ArrayList<Transition>();
+	public Set<Transition> getSinkTransitions() {
+		Set<Transition> result = new HashSet<Transition>();
 		
 		for (Node node : this.getSinkNodes())
 			if (node instanceof Transition)
@@ -395,12 +398,12 @@ public class PetriNet extends AbstractDirectedGraph<Flow,Node> implements IPetri
 	}
 	
 	@Override
-	public Collection<Node> getMin() {
+	public Set<Node> getMin() {
 		return this.getSourceNodes();
 	}
 	
 	@Override
-	public Collection<Node> getMax() {
+	public Set<Node> getMax() {
 		return this.getSinkNodes();
 	}
 	
