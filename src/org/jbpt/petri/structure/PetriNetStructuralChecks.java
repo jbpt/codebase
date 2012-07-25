@@ -14,7 +14,7 @@ import org.jbpt.petri.ITransition;
  * @author Artem Polyvyanyy
  * @author Matthias Weidlich
  */
-public class PetriNetStructuralClassChecks<F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition> {
+public class PetriNetStructuralChecks<F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition> {
 	
 	private DirectedGraphAlgorithms<F,N> dga = new DirectedGraphAlgorithms<F,N>();
 
@@ -99,5 +99,15 @@ public class PetriNetStructuralClassChecks<F extends IFlow<N>, N extends INode, 
 	 */
 	public boolean isWorkflowNet(IPetriNet<F,N,P,T> net) {
 		return this.dga.isTwoTerminal(net);
+	}
+	
+	/**
+	 * Check if a given Petri net is T-restricted.   
+	 * A net is T-restricted if presets and postsets of all transitions are not empty.
+	 *  
+	 * @return <tt>true</tt> if this net is T-restricted; otherwise <tt>false</tt>.
+	 */
+	public boolean isTRestricted(IPetriNet<F,N,P,T> net) {
+		return net.getSourceTransitions().isEmpty() && net.getSinkTransitions().isEmpty();
 	}
 }

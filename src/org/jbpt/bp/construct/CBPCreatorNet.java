@@ -37,9 +37,9 @@ public class CBPCreatorNet extends AbstractRelSetCreator implements CBPCreator<N
 		/*
 		 * Check assumptions for the net
 		 */
-		if (!PetriNet.StructuralClassChecks.isWorkflowNet(pn)) throw new IllegalArgumentException();
-		if (!PetriNet.StructuralClassChecks.isExtendedFreeChoice(pn)) throw new IllegalArgumentException();
-		if (PetriNetPathUtils.isCyclic(pn) && (!PetriNet.StructuralClassChecks.isTNet(pn) && !PetriNet.StructuralClassChecks.isSNet(pn))) throw new IllegalArgumentException();
+		if (!PetriNet.StructuralChecks.isWorkflowNet(pn)) throw new IllegalArgumentException();
+		if (!PetriNet.StructuralChecks.isExtendedFreeChoice(pn)) throw new IllegalArgumentException();
+		if (PetriNetPathUtils.isCyclic(pn) && (!PetriNet.StructuralChecks.isTNet(pn) && !PetriNet.StructuralChecks.isSNet(pn))) throw new IllegalArgumentException();
 
 		/*
 		 * Compute the behavioural profile using BPCreatorNet
@@ -59,7 +59,7 @@ public class CBPCreatorNet extends AbstractRelSetCreator implements CBPCreator<N
 		/*
 		 * Compute co-occurrence if net is T-net
 		 */
-		if (PetriNet.StructuralClassChecks.isTNet(pn)) {
+		if (PetriNet.StructuralChecks.isTNet(pn)) {
 			for(Node n1 : profile.getEntities()) {
 				int index1 = profile.getEntities().indexOf(n1);
 				for(Node n2 : profile.getEntities()) {
@@ -71,7 +71,7 @@ public class CBPCreatorNet extends AbstractRelSetCreator implements CBPCreator<N
 		/*
 		 * Compute co-occurrence if net is S-net
 		 */
-		else if (PetriNet.StructuralClassChecks.isSNet(pn)) {
+		else if (PetriNet.StructuralChecks.isSNet(pn)) {
 			Map<Node,Set<Node>> dominators = PetriNetPathUtils.getDominators(pn);
 			Map<Node,Set<Node>> postdominators = PetriNetPathUtils.getPostDominators(pn);
 			
