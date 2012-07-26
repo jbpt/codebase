@@ -6,7 +6,11 @@ package org.jbpt.petri.unfolding;
  * @author Artem Polyvyanyy
  */
 public enum OrderingRelation {
-	CONFLICT, CAUSAL, INVERSE_CAUSAL, CONCURRENT, NONE;
+	CONFLICT, 
+	CAUSAL, 
+	INVERSE_CAUSAL, 
+	CONCURRENT, 
+	UNDEFINED;
 
 	@Override
 	public String toString() {

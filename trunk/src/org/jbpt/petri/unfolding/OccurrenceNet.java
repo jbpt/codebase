@@ -99,7 +99,7 @@ public class OccurrenceNet extends PetriNet {
 		if (bpn1!=null && bpn2!=null) 
 			return this.unf.getOrderingRelation(bpn1,bpn2);
 		
-		return OrderingRelation.NONE;
+		return OrderingRelation.UNDEFINED;
 	}
 	
 	public Set<Transition> getCutoffEvents() {

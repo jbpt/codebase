@@ -40,11 +40,8 @@ public class Unfolding {
 	protected Map<Transition,Set<Event>> t2es	= new HashMap<Transition,Set<Event>>();
 	protected Map<Place,Set<Condition>> p2cs	= new HashMap<Place,Set<Condition>>();
 	
-	// ordering relations
-	protected Map<BPNode,Set<BPNode>> co	= new HashMap<BPNode,Set<BPNode>>(); // concurrent
+	// causality: maps node of unfolding to a set of preceding nodes
 	protected Map<BPNode,Set<BPNode>> ca	= new HashMap<BPNode,Set<BPNode>>(); // causal
-	protected Map<BPNode,Set<BPNode>> ica	= new HashMap<BPNode,Set<BPNode>>(); // inverse causal
-	public Map<BPNode,Set<Condition>> forwardConflicts	= new HashMap<BPNode,Set<Condition>>(); // inverse causal
 	
 	// event counter
 	protected int countEvents = 0;
@@ -56,8 +53,6 @@ public class Unfolding {
 	protected Cut initialBP = null;
 	
 	private OccurrenceNet occNet = null;
-	
-	//private int counter = 1;
 	
 	protected Unfolding(){}
 	
@@ -208,7 +203,7 @@ public class Unfolding {
 				if (d.getPlace().equals(p)) {
 					Set<Condition> C2 = new HashSet<Condition>();
 					for (Condition dd : C)
-						if (!this.ca.get(dd).contains(d) && !this.ca.get(d).contains(dd))
+						if (this.areConcurrent(d,dd))
 							C2.add(dd);
 					Coset preset2 = new Coset(this.sys);
 					preset2.addAll(preset);
@@ -232,7 +227,7 @@ public class Unfolding {
 		Set<Condition> result = new HashSet<Condition>();
 
 		for (Condition c : this.getConditions()) {
-			if (this.areConcurrentSafe(e,c))
+			if (this.areConcurrent(e,c))
 				result.add(c);
 		}
 		
@@ -354,7 +349,7 @@ public class Unfolding {
 	 * Update concurrency relation based on a cut
 	 * @param cut cut
 	 */
-	private void updateConcurrency(Cut cut) {
+	/*private void updateConcurrency(Cut cut) {
 		for (Condition c1 : cut) {
 			if (this.co.get(c1)==null) this.co.put(c1, new HashSet<BPNode>());
 			Event e1 = c1.getPreEvent();
@@ -371,42 +366,27 @@ public class Unfolding {
 				}
 			}
 		}
-	}
+	}*/
 	
-	/**
-	 * Update causality relation based on a condition
-	 * @param c condition
-	 */
 	private void updateCausalityCondition(Condition c) {
-		this.ica.put(c, new HashSet<BPNode>());
-		this.ca.put(c, new HashSet<BPNode>());
+		if (this.ca.get(c)==null)
+			this.ca.put(c,new HashSet<BPNode>());
 		
 		Event e = c.getPreEvent();
 		if (e==null) return;
 		
-		this.ica.get(c).addAll(this.ica.get(e));
-		this.ica.get(c).add(e);
-		
-		for (BPNode n : this.ica.get(c)) {
-			this.ca.get(n).add(c);
-		}
+		this.ca.get(c).addAll(this.ca.get(e));
+		this.ca.get(c).add(e);
 	}
-	
-	/**
-	 * Update causality relation based on an event
-	 * @param e event
-	 */
-	protected void updateCausalityEvent(Event e) {
-		this.ica.put(e, new HashSet<BPNode>());
-		this.ca.put(e, new HashSet<BPNode>());
+
+	private void updateCausalityEvent(Event e) {
+		if (this.ca.get(e)==null)
+			this.ca.put(e,new HashSet<BPNode>());
 		
-		Collection<Condition> cs = e.getPreConditions();		
-		for (Condition c : cs)  this.ica.get(e).addAll(this.ica.get(c));
-		this.ica.get(e).addAll(cs);
-		
-		for (BPNode n : this.ica.get(e)) {
-			this.ca.get(n).add(e);
+		for (Condition c : e.getPreConditions()) {
+			this.ca.get(e).addAll(this.ca.get(c));
 		}
+		this.ca.get(e).addAll(e.getPreConditions());
 	}
 	
 	/**************************************************************************
@@ -565,7 +545,7 @@ public class Unfolding {
 		
 		this.updateCausalityCondition(c);
 		
-		this.updateForwardConflicts(c);
+		//this.updateForwardConflicts(c);
 		
 		if (p2cs.get(c.getPlace())!=null)
 			p2cs.get(c.getPlace()).add(c);
@@ -623,7 +603,7 @@ public class Unfolding {
 		this.events.add(e);
 		
 		this.updateCausalityEvent(e);
-		this.updateForwardConflicts(e);
+		//this.updateForwardConflicts(e);
 		
 		if (t2es.get(e.getTransition())!=null) t2es.get(e.getTransition()).add(e);
 		else {
@@ -637,7 +617,7 @@ public class Unfolding {
 		for (Place s : this.sys.getPostset(e.getTransition())) {	// iterate over places in the postset
 			Condition c = new Condition(s,e);	 					// construct new condition
 			postConds.add(c);
-			this.addConditionSafe(c);									// add condition to unfolding
+			this.addConditionSafe(c);								// add condition to unfolding
 		}
 		e.setPostConditions(postConds);								// set post conditions of event
 		
@@ -645,7 +625,7 @@ public class Unfolding {
 		return true;
 	}
 	
-	private void updateForwardConflicts(Event e) {
+	/*private void updateForwardConflicts(Event e) {
 		if (this.forwardConflicts.get(e)==null)
 			this.forwardConflicts.put(e,new HashSet<Condition>());
 		
@@ -667,16 +647,16 @@ public class Unfolding {
 				}
 			}
 		}
-	}
+	}*/
 	
-	private void updateForwardConflicts(Condition c) {
+	/*private void updateForwardConflicts(Condition c) {
 		if (this.forwardConflicts.get(c)==null)
 			this.forwardConflicts.put(c,new HashSet<Condition>());
 		
 		if (c.getPreEvent()==null) return;
 		
 		this.forwardConflicts.get(c).addAll(this.forwardConflicts.get(c.getPreEvent()));
-	}
+	}*/
 
 	/**
 	 * Add cutoff event
@@ -693,7 +673,7 @@ public class Unfolding {
 	 * @return true is cut was added successfully; otherwise false;
 	 */
 	protected boolean addCut(Cut cut) {
-		this.updateConcurrency(cut);
+		//this.updateConcurrency(cut);
 		
 		Map<Place,Integer> p2i = new HashMap<Place,Integer>();
 		
@@ -770,82 +750,104 @@ public class Unfolding {
 	
 	/**
 	 * Get originative Petri net
-	 * @return originative Petrin net
+	 * @return originative Petri net
 	 */
 	public PetriNet getPetriNet() {
 		return this.sys;
 	}
 	
 	/**
-	 * Check if two nodes are in causal relation
-	 * @param n1 node
-	 * @param n2 node
-	 * @return true if n1 and n2 are in causal relation; otherwise false
+	 * Check if two nodes of this unfolding are in the causal relation.
+	 * 
+	 * @param n1 Node of this unfolding.
+	 * @param n2 Node of this unfolding.
+	 * @return <tt>true</tt> if 'n1' and 'n2' are in the causal relation; otherwise <tt>false</tt>.
 	 */
 	public boolean areCausal(BPNode n1, BPNode n2) {
-		if (n1==null || n2==null) return false;
-		if (this.ca.get(n1)==null) return false; 
-		return this.ca.get(n1).contains(n2);
+		if (this.ca.get(n2)==null) {
+			if (n2 instanceof Event) {
+				Event e = (Event) n2;
+				if (e.getPreConditions().contains(n1)) return true;
+				for (Condition c : e.getPreConditions())
+					if (this.ca.get(c).contains(n1))
+						return true;
+				
+				return false;
+			}
+			else {
+				Condition c = (Condition) n2;
+				if (c.getPreEvent().equals(n1)) return true;
+				if (this.ca.get(c.getPreEvent()).contains(n1)) return true;
+				
+				return false;
+			}
+		}
+		
+		return this.ca.get(n2).contains(n1);
 	}
 	
 	/**
-	 * Check if two nodes are in inverse causal relation
-	 * @param n1 node
-	 * @param n2 node
-	 * @return true if n1 and n2 are in inverse causal relation; otherwise false
+	 * Check if two nodes of this unfolding are in the inverse causal relation.
+	 * 
+	 * @param n1 Node of this unfolding.
+	 * @param n2 Node of this unfolding.
+	 * @return <tt>true</tt> if 'n1' and 'n2' are in the inverse causal relation; otherwise <tt>false</tt>.
 	 */
 	public boolean areInverseCausal(BPNode n1, BPNode n2) {
-		if (n1==null || n2==null) return false;
-		if (this.ica.get(n1)==null) return false; 
-		return this.ica.get(n1).contains(n2);
+		return this.areCausal(n2,n1);
 	}
 	
 	/**
-	 * Check if two nodes are concurrent
-	 * @param n1 node
-	 * @param n2 node
-	 * @return true if n1 and n2 are concurrent; otherwise false
+	 * Check if two nodes of this unfolding are concurrent.
+	 * 
+	 * @param n1 Node of this unfolding.
+	 * @param n2 Node of this unfolding.
+	 * @return <tt>true</tt> if 'n1' and 'n2' are concurrent; otherwise <tt>false</tt>.
 	 */
 	public boolean areConcurrent(BPNode n1, BPNode n2) {
-		if (n1==null || n2==null) return false;
-		if (this.co.get(n1)==null) return false;
-		return this.co.get(n1).contains(n2);
+		return !this.areCausal(n1,n2) && !this.areInverseCausal(n1,n2) && !this.areInConflict(n1,n2);
 	}
 	
 	/**
-	 * Check if two nodes are in conflict
-	 * @param n1 node
-	 * @param n2 node
-	 * @return true if n1 and n2 are in conflict; otherwise false
+	 * Check if two nodes of this unfolding are concurrent.
+	 * TODO Index conflict relation!!!
+	 * 
+	 * @param n1 Node of this unfolding.
+	 * @param n2 Node of this unfolding.
+	 * @return <tt>true</tt> if 'n1' and 'n2' are in conflict; otherwise <tt>false</tt>.
 	 */
 	public boolean areInConflict(BPNode n1, BPNode n2) {
-		return !this.areCausal(n1,n2) && !this.areInverseCausal(n1,n2) && !this.areConcurrent(n1,n2);
-	}
-	
-	public boolean areInConflictSafe(BPNode n1, BPNode n2) {
 		if (n1.equals(n2)) return false;
-		if (this.areCausal(n1,n2)) return false;
-		if (this.areCausal(n2,n1)) return false;
 		
-		for (Condition c : this.forwardConflicts.get(n1)) {
-			if (this.forwardConflicts.get(n2).contains(c)) {
-				for (BPNode n : this.ica.get(n1)) {
-					if (n instanceof Event) {
-						Event e = (Event) n;
-						if (e.getPreConditions().contains(c) && this.ica.get(n2).contains(e))
-							return true;
-					}
-				}
+		Set<BPNode> ca1 = new HashSet<BPNode>(this.ca.get(n1));
+		ca1.add(n1);
+		Set<BPNode> ca2 = new HashSet<BPNode>(this.ca.get(n2));
+		ca2.add(n2);
+		
+		for (BPNode nn1 : ca1) {
+			if (!(nn1 instanceof Event)) continue;
+			Event e1 = (Event) nn1;
+			for (BPNode nn2 : ca2) {
+				if (!(nn2 instanceof Event)) continue;
+				Event e2 = (Event) nn2;
+				if (e1.equals(e2)) continue;				
+				if (!this.overlap(e1.getPreConditions(),e2.getPreConditions())) continue;
+				
+				return true;
 			}
 		}
 		
 		return false;
 	}
 	
-	public boolean areConcurrentSafe(BPNode n1, BPNode n2) {
-		return !this.areCausal(n1,n2) && !this.areInverseCausal(n1,n2) && !this.areInConflictSafe(n1,n2);
+	private boolean overlap(Coset set1, Coset set2) {
+		for (Condition c1 : set1)
+			if (set2.contains(c1))
+				return true;
+		
+		return false;
 	}
-	
+
 	/**
 	 * Get ordering relation between two nodes
 	 * @param n1 node
@@ -888,29 +890,6 @@ public class Unfolding {
 				if (this.areInverseCausal(n1,n2)) rel = "<";
 				if (this.areConcurrent(n1,n2)) rel = "@";
 				if (this.areInConflict(n1,n2)) rel = "#";
-				System.out.print(rel + "\t");
-			}
-			System.out.println();
-		}
-	}
-	
-	public void printOrderingRelationsSafe() {
-		List<BPNode> ns = new ArrayList<BPNode>();
-		ns.addAll(this.getConditions());
-		ns.addAll(this.getEvents());
-		
-		System.out.println(" \t");
-		for (BPNode n : ns) System.out.print("\t"+n.getName());
-		System.out.println();
-		
-		for (BPNode n1 : ns) {
-			System.out.print(n1.getName()+"\t");
-			for (BPNode n2 : ns) {
-				String rel = "";
-				if (this.areCausal(n1,n2)) rel = ">";
-				if (this.areInverseCausal(n1,n2)) rel = "<";
-				if (this.areConcurrentSafe(n1,n2)) rel = "@";
-				if (this.areInConflictSafe(n1,n2)) rel = "#";
 				System.out.print(rel + "\t");
 			}
 			System.out.println();
