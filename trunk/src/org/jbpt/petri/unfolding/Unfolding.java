@@ -44,6 +44,7 @@ public class Unfolding {
 	protected Map<BPNode,Set<BPNode>> co	= new HashMap<BPNode,Set<BPNode>>(); // concurrent
 	protected Map<BPNode,Set<BPNode>> ca	= new HashMap<BPNode,Set<BPNode>>(); // causal
 	protected Map<BPNode,Set<BPNode>> ica	= new HashMap<BPNode,Set<BPNode>>(); // inverse causal
+	public Map<BPNode,Set<Condition>> forwardConflicts	= new HashMap<BPNode,Set<Condition>>(); // inverse causal
 	
 	// event counter
 	protected int countEvents = 0;
@@ -147,40 +148,27 @@ public class Unfolding {
 
 		// CONSTRUCT INITIAL BRANCHING PROCESS
 		Marking M0 = this.sys.getMarking();
-		for (Place p : this.sys.getPlaces()) {
-			Integer n = M0.get(p);
-			for (int i = 0; i<n; i++) {
-				Condition c = new Condition(p,null);
-				this.addCondition(c);
-				this.initialBP.add(c);
-			}
+		for (Place p : M0.toMultiSet()) {
+			Condition c = new Condition(p,null);
+			this.addConditionSafe(c);
+			this.initialBP.add(c);
 		}
 		if (!this.addCut(initialBP)) return;
 		
-		//  Event cutoffIni = null; Event corrIni = null;				// for special handling of events that induce initial markings
-		
 		// CONSTRUCT UNFOLDING
-		Map<Event,Event> cutoffs = new HashMap<Event,Event>(); 
 		Set<Event> pe = getPossibleExtensionsA();						// get possible extensions of initial branching process
 		while (!pe.isEmpty()) { 										// while extensions exist
 			if (this.countEvents >= this.setup.MAX_EVENTS) return;		// track number of events in unfolding
 			Event e = this.setup.ADEQUATE_ORDER.getMinimal(pe);			// event to use for extending unfolding
-			pe.remove(e);
 			
+			pe.remove(e);
+				
+			if (!this.addEventSafe(e)) return;							// add event to unfolding
 			Event corr = this.checkCutoffA(e);							// check for cutoff event
-			if (corr!=null) {											// e is cutoff event
-				cutoffs.put(e,corr);
-			}
-			else {
-				if (!this.addEvent(e)) return;							// add event to unfolding
+			if (corr!=null) 											// e is cutoff event
+				this.addCutoff(e,corr);									
+			else
 				pe.addAll(this.updatePossibleExtensions(e));
-			}
-		}
-		
-		// add cutoffs computed earlier
-		for (Map.Entry<Event,Event> entry : cutoffs.entrySet()) {
-			if (!this.addEvent(entry.getKey())) return;
-			this.addCutoff(entry.getKey(),entry.getValue());
 		}
 	}
 	
@@ -196,24 +184,83 @@ public class Unfolding {
 		upp.removeAll(this.sys.getPostsetTransitions(pu));
 		
 		for (Transition t : upp) {
-			Collection<Condition> preset = new ArrayList<Condition>();
+			Coset preset = new Coset(this.sys);
 			for (Condition b : e.getPostConditions()) {
 				if (this.sys.getPreset(t).contains(b.getPlace()))
 				preset.add(b);
-			}
-			
-			Collection<Condition> C = this.getConcurrentConditions(e);
-			// TODO
-			/*this.cover(C,t,preset);*/
+			}			
+			Set<Condition> C = this.getConcurrentConditions(e);
+			this.cover(C,t,preset);
 		}
 		
 		return this.UPE;
 	}
 
-	private Collection<Condition> getConcurrentConditions(Event e) {
-		// TODO Auto-generated method stub
-		return null;
+	private void cover(Set<Condition> C, Transition t, Coset preset) {
+		if (this.sys.getPreset(t).size()==preset.size())
+			this.UPE.add(new Event(this,t,preset));
+		else {
+			Set<Place> pre = new HashSet<Place>(this.sys.getPreset(t));
+			pre.removeAll(this.getPlaces(preset));
+			Place p = pre.iterator().next();
+			
+			for (Condition d : C) {
+				if (d.getPlace().equals(p)) {
+					Set<Condition> C2 = new HashSet<Condition>();
+					for (Condition dd : C)
+						if (!this.ca.get(dd).contains(d) && !this.ca.get(d).contains(dd))
+							C2.add(dd);
+					Coset preset2 = new Coset(this.sys);
+					preset2.addAll(preset);
+					preset2.add(d);
+					this.cover(C2, t, preset2);
+				}
+			}
+		}
 	}
+
+	private Set<Place> getPlaces(Coset coset) {
+		Set<Place> result = new HashSet<Place>();
+		
+		for (Condition c : coset)
+			result.add(c.getPlace());
+		
+		return result;
+	}
+
+	private Set<Condition> getConcurrentConditions(Event e) {
+		Set<Condition> result = new HashSet<Condition>();
+
+		for (Condition c : this.getConditions()) {
+			if (this.areConcurrentSafe(e,c))
+				result.add(c);
+		}
+		
+		return result;
+	}
+	
+	/*private Set<Condition> getConcurrentConditionsBasedOnCuts(Event e) {
+		Set<Condition> result = new HashSet<Condition>();
+
+		for (Condition c : this.getConditions()) {
+			if (e.getPreConditions().contains(c) ||
+					e.getPostConditions().contains(c)) continue;
+			
+			boolean isConcurrent = true;
+			for (Condition cc : e.getPreConditions()) {
+				if (!this.co.get(c).contains(cc)) {
+					isConcurrent = false;
+					break;
+				}
+					
+			}
+			
+			if (isConcurrent)
+				result.add(c);
+		}
+		
+		return result;
+	}*/
 
 	/**
 	 * Get possible extensions of the unfolding (an extensive way).
@@ -513,6 +560,22 @@ public class Unfolding {
 		}
 	}
 	
+	protected void addConditionSafe(Condition c) {
+		this.conds.add(c);
+		
+		this.updateCausalityCondition(c);
+		
+		this.updateForwardConflicts(c);
+		
+		if (p2cs.get(c.getPlace())!=null)
+			p2cs.get(c.getPlace()).add(c);
+		else {
+			Set<Condition> cs = new HashSet<Condition>();
+			cs.add(c);
+			p2cs.put(c.getPlace(), cs);
+		}
+	}
+	
 	/**
 	 * Add event to all housekeeping data structures 
 	 * @param e event
@@ -530,7 +593,7 @@ public class Unfolding {
 		}
 		
 		// add conditions that correspond to post-places of transition that corresponds to new event
-		Coset postConds = new Coset(this.sys);								// collection of new post conditions
+		Coset postConds = new Coset(this.sys);						// collection of new post conditions
 		for (Place s : this.sys.getPostset(e.getTransition())) {	// iterate over places in the postset
 			Condition c = new Condition(s,e);	 					// construct new condition
 			postConds.add(c);
@@ -539,19 +602,82 @@ public class Unfolding {
 		e.setPostConditions(postConds);								// set post conditions of event
 		
 		// compute new cuts of unfolding
-		for (Cut cut : c2cut.get(e.getPreConditions().iterator().next())) {
-			if (contains(cut,e.getPreConditions())) {
-				Cut newCut = new Cut(this.sys,cut);
-				newCut.removeAll(e.getPreConditions());
-				newCut.addAll(postConds);
-				if (!this.addCut(newCut)) return false;
+		//if (this.setup.SAFE_OPTIMIZATION==false) {
+			//System.out.println(e.getPreConditions().iterator().next());
+			//System.out.println(c2cut.get(e.getPreConditions().iterator().next()));
+			for (Cut cut : c2cut.get(e.getPreConditions().iterator().next())) {
+				if (contains(cut,e.getPreConditions())) {
+					Cut newCut = new Cut(this.sys,cut);
+					newCut.removeAll(e.getPreConditions());
+					newCut.addAll(postConds);
+					if (!this.addCut(newCut)) return false;
+				}
 			}
-		}
+		//}
 		
 		this.countEvents++;
 		return true;
 	}
 	
+	protected boolean addEventSafe(Event e) {
+		this.events.add(e);
+		
+		this.updateCausalityEvent(e);
+		this.updateForwardConflicts(e);
+		
+		if (t2es.get(e.getTransition())!=null) t2es.get(e.getTransition()).add(e);
+		else {
+			Set<Event> es = new HashSet<Event>();
+			es.add(e);
+			t2es.put(e.getTransition(), es);
+		}
+		
+		// add conditions that correspond to post-places of transition that corresponds to new event
+		Coset postConds = new Coset(this.sys);						// collection of new post conditions
+		for (Place s : this.sys.getPostset(e.getTransition())) {	// iterate over places in the postset
+			Condition c = new Condition(s,e);	 					// construct new condition
+			postConds.add(c);
+			this.addConditionSafe(c);									// add condition to unfolding
+		}
+		e.setPostConditions(postConds);								// set post conditions of event
+		
+		this.countEvents++;
+		return true;
+	}
+	
+	private void updateForwardConflicts(Event e) {
+		if (this.forwardConflicts.get(e)==null)
+			this.forwardConflicts.put(e,new HashSet<Condition>());
+		
+		for (Condition c : e.getPreConditions()) {
+			this.forwardConflicts.get(e).addAll(this.forwardConflicts.get(c));
+			
+			for (Event ee : this.getEvents()) {
+				if (ee.equals(e)) continue;
+				
+				if (ee.getPreConditions().contains(c)) {
+					this.forwardConflicts.get(e).add(c);
+					
+					// TODO
+					for (BPNode n : this.ca.get(c)) {
+						if (n.equals(c)) continue;
+						
+						this.forwardConflicts.get(n).add(c);
+					}
+				}
+			}
+		}
+	}
+	
+	private void updateForwardConflicts(Condition c) {
+		if (this.forwardConflicts.get(c)==null)
+			this.forwardConflicts.put(c,new HashSet<Condition>());
+		
+		if (c.getPreEvent()==null) return;
+		
+		this.forwardConflicts.get(c).addAll(this.forwardConflicts.get(c.getPreEvent()));
+	}
+
 	/**
 	 * Add cutoff event
 	 * @param e cutoff event
@@ -696,6 +822,30 @@ public class Unfolding {
 		return !this.areCausal(n1,n2) && !this.areInverseCausal(n1,n2) && !this.areConcurrent(n1,n2);
 	}
 	
+	public boolean areInConflictSafe(BPNode n1, BPNode n2) {
+		if (n1.equals(n2)) return false;
+		if (this.areCausal(n1,n2)) return false;
+		if (this.areCausal(n2,n1)) return false;
+		
+		for (Condition c : this.forwardConflicts.get(n1)) {
+			if (this.forwardConflicts.get(n2).contains(c)) {
+				for (BPNode n : this.ica.get(n1)) {
+					if (n instanceof Event) {
+						Event e = (Event) n;
+						if (e.getPreConditions().contains(c) && this.ica.get(n2).contains(e))
+							return true;
+					}
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	public boolean areConcurrentSafe(BPNode n1, BPNode n2) {
+		return !this.areCausal(n1,n2) && !this.areInverseCausal(n1,n2) && !this.areInConflictSafe(n1,n2);
+	}
+	
 	/**
 	 * Get ordering relation between two nodes
 	 * @param n1 node
@@ -738,6 +888,29 @@ public class Unfolding {
 				if (this.areInverseCausal(n1,n2)) rel = "<";
 				if (this.areConcurrent(n1,n2)) rel = "@";
 				if (this.areInConflict(n1,n2)) rel = "#";
+				System.out.print(rel + "\t");
+			}
+			System.out.println();
+		}
+	}
+	
+	public void printOrderingRelationsSafe() {
+		List<BPNode> ns = new ArrayList<BPNode>();
+		ns.addAll(this.getConditions());
+		ns.addAll(this.getEvents());
+		
+		System.out.println(" \t");
+		for (BPNode n : ns) System.out.print("\t"+n.getName());
+		System.out.println();
+		
+		for (BPNode n1 : ns) {
+			System.out.print(n1.getName()+"\t");
+			for (BPNode n2 : ns) {
+				String rel = "";
+				if (this.areCausal(n1,n2)) rel = ">";
+				if (this.areInverseCausal(n1,n2)) rel = "<";
+				if (this.areConcurrentSafe(n1,n2)) rel = "@";
+				if (this.areInConflictSafe(n1,n2)) rel = "#";
 				System.out.print(rel + "\t");
 			}
 			System.out.println();
