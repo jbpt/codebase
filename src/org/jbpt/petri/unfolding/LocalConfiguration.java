@@ -40,7 +40,7 @@ public class LocalConfiguration extends HashSet<Event> {
 		this.add(this.e);
 		
 		for (Condition c : this.e.getPreConditions()) {
-			for (BPNode n : this.unf.ica.get(c)) {
+			for (BPNode n : this.unf.ca.get(c)) {
 				if (n instanceof Event)
 					this.add((Event) n);
 			}
