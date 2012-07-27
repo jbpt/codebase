@@ -4,15 +4,34 @@ import org.jbpt.petri.unfolding.order.AdequateOrder;
 import org.jbpt.petri.unfolding.order.EsparzaAdequateTotalOrderForSafeSystems;
 
 /**
- * Unfolding setup
+ * (Prefix) unfolding setup. 
  * 
- * Uses McMillan adequate order by default
+ * This class should be used to parameterize the unfolding algorithm, see {@link Unfolding}.
  * 
  * @author Artem Polyvyanyy
  */
 public class UnfoldingSetup {
-	public int MAX_BOUND = 1;											// stop unfolding when identified co-set which contains MAX_BOUND conditions that correspond to the same place
-	public int MAX_EVENTS = Integer.MAX_VALUE;							// do not append more than MAX_EVENTS events
-	public AdequateOrder ADEQUATE_ORDER = new EsparzaAdequateTotalOrderForSafeSystems();	// use this adequate order	
-	public boolean SAFE_OPTIMIZATION = true; 							// !!! will be changed to true !!!
+	
+	/**
+	 * Do not append more than MAX_EVENTS events to the unfolding.
+	 */
+	public int MAX_EVENTS = Integer.MAX_VALUE;
+	
+	/**
+	 * Stop unfolding when identified a co-set which contains MAX_BOUND conditions that correspond to the same place.   
+	 * Only works if SAFE_OPTIMIZATION is set to <tt>false</tt>.
+	 */
+	public int MAX_BOUND = 1;
+	
+	/**
+	 * Use this adequate order when constructing the unfolding.	
+	 */
+	public AdequateOrder ADEQUATE_ORDER = new EsparzaAdequateTotalOrderForSafeSystems();
+	
+	/**
+	 * Use techniques to optimize unfodling construction.
+	 * 
+	 * @assumption The originative system is safe.
+	 */
+	public boolean SAFE_OPTIMIZATION = true;
 }

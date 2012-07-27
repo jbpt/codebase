@@ -16,22 +16,29 @@ import org.jbpt.petri.Transition;
 
 
 /**
- * Unfolding (complete prefix unfolding) of a net system
- * Note that unfolding of a live system is infinite!
- * 
- * Javier Esparza, Stefan Roemer, Walter Vogler: An Improvement of McMillan's Unfolding Algorithm. Formal Methods in System Design (FMSD) 20(3):285-310 (2002)
+ * (Complete prefix) unfolding of a net system.<br/><br/>
+ *
+ * This class implements techniques described in:
+ * - Javier Esparza, Stefan Roemer, Walter Vogler: An Improvement of McMillan's Unfolding Algorithm. Formal Methods in System Design (FMSD) 20(3):285-310 (2002).
+ * - Victor Khomenko: Model Checking Based on Prefixes of Petri Net Unfoldings. PhD Thesis. February (2003).
  * 
  * @author Artem Polyvyanyy
  */
 public class Unfolding {
 	// originative net system
 	protected NetSystem sys = null;
-	protected List<Transition> totalOrderTs = null;
+	// unfolding setup
 	protected UnfoldingSetup setup = null;
 
-	// unfolding
+	// events and conditions of unfolding
 	protected Set<Event> events		= new HashSet<Event>();			// events of the unfolding
 	protected Set<Condition> conds	= new HashSet<Condition>();		// conditions of the unfolding
+	
+	// indexes for conflict and concurrency relations 
+	private Map<BPNode,Set<BPNode>> EX = new HashMap<BPNode,Set<BPNode>>();
+	private Map<BPNode,Set<BPNode>> notEX = new HashMap<BPNode,Set<BPNode>>();
+	private Map<BPNode,Set<BPNode>> CO = new HashMap<BPNode,Set<BPNode>>();
+	private Map<BPNode,Set<BPNode>> notCO = new HashMap<BPNode,Set<BPNode>>();
 	
 	// map a condition to a set of cuts that contain the condition
 	protected Map<Condition,Collection<Cut>> c2cut = new HashMap<Condition,Collection<Cut>>();
@@ -41,7 +48,9 @@ public class Unfolding {
 	protected Map<Place,Set<Condition>> p2cs	= new HashMap<Place,Set<Condition>>();
 	
 	// causality: maps node of unfolding to a set of preceding nodes
-	protected Map<BPNode,Set<BPNode>> ca	= new HashMap<BPNode,Set<BPNode>>(); // causal
+	protected Map<BPNode,Set<BPNode>> ca = new HashMap<BPNode,Set<BPNode>>();
+	// concurrency: maps node of unfolding to a set of concurrent nodes
+	protected Map<BPNode,Set<BPNode>> co = new HashMap<BPNode,Set<BPNode>>();
 	
 	// event counter
 	protected int countEvents = 0;
@@ -54,6 +63,14 @@ public class Unfolding {
 	
 	private OccurrenceNet occNet = null;
 	
+	// set of possible extensions updates
+	private Set<Event> UPE = null; 
+	
+	protected List<Transition> totalOrderTs = null;
+	
+	/**
+	 * Protected constructor for technical purposes.
+	 */
 	protected Unfolding(){}
 	
 	/**
@@ -69,7 +86,7 @@ public class Unfolding {
 	 * Constructor.
 	 * 
 	 * @param sys A net system to unfold.
-	 * @param setup Unfolding setup.
+	 * @param setup An unfolding setup.
 	 */
 	public Unfolding(NetSystem sys, UnfoldingSetup setup) {
 		this.sys = sys;
@@ -85,7 +102,10 @@ public class Unfolding {
 	}
 
 	/**
-	 * Construct unfolding ... 
+	 * Construct unfolding.
+	 * 
+	 * This method closely follows the algorithm described in:
+	 * Javier Esparza, Stefan Roemer, Walter Vogler: An Improvement of McMillan's Unfolding Algorithm. Formal Methods in System Design (FMSD) 20(3):285-310 (2002).
 	 */
 	protected void construct() {
 		if (this.sys==null) return;
@@ -131,13 +151,17 @@ public class Unfolding {
 				pe = getPossibleExtensionsA();							// get possible extensions of branching process
 			}
 			else {
-				pe.remove(e);
-//				if (pe.isEmpty() && changes!=0) pe = this.getPossibleExtensionsB(pe);
-//				changes = 0;	
+				pe.remove(e);	
 			}
 		}
 	}
 	
+	/**
+	 * Construct unfolding with optimization for safe systems.
+	 * 
+	 * This method closely follows the algorithm described in:
+	 * Victor Khomenko: Model Checking Based on Prefixes of Petri Net Unfoldings. PhD Thesis. February (2003). 
+	 */
 	protected void constructSafe() {
 		if (this.sys==null) return;
 
@@ -154,20 +178,17 @@ public class Unfolding {
 		Set<Event> pe = getPossibleExtensionsA();						// get possible extensions of initial branching process
 		while (!pe.isEmpty()) { 										// while extensions exist
 			if (this.countEvents >= this.setup.MAX_EVENTS) return;		// track number of events in unfolding
-			Event e = this.setup.ADEQUATE_ORDER.getMinimal(pe);			// event to use for extending unfolding
+			Event e = this.setup.ADEQUATE_ORDER.getMinimal(pe);			// event to use for extending unfolding			
+			pe.remove(e);												// remove 'e' from the set of possible extensions
 			
-			pe.remove(e);
-				
-			if (!this.addEventSafe(e)) return;							// add event to unfolding
-			Event corr = this.checkCutoffA(e);							// check for cutoff event
-			if (corr!=null) 											// e is cutoff event
-				this.addCutoff(e,corr);									
+			if (!this.addEventSafe(e)) return;							// add event 'e' to unfolding
+			Event corr = this.checkCutoffA(e);							// check if 'e' is a cutoff event
+			if (corr!=null) 											
+				this.addCutoff(e,corr);									// record cutoff
 			else
-				pe.addAll(this.updatePossibleExtensions(e));
+				pe.addAll(this.updatePossibleExtensions(e));			// update the set of possible extensions
 		}
 	}
-	
-	private Set<Event> UPE = null; 
 
 	private Set<Event> updatePossibleExtensions(Event e) {
 		this.UPE = new HashSet<Event>();
@@ -233,29 +254,6 @@ public class Unfolding {
 		
 		return result;
 	}
-	
-	/*private Set<Condition> getConcurrentConditionsBasedOnCuts(Event e) {
-		Set<Condition> result = new HashSet<Condition>();
-
-		for (Condition c : this.getConditions()) {
-			if (e.getPreConditions().contains(c) ||
-					e.getPostConditions().contains(c)) continue;
-			
-			boolean isConcurrent = true;
-			for (Condition cc : e.getPreConditions()) {
-				if (!this.co.get(c).contains(cc)) {
-					isConcurrent = false;
-					break;
-				}
-					
-			}
-			
-			if (isConcurrent)
-				result.add(c);
-		}
-		
-		return result;
-	}*/
 
 	/**
 	 * Get possible extensions of the unfolding (an extensive way).
@@ -314,24 +312,24 @@ public class Unfolding {
 	/**
 	 * Check whether a given event is a cutoff event.
 	 * 
-	 * @param e Event
-	 * @return Corresponding event; <tt>null</tt> if event is not cutoff.
+	 * @param cutoff Event of this unfolding.
+	 * @return Corresponding event; <tt>null</tt> if event 'cutoff' is not a cutoff event.
 	 */
-	protected Event checkCutoffA(Event e) {
-		LocalConfiguration lce = e.getLocalConfiguration();
+	protected Event checkCutoffA(Event cutoff) {
+		LocalConfiguration lce = cutoff.getLocalConfiguration();
 		
 		for (Event f : this.getEvents()) {
-			if (f.equals(e)) continue;
+			if (f.equals(cutoff)) continue;
 			LocalConfiguration lcf = f.getLocalConfiguration();	
 			if (lce.getMarking().equals(lcf.getMarking()) && this.setup.ADEQUATE_ORDER.isSmaller(lcf, lce))
-				return this.checkCutoffB(e,f); // check cutoff extended conditions
+				return this.checkCutoffB(cutoff,f); // check cutoff extended conditions
 		}
 		
 		return null;
 	}
 	
 	/**
-	 * Perform additional checks for event being cutoff (an extension point).
+	 * Perform additional checks for event being a cutoff (an extension point).
 	 * 
 	 * @param cutoff Cutoff event.
 	 * @param corr Corresponding event.
@@ -346,10 +344,11 @@ public class Unfolding {
 	 **************************************************************************/
 	
 	/**
-	 * Update concurrency relation based on a cut
-	 * @param cut cut
+	 * Update concurrency relation based on a given cut.
+	 * 
+	 * @param cut A cut of this unfolding.
 	 */
-	/*private void updateConcurrency(Cut cut) {
+	private void updateConcurrency(Cut cut) {
 		for (Condition c1 : cut) {
 			if (this.co.get(c1)==null) this.co.put(c1, new HashSet<BPNode>());
 			Event e1 = c1.getPreEvent();
@@ -366,7 +365,7 @@ public class Unfolding {
 				}
 			}
 		}
-	}*/
+	}
 	
 	private void updateCausalityCondition(Condition c) {
 		if (this.ca.get(c)==null)
@@ -410,59 +409,11 @@ public class Unfolding {
 		
 		return result;
 	}
-	
-	/**
-	 * Get cosets
-	 * @param ps collection of places
-	 * @return set of all cosets which refer to places in ps
-	 */
-	protected Set<Coset> getCosets(Collection<Place> ps) {
-		Set<Coset> result = new HashSet<Coset>();
-		Collection<Condition> cs = p2cs.get(ps.iterator().next());
-		if (cs==null) return result;
-		for (Condition c : cs) {
-			Collection<Cut> cuts = c2cut.get(c);
-			if (cuts==null) continue;
-			for (Cut cut : cuts) {
-				if (!cut.getPlaces().containsAll(ps)) continue;
-				
-				Coset coset = new Coset(this.sys);
-				for (Place p : ps) {
-					coset.add(cut.getConditions(p).iterator().next());
-				}
-				result.add(coset);
-			}
-		}
-		
-		return result;
-	}
-
-	/**
-	 * Check if two sets of conditions are equal
-	 * @param cs1
-	 * @param cs2
-	 * @return true if sets are equal; otherwise false
-	 */
-	protected boolean areEqual(Set<Condition> cs1, Set<Condition> cs2) {
-		if (cs1 == null || cs2 == null) return false;
-		if (cs1.size()!= cs2.size()) return false;
-		
-		for (Condition c1 : cs1) {
-			boolean flag = false;
-			for (Condition c2 : cs2) {
-				if (c1.equals(c2)) {
-					flag = true;
-					break;
-				}
-			}
-			if (!flag) return false;
-		}
-		
-		return true;
-	}
 
 	/**
 	 * Check if cut contains conditions that correspond to places in a collection
+	 * TODO remove this method.
+	 * 
 	 * @param cut cut
 	 * @param ps collection of places
 	 * @return co-set of conditions that correspond to places in the collection; null if not every place has a corresponding condition 
@@ -487,6 +438,8 @@ public class Unfolding {
 	
 	/**
 	 * Check if one collection of conditions contains another one
+	 * TODO remove this method.
+	 * 
 	 * @param cs1 conditions
 	 * @param cs2 conditions
 	 * @return true if cs1 contains cs2; otherwise false
@@ -504,23 +457,6 @@ public class Unfolding {
 		}
 		
 		return true;
-	}
-	
-	/**
-	 * Check if two sets of events overlap.
-	 * 
-	 * @param es1 Set of events.
-	 * @param es2 Set of events.
-	 * @return <tt>true</tt> if sets overlap; otherwise <tt>false</tt>.
-	 */
-	protected boolean overlap(Set<Event> es1, Set<Event> es2) {
-		if (es1 == null || es2 == null) return false;
-		
-		for (Event e1 : es1)
-			if (es2.contains(e1))
-				return true;
-		
-		return false;
 	}
 	
 	/**
@@ -542,10 +478,7 @@ public class Unfolding {
 	
 	protected void addConditionSafe(Condition c) {
 		this.conds.add(c);
-		
 		this.updateCausalityCondition(c);
-		
-		//this.updateForwardConflicts(c);
 		
 		if (p2cs.get(c.getPlace())!=null)
 			p2cs.get(c.getPlace()).add(c);
@@ -582,18 +515,14 @@ public class Unfolding {
 		e.setPostConditions(postConds);								// set post conditions of event
 		
 		// compute new cuts of unfolding
-		//if (this.setup.SAFE_OPTIMIZATION==false) {
-			//System.out.println(e.getPreConditions().iterator().next());
-			//System.out.println(c2cut.get(e.getPreConditions().iterator().next()));
-			for (Cut cut : c2cut.get(e.getPreConditions().iterator().next())) {
-				if (contains(cut,e.getPreConditions())) {
-					Cut newCut = new Cut(this.sys,cut);
-					newCut.removeAll(e.getPreConditions());
-					newCut.addAll(postConds);
-					if (!this.addCut(newCut)) return false;
-				}
+		for (Cut cut : c2cut.get(e.getPreConditions().iterator().next())) {
+			if (contains(cut,e.getPreConditions())) {
+				Cut newCut = new Cut(this.sys,cut);
+				newCut.removeAll(e.getPreConditions());
+				newCut.addAll(postConds);
+				if (!this.addCut(newCut)) return false;
 			}
-		//}
+		}
 		
 		this.countEvents++;
 		return true;
@@ -624,39 +553,6 @@ public class Unfolding {
 		this.countEvents++;
 		return true;
 	}
-	
-	/*private void updateForwardConflicts(Event e) {
-		if (this.forwardConflicts.get(e)==null)
-			this.forwardConflicts.put(e,new HashSet<Condition>());
-		
-		for (Condition c : e.getPreConditions()) {
-			this.forwardConflicts.get(e).addAll(this.forwardConflicts.get(c));
-			
-			for (Event ee : this.getEvents()) {
-				if (ee.equals(e)) continue;
-				
-				if (ee.getPreConditions().contains(c)) {
-					this.forwardConflicts.get(e).add(c);
-					
-					// TODO
-					for (BPNode n : this.ca.get(c)) {
-						if (n.equals(c)) continue;
-						
-						this.forwardConflicts.get(n).add(c);
-					}
-				}
-			}
-		}
-	}*/
-	
-	/*private void updateForwardConflicts(Condition c) {
-		if (this.forwardConflicts.get(c)==null)
-			this.forwardConflicts.put(c,new HashSet<Condition>());
-		
-		if (c.getPreEvent()==null) return;
-		
-		this.forwardConflicts.get(c).addAll(this.forwardConflicts.get(c.getPreEvent()));
-	}*/
 
 	/**
 	 * Add cutoff event
@@ -673,7 +569,7 @@ public class Unfolding {
 	 * @return true is cut was added successfully; otherwise false;
 	 */
 	protected boolean addCut(Cut cut) {
-		//this.updateConcurrency(cut);
+		this.updateConcurrency(cut);
 		
 		Map<Place,Integer> p2i = new HashMap<Place,Integer>();
 		
@@ -702,7 +598,7 @@ public class Unfolding {
 	 **************************************************************************/
 	
 	/**
-	 * Get configuration of this unfolding
+	 * Get setup of this unfolding.
 	 */
 	public UnfoldingSetup getSetup() {
 		return this.setup;
@@ -749,10 +645,11 @@ public class Unfolding {
 	}
 	
 	/**
-	 * Get originative Petri net
-	 * @return originative Petri net
+	 * Get the originative net system of this unfolding.
+	 * 
+	 * @return The originative net system.
 	 */
-	public PetriNet getPetriNet() {
+	public PetriNet getOriginativeNetSystem() {
 		return this.sys;
 	}
 	
@@ -805,19 +702,44 @@ public class Unfolding {
 	 * @return <tt>true</tt> if 'n1' and 'n2' are concurrent; otherwise <tt>false</tt>.
 	 */
 	public boolean areConcurrent(BPNode n1, BPNode n2) {
-		return !this.areCausal(n1,n2) && !this.areInverseCausal(n1,n2) && !this.areInConflict(n1,n2);
-	}
+		Set<BPNode> co = this.CO.get(n1);
+		if (co!=null)
+			if (co.contains(n2)) return true;
+		
+		Set<BPNode> notCo = this.notCO.get(n1);
+		if (notCo!=null)
+			if (notCo.contains(n2)) return false;
+		
+		boolean result = !this.areCausal(n1,n2) && !this.areInverseCausal(n1,n2) && !this.areInConflict(n1,n2);
+		
+		if (result)
+			this.index(this.CO,n1,n2);
+		else
+			this.index(this.notCO,n1,n2);
+		
+		return result;
+	}	
 	
 	/**
 	 * Check if two nodes of this unfolding are concurrent.
-	 * TODO Index conflict relation!!!
 	 * 
 	 * @param n1 Node of this unfolding.
 	 * @param n2 Node of this unfolding.
 	 * @return <tt>true</tt> if 'n1' and 'n2' are in conflict; otherwise <tt>false</tt>.
 	 */
 	public boolean areInConflict(BPNode n1, BPNode n2) {
-		if (n1.equals(n2)) return false;
+		Set<BPNode> ex = this.EX.get(n1);
+		if (ex!=null)
+			if (ex.contains(n2)) return true;
+		
+		Set<BPNode> notEx = this.notEX.get(n1);
+		if (notEx!=null)
+			if (notEx.contains(n2)) return false;
+		
+		if (n1.equals(n2)) {
+			this.index(this.notEX,n1,n2);
+			return false;
+		}
 		
 		Set<BPNode> ca1 = new HashSet<BPNode>(this.ca.get(n1));
 		ca1.add(n1);
@@ -833,16 +755,45 @@ public class Unfolding {
 				if (e1.equals(e2)) continue;				
 				if (!this.overlap(e1.getPreConditions(),e2.getPreConditions())) continue;
 				
+				this.index(this.EX,n1,n2);
 				return true;
 			}
 		}
 		
+		this.index(this.notEX,n1,n2);
 		return false;
 	}
 	
-	private boolean overlap(Coset set1, Coset set2) {
-		for (Condition c1 : set1)
-			if (set2.contains(c1))
+	private void index(Map<BPNode,Set<BPNode>> map, BPNode n1, BPNode n2) {
+		Set<BPNode> s1 = map.get(n1);
+		if (s1==null) {
+			Set<BPNode> ss1 = new HashSet<BPNode>();
+			ss1.add(n2);
+			map.put(n1,ss1);
+		}
+		else
+			s1.add(n2);
+		
+		Set<BPNode> s2 = map.get(n2);
+		if (s2==null) {
+			Set<BPNode> ss2 = new HashSet<BPNode>();
+			ss2.add(n1);
+			map.put(n2,ss2);
+		}
+		else
+			s2.add(n1);
+	}
+
+	/**
+	 * Check if two sets of BPNodes overlap.
+	 * 
+	 * @param s1 Set of nodes.
+	 * @param s2 Set of nodes.
+	 * @return <tt>true</tt> if sets overlap; otherwise <tt>false</tt>.
+	 */
+	private boolean overlap(Set<? extends BPNode> s1, Set<? extends BPNode> s2) {
+		for (BPNode n : s1)
+			if (s2.contains(n))
 				return true;
 		
 		return false;
@@ -857,8 +808,8 @@ public class Unfolding {
 	public OrderingRelation getOrderingRelation(BPNode n1, BPNode n2) {
 		if (this.areCausal(n1,n2)) return OrderingRelation.CAUSAL;
 		if (this.areInverseCausal(n1,n2)) return OrderingRelation.INVERSE_CAUSAL;
-		if (this.areConcurrent(n1,n2)) return OrderingRelation.CONCURRENT;
-		return OrderingRelation.CONFLICT;
+		if (this.areInConflict(n1,n2)) return OrderingRelation.CONFLICT;
+		return OrderingRelation.CONCURRENT;
 	}
 	
 	/**
@@ -905,9 +856,10 @@ public class Unfolding {
 	}
 	
 	/**
-	 * Check if event is cutoff event
-	 * @param e event
-	 * @return true if e is cutoff event; otherwise false
+	 * Check if event is a cutoff event.
+	 * 
+	 * @param e An event.
+	 * @return <tt>true</tt> if 'e' is a cutoff event; otherwise <tt>false</tt>.
 	 */
 	public boolean isCutoffEvent(Event e) {
 		return this.cutoff2corr.containsKey(e);
