@@ -68,7 +68,7 @@ public class LocalConfiguration extends HashSet<Event> {
 	 */
 	public Marking getMarking() {
 		if (this.M == null) {
-			this.M = new Marking(this.unf.getPetriNet());
+			this.M = new Marking(this.unf.getOriginativeNetSystem());
 
 			for (Condition c : this.getCut()) {
 				if (c.getPlace() == null) this.M.put(c.getPlace(), 1);
