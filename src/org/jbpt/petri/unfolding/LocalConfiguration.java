@@ -13,7 +13,7 @@ import org.jbpt.petri.Transition;
 
 
 /**
- * Local configuration of unfolding event - causality closed set of events  
+ * Local configuration of an event - the causality closed set of events. 
  * 
  * @author Artem Polyvyanyy
  */
@@ -28,10 +28,10 @@ public class LocalConfiguration extends HashSet<Event> {
 	private List<Set<Event>> foata = null;	// Foata normal form
 	
 	/**
-	 * Constructor
+	 * Constructor.
 	 * 
-	 * @param unf reference to unfolding
-	 * @param e event
+	 * @param unf Reference to unfolding.
+	 * @param e An event.
 	 */
 	public LocalConfiguration(Unfolding unf, Event e) {
 		this.unf = unf;
@@ -48,8 +48,9 @@ public class LocalConfiguration extends HashSet<Event> {
 	}
 	
 	/**
-	 * Get cut
-	 * @return cut
+	 * Get cut.
+	 * 
+	 * @return Cut.
 	 */
 	public Cut getCut() {
 		if (this.C == null) {
@@ -63,8 +64,9 @@ public class LocalConfiguration extends HashSet<Event> {
 	}
 	
 	/**
-	 * Get marking
-	 * @return marking
+	 * Get marking.
+	 * 
+	 * @return Marking.
 	 */
 	public Marking getMarking() {
 		if (this.M == null) {

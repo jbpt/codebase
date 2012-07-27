@@ -4,13 +4,12 @@ import org.jbpt.petri.Node;
 import org.jbpt.petri.Place;
 
 /**
- * Unfolding condition
+ * Unfolding condition.
  * 
  * @author Artem Polyvyanyy
  */
 public class Condition extends BPNode {
-	
-	static private int count = 0; 	
+	private static int count = 0; 	
 	
 	Place s = null;
 	Event e = null;
@@ -18,8 +17,8 @@ public class Condition extends BPNode {
 	/**
 	 * Constructor.
 	 * 
-	 * @param place corresponding place in the originative net
-	 * @param event the only event in the preset of the condition
+	 * @param place A corresponding place in the originative net.
+	 * @param event The only event in the preset of the condition.
 	 */
 	public Condition(Place place, Event event) {
 		this.ID = ++Condition.count;
@@ -28,15 +27,25 @@ public class Condition extends BPNode {
 		this.e = event;
 	}
 	
+	/**
+	 * Get the place in the originative net system which this condition represents.
+	 * 
+	 * @return Corresponding place in the originative net system.
+	 */
 	public Place getPlace() {
 		return this.s;
 	}
 	
+	/**
+	 * Get the event in the preset of this condition.
+	 * 
+	 * @return Event in the preset of this condition.
+	 */
 	public Event getPreEvent() {
 		return this.e;
 	}
 	
-	public void setPlace(Place place) {
+	protected void setPlace(Place place) {
 		this.s = place;
 	}
 	

@@ -3,7 +3,7 @@ package org.jbpt.petri.unfolding.order;
 import org.jbpt.petri.unfolding.LocalConfiguration;
 
 /**
- * McMillan adequate order
+ * McMillan's adequate order.
  * 
  * @author Artem Polyvyanyy
  */

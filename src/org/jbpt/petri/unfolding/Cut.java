@@ -6,7 +6,7 @@ import org.jbpt.petri.PetriNet;
 
 
 /**
- * Cut - maximal set of mutually concurrent conditions
+ * Cut - a maximal set of mutually concurrent conditions.
  * 
  * @author Artem Polyvyanyy
  */
