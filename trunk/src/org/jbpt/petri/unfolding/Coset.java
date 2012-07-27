@@ -14,7 +14,7 @@ import org.jbpt.petri.Place;
 
 
 /**
- * Coset - set of mutually concurrent conditions
+ * Coset - a set of mutually concurrent conditions.
  * 
  * @author Artem Polyvyanyy
  */

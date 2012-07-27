@@ -7,9 +7,10 @@ import org.jbpt.petri.unfolding.LocalConfiguration;
 
 
 /**
- * Esparza adequate order for arbitrary systems
+ * Esparza adequate order for arbitrary systems.<br/><br/>
  * 
- * Javier Esparza, Stefan Roemer, Walter Vogler: An Improvement of McMillan's Unfolding Algorithm. Formal Methods in System Design (FMSD) 20(3):285-310 (2002)
+ * This adequate order is described in:<br/>
+ * Javier Esparza, Stefan Roemer, Walter Vogler: An Improvement of McMillan's Unfolding Algorithm. Formal Methods in System Design (FMSD) 20(3):285-310 (2002).
  * 
  * @author Artem Polyvyanyy
  */

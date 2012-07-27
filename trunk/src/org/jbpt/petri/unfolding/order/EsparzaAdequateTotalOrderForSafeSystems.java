@@ -9,7 +9,7 @@ import org.jbpt.petri.unfolding.LocalConfiguration;
 
 
 /**
- * Esparza adequate order for 1-safe systems (total order)
+ * Esparza adequate order for 1-safe systems (a total order).
  * 
  * Javier Esparza, Stefan Roemer, Walter Vogler: An Improvement of McMillan's Unfolding Algorithm. Formal Methods in System Design (FMSD) 20(3):285-310 (2002)
  * 
@@ -60,11 +60,12 @@ public class EsparzaAdequateTotalOrderForSafeSystems extends AdequateOrder {
 
 	
 	/**
-	 * Lexicographically compare two quasi Parikh vectors 
-	 * @param lc local configuration (to keep a link to the total order of transitions)
-	 * @param pvec1 vector
-	 * @param pvec2 vector
-	 * @return -1,0,1 if pvec1 is smaller, equal, or larger than pvec2, respectively
+	 * Lexicographically compare two quasi Parikh vectors.
+	 * 
+	 * @param lc A local configuration (gives a link to the total order of transitions).
+	 * @param pvec1 A list of transitions.
+	 * @param pvec2 A list of transitions.
+	 * @return -1,0,1 if 'pvec1' is smaller, equal, or larger than 'pvec2', respectively.
 	 */
 	private int compareQuasiParikhVectors(LocalConfiguration lc, List<Transition> pvec1, List<Transition> pvec2) {
 		int n = pvec1.size();
@@ -82,11 +83,12 @@ public class EsparzaAdequateTotalOrderForSafeSystems extends AdequateOrder {
 	}
 
 	/**
-	 * Lexicographically compare two quasi Parikh vectors 
-	 * @param lc local configuration (to keep a link to the total order of transitions)
-	 * @param pvec1 vector
-	 * @param pvec2 vector
-	 * @return -1,0,1 if pvec1 is smaller, equal, or larger than pvec2, respectively
+	 * Lexicographically compare two quasi Parikh vectors.
+	 * 
+	 * @param lc A local configuration (gives a link to the total order of transitions).
+	 * @param pvec1 A list of transitions.
+	 * @param pvec2 A list of transitions.
+	 * @return -1,0,1 if 'pvec1' is smaller, equal, or larger than 'pvec2', respectively.
 	 */
 	private int compareQuasiParikhVectors(LocalConfiguration lc1, LocalConfiguration lc2) {
 		List<Transition> pvec1 = lc1.getQuasiParikhVector();

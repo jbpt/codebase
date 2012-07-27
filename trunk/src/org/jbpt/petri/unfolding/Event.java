@@ -4,12 +4,11 @@ import org.jbpt.petri.Node;
 import org.jbpt.petri.Transition;
 
 /**
- * Unfolding event
+ * Unfolding event.
  * 
  * @author Artem Polyvyanyy
  */
 public class Event extends BPNode {
-	
 	static private int count = 0; 
 
 	// required to capture unfolding
@@ -22,11 +21,11 @@ public class Event extends BPNode {
 	private LocalConfiguration localConf = null;	// local configuration - [e]
 	
 	/**
-	 * Constructor - expects required fields only
+	 * Constructor.
 	 * 
-	 * @param unf reference to unfolding
-	 * @param t transition which occurrence is represented by this event 
-	 * @param pre preset of conditions which caused event to occur
+	 * @param unf Reference to the unfolding.
+	 * @param t Transition whose occurrence is represented by this event.
+	 * @param pre Preset of conditions which caused this event to occur.
 	 */
 	public Event(Unfolding unf, Transition t, Coset pre) {
 		this.ID = ++Event.count;
@@ -37,9 +36,9 @@ public class Event extends BPNode {
 	}
 	
 	/**
-	 * Get local configuration
+	 * Get the local configuration of this event.
 	 * 
-	 * @return local configuration
+	 * @return The local configuration of this event.
 	 */
 	public LocalConfiguration getLocalConfiguration() {
 		if (this.localConf == null) 
@@ -49,32 +48,36 @@ public class Event extends BPNode {
 	}
 	
 	/**
-	 * Set post conditions of event
-	 * @param post post conditions
+	 * Set post conditions of this event.
+	 * 
+	 * @param post Post conditions.
 	 */
-	public void setPostConditions(Coset post) {
+	protected void setPostConditions(Coset post) {
 		this.post = post;
 	}
 	
 	/**
-	 * Get post conditions of event
-	 * @return post conditions
+	 * Get post conditions of this event.
+	 * 
+	 * @return Post conditions.
 	 */
 	public Coset getPostConditions() {
 		return this.post;
 	}
 	
 	/**
-	 * Get transition that corresponds to event
-	 * @return corresponding transition
+	 * Get the transition that corresponds to this event.
+	 * 
+	 * @return Corresponding transition.
 	 */
 	public Transition getTransition() {
 		return this.t;
 	}
 	
 	/**
-	 * Get pre conditions of event
-	 * @return pre conditions
+	 * Get pre conditions of this event.
+	 * 
+	 * @return Pre conditions.
 	 */
 	public Coset getPreConditions() {
 		return this.pre;
@@ -88,7 +91,6 @@ public class Event extends BPNode {
 	@Override
 	public String getName() {
 		return this.t.getName();
-		//return this.t.getName()+"-"+this.ID;
 	}
 	
 	@Override

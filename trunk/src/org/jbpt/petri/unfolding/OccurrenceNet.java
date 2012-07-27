@@ -15,7 +15,7 @@ import org.jbpt.petri.Transition;
 
 
 /**
- * Occurrence net
+ * Occurrence net.
  * 
  * @author Artem Polyvyanyy
  */
