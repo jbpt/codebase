@@ -10,7 +10,7 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.Vector;
 
-import org.jbpt.algo.tree.rpst.RPSTNode;
+import org.jbpt.algo.tree.rpst.IRPSTNode;
 import org.jbpt.algo.tree.tctree.TCType;
 import org.jbpt.bp.BehaviouralProfile;
 import org.jbpt.bp.CausalBehaviouralProfile;
@@ -30,12 +30,12 @@ public class WFTreeHandler {
 
 	private WFTree<Flow,Node,Place,Transition> wfTree = null;
 
-	private Map<Node, RPSTNode<Flow, Node>> node2wfTreeNode = new HashMap<>();
+	private Map<Node, IRPSTNode<Flow, Node>> node2wfTreeNode = new HashMap<>();
 	
-	private Map<RPSTNode<Flow, Node>,BehaviouralProfile<NetSystem, Node>> node2bp = new HashMap<>();
-	private Map<RPSTNode<Flow, Node>,CausalBehaviouralProfile<NetSystem, Node>> node2cbp = new HashMap<>();
+	private Map<IRPSTNode<Flow, Node>,BehaviouralProfile<NetSystem, Node>> node2bp = new HashMap<>();
+	private Map<IRPSTNode<Flow, Node>,CausalBehaviouralProfile<NetSystem, Node>> node2cbp = new HashMap<>();
 	private Map<BehaviouralProfile<NetSystem, Node>,Map<Node,Node>> bp2nodemapping = new HashMap<>();	
-	private Map<RPSTNode<Flow, Node>,Vector<RPSTNode<Flow, Node>>> orderedPNodes = new HashMap<>();
+	private Map<IRPSTNode<Flow, Node>,Vector<IRPSTNode<Flow, Node>>> orderedPNodes = new HashMap<>();
 	
 	public WFTreeHandler(PetriNet net) {
 		
@@ -58,7 +58,7 @@ public class WFTreeHandler {
 		/*
 		 * track transitions in the tree
 		 */
-		for (RPSTNode<Flow, Node> node: this.wfTree.getRPSTNodes())
+		for (IRPSTNode<Flow, Node> node: this.wfTree.getRPSTNodes())
 			if (node.getEntry() instanceof Transition)
 				node2wfTreeNode.put((Transition) node.getEntry(), node);
 
@@ -70,22 +70,22 @@ public class WFTreeHandler {
 	 * @param node a node to get position for 
 	 * @return position of a node in a parent sequence (S) node starting from 0, or -1 if order is not defined for this node 
 	 */
-	public int getOrder(RPSTNode<Flow, Node> node) {
+	public int getOrder(IRPSTNode<Flow, Node> node) {
 		if (this.wfTree.getParent(node)==null || this.wfTree.getParent(node).getType()!=TCType.POLYGON || !orderedPNodes.containsKey(this.wfTree.getParent(node)))
 			return -1;
 		
 		return orderedPNodes.get(this.wfTree.getParent(node)).lastIndexOf(node);
 	}
 	
-	private boolean areInSeries(RPSTNode<Flow, Node> lca, RPSTNode<Flow, Node> a, RPSTNode<Flow, Node> b) {
+	private boolean areInSeries(IRPSTNode<Flow, Node> lca, IRPSTNode<Flow, Node> a, IRPSTNode<Flow, Node> b) {
 		if (lca.getType()!=TCType.POLYGON) return false;
 		
-		List<RPSTNode<Flow, Node>> pathA = this.wfTree.getDownwardPath(lca, a);
-		List<RPSTNode<Flow, Node>> pathB = this.wfTree.getDownwardPath(lca, b);
+		List<IRPSTNode<Flow, Node>> pathA = this.wfTree.getDownwardPath(lca, a);
+		List<IRPSTNode<Flow, Node>> pathB = this.wfTree.getDownwardPath(lca, b);
 		
 		if (pathA.size()<2 || pathB.size()<2) return false;
 		
-		List<RPSTNode<Flow,Node>> children = this.wfTree.getPolygonChildren(lca);
+		List<IRPSTNode<Flow,Node>> children = this.wfTree.getPolygonChildren(lca);
 		System.out.println(children.indexOf(pathA.get(1)));
 		System.out.println(children.indexOf(pathB.get(1)));
 		
@@ -103,13 +103,13 @@ public class WFTreeHandler {
 	 * @return true if t1->t2, false otherwise
 	 */
 	public boolean areInStrictOrder(Node t1, Node t2) {
-		RPSTNode<Flow, Node> alpha = node2wfTreeNode.get(t1);
-		RPSTNode<Flow, Node> beta  = node2wfTreeNode.get(t2);
+		IRPSTNode<Flow, Node> alpha = node2wfTreeNode.get(t1);
+		IRPSTNode<Flow, Node> beta  = node2wfTreeNode.get(t2);
 		if (alpha.equals(beta)) return false; // as easy as that
-		RPSTNode<Flow, Node> gamma = this.wfTree.getLCA(alpha, beta);
+		IRPSTNode<Flow, Node> gamma = this.wfTree.getLCA(alpha, beta);
 		
 		// check path from ROOT to gamma
-		List<RPSTNode<Flow, Node>> path = this.wfTree.getDownwardPath(this.wfTree.getRoot(), gamma);
+		List<IRPSTNode<Flow, Node>> path = this.wfTree.getDownwardPath(this.wfTree.getRoot(), gamma);
 		
 		// check path from ROOT to parent of gamma
 		for (int i=0; i<path.size()-1; i++) {
@@ -142,12 +142,12 @@ public class WFTreeHandler {
 	 * @return true if t1+t2, false otherwise
 	 */
 	public boolean areExclusive(Node t1, Node t2) {
-		RPSTNode<Flow, Node> alpha = node2wfTreeNode.get(t1);
-		RPSTNode<Flow, Node> beta  = node2wfTreeNode.get(t2);
-		RPSTNode<Flow, Node> gamma = this.wfTree.getLCA(alpha, beta);
+		IRPSTNode<Flow, Node> alpha = node2wfTreeNode.get(t1);
+		IRPSTNode<Flow, Node> beta  = node2wfTreeNode.get(t2);
+		IRPSTNode<Flow, Node> gamma = this.wfTree.getLCA(alpha, beta);
 		
 		// check path from ROOT to gamma
-		List<RPSTNode<Flow, Node>> path = this.wfTree.getDownwardPath(this.wfTree.getRoot(), gamma);
+		List<IRPSTNode<Flow, Node>> path = this.wfTree.getDownwardPath(this.wfTree.getRoot(), gamma);
 		
 		// check path from ROOT to parent of gamma
 		for (int i=0; i<path.size()-1; i++) {
@@ -172,16 +172,16 @@ public class WFTreeHandler {
 	 * @return true if t1||t2, false otherwise
 	 */
 	public boolean areInterleaving(Node t1, Node t2) {
-		RPSTNode<Flow, Node> alpha = node2wfTreeNode.get(t1);
-		RPSTNode<Flow, Node> beta  = node2wfTreeNode.get(t2);
-		RPSTNode<Flow, Node> gamma = this.wfTree.getLCA(alpha, beta);
+		IRPSTNode<Flow, Node> alpha = node2wfTreeNode.get(t1);
+		IRPSTNode<Flow, Node> beta  = node2wfTreeNode.get(t2);
+		IRPSTNode<Flow, Node> gamma = this.wfTree.getLCA(alpha, beta);
 		
 		// Get path from ROOT to gamma
-		List<RPSTNode<Flow, Node>> path = this.wfTree.getDownwardPath(this.wfTree.getRoot(), gamma);
+		List<IRPSTNode<Flow, Node>> path = this.wfTree.getDownwardPath(this.wfTree.getRoot(), gamma);
 		
 		  
 		if (alpha.equals(beta)) { // x||x ?
-			for (RPSTNode<Flow, Node> node: path) {
+			for (IRPSTNode<Flow, Node> node: path) {
 				if (this.wfTree.getRefinedBondType(node)==WFTreeBondType.LOOP) return true;
 				if (node.getType()==TCType.RIGID) return false;
 			}
@@ -208,15 +208,15 @@ public class WFTreeHandler {
 	 * @return true if t1>>t2, false otherwise
 	 */
 	public boolean areCooccurring(Node t1, Node t2) {
-		RPSTNode<Flow, Node> alpha = node2wfTreeNode.get(t1);
-		RPSTNode<Flow, Node> beta  = node2wfTreeNode.get(t2);
+		IRPSTNode<Flow, Node> alpha = node2wfTreeNode.get(t1);
+		IRPSTNode<Flow, Node> beta  = node2wfTreeNode.get(t2);
 		if (alpha.equals(beta)) return true; // as easy as that
-		RPSTNode<Flow, Node> gamma = this.wfTree.getLCA(alpha, beta);
+		IRPSTNode<Flow, Node> gamma = this.wfTree.getLCA(alpha, beta);
 		
 		if (gamma.getType()==TCType.RIGID) return areCooccurringUType(t1, t2, gamma); 
 		
 		// check path from gamma to beta
-		List<RPSTNode<Flow, Node>> path = this.wfTree.getDownwardPath(gamma, beta);
+		List<IRPSTNode<Flow, Node>> path = this.wfTree.getDownwardPath(gamma, beta);
 		
 		for (int i=0; i < path.size()-1; i++) {
 			if	(!(
@@ -262,9 +262,9 @@ public class WFTreeHandler {
 	 * @param child Child of the parent tree node
 	 * @return true if child is in some loop, false otherwise
 	 */
-	private boolean isChildInLoop(RPSTNode<Flow, Node> parent, RPSTNode<Flow, Node> child) {
+	private boolean isChildInLoop(IRPSTNode<Flow, Node> parent, IRPSTNode<Flow, Node> child) {
 		Set<Node> visited = new HashSet<>();
-		Collection<RPSTNode<Flow, Node>> searchGraph = this.wfTree.getChildren(parent);
+		Collection<IRPSTNode<Flow, Node>> searchGraph = this.wfTree.getChildren(parent);
 		Queue<Node> queue = new LinkedList<>();
 		
 		Node start = child.getExit();
@@ -276,7 +276,7 @@ public class WFTreeHandler {
 		while (queue.size()>0) {
 			Node n = queue.poll();
 			
-			for (RPSTNode<Flow, Node> edge: searchGraph) {
+			for (IRPSTNode<Flow, Node> edge: searchGraph) {
 				if (edge.getEntry() == n) {
 					Node k = edge.getExit();
 					
@@ -293,7 +293,7 @@ public class WFTreeHandler {
 		return false;
 	}
 	
-	private BehaviouralProfile<NetSystem, Node> getBPForFragment(RPSTNode<Flow, Node> treeNode) {
+	private BehaviouralProfile<NetSystem, Node> getBPForFragment(IRPSTNode<Flow, Node> treeNode) {
 
 		/*
 		 * The subnet we are interested in. It represents the fragment.
@@ -380,7 +380,7 @@ public class WFTreeHandler {
 	 * @param fragment, that contains both nodes
 	 * @return true, if t1 + t2
 	 */
-	private boolean areExclusiveUType(Node t1, Node t2, RPSTNode<Flow, Node> fragment) {
+	private boolean areExclusiveUType(Node t1, Node t2, IRPSTNode<Flow, Node> fragment) {
 		if (!this.node2bp.containsKey(fragment))
 			this.node2bp.put(fragment, getBPForFragment(fragment));
 		
@@ -397,7 +397,7 @@ public class WFTreeHandler {
 	 * @param fragment, that contains both nodes
 	 * @return true, if t1 || t2
 	 */
-	private boolean areInterleavingUType(Node t1, Node t2, RPSTNode<Flow, Node> fragment) {
+	private boolean areInterleavingUType(Node t1, Node t2, IRPSTNode<Flow, Node> fragment) {
 		if (!this.node2bp.containsKey(fragment))
 			this.node2bp.put(fragment, getBPForFragment(fragment));
 
@@ -414,7 +414,7 @@ public class WFTreeHandler {
 	 * @param fragment, that contains both nodes
 	 * @return true, if t1 -> t2
 	 */
-	private boolean areInStrictOrderUType(Node t1, Node t2, RPSTNode<Flow, Node> fragment) {
+	private boolean areInStrictOrderUType(Node t1, Node t2, IRPSTNode<Flow, Node> fragment) {
 		if (!this.node2bp.containsKey(fragment))
 			this.node2bp.put(fragment, getBPForFragment(fragment));
 
@@ -429,7 +429,7 @@ public class WFTreeHandler {
 	 * @param treeNode representing the fragment
 	 * @return the complete behavioural profile for the fragment
 	 */
-	private CausalBehaviouralProfile<NetSystem, Node> getCBPForFragment(RPSTNode<Flow, Node> treeNode) {
+	private CausalBehaviouralProfile<NetSystem, Node> getCBPForFragment(IRPSTNode<Flow, Node> treeNode) {
 		BehaviouralProfile<NetSystem, Node> bp = this.getBPForFragment(treeNode);
 		CausalBehaviouralProfile<NetSystem, Node> cbp = CBPCreatorNet.getInstance().deriveCausalBehaviouralProfile(bp);
 		this.bp2nodemapping.put(cbp,this.bp2nodemapping.get(bp));
@@ -445,7 +445,7 @@ public class WFTreeHandler {
 	 * @param fragment, that contains both nodes
 	 * @return true, if t1 >> t2
 	 */
-	private boolean areCooccurringUType(Node t1, Node t2, RPSTNode<Flow, Node> fragment) {
+	private boolean areCooccurringUType(Node t1, Node t2, IRPSTNode<Flow, Node> fragment) {
 		if (!this.node2cbp.containsKey(fragment))
 			this.node2cbp.put(fragment, getCBPForFragment(fragment));
 		CausalBehaviouralProfile<NetSystem, Node> cbp = this.node2cbp.get(fragment);

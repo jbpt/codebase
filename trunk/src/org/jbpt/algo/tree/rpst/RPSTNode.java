@@ -21,7 +21,7 @@ import org.jbpt.hypergraph.abs.Vertex;
  * @param <E> Edge template.
  * @param <V> Vertex template.
  */
-public class RPSTNode<E extends IDirectedEdge<V>, V extends IVertex> extends Vertex {
+public class RPSTNode<E extends IDirectedEdge<V>, V extends IVertex> extends Vertex implements IRPSTNode<E,V> {
 	// fragment entry
 	protected V entry = null;
 	// fragment exit 
@@ -47,33 +47,13 @@ public class RPSTNode<E extends IDirectedEdge<V>, V extends IVertex> extends Ver
 		this.type = tcnode.getType();
 		this.setName(tcnode.getName());
 	}
-	
-	/**
-	 * Get type of the triconnected component which induces this fragment.
-	 * 
-	 * @return Type of the triconnected component which induces this fragment. 
-	 */
+
+	@Override
 	public TCType getType() {
 		return this.type;
 	}
-
-	/**
-	 * Get entry of the fragment represented by this RPST node.<br/><br/>
-	 * 
-	 * NOTE THAT ENTRY CAN BE EQUAL TO EXIT! THIS IS THE CASE WHEN THERE ARE CUTVERTICES IN THE GRAPH! 
-	 * SEE SECTION 4.1 IN: 
-	 * Artem Polyvyanyy, Jussi Vanhatalo, and Hagen Voelzer. 
- 	 * Simplified Computation and Generalization of the Refined Process Structure Tree. 
-	 * Proceedings of the 7th International Workshop on Web Services and Formal Methods (WS-FM).<br/><br/>
-	 * 
-	 * NOTE THAT ENTRY CAN BE NULL! THIS IS THE CASE WHEN MULTIPLE SOURCES OF THE GRAPH BELONG TO THE FRAGMENT!
-	 * SEE SECTION 4.2 IN: 
-	 * Artem Polyvyanyy, Jussi Vanhatalo, and Hagen Voelzer. 
- 	 * Simplified Computation and Generalization of the Refined Process Structure Tree. 
-	 * Proceedings of the 7th International Workshop on Web Services and Formal Methods (WS-FM).
-	 * 
-	 * @return Entry of the fragment.
-	 */
+	
+	@Override
 	public V getEntry() {
 		if (this.entry==null)
 			this.classifyBoundaries();
@@ -81,23 +61,7 @@ public class RPSTNode<E extends IDirectedEdge<V>, V extends IVertex> extends Ver
 		return this.entry;
 	}
 	
-	/**
-	 * Get exit of the fragment represented by this RPST node.<br/><br/>
-	 * 
-	 * NOTE THAT ENTRY CAN BE EQUAL TO EXIT! THIS IS THE CASE WHEN THERE ARE CUTVERTICES IN THE GRAPH! 
-	 * SEE SECTION 4.1 IN: 
-	 * Artem Polyvyanyy, Jussi Vanhatalo, and Hagen Voelzer. 
- 	 * Simplified Computation and Generalization of the Refined Process Structure Tree. 
-	 * Proceedings of the 7th International Workshop on Web Services and Formal Methods (WS-FM).<br/><br/>
-	 * 
-	 * NOTE THAT EXIT CAN BE NULL! THIS IS THE CASE WHEN MULTIPLE SINKS OF THE GRAPH BELONG TO THE FRAGMENT!
-	 * SEE SECTION 4.2 IN: 
-	 * Artem Polyvyanyy, Jussi Vanhatalo, and Hagen Voelzer. 
- 	 * Simplified Computation and Generalization of the Refined Process Structure Tree. 
-	 * Proceedings of the 7th International Workshop on Web Services and Formal Methods (WS-FM).
-	 * 
-	 * @return Exit of the fragment.
-	 */
+	@Override
 	public V getExit() {
 		if (this.exit==null)
 			this.classifyBoundaries();
@@ -105,11 +69,7 @@ public class RPSTNode<E extends IDirectedEdge<V>, V extends IVertex> extends Ver
 		return this.exit;
 	}
 	
-	/**
-	 * Get fragment represented by this RPST node.
-	 * 
-	 * @return Fragment.
-	 */
+	@Override
 	public Fragment<E,V> getFragment() {
 		if (this.fragment == null)
 			this.constructFragment();
@@ -163,7 +123,7 @@ public class RPSTNode<E extends IDirectedEdge<V>, V extends IVertex> extends Ver
 	private void constructFragment() {
 		this.fragment = new Fragment<E,V>(this.rpst.diGraph);
 		
-		for (RPSTNode<E,V> node : this.rpst.getChildren(this)) {
+		for (IRPSTNode<E,V> node : this.rpst.getChildren(this)) {
 			this.fragment.addAll(node.getFragment());
 		}
 		

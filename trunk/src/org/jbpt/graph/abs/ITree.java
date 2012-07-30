@@ -7,7 +7,7 @@ import org.jbpt.hypergraph.abs.IVertex;
 
 
 /**
- * Tree interface.
+ * Interface to a tree.  
  * A tree is an undirected graph in which any two vertices are connected by exactly one simple path. 
  * A simple path is a path with no repeated vertices. 
  * 
