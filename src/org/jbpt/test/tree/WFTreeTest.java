@@ -5,7 +5,7 @@ import java.util.Collection;
 
 import junit.framework.TestCase;
 
-import org.jbpt.algo.tree.rpst.RPSTNode;
+import org.jbpt.algo.tree.rpst.IRPSTNode;
 import org.jbpt.algo.tree.tctree.TCType;
 import org.jbpt.petri.Flow;
 import org.jbpt.petri.Node;
@@ -86,7 +86,7 @@ public class WFTreeTest extends TestCase {
 		
 		WFTree<Flow,Node,Place,Transition> wfTree = new WFTree<Flow,Node,Place,Transition>(net);
 		IOUtils.toFile("rpst.dot", wfTree.toDOT());
-		wfTree.debug();
+		//wfTree.debug();
 		
 		performBasicChecks(net,wfTree);
 		assertEquals(44,wfTree.getRPSTNodes().size());
@@ -103,11 +103,11 @@ public class WFTreeTest extends TestCase {
 	}
 	
 	private void performBasicChecks(PetriNet net, WFTree<Flow,Node,Place,Transition> wfTree) {
-		for (RPSTNode<Flow,Node> node : wfTree.getRPSTNodes()) {
+		for (IRPSTNode<Flow,Node> node : wfTree.getRPSTNodes()) {
 			assertTrue(net.getEdges().containsAll(node.getFragment()));
 			
 			Collection<Flow> edges = new ArrayList<Flow>();
-			for (RPSTNode<Flow,Node> child : wfTree.getChildren(node)) {
+			for (IRPSTNode<Flow,Node> child : wfTree.getChildren(node)) {
 				edges.addAll(child.getFragment());
 			}
 			

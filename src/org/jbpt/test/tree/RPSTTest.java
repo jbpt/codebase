@@ -5,8 +5,8 @@ import java.util.Collection;
 
 import junit.framework.TestCase;
 
+import org.jbpt.algo.tree.rpst.IRPSTNode;
 import org.jbpt.algo.tree.rpst.RPST;
-import org.jbpt.algo.tree.rpst.RPSTNode;
 import org.jbpt.algo.tree.tctree.TCType;
 import org.jbpt.graph.DirectedEdge;
 import org.jbpt.graph.MultiDirectedGraph;
@@ -42,9 +42,9 @@ public class RPSTTest extends TestCase {
 		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
 		IOUtils.toFile("rpst.dot", rpst.toDOT());
 		
-		for (RPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
+		for (IRPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
 			System.out.print(node.getName() + ": ");
-			for (RPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
+			for (IRPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
 				System.out.print(child.getName() + " ");	
 			}
 			System.out.println();
@@ -91,9 +91,9 @@ public class RPSTTest extends TestCase {
 		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
 		IOUtils.toFile("rpst.dot", rpst.toDOT());
 		
-		for (RPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
+		for (IRPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
 			System.out.print(node.getName() + ": ");
-			for (RPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
+			for (IRPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
 				System.out.print(child.getName() + " ");	
 			}
 			System.out.println();
@@ -111,7 +111,7 @@ public class RPSTTest extends TestCase {
 		assertEquals("t",rpst.getRPSTNodes(TCType.POLYGON).iterator().next().getExit().getName());
 		assertEquals(5,rpst.getRPSTNodes(TCType.POLYGON).iterator().next().getFragment().size());
 		
-		for (RPSTNode<DirectedEdge,Vertex> bond : rpst.getRPSTNodes(TCType.BOND)) {
+		for (IRPSTNode<DirectedEdge,Vertex> bond : rpst.getRPSTNodes(TCType.BOND)) {
 			assertEquals("y",bond.getEntry().getName());
 			assertEquals("z",bond.getExit().getName());
 		}
@@ -166,9 +166,9 @@ public class RPSTTest extends TestCase {
 		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
 		IOUtils.toFile("rpst.dot", rpst.toDOT());
 		
-		for (RPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
+		for (IRPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
 			System.out.print(node.getName() + ": ");
-			for (RPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
+			for (IRPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
 				System.out.print(child.getName() + " ");	
 			}
 			System.out.println();
@@ -219,9 +219,9 @@ public class RPSTTest extends TestCase {
 		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
 		IOUtils.toFile("rpst.dot", rpst.toDOT());
 		
-		for (RPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
+		for (IRPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
 			System.out.print(node.getName() + ": ");
-			for (RPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
+			for (IRPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
 				System.out.print(child.getName() + " ");	
 			}
 			System.out.println();
@@ -234,7 +234,7 @@ public class RPSTTest extends TestCase {
 		assertEquals(3,rpst.getRPSTNodes(TCType.POLYGON).size());
 		assertEquals(0,rpst.getRPSTNodes(TCType.RIGID).size());
 		
-		for (RPSTNode<DirectedEdge,Vertex> polygon : rpst.getRPSTNodes(TCType.POLYGON)) {
+		for (IRPSTNode<DirectedEdge,Vertex> polygon : rpst.getRPSTNodes(TCType.POLYGON)) {
 			if (rpst.isRoot(polygon)) {
 				assertEquals("s",polygon.getEntry().getName());
 				assertEquals("t",polygon.getExit().getName());
@@ -245,7 +245,7 @@ public class RPSTTest extends TestCase {
 			}
 		}
 		
-		for (RPSTNode<DirectedEdge,Vertex> bond : rpst.getRPSTNodes(TCType.BOND)) {
+		for (IRPSTNode<DirectedEdge,Vertex> bond : rpst.getRPSTNodes(TCType.BOND)) {
 			assertEquals("u",bond.getEntry().getName());
 			assertEquals("v",bond.getExit().getName());
 			assertEquals(5,bond.getFragment().size());
@@ -276,9 +276,9 @@ public class RPSTTest extends TestCase {
 		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);		
 		IOUtils.toFile("rpst.dot", rpst.toDOT());
 		
-		for (RPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
+		for (IRPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
 			System.out.print(node.getName() + ": ");
-			for (RPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
+			for (IRPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
 				System.out.print(child.getName() + " ");	
 			}
 			System.out.println();
@@ -291,7 +291,7 @@ public class RPSTTest extends TestCase {
 		assertEquals(2,rpst.getRPSTNodes(TCType.POLYGON).size());
 		assertEquals(0,rpst.getRPSTNodes(TCType.RIGID).size());
 		
-		for (RPSTNode<DirectedEdge,Vertex> polygon : rpst.getRPSTNodes(TCType.POLYGON)) {
+		for (IRPSTNode<DirectedEdge,Vertex> polygon : rpst.getRPSTNodes(TCType.POLYGON)) {
 			if (rpst.isRoot(polygon)) {
 				assertEquals("s",polygon.getEntry().getName());
 				assertEquals("t",polygon.getExit().getName());
@@ -332,9 +332,9 @@ public class RPSTTest extends TestCase {
 		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
 		IOUtils.toFile("rpst.dot", rpst.toDOT());
 		
-		for (RPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
+		for (IRPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
 			System.out.print(node.getName() + ": ");
-			for (RPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
+			for (IRPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
 				System.out.print(child.getName() + " ");	
 			}
 			System.out.println();
@@ -347,7 +347,7 @@ public class RPSTTest extends TestCase {
 		assertEquals(3,rpst.getRPSTNodes(TCType.POLYGON).size());
 		assertEquals(0,rpst.getRPSTNodes(TCType.RIGID).size());
 		
-		for (RPSTNode<DirectedEdge,Vertex> polygon : rpst.getRPSTNodes(TCType.POLYGON)) {
+		for (IRPSTNode<DirectedEdge,Vertex> polygon : rpst.getRPSTNodes(TCType.POLYGON)) {
 			if (rpst.isRoot(polygon)) {
 				assertEquals("s",polygon.getEntry().getName());
 				assertEquals("t",polygon.getExit().getName());
@@ -360,7 +360,7 @@ public class RPSTTest extends TestCase {
 			}
 		}
 		
-		for (RPSTNode<DirectedEdge,Vertex> bond : rpst.getRPSTNodes(TCType.BOND)) {
+		for (IRPSTNode<DirectedEdge,Vertex> bond : rpst.getRPSTNodes(TCType.BOND)) {
 			assertEquals(bond.getEntry().getName(),bond.getExit().getName());
 			assertEquals("u",bond.getEntry().getName());
 		}
@@ -393,9 +393,9 @@ public class RPSTTest extends TestCase {
 		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
 		IOUtils.toFile("rpst.dot", rpst.toDOT());
 		
-		for (RPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
+		for (IRPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
 			System.out.print(node.getName() + ": ");
-			for (RPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
+			for (IRPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
 				System.out.print(child.getName() + " ");	
 			}
 			System.out.println();
@@ -408,7 +408,7 @@ public class RPSTTest extends TestCase {
 		assertEquals(3,rpst.getRPSTNodes(TCType.POLYGON).size());
 		assertEquals(0,rpst.getRPSTNodes(TCType.RIGID).size());
 		
-		for (RPSTNode<DirectedEdge,Vertex> polygon : rpst.getRPSTNodes(TCType.POLYGON)) {
+		for (IRPSTNode<DirectedEdge,Vertex> polygon : rpst.getRPSTNodes(TCType.POLYGON)) {
 			if (rpst.isRoot(polygon)) {
 				assertEquals("s",polygon.getEntry().getName());
 				assertEquals("t",polygon.getExit().getName());
@@ -449,9 +449,9 @@ public class RPSTTest extends TestCase {
 		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
 		IOUtils.toFile("rpst.dot", rpst.toDOT());
 		
-		for (RPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
+		for (IRPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
 			System.out.print(node.getName() + ": ");
-			for (RPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
+			for (IRPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
 				System.out.print(child.getName() + " ");	
 			}
 			System.out.println();
@@ -464,7 +464,7 @@ public class RPSTTest extends TestCase {
 		assertEquals(2,rpst.getRPSTNodes(TCType.POLYGON).size());
 		assertEquals(0,rpst.getRPSTNodes(TCType.RIGID).size());
 		
-		for (RPSTNode<DirectedEdge,Vertex> polygon : rpst.getRPSTNodes(TCType.POLYGON)) {
+		for (IRPSTNode<DirectedEdge,Vertex> polygon : rpst.getRPSTNodes(TCType.POLYGON)) {
 			if (rpst.isRoot(polygon)) {
 				assertEquals(null,polygon.getEntry());
 				assertEquals(null,polygon.getExit());
@@ -506,9 +506,9 @@ public class RPSTTest extends TestCase {
 		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
 		IOUtils.toFile("rpst.dot", rpst.toDOT());
 		
-		for (RPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
+		for (IRPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
 			System.out.print(node.getName() + ": ");
-			for (RPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
+			for (IRPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
 				System.out.print(child.getName() + " ");	
 			}
 			System.out.println();
@@ -525,11 +525,11 @@ public class RPSTTest extends TestCase {
 	}
 	
 	private void performBasicChecks(MultiDirectedGraph g, RPST<DirectedEdge, Vertex> rpst) {
-		for (RPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
+		for (IRPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
 			assertTrue(g.getEdges().containsAll(node.getFragment()));
 			
 			Collection<DirectedEdge> edges = new ArrayList<DirectedEdge>();
-			for (RPSTNode<DirectedEdge,Vertex> child : rpst.getChildren(node)) {
+			for (IRPSTNode<DirectedEdge,Vertex> child : rpst.getChildren(node)) {
 				edges.addAll(child.getFragment());
 			}
 			
