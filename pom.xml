@@ -4,7 +4,7 @@
 
 	<groupId>org.jbpt</groupId>
 	<artifactId>jbpt</artifactId>
-	<version>0.2.197-SNAPSHOT</version>
+	<version>0.2.197</version>
 
 	<name>Business Process Technologies 4 Java</name>
 	<description>This open source project includes source code developed for research purposes in the domain of Business Process Management. </description>
@@ -13,9 +13,8 @@
 
 	<licenses>
 		<license>
-			<name>GNU General Public License v3</name>
-			<distribution>repo</distribution>
-			<url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
+			<name>GNU General Lesser Public License v3</name>			
+			<url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>
 		</license>
 	</licenses>
 
