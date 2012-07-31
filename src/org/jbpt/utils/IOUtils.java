@@ -9,6 +9,11 @@ import java.io.PrintWriter;
 import java.util.Set;
 
 public class IOUtils {
+
+	private static final String DEFAULT_GRAPHVIZ_DEFAULT_PATH = "dot";
+	private static final String DEFAULT_GRAPHVIZ_WINDOWS_PATH = "C://Program Files (x86)//Graphviz 2.28//bin//dot.exe";
+	private static final String DEFAULT_GRAPHVIZ_LINUX_PATH = "/usr/bin/dot";
+	
 	
 	public static void toFile(String fileName, String content) {
 		try {
@@ -19,6 +24,67 @@ public class IOUtils {
 		catch (IOException e) {
 			System.err.println(e.getMessage());		
 		}
+	}
+	
+	/**
+	 * Invoke DOT and saves the created PNG to fileName.
+	 * 
+	 * @param fileName
+	 *            of the resulting PNG file
+	 * @param dotSource
+	 *            graph in DOT format to save as PNG
+	 * @param extraDotParameters
+	 *            array of additional parameters to pass as arguments to DOT
+	 * @throws IOException
+	 *             in case the DOT binary is not found or the file can't be
+	 *             written
+	 */
+	public static void invokeDot(String fileName, String dotSource,
+			String... extraDotParameters) throws IOException {
+		final String[] args;
+		if (extraDotParameters != null && extraDotParameters.length > 0) {
+			args = new String[extraDotParameters.length+1];
+			// DOT binary has to be 1st parameter
+			args[0] = getDOTPath();
+			// Add extra parameters
+			for (int i = 0; i < extraDotParameters.length; i++) {
+				args[i+1] = extraDotParameters[i];
+			}
+		} else {
+			// Use default settings
+			args = new String[] { getDOTPath(), "-Eshape=normal",
+					"-Nshape=ellipse", "-Tpng"};
+		}
+		final ProcessBuilder pb = new ProcessBuilder(args);
+		pb.redirectOutput(new File(fileName));
+		pb.redirectErrorStream(true);
+		final Process dotProcess = pb.start();
+		BufferedWriter out = new BufferedWriter(new PrintWriter(
+				dotProcess.getOutputStream()));
+		out.write(dotSource);
+		out.flush();
+	}
+	
+	private static String getDOTPath() throws IOException {
+		if (DEFAULT_GRAPHVIZ_DEFAULT_PATH != null) {
+			if (new File(DEFAULT_GRAPHVIZ_DEFAULT_PATH).exists()) {
+				return DEFAULT_GRAPHVIZ_DEFAULT_PATH;
+			}
+		}
+
+		if (DEFAULT_GRAPHVIZ_LINUX_PATH != null) {
+			if (new File(DEFAULT_GRAPHVIZ_LINUX_PATH).exists()) {
+				return DEFAULT_GRAPHVIZ_LINUX_PATH;
+			}
+		}
+
+		if (DEFAULT_GRAPHVIZ_WINDOWS_PATH != null) {
+			if (new File(DEFAULT_GRAPHVIZ_WINDOWS_PATH).exists()) {
+				return DEFAULT_GRAPHVIZ_WINDOWS_PATH;
+			}
+		}
+
+		throw new IOException("Can not find Graphviz binary!");
 	}
 
 	/**
@@ -60,9 +126,7 @@ public class IOUtils {
 			
 			out.flush();
 			stream.close();
-			System.out.println("Saved results to " + fileName);
-			
-		} catch (Exception e) {
+			System.out.println("Saved results to " + fileName);} catch (Exception e) {
 			System.out.println("Failed to write the results to " + fileName);
 			e.printStackTrace();
 		}
