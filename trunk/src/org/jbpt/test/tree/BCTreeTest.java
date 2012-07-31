@@ -1,5 +1,6 @@
 package org.jbpt.test.tree;
 
+import java.io.IOException;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -110,5 +111,10 @@ public class BCTreeTest extends TestCase {
 		System.out.println("---");
 		
 		IOUtils.toFile("tree.dot", bctree.toDOT());
+		try {
+			IOUtils.invokeDot("tree.png", bctree.toDOT());
+		} catch (IOException e) {			
+			e.printStackTrace();
+		}
 	}
 }
