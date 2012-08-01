@@ -1,5 +1,5 @@
 #summary How to setup the development enviroment for jBPT project
-#labels Phase-Implementation
+#labels Phase-Implementation,Featured
 
 = jBPT Developer Guide =
 
