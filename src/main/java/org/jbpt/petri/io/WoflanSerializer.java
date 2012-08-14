@@ -49,19 +49,23 @@ public class WoflanSerializer {
 				line = line.trim();
 				if (line.startsWith("place")) { // create place
 					Place p = new Place();
+					int marking = 0;
 					String label = "";
 					if (line.contains("init")) {
 						line = line.replace("  ", " ");
 						label = line.substring(7, line.indexOf("init")-2);
 						
 						String tokens = line.substring(line.indexOf("init") + 5, line.indexOf(";"));
-						sys.getMarking().put(p, Integer.valueOf(tokens));
+						marking = Integer.valueOf(tokens);
 					}
 					else label = line.substring(7, line.length()-2);
 					
 					p.setId(getId());
 					p.setName(label);
-					sys.getPlaces().add(p);
+					sys.addPlace(p);
+					if (marking > 0) {
+						sys.getMarking().put(p,  marking);
+					}
 					s2p.put(label,p);
 				}
 				
@@ -70,7 +74,7 @@ public class WoflanSerializer {
 					String label = line.substring(7, line.length()-1);
 					t.setId(getId());
 					t.setName(label);
-					sys.getTransitions().add(t);
+					sys.addTransition(t);
 					
 					String lineIn = bufRead.readLine();
 					lineIn = lineIn.trim();
