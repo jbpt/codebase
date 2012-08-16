@@ -414,7 +414,7 @@ public class PNMLSerializer extends DefaultHandler
 	 * @param parent
 	 * @param net
 	 */
-	private static void addFinalMarkings(Document doc, Element parent, PetriNet net) {
+	private static void addFinalMarkings(Document doc, Element parent, NetSystem net) {
 		Element finalMarkings = doc.createElement("finalmarkings");
 		for (Place place:net.getSinkPlaces()) {
 			Element elem = addElementWithText(doc, finalMarkings, "place", "1");

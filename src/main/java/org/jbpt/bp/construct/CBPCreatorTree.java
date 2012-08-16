@@ -40,8 +40,8 @@ public class CBPCreatorTree extends AbstractRelSetCreator implements CBPCreator<
 		 * original net and the clone.
 		 */
 		NetSystem netClone = null;
-		Map<Node, Node> nodeMapping = new HashMap<Node, Node>();
-		netClone = pn.clone(nodeMapping);
+		Map<Node,Node> nodeMapping = new HashMap<Node, Node>();
+		netClone = (NetSystem) pn.clone(nodeMapping);
 	
 		// Fall back to original net
 		if (netClone == null) {
@@ -103,7 +103,7 @@ public class CBPCreatorTree extends AbstractRelSetCreator implements CBPCreator<
 		 */
 		NetSystem netClone = null;
 		Map<Node, Node> nodeMapping = new HashMap<Node, Node>();
-		netClone = pn.clone(nodeMapping);
+		netClone = (NetSystem) pn.clone(nodeMapping);
 
 		// Fall back to original net
 		if (netClone == null)

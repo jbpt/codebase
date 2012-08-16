@@ -323,7 +323,7 @@ public class ConcurrencyRelation {
 
 	 * @return Petri net
 	 */
-	public PetriNet getNet() {
+	public NetSystem getNet() {
 		return this.sys;
 	}
 	

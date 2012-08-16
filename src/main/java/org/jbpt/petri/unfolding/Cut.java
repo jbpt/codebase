@@ -1,24 +1,13 @@
 package org.jbpt.petri.unfolding;
 
-import java.util.Collection;
+import org.jbpt.petri.Flow;
+import org.jbpt.petri.Marking;
+import org.jbpt.petri.Node;
+import org.jbpt.petri.Place;
+import org.jbpt.petri.Transition;
 
-import org.jbpt.petri.PetriNet;
+public class Cut extends AbstractCut<BPNode,Condition,Event,Flow,Node,Place,Transition,Marking> {
 
+	private static final long serialVersionUID = -8201693541781496644L;
 
-/**
- * Cut - a maximal set of mutually concurrent conditions.
- * 
- * @author Artem Polyvyanyy
- */
-public class Cut extends Coset {
-	private static final long serialVersionUID = 1L;
-	
-	public Cut(PetriNet net) {
-		super(net);
-	}
-	
-	public Cut(PetriNet net, Collection<Condition> cut) {
-		super(net);
-		this.addAll(cut);
-	}
 }

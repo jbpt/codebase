@@ -1,4 +1,4 @@
-package org.jbpt.petri.wft;
+package org.jbpt.petri.wftree;
 
 import java.util.Set;
 

@@ -5,7 +5,6 @@ import junit.framework.TestCase;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
-import org.jbpt.petri.behavior.Completion;
 import org.jbpt.pm.Activity;
 import org.jbpt.pm.AndGateway;
 import org.jbpt.pm.Gateway;
@@ -49,10 +48,10 @@ public class CompletionTest extends TestCase {
 		for (Transition trans : sys.getTransitions()) trans.setName("t"+ct++);
 		IOUtils.toFile("net.dot", sys.toDOT());
 		
-		Completion comp = new Completion();
+		/*Completion comp = new Completion();
 		comp.completeSources(sys);
 		IOUtils.toFile("net2.dot", sys.toDOT());
 		comp.completeSinks(sys);
-		IOUtils.toFile("net3.dot", sys.toDOT());
+		IOUtils.toFile("net3.dot", sys.toDOT());*/
 	}
 }

@@ -1,33 +1,10 @@
 package org.jbpt.test.petri.unfolding;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-
 import junit.framework.TestCase;
-
-import org.jbpt.algo.graph.DirectedGraphAlgorithms;
-import org.jbpt.petri.NetSystem;
-import org.jbpt.petri.Place;
-import org.jbpt.petri.Transition;
-import org.jbpt.petri.behavior.LolaSoundnessChecker;
-import org.jbpt.petri.unfolding.OccurrenceNet;
-import org.jbpt.petri.unfolding.SoundUnfolding;
-import org.jbpt.pm.ControlFlow;
-import org.jbpt.pm.FlowNode;
-import org.jbpt.pm.ProcessModel;
-import org.jbpt.pm.io.JSON2Process;
-import org.jbpt.pm.structure.ProcessModel2NetSystem;
-import org.jbpt.throwable.SerializationException;
-import org.jbpt.throwable.TransformationException;
-import org.jbpt.utils.IOUtils;
 
 public class SoundUnfoldingExtensiveTestB extends TestCase {
 
-	protected static final String MODELS_DIR = "src/test/resources/models/process_json/allmodels";
+	/*protected static final String MODELS_DIR = "src/test/resources/models/process_json/allmodels";
 	
 	public void testComparison() throws SerializationException, IOException, TransformationException {
 		File modelsDir = new File(MODELS_DIR);
@@ -64,7 +41,7 @@ public class SoundUnfoldingExtensiveTestB extends TestCase {
 						IOUtils.toFile(fileName+".dot", net.toDOT());
 						out.write("dot -Tpng -o"+fileName+".png "+fileName+".dot\n");
 						
-						OccurrenceNet bpnet = unf.getOccurrenceNet();
+						IOccurrenceNet bpnet = unf.getOccurrenceNet();
 						
 						fileName = name+".UNF";
 						IOUtils.toFile(fileName+".dot", bpnet.toDOTcs(unf.getLocallyUnsafeConditions()));
@@ -75,7 +52,7 @@ public class SoundUnfoldingExtensiveTestB extends TestCase {
 						IOUtils.toFile(fileName+".dot", net.toDOT());
 						out.write("dot -Tpng -o"+fileName+".png "+fileName+".dot\n");
 						
-						OccurrenceNet bpnet = unf.getOccurrenceNet();
+						IOccurrenceNet bpnet = unf.getOccurrenceNet();
 						
 						fileName = name+".UNF.UNSAFE";
 						IOUtils.toFile(fileName+".dot", bpnet.toDOTcs(unf.getLocallyUnsafeConditions()));
@@ -123,6 +100,6 @@ public class SoundUnfoldingExtensiveTestB extends TestCase {
 		}
 		reader.close();
 		return JSON2Process.convert(sb.toString());
-	}
+	}*/
 		
 }

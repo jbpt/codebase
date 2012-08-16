@@ -3,9 +3,15 @@ package org.jbpt.petri.unfolding.order;
 import java.util.List;
 import java.util.Set;
 
-import org.jbpt.petri.Transition;
-import org.jbpt.petri.unfolding.Event;
-import org.jbpt.petri.unfolding.LocalConfiguration;
+import org.jbpt.petri.IFlow;
+import org.jbpt.petri.IMarking;
+import org.jbpt.petri.INode;
+import org.jbpt.petri.IPlace;
+import org.jbpt.petri.ITransition;
+import org.jbpt.petri.unfolding.IBPNode;
+import org.jbpt.petri.unfolding.ICondition;
+import org.jbpt.petri.unfolding.IEvent;
+import org.jbpt.petri.unfolding.ILocalConfiguration;
 
 
 /**
@@ -15,10 +21,11 @@ import org.jbpt.petri.unfolding.LocalConfiguration;
  * 
  * @author Artem Polyvyanyy
  */
-public class EsparzaAdequateTotalOrderForSafeSystems extends AdequateOrder {
+public class EsparzaAdequateTotalOrderForSafeSystems<BPN extends IBPNode<N>, C extends ICondition<BPN,C,E,F,N,P,T,M>, E extends IEvent<BPN,C,E,F,N,P,T,M>, F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition, M extends IMarking<F,N,P,T>>
+	extends AdequateOrder<BPN,C,E,F,N,P,T,M> {
 	
 	@Override
-	public boolean isSmaller(LocalConfiguration lc1, LocalConfiguration lc2) {
+	public boolean isSmaller(ILocalConfiguration<BPN,C,E,F,N,P,T,M> lc1, ILocalConfiguration<BPN,C,E,F,N,P,T,M> lc2) {
 		if (lc1.size() < lc2.size()) return true;
 		
 		int comp = this.compareQuasiParikhVectors(lc1, lc2);
@@ -30,15 +37,15 @@ public class EsparzaAdequateTotalOrderForSafeSystems extends AdequateOrder {
 		return false;	
 	}
 	
-	private int compareFoataNormalForms(LocalConfiguration lc1, LocalConfiguration lc2) {
-		List<Set<Event>> foata1 = lc1.getFoataNormalForm();
-		List<Set<Event>> foata2 = lc2.getFoataNormalForm();
+	private int compareFoataNormalForms(ILocalConfiguration<BPN,C,E,F,N,P,T,M> lc1, ILocalConfiguration<BPN,C,E,F,N,P,T,M> lc2) {
+		List<Set<E>> foata1 = lc1.getFoataNormalForm();
+		List<Set<E>> foata2 = lc2.getFoataNormalForm();
 		
 		for (int i=0; i<foata1.size(); i++) {
 			boolean flag = true;
 			for (int j=0; j<i; j++) {
-				List<Transition> pvec1 = lc1.getQuasiParikhVector(foata1.get(j));
-				List<Transition> pvec2 = lc2.getQuasiParikhVector(foata2.get(j));
+				List<T> pvec1 = lc1.getQuasiParikhVector(foata1.get(j));
+				List<T> pvec2 = lc2.getQuasiParikhVector(foata2.get(j));
 				
 				int comp = compareQuasiParikhVectors(lc1,pvec1,pvec2);
 				if (comp!=0) {
@@ -48,8 +55,8 @@ public class EsparzaAdequateTotalOrderForSafeSystems extends AdequateOrder {
 			}
 			
 			if (flag) {
-				List<Transition> pvec1 = lc1.getQuasiParikhVector(foata1.get(i));
-				List<Transition> pvec2 = lc2.getQuasiParikhVector(foata2.get(i));
+				List<T> pvec1 = lc1.getQuasiParikhVector(foata1.get(i));
+				List<T> pvec2 = lc2.getQuasiParikhVector(foata2.get(i));
 				int comp = compareQuasiParikhVectors(lc1,pvec1,pvec2);
 				if (comp==0) return -1;
 			}
@@ -67,7 +74,7 @@ public class EsparzaAdequateTotalOrderForSafeSystems extends AdequateOrder {
 	 * @param pvec2 A list of transitions.
 	 * @return -1,0,1 if 'pvec1' is smaller, equal, or larger than 'pvec2', respectively.
 	 */
-	private int compareQuasiParikhVectors(LocalConfiguration lc, List<Transition> pvec1, List<Transition> pvec2) {
+	private int compareQuasiParikhVectors(ILocalConfiguration<BPN,C,E,F,N,P,T,M> lc, List<T> pvec1, List<T> pvec2) {
 		int n = pvec1.size();
 		if (pvec2.size()<n) n = pvec2.size();
 		
@@ -90,9 +97,9 @@ public class EsparzaAdequateTotalOrderForSafeSystems extends AdequateOrder {
 	 * @param pvec2 A list of transitions.
 	 * @return -1,0,1 if 'pvec1' is smaller, equal, or larger than 'pvec2', respectively.
 	 */
-	private int compareQuasiParikhVectors(LocalConfiguration lc1, LocalConfiguration lc2) {
-		List<Transition> pvec1 = lc1.getQuasiParikhVector();
-		List<Transition> pvec2 = lc2.getQuasiParikhVector();
+	private int compareQuasiParikhVectors(ILocalConfiguration<BPN,C,E,F,N,P,T,M> lc1, ILocalConfiguration<BPN,C,E,F,N,P,T,M> lc2) {
+		List<T> pvec1 = lc1.getQuasiParikhVector();
+		List<T> pvec2 = lc2.getQuasiParikhVector();
 		
 		return this.compareQuasiParikhVectors(lc1, pvec1, pvec2);
 	}

@@ -1,14 +1,14 @@
 package org.jbpt.petri.unfolding;
 
 /**
- * Enumeration of ordering relation classes
+ * Enumeration of ordering relation types.
  * 
  * @author Artem Polyvyanyy
  */
-public enum OrderingRelation {
-	CONFLICT, 
+public enum OrderingRelationType {
 	CAUSAL, 
 	INVERSE_CAUSAL, 
+	CONFLICT, 
 	CONCURRENT, 
 	UNDEFINED;
 

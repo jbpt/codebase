@@ -3,13 +3,14 @@ package org.jbpt.petri;
 import org.jbpt.hypergraph.abs.IVertex;
 
 /**
- * Petri net node interface.
+ * Interface to a Petri net node.
  *
  * @author Artem Polyvyanyy
  */
 public interface INode extends IVertex {
+	
 	/**
-	 * Get a label of this node.
+	 * Get label of this node.
 	 * 
 	 * @return Label of this node.
 	 */
@@ -18,7 +19,7 @@ public interface INode extends IVertex {
 	/**
 	 * Set label of this node.
 	 * 
-	 * @param label String to use as a label of this node. 
+	 * @param label String to use as label of this node. 
 	 */
 	public void setLabel(String label);
 }

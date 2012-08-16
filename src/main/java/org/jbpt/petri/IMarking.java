@@ -1,13 +1,15 @@
 package org.jbpt.petri;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
- * Marking interface.
+ * Interface to a Petri net marking.
  *
  * @author Artem Polyvyanyy
  */
-public interface IMarking<P extends IPlace> {
+public interface IMarking<F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition>
+		extends Map<P,Integer> {
 	/**
 	 * Put specified number of tokens at a given place of the associated net.
 	 * 
@@ -17,7 +19,7 @@ public interface IMarking<P extends IPlace> {
 	 * Attempts to remove all tokens from the given place if tokens is negative, equals to <tt>0</tt>, or is set to <tt>null</tt>.   
 	 * @throws IllegalArgumentException if the given place is not part of the associated net.
 	 */
-	public Integer put(P place, Integer tokens);
+	public Integer put(P place, Integer tokens) throws IllegalArgumentException;
 	
 	/**
 	 * Check if place is marked, i.e., contains at least one token.
@@ -64,4 +66,15 @@ public interface IMarking<P extends IPlace> {
 	 * @return <tt>true</tt> if this marking does not mark any place; <tt>false</tt> otherwise.
 	 */
 	public boolean isEmpty();
+	
+	/**
+	 * Get Petri net which this marking is associated with.
+	 * 
+	 * @return Petri net which this marking is associated with.
+	 */
+	public IPetriNet<F,N,P,T> getPetriNet();
+	
+	public IMarking<F,N,P,T> createMarking(IPetriNet<F,N,P,T> net);
+	
+	public void setPetriNet(IPetriNet<F,N,P,T> net);
 }
