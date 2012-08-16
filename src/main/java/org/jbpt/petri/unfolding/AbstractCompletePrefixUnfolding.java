@@ -14,12 +14,15 @@ import org.jbpt.petri.INetSystem;
 import org.jbpt.petri.INode;
 import org.jbpt.petri.IPlace;
 import org.jbpt.petri.ITransition;
+import org.jbpt.petri.unfolding.order.EsparzaAdequateOrderForArbitrarySystems;
 import org.jbpt.petri.unfolding.order.EsparzaAdequateTotalOrderForSafeSystems;
 import org.jbpt.petri.unfolding.order.IAdequateOrder;
+import org.jbpt.petri.unfolding.order.McMillanAdequateOrder;
+import org.jbpt.petri.unfolding.order.UnfoldingAdequateOrder;
 
 
 /**
- * Class to construct a branching process of a net system.<br/><br/>
+ * (An abstract) implementation of a complete prefix unfloding of a net system.<br/><br/>
  *
  * This class implements techniques described in:
  * - Javier Esparza, Stefan Roemer, Walter Vogler: An Improvement of McMillan's Unfolding Algorithm. Formal Methods in System Design (FMSD) 20(3):285-310 (2002).
@@ -31,57 +34,66 @@ public abstract class AbstractCompletePrefixUnfolding<BPN extends IBPNode<N>, C 
 				extends AbstractBranchingProcess<BPN,C,E,F,N,P,T,M>
 				implements ICompletePrefixUnfolding<BPN,C,E,F,N,P,T,M> {
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public E createEvent(T transition, ICoSet<BPN,C,E,F,N,P,T,M> preConditions) {
-		E e = null;
-		try {
-			e = (E) Event.class.newInstance();
-			e.setTransition(transition);
-			e.setPreConditions(preConditions);
-			e.setCompletePrefixUnfolding(this);
-			return e;
-		} catch (InstantiationException | IllegalAccessException exception) {
-			exception.printStackTrace();
-			return e;
-		}
-	}
-
+	// setup to use when constructing this complete prefix unfolding
 	protected CompletePrefixUnfoldingSetup setup = null;
-
-	
-	// map a condition to a set of cuts that contain the condition
-	//protected Map<C,Collection<ICut<P,T,C,E>>> c2cut = new HashMap<C,Collection<ICut<P,T,C,E>>>();
-	
-	// maps of transitions/places to sets of events/conditions (occurrences of transitions/places)
-	//protected Map<T,Set<E>> t2es	= new HashMap<T,Set<E>>();
-	//protected Map<P,Set<C>> p2cs	= new HashMap<P,Set<C>>();
-	
 	// map of cutoff events to corresponding events
 	protected Map<E,E> cutoff2corr = new HashMap<E,E>();
-	
-	// initial branching process
-	
-	//private IOccurrenceNet<BPN,C,E,F,N,P,T,M> occNet = null;
-	
 	// set of possible extensions updates
-	private Set<E> UPE = null; 
-	
+	private Set<E> UPE = null;
+	// total order used to construct this complete prefix unfolding
 	protected List<T> totalOrderTs = null;
-	
+	// adequate order used to construct this complete prefix unfolding
+	protected IAdequateOrder<BPN,C,E,F,N,P,T,M> ADEQUATE_ORDER = null;
+
+	/**
+	 * Empty constructor.
+	 */
 	protected AbstractCompletePrefixUnfolding(){}
 	
-	protected IAdequateOrder<BPN,C,E,F,N,P,T,M> ADEQUATE_ORDER = null;
-	
+	/**
+	 * Constructor with default setup.
+	 * 
+	 * @param sys Net system to construct complete prefix unfolding for.
+	 */
 	public AbstractCompletePrefixUnfolding(INetSystem<F,N,P,T,M> sys) {
 		this(sys, new CompletePrefixUnfoldingSetup());
 	}
 	
+	/**
+	 * Constructor with specified setup.
+	 *  
+	 * @param sys Net system to construct complete prefix unfolding for.
+	 * @param setup Setup to use when constructing complete prefix unfolding.
+	 */
 	public AbstractCompletePrefixUnfolding(INetSystem<F,N,P,T,M> sys, CompletePrefixUnfoldingSetup setup) {
 		super(sys);
+		
+		// net system must be different from null
+		if (this.sys==null) return;
+		// initial branching process must not be empty
+		if (this.iniBP.isEmpty()) return;
+		
+		// initialise
 		this.totalOrderTs = new ArrayList<T>(sys.getTransitions());
-		this.setup = setup;
-		this.ADEQUATE_ORDER = new EsparzaAdequateTotalOrderForSafeSystems<>();
+		this.setup = setup;		
+		
+		switch (this.setup.ADEQUATE_ORDER) {
+			case ESPARZA_FOR_ARBITRARY_SYSTEMS:
+				this.ADEQUATE_ORDER = new EsparzaAdequateOrderForArbitrarySystems<>();
+				break;
+			case ESPARZA_FOR_SAFE_SYSTEMS:
+				this.ADEQUATE_ORDER = new EsparzaAdequateTotalOrderForSafeSystems<>();
+				break;
+			case MCMILLAN:
+				this.ADEQUATE_ORDER = new McMillanAdequateOrder<>();
+				break;
+			case UNFOLDING:
+				this.ADEQUATE_ORDER = new UnfoldingAdequateOrder<>();
+				break;
+			default:
+				this.ADEQUATE_ORDER = new EsparzaAdequateTotalOrderForSafeSystems<>();
+				break;
+		}
 		
 		// construct unfolding
 		if (this.setup.SAFE_OPTIMIZATION)
@@ -89,6 +101,28 @@ public abstract class AbstractCompletePrefixUnfolding<BPN extends IBPNode<N>, C 
 		else
 			this.constructSafe();
 	}
+	
+	protected void constructSafe() {
+		IPossibleExtensions<BPN,C,E,F,N,P,T,M> pe = getInitialPossibleExtensions();	// get possible extensions of the initial branching process
+		while (!pe.isEmpty()) { 										// while extensions exist
+			if (this.events.size() >= this.setup.MAX_EVENTS) return;	// track number of events in unfolding
+			E e = pe.getMinimal();										// event to use for extending unfolding			
+			pe.remove(e);												// remove 'e' from the set of possible extensions
+			
+			if (!this.appendEvent(e)) return;							// add event 'e' to unfolding
+			E corr = this.checkCutoffA(e);								// check if 'e' is a cutoff event
+			if (corr!=null) 											
+				this.addCutoff(e,corr);									// record cutoff
+			else
+				pe.addAll(this.updatePossibleExtensions(e));			// update the set of possible extensions
+		}
+	}
+	
+	// map a condition to a set of cuts that contain the condition
+	//protected Map<C,Collection<ICut<P,T,C,E>>> c2cut = new HashMap<C,Collection<ICut<P,T,C,E>>>();	
+	// maps of transitions/places to sets of events/conditions (occurrences of transitions/places)
+	//protected Map<T,Set<E>> t2es	= new HashMap<T,Set<E>>();
+	//protected Map<P,Set<C>> p2cs	= new HashMap<P,Set<C>>();
 
 	/**
 	 * Construct unfolding.
@@ -142,33 +176,14 @@ public abstract class AbstractCompletePrefixUnfolding<BPN extends IBPNode<N>, C 
 		}
 	}*/
 	
-	protected void constructSafe() {
-		if (this.sys==null) return;
-		
-		// CONSTRUCT UNFOLDING
-		Set<E> pe = getInitialPossibleExtensions();						// get possible extensions of initial branching process
-		while (!pe.isEmpty()) { 										// while extensions exist
-			if (this.events.size() >= this.setup.MAX_EVENTS) return;	// track number of events in unfolding
-			E e = this.ADEQUATE_ORDER.getMinimal(pe);					// event to use for extending unfolding			
-			pe.remove(e);												// remove 'e' from the set of possible extensions
-			
-			if (!this.appendEvent(e)) return;							// add event 'e' to unfolding
-			E corr = this.checkCutoffA(e);								// check if 'e' is a cutoff event
-			if (corr!=null) 											
-				this.addCutoff(e,corr);									// record cutoff
-			else
-				pe.addAll(this.updatePossibleExtensions(e));			// update the set of possible extensions
-		}
-	}
-	
-	protected Set<E> getInitialPossibleExtensions() {
-		Set<E> result = new HashSet<E>();
+	protected IPossibleExtensions<BPN,C,E,F,N,P,T,M> getInitialPossibleExtensions() {
+		IPossibleExtensions<BPN,C,E,F,N,P,T,M> result = new AbstractPossibleExtensions<BPN,C,E,F,N,P,T,M>(this.ADEQUATE_ORDER);
 		
 		for (T t : this.sys.getTransitions()) {
 			ICoSet<BPN,C,E,F,N,P,T,M> coset = this.containsPlaces(this.getInitialCut(),this.sys.getPreset(t));
 			
 			if (coset!=null) { // if there exists such a co-set 
-				result.add(this.createEvent(t, coset));
+				result.add(this.createEvent(t,coset));
 			}
 		}
 		
@@ -267,19 +282,11 @@ public abstract class AbstractCompletePrefixUnfolding<BPN extends IBPNode<N>, C 
 		for (E f : this.getEvents()) {
 			if (f.equals(cutoff)) continue;
 			ILocalConfiguration<BPN,C,E,F,N,P,T,M> lcf = f.getLocalConfiguration();
-			if (this.areSame(lce.getMarking(),lcf.getMarking()) && this.ADEQUATE_ORDER.isSmaller(lcf, lce))
+			if (lce.getMarking().equals(lcf.getMarking()) && this.ADEQUATE_ORDER.isSmaller(lcf, lce))
 				return this.checkCutoffB(cutoff,f); // check cutoff extended conditions
 		}
 		
 		return null;
-	}
-	
-	private boolean areSame(Collection<P> ps1, Collection<P> ps2) {
-		if (ps1 == null || ps2 == null) return false;
-		if (ps1.size()!=ps2.size()) return false;
-		Collection<P> ps = new ArrayList<P>(ps1);
-		for (P p: ps2) ps.remove(p);
-		return ps.isEmpty();
 	}
 
 	protected E checkCutoffB(E cutoff, E corr) {
@@ -515,4 +522,20 @@ public abstract class AbstractCompletePrefixUnfolding<BPN extends IBPNode<N>, C 
 		// TODO Auto-generated method stub
 		return null;
 	}*/
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public E createEvent(T transition, ICoSet<BPN,C,E,F,N,P,T,M> preConditions) {
+		E e = null;
+		try {
+			e = (E) Event.class.newInstance();
+			e.setTransition(transition);
+			e.setPreConditions(preConditions);
+			e.setCompletePrefixUnfolding(this);
+			return e;
+		} catch (InstantiationException | IllegalAccessException exception) {
+			exception.printStackTrace();
+			return e;
+		}
+	}
 }

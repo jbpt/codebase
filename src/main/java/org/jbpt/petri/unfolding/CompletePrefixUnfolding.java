@@ -7,14 +7,21 @@ import org.jbpt.petri.Node;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
 
+/**
+ * An implementation of a complete prefix unfloding of a net system.<br/><br/>
+ *
+ * @see {@link AbstractCompletePrefixUnfolding} for details. 
+ * 
+ * @author Artem Polyvyanyy
+ */
 public class CompletePrefixUnfolding extends
-		AbstractCompletePrefixUnfolding<BPNode, Condition, Event, Flow, Node, Place, Transition, Marking> {
+		AbstractCompletePrefixUnfolding<BPNode,Condition,Event,Flow,Node,Place,Transition,Marking> {
 
-	public CompletePrefixUnfolding(INetSystem<Flow, Node, Place, Transition, Marking> sys, CompletePrefixUnfoldingSetup setup) {
+	public CompletePrefixUnfolding(INetSystem<Flow,Node,Place,Transition,Marking> sys, CompletePrefixUnfoldingSetup setup) {
 		super(sys, setup);
 	}
 
-	public CompletePrefixUnfolding(INetSystem<Flow, Node, Place, Transition, Marking> sys) {
+	public CompletePrefixUnfolding(INetSystem<Flow,Node,Place,Transition,Marking> sys) {
 		super(sys);
 	}
 	

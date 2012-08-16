@@ -8,7 +8,6 @@ import org.jbpt.petri.INetSystem;
 import org.jbpt.petri.INode;
 import org.jbpt.petri.IPlace;
 import org.jbpt.petri.ITransition;
-import org.jbpt.petri.PetriNet;
 
 /**
  * Interface to a branching process of a net system.
@@ -123,8 +122,11 @@ public interface IBranchingProcess<BPN extends IBPNode<N>, C extends ICondition<
 	
 	public Set<BPN> getCausalPredecessors(BPN node);
 	
+	/**
+	 * Check if this branching process is conflict free. 
+	 * Note that a branching process contains no backward conflicts by definition. Hence, the absense of forward conflicts is checked.
+	 * 
+	 * @return <tt>true</tt> if this branching process is conflict free; otherwise <tt></tt>.
+	 */
 	public boolean isConflictFree();
-	
-	// TODO move to interface
-	public PetriNet getPetriNet();
 }

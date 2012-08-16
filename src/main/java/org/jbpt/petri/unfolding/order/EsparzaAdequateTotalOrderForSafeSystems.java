@@ -23,7 +23,7 @@ import org.jbpt.petri.unfolding.ILocalConfiguration;
  */
 public class EsparzaAdequateTotalOrderForSafeSystems<BPN extends IBPNode<N>, C extends ICondition<BPN,C,E,F,N,P,T,M>, E extends IEvent<BPN,C,E,F,N,P,T,M>, F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition, M extends IMarking<F,N,P,T>>
 	extends AdequateOrder<BPN,C,E,F,N,P,T,M> {
-	
+
 	@Override
 	public boolean isSmaller(ILocalConfiguration<BPN,C,E,F,N,P,T,M> lc1, ILocalConfiguration<BPN,C,E,F,N,P,T,M> lc2) {
 		if (lc1.size() < lc2.size()) return true;
@@ -64,7 +64,6 @@ public class EsparzaAdequateTotalOrderForSafeSystems<BPN extends IBPNode<N>, C e
 		
 		return 0;
 	}
-
 	
 	/**
 	 * Lexicographically compare two quasi Parikh vectors.
@@ -102,5 +101,10 @@ public class EsparzaAdequateTotalOrderForSafeSystems<BPN extends IBPNode<N>, C e
 		List<T> pvec2 = lc2.getQuasiParikhVector();
 		
 		return this.compareQuasiParikhVectors(lc1, pvec1, pvec2);
+	}
+	
+	@Override
+	public boolean isTotal() {
+		return true;
 	}
 }

@@ -9,7 +9,7 @@ package org.jbpt.petri.unfolding;
  * 
  * @author Artem Polyvyanyy
  */
-public class SoundUnfolding extends ProperUnfolding {
+public class SoundUnfolding extends AbstractProperCompletePrefixUnfolding {
 	
 	/*private Set<Condition> unsafe	= null;
 	private Set<Condition> deadlock	= null;

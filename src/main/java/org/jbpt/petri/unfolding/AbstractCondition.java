@@ -15,7 +15,7 @@ public abstract class AbstractCondition<BPN extends IBPNode<N>, C extends ICondi
 	P s = null;
 	E e = null;
 	
-	public AbstractCondition() {
+	protected AbstractCondition() {
 		this.ID = ++AbstractCondition.count;
 	}
 	

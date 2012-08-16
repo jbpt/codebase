@@ -20,9 +20,10 @@ public abstract class AbstractEvent<BPN extends IBPNode<N>, C extends ICondition
 	private ICoSet<BPN,C,E,F,N,P,T,M> post = null;						// postconditions of event - e*
 	
 	private ILocalConfiguration<BPN,C,E,F,N,P,T,M> lc = null;
+	
 	private ICompletePrefixUnfolding<BPN,C,E,F,N,P,T,M> CPU = null;
 	
-	public AbstractEvent() {
+	protected AbstractEvent() {
 		this.ID = ++AbstractEvent.count;
 	}
 	

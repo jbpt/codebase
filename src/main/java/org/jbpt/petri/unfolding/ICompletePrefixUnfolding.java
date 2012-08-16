@@ -15,8 +15,8 @@ import org.jbpt.petri.ITransition;
  * @author Artem Polyvyanyy
  */
 public interface ICompletePrefixUnfolding<BPN extends IBPNode<N>, C extends ICondition<BPN,C,E,F,N,P,T,M>, E extends IEvent<BPN,C,E,F,N,P,T,M>, F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition, M extends IMarking<F,N,P,T>>
-			extends IBranchingProcess<BPN,C,E,F,N,P,T,M> {
-	
+		extends IBranchingProcess<BPN,C,E,F,N,P,T,M>
+{	
 	/**
 	 * Get cutoff events of this complete prefix unfolding.
 	 * 
@@ -28,7 +28,7 @@ public interface ICompletePrefixUnfolding<BPN extends IBPNode<N>, C extends ICon
 	 * Check if a given event is a cutoff event in this complete prefix unfolding.
 	 * 
 	 * @param event Event of this complete prefix unfolding.
-	 * @return <tt>true</tt> if 'e' is a cutoff event; otherwise <tt>false</tt>.
+	 * @return <tt>true</tt> if 'event' is a cutoff event; otherwise <tt>false</tt>.
 	 */
 	public boolean isCutoffEvent(E event);
 
@@ -36,11 +36,21 @@ public interface ICompletePrefixUnfolding<BPN extends IBPNode<N>, C extends ICon
 	 * Get a corresponding event of a given cutoff event.
 	 *  
 	 * @param event A cutoff event of this complete prefix unfolding.
-	 * @return Corresponding event of 'e'; <tt>null</tt> if 'e' is not a cutoff event.
+	 * @return Corresponding event of 'event'; <tt>null</tt> if 'event' is not a cutoff event.
 	 */
 	public E getCorrespondingEvent(E event);
 	
+	/**
+	 * Get total order of transitions used to construct this complete prefix unfolding.
+	 * 
+	 * @return Ordered list of transitions of the originative system which was used to construct this complete prefix unfolding.
+	 */
 	public List<T> getTotalOrderOfTransitions();
 	
+	/**
+	 * Get this complete prefix unfolding as an occurrence net.
+	 * 
+	 * @return Occurrence net.
+	 */
 	public IOccurrenceNet<BPN,C,E,F,N,P,T,M> getOccurrenceNet();
 }
