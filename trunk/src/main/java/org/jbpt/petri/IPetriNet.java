@@ -6,7 +6,7 @@ import java.util.Set;
 import org.jbpt.graph.abs.IDirectedGraph;
 
 /**
- * PetriNet interface.
+ * Interface to a Petri net.
  *
  * @author Artem Polyvyanyy
  * @author Matthias Weidlich
@@ -368,9 +368,7 @@ public interface IPetriNet<F extends IFlow<N>, N extends INode, P extends IPlace
 	public P createPlace();
 	
 	/**
-	 * Factory method to provide a Petri net of the according implementation.
-	 * 
-	 * @return A fresh Petri net.
+	 * Clear this net.
 	 */
-	public IPetriNet<F,N,P,T> createPetriNet();
+	public void clear();
 }

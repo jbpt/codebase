@@ -64,7 +64,7 @@ public class PetriNetCloneTest extends TestCase {
 		assertFalse(PetriNet.STRUCTURAL_CHECKS.isTNet(net));
 		assertFalse(PetriNet.DIRECTED_GRAPH_ALGORITHMS.isCyclic(net));
 		
-		NetSystem clone = net.clone();
+		NetSystem clone = (NetSystem) net.clone();
 		
 		assertEquals(6, clone.getTransitions().size());
 		assertEquals(7, clone.getPlaces().size());

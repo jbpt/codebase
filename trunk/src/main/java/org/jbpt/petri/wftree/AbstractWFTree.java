@@ -1,4 +1,4 @@
-package org.jbpt.petri.wft;
+package org.jbpt.petri.wftree;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,7 +16,7 @@ import org.jbpt.petri.ITransition;
 
 
 /**
- * This class takes a net and computes its WF-tree.<br/><br/>
+ * This class takes a net and computes its WF-tree (abstract implementation).<br/><br/>
  *
  * WF-tree was proposed in:
  * Matthias Weidlich, Artem Polyvyanyy, Jan Mendling, and Mathias Weske.
@@ -26,13 +26,13 @@ import org.jbpt.petri.ITransition;
  * @author Artem Polyvyanyy
  * @author Matthias Weidlich
  */
-public class WFTree<F extends IFlow<N>, N extends INode,
+public abstract class AbstractWFTree<F extends IFlow<N>, N extends INode,
 					P extends IPlace, T extends ITransition> extends RPST<F,N> implements IWFTree<F,N,P,T> {
 
 	private Map<IRPSTNode<F,N>,WFTreeBondType> bond2type = null;
 	private Map<IRPSTNode<F,N>,WFTreeLoopOrientationType> loop2type = null;
 	
-	public WFTree(IPetriNet<F,N,P,T> net) {
+	public AbstractWFTree(IPetriNet<F,N,P,T> net) {
 		super(net);
 		
 		this.bond2type = new HashMap<IRPSTNode<F,N>,WFTreeBondType>();

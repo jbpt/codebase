@@ -3,7 +3,7 @@ package org.jbpt.petri;
 import org.jbpt.hypergraph.abs.Vertex;
 
 /**
- * Implementation of a Petri net abstract node. 
+ * Implementation of a Petri net node. 
  * A node of a Petri net is either a {@link Place} or {@link Transition}. 
  * 
  * @author Artem Polyvyanyy

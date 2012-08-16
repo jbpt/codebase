@@ -1,122 +1,20 @@
 package org.jbpt.petri.unfolding;
 
+import org.jbpt.petri.Flow;
+import org.jbpt.petri.Marking;
 import org.jbpt.petri.Node;
+import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
 
-/**
- * Unfolding event.
- * 
- * @author Artem Polyvyanyy
- */
-public class Event extends BPNode {
-	static private int count = 0; 
+public class Event extends AbstractEvent<BPNode,Condition,Event,Flow,Node,Place,Transition,Marking> {
 
-	// required to capture unfolding
-	private Transition t = null;	// transition that corresponds to event
-	private Coset pre = null;		// preconditions of event - *e
+	protected Event() {}
 	
-	// for convenience reasons
-	private Unfolding unf = null;					// reference to unfolding
-	private Coset post = null;						// postconditions of event - e*
-	private LocalConfiguration localConf = null;	// local configuration - [e]
-	
-	/**
-	 * Constructor.
-	 * 
-	 * @param unf Reference to the unfolding.
-	 * @param t Transition whose occurrence is represented by this event.
-	 * @param pre Preset of conditions which caused this event to occur.
-	 */
-	public Event(Unfolding unf, Transition t, Coset pre) {
-		this.ID = ++Event.count;
-		
-		this.unf = unf;
-		this.t = t;
-		this.pre = pre;
-	}
-	
-	/**
-	 * Get the local configuration of this event.
-	 * 
-	 * @return The local configuration of this event.
-	 */
-	public LocalConfiguration getLocalConfiguration() {
-		if (this.localConf == null) 
-			this.localConf = new LocalConfiguration(this.unf, this);
-		
-		return this.localConf;
-	}
-	
-	/**
-	 * Set post conditions of this event.
-	 * 
-	 * @param post Post conditions.
-	 */
-	protected void setPostConditions(Coset post) {
-		this.post = post;
-	}
-	
-	/**
-	 * Get post conditions of this event.
-	 * 
-	 * @return Post conditions.
-	 */
-	public Coset getPostConditions() {
-		return this.post;
-	}
-	
-	/**
-	 * Get the transition that corresponds to this event.
-	 * 
-	 * @return Corresponding transition.
-	 */
-	public Transition getTransition() {
-		return this.t;
-	}
-	
-	/**
-	 * Get pre conditions of this event.
-	 * 
-	 * @return Pre conditions.
-	 */
-	public Coset getPreConditions() {
-		return this.pre;
-	}
-	
-	@Override
-	public String toString() {
-		return "["+this.getTransition().getName()+","+this.getPreConditions()+"]";
-	}
-	
-	@Override
-	public String getName() {
-		return this.t.getName();
-	}
-	
-	@Override
-	public boolean equals(Object that) {
-		if (that == null || !(that instanceof Event)) return false;
-		if (this == that) return true;
-		
-		Event thatE = (Event) that;
-		if (this.getTransition().equals(thatE.getTransition())
-				&& this.getPreConditions().equals(thatE.getPreConditions()))
-			return true;
-		
-		return false;
-	}
-	
-	@Override
-	public int hashCode() {
-		int hashCode = 7 * this.getTransition().hashCode();
-		for (Condition c : this.getPreConditions())
-			hashCode += 11 * c.getPlace().hashCode();
-		
-		return hashCode;
+	public Event(
+			ICompletePrefixUnfolding<BPNode, Condition, Event, Flow, Node, Place, Transition, Marking> cpu,
+			Transition transition,
+			ICoSet<BPNode, Condition, Event, Flow, Node, Place, Transition, Marking> preset) {
+		super(cpu, transition, preset);
 	}
 
-	@Override
-	public Node getNode() {
-		return this.getTransition();
-	}
 }

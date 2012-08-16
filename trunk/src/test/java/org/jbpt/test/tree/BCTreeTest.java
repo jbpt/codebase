@@ -1,6 +1,5 @@
 package org.jbpt.test.tree;
 
-import java.io.IOException;
 import java.util.List;
 
 import junit.framework.TestCase;

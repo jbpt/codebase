@@ -45,7 +45,7 @@ public class RPSTTest extends TestCase {
 		for (IRPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
 			System.out.print(node.getName() + ": ");
 			for (IRPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
-				System.out.print(child.getName() + " ");	
+				System.out.print(child.getName() + " ");
 			}
 			System.out.println();
 		}

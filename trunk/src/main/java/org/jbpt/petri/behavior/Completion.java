@@ -1,18 +1,5 @@
 package org.jbpt.petri.behavior;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import org.jbpt.algo.graph.TransitiveClosure;
-import org.jbpt.petri.Flow;
-import org.jbpt.petri.NetSystem;
-import org.jbpt.petri.Node;
-import org.jbpt.petri.Place;
-import org.jbpt.petri.Transition;
-import org.jbpt.petri.unfolding.SoundUnfoldingMSMS;
 
 /**
  * This class implements completion methods for multi-terminal nets described in:
@@ -34,7 +21,7 @@ public class Completion {
 	 * @assumption A given net is free-choice.
 	 * @assumption A given net is acyclic.
 	 * @assumption A given net is sound.
-	 */
+	 *//*
 	public void completeSources(NetSystem sys) {
 		if (sys.getSourcePlaces().size()==1) return;
 		
@@ -44,7 +31,7 @@ public class Completion {
 		sys.loadNaturalMarking();
 	}
 	
-	/**
+	*//**
 	 * This completion method is based on the technique described in: 
 	 * Bartek Kiepuszewski, Arthur H. M. ter Hofstede, Wil M. P. van der Aalst: Fundamentals of control flow in workflows. Acta Inf. (ACTA) 39(3):143-209 (2003). 
 	 * See proof of Theorem 5.1.
@@ -56,9 +43,9 @@ public class Completion {
 	 * @assumption A given net is free-choice.
 	 * @assumption A given net is acyclic.
 	 * @assumption A given net is sound.
-	 */
+	 *//*
 	public void completeSinks(NetSystem sys) {
-		TransitiveClosure<Flow,Node> tc = new TransitiveClosure<Flow,Node>(sys);
+		TransitiveClosure<AbstractFlow,Node> tc = new TransitiveClosure<AbstractFlow,Node>(sys);
 		Map<Place,Set<Place>> p2ps = new HashMap<Place,Set<Place>>();
 		Map<Place,Set<Transition>> p2ts = new HashMap<Place,Set<Transition>>();
 		
@@ -107,5 +94,5 @@ public class Completion {
 	public void complete(NetSystem sys) {
 		this.completeSources(sys);
 		this.completeSinks(sys);
-	}
+	}*/
 }

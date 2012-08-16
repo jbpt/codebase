@@ -14,11 +14,11 @@ import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Node;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
+import org.jbpt.petri.unfolding.CompletePrefixUnfolding;
+import org.jbpt.petri.unfolding.CompletePrefixUnfoldingSetup;
 import org.jbpt.petri.unfolding.OccurrenceNet;
-import org.jbpt.petri.unfolding.OrderingRelation;
-import org.jbpt.petri.unfolding.Unfolding;
-import org.jbpt.petri.unfolding.UnfoldingSetup;
-import org.jbpt.petri.unfolding.order.EsparzaAdequateOrderForArbitrarySystems;
+import org.jbpt.petri.unfolding.OrderingRelationType;
+import org.jbpt.petri.unfolding.order.AdequateOrderType;
 
 
 public class CBPCreatorUnfolding extends AbstractRelSetCreator implements
@@ -44,7 +44,7 @@ public class CBPCreatorUnfolding extends AbstractRelSetCreator implements
 	protected Map<Transition,Set<Node>> cutOfLocalConfContainsAugmentedPlaceForTransition;
 
 	// the unfolding
-	protected Unfolding unfolding;
+	protected CompletePrefixUnfolding unfolding;
 	
 	// the unfolding as an occurrence net
 	protected OccurrenceNet occurrenceNet;
@@ -106,12 +106,12 @@ public class CBPCreatorUnfolding extends AbstractRelSetCreator implements
 		/*
 		 * Derive unfolding
 		 */
-		UnfoldingSetup setup = new UnfoldingSetup();
-		setup.ADEQUATE_ORDER = new EsparzaAdequateOrderForArbitrarySystems();
+		CompletePrefixUnfoldingSetup setup = new CompletePrefixUnfoldingSetup();
+		setup.ADEQUATE_ORDER = AdequateOrderType.ESPARZA_FOR_ARBITRARY_SYSTEMS;
 		setup.MAX_BOUND = 2;
 		
-		this.unfolding = new Unfolding(this.augmentedNet,setup);
-		this.occurrenceNet = this.unfolding.getOccurrenceNet();
+		this.unfolding = new CompletePrefixUnfolding(this.augmentedNet,setup);
+		this.occurrenceNet = (OccurrenceNet) this.unfolding.getOccurrenceNet();
 		
 		/*
 		 * Derive transitive cutoff relation
@@ -240,8 +240,8 @@ public class CBPCreatorUnfolding extends AbstractRelSetCreator implements
 
 		for (Transition e1 : this.transitionsForEventContinutationMatrix) {
 			for (Transition e2 : this.transitionsForEventContinutationMatrix) {
-				if (this.occurrenceNet.getOrderingRelation(e1,e2).equals(OrderingRelation.CAUSAL) 
-						|| (!e1.equals(e2) && this.occurrenceNet.getOrderingRelation(e1,e2).equals(OrderingRelation.CONCURRENT))) {
+				if (this.occurrenceNet.getOrderingRelation(e1,e2).equals(OrderingRelationType.CAUSAL) 
+						|| (!e1.equals(e2) && this.occurrenceNet.getOrderingRelation(e1,e2).equals(OrderingRelationType.CONCURRENT))) {
 					this.eventContinuationMatrix[this.transitionsForEventContinutationMatrix.indexOf(e1)][this.transitionsForEventContinutationMatrix.indexOf(e2)] = true;
 				}
 				else if (this.isCausalViaSequenceOfCutOffs(e1,e2)){
@@ -277,7 +277,7 @@ public class CBPCreatorUnfolding extends AbstractRelSetCreator implements
 				eCor = this.occurrenceNet.getCorrespondingEvent(eCor);
 
 			for (Transition eCut2 : this.occurrenceNet.getCutoffEvents()) {
-				if (this.occurrenceNet.getOrderingRelation(eCor,eCut2).equals(OrderingRelation.CAUSAL)) {
+				if (this.occurrenceNet.getOrderingRelation(eCor,eCut2).equals(OrderingRelationType.CAUSAL)) {
 					int source = nodesForTransitiveCausalityMatrixUnfolding.indexOf(eCor);
 					int target = nodesForTransitiveCausalityMatrixUnfolding.indexOf(eCut2);
 					transitiveCausalityMatrixUnfolding[source][target] = true;
@@ -309,10 +309,10 @@ public class CBPCreatorUnfolding extends AbstractRelSetCreator implements
 		for (Transition eCut : this.occurrenceNet.getCutoffEvents()) {
 			for (Transition eCut2 : this.occurrenceNet.getCutoffEvents()) {
 				Transition eCor = this.occurrenceNet.getCorrespondingEvent(eCut2);
-				if ((src.equals(eCut) || this.occurrenceNet.getOrderingRelation(src,eCut).equals(OrderingRelation.CAUSAL)) 
+				if ((src.equals(eCut) || this.occurrenceNet.getOrderingRelation(src,eCut).equals(OrderingRelationType.CAUSAL)) 
 						&& this.isPathInTransitiveCausalityMatrix(eCut,eCor)
-						&& (this.occurrenceNet.getOrderingRelation(eCor,tar).equals(OrderingRelation.CAUSAL) ||
-								(!eCor.equals(tar) && this.occurrenceNet.getOrderingRelation(eCor,tar).equals(OrderingRelation.CONCURRENT)))) {
+						&& (this.occurrenceNet.getOrderingRelation(eCor,tar).equals(OrderingRelationType.CAUSAL) ||
+								(!eCor.equals(tar) && this.occurrenceNet.getOrderingRelation(eCor,tar).equals(OrderingRelationType.CONCURRENT)))) {
 					return true;
 				}
 			}

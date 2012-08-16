@@ -1,25 +1,10 @@
 package org.jbpt.test.petri.unfolding;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-
 import junit.framework.TestCase;
-
-import org.jbpt.petri.NetSystem;
-import org.jbpt.petri.Place;
-import org.jbpt.petri.Transition;
-import org.jbpt.petri.unfolding.SoundUnfolding;
-import org.jbpt.pm.ProcessModel;
-import org.jbpt.pm.io.JSON2Process;
-import org.jbpt.pm.structure.ProcessModel2NetSystem;
-import org.jbpt.throwable.SerializationException;
-import org.jbpt.throwable.TransformationException;
 
 public class SoundUnfoldingExtensiveTestA extends TestCase {
 
-	protected static final String MODELS_DIR = "src/test/resources/models/process_json/acyclic/original";
+	/*protected static final String MODELS_DIR = "src/test/resources/models/process_json/acyclic/original";
 	
 	public void testComparison() throws SerializationException, IOException, TransformationException {
 		File modelsDir = new File(MODELS_DIR);
@@ -53,6 +38,6 @@ public class SoundUnfoldingExtensiveTestA extends TestCase {
 		}
 		reader.close();
 		return JSON2Process.convert(sb.toString());
-	}
+	}*/
 		
 }

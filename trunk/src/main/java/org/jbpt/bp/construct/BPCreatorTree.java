@@ -51,7 +51,7 @@ public class BPCreatorTree extends AbstractRelSetCreator implements RelSetCreato
 		 */
 		NetSystem netClone = null;
 		Map<Node, Node> nodeMapping = new HashMap<Node, Node>();
-		netClone = pn.clone(nodeMapping);
+		netClone = (NetSystem) pn.clone(nodeMapping);
 		
 		// Fall back to original net
 		if (netClone == null) {

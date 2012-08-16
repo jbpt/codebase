@@ -1,17 +1,5 @@
 package org.jbpt.petri.unfolding;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.jbpt.algo.graph.DirectedGraphAlgorithms;
-import org.jbpt.petri.Flow;
-import org.jbpt.petri.NetSystem;
-import org.jbpt.petri.Node;
-import org.jbpt.petri.PetriNet;
-import org.jbpt.petri.Place;
-import org.jbpt.petri.Transition;
-import org.jbpt.petri.unfolding.order.UnfoldingAdequateOrder;
 
 
 /**
@@ -23,7 +11,7 @@ import org.jbpt.petri.unfolding.order.UnfoldingAdequateOrder;
  */
 public class SoundUnfolding extends ProperUnfolding {
 	
-	private Set<Condition> unsafe	= null;
+	/*private Set<Condition> unsafe	= null;
 	private Set<Condition> deadlock	= null;
 	
 	protected static DirectedGraphAlgorithms<Flow,Node> dga = new DirectedGraphAlgorithms<Flow,Node>();
@@ -36,10 +24,10 @@ public class SoundUnfolding extends ProperUnfolding {
 		if (dga.isAcyclic(sys)) throw new IllegalArgumentException("Net must be acyclic!");
 		
 		this.sys = sys;
-		this.initialBP = new Cut(this.sys);
+		this.initialBranchingProcess = new Cut(this.sys);
 		this.totalOrderTs = new ArrayList<Transition>(this.sys.getTransitions());
 		
-		UnfoldingSetup setup = new UnfoldingSetup();
+		BranchingProcessSetup setup = new BranchingProcessSetup();
 		setup.ADEQUATE_ORDER = new UnfoldingAdequateOrder();
 		setup.MAX_BOUND		 = Integer.MAX_VALUE;
 		setup.MAX_EVENTS	 = Integer.MAX_VALUE;
@@ -48,10 +36,10 @@ public class SoundUnfolding extends ProperUnfolding {
 		this.construct();
 	}
 
-	/**
+	*//**
 	 * Get locally unsafe conditions
 	 * @return set of locally unsafe conditions
-	 */
+	 *//*
 	public Set<Condition> getLocallyUnsafeConditions() {
 		if (this.unsafe == null) {
 			this.unsafe = new HashSet<Condition>();
@@ -70,10 +58,10 @@ public class SoundUnfolding extends ProperUnfolding {
 		return this.unsafe;
 	}
 	
-	/**
+	*//**
 	 * Get local deadlock conditions
 	 * @return set of local deadlock conditions
-	 */
+	 *//*
 	public Set<Condition> getLocalDeadlockConditions() {
 		if (this.deadlock == null) {
 			this.deadlock = new HashSet<Condition>();			
@@ -91,7 +79,7 @@ public class SoundUnfolding extends ProperUnfolding {
 						if (p.equals(p1)) continue;
 						
 						for (Place p2 : BP.getSinkPlaces()) {
-							if (BP.getOrderingRelation(p,p2)==OrderingRelation.CONFLICT && BP.getOrderingRelation(p1,p2)==OrderingRelation.CONCURRENT) {
+							if (BP.getOrderingRelation(p,p2)==OrderingRelationType.CONFLICT && BP.getOrderingRelation(p1,p2)==OrderingRelationType.CONCURRENT) {
 								this.deadlock.add(BP.getCondition(p));
 							}
 						}
@@ -103,11 +91,11 @@ public class SoundUnfolding extends ProperUnfolding {
 		return this.deadlock;
 	}
 	
-	/**
+	*//**
 	 * Check if the net is sound
 	 * @return true if originative net is sound; otherwise false
-	 */
+	 *//*
 	public boolean isSound() {
 		return this.getLocallyUnsafeConditions().size()==0 && this.getLocalDeadlockConditions().size()==0;
-	}
+	}*/
 }

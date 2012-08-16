@@ -1,21 +1,5 @@
 package org.jbpt.petri.unfolding;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import org.jbpt.algo.CombinationGenerator;
-import org.jbpt.algo.graph.TransitiveClosure;
-import org.jbpt.petri.Flow;
-import org.jbpt.petri.NetSystem;
-import org.jbpt.petri.Node;
-import org.jbpt.petri.PetriNet;
-import org.jbpt.petri.Place;
-import org.jbpt.petri.Transition;
-import org.jbpt.petri.unfolding.order.EsparzaAdequateOrderForArbitrarySystems;
 
 
 /**
@@ -25,23 +9,23 @@ import org.jbpt.petri.unfolding.order.EsparzaAdequateOrderForArbitrarySystems;
  */
 public class SoundUnfoldingMSMS extends SoundUnfolding {
 
-	protected NetSystem originativeSystem = null;
+	/*protected NetSystem originativeSystem = null;
 	protected Map<Node,Node> nodeMapping = null;
 	
-	/**
+	*//**
 	 * @assumption Net system is free-choice
 	 * @assumption Net system is multi-terminal
 	 * @assumption Net system is acyclic
-	 */
+	 *//*
 	public SoundUnfoldingMSMS(NetSystem sys) {		
 		this.originativeSystem = sys;
 		this.nodeMapping = new HashMap<Node,Node>();
 		
 		this.sys = this.constructAugmentedVersion();
-		this.initialBP = new Cut(this.sys);
+		this.initialBranchingProcess = new Cut(this.sys);
 		this.totalOrderTs = new ArrayList<Transition>(this.sys.getTransitions());
 		
-		UnfoldingSetup setup = new UnfoldingSetup();
+		BranchingProcessSetup setup = new BranchingProcessSetup();
 		setup.ADEQUATE_ORDER = new EsparzaAdequateOrderForArbitrarySystems();
 		setup.MAX_BOUND		 = Integer.MAX_VALUE;
 		setup.MAX_EVENTS	 = Integer.MAX_VALUE;
@@ -51,13 +35,13 @@ public class SoundUnfoldingMSMS extends SoundUnfolding {
 		this.construct();
 	}
 
-	/**
+	*//**
 	 * Construct the augmented version of the net
 	 * - Add a fresh source place s 
 	 * - Add a fresh start transition t_c for every combination c of source places of the net
 	 * - Add a fresh flow from s to every start transition
 	 * - For every start transition t_c, add fresh flow from t_c to every place in c
-	 */
+	 *//*
 	private NetSystem constructAugmentedVersion() {
 		NetSystem result = this.originativeSystem.clone(this.nodeMapping);
 		
@@ -80,7 +64,7 @@ public class SoundUnfoldingMSMS extends SoundUnfolding {
 	}
 	
 	@Override
-	public NetSystem getNetSystem() {
+	public NetSystem getOriginativeNetSystem() {
 		return this.originativeSystem;
 	}
 	
@@ -121,7 +105,7 @@ public class SoundUnfoldingMSMS extends SoundUnfolding {
 		
 		for (Transition start : starts) {
 			boolean flag = true;
-			for (Condition error : errors) {
+			for (ICondition error : errors) {
 				if (tc.hasPath(start, occ.getPlace(error))) {
 					flag = false;
 					break;
@@ -145,7 +129,7 @@ public class SoundUnfoldingMSMS extends SoundUnfolding {
 		
 	}
 	
-	private Place getOriginativePlace(OccurrenceNet occ, Place p) {
+	private Place getOriginativePlace(IOccurrenceNet occ, Place p) {
 		Place pp = occ.getCondition(p).getPlace(); // place in this.sys
 		for (Map.Entry<Node,Node> entry : this.nodeMapping.entrySet()) {
 			if (entry.getValue().equals(pp))
@@ -154,11 +138,11 @@ public class SoundUnfoldingMSMS extends SoundUnfolding {
 		return null;
 	}
 
-	/**
+	*//**
 	 * Get original net without augmentation
 	 * @return original net
-	 */
+	 *//*
 	public PetriNet getOriginalNet() {
 		return this.originativeSystem;
-	}
+	}*/
 }

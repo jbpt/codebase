@@ -2,7 +2,18 @@ package org.jbpt.petri;
 
 import java.util.Set;
 
-public interface INetSystem<F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition, M extends IMarking<P>> extends IPetriNet<F,N,P,T> {
+/**
+ * 
+ * @author Artem Polyvyanyy
+ *
+ * @param <F> Flow template.
+ * @param <N> Node template.
+ * @param <P> Place template.
+ * @param <T> Transition template.
+ * @param <M> Marking template.
+ */
+public interface INetSystem<F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition, M extends IMarking<F,N,P,T>> 
+		extends IPetriNet<F,N,P,T> {
 
 	/**
 	 * Get marking of this net system. 

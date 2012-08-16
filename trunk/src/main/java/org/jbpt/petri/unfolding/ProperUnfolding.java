@@ -1,9 +1,5 @@
 package org.jbpt.petri.unfolding;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import org.jbpt.petri.NetSystem;
 
 
 /**
@@ -13,23 +9,23 @@ import org.jbpt.petri.NetSystem;
  *  
  * @author Artem Polyvyanyy
  */
-public class ProperUnfolding extends Unfolding {
+public class ProperUnfolding extends AbstractCompletePrefixUnfolding {
 	
-	protected ProperUnfolding(){}
+	/*protected ProperUnfolding(){}
 
 	public ProperUnfolding(NetSystem sys) {
 		super(sys);
 	}
 	
-	public ProperUnfolding(NetSystem sys, UnfoldingSetup setup) {
+	public ProperUnfolding(NetSystem sys, CompletePrefixUnfoldingSetup setup) {
 		super(sys, setup);
 	}
 
-	/**
+	*//**
 	 * Check healthy property (check cutoff extension)
-	 */
+	 *//*
 	@Override
-	protected Event checkCutoffB(Event e, Event corr) {
+	protected Event checkCutoffB(IEvent e, Event corr) {
 		Set<Condition> ecs = new HashSet<Condition>(e.getLocalConfiguration().getCut());
 		Set<Condition> ccs = new HashSet<Condition>(corr.getLocalConfiguration().getCut());
 		
@@ -39,5 +35,5 @@ public class ProperUnfolding extends Unfolding {
 		if (ecs.equals(ccs)) return corr;
 		
 		return null;
-	}
+	}*/
 }

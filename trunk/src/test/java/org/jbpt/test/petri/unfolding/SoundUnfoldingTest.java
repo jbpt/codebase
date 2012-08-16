@@ -1,27 +1,11 @@
 package org.jbpt.test.petri.unfolding;
 
-import java.io.FileNotFoundException;
-
 import junit.framework.TestCase;
-
-import org.jbpt.petri.NetSystem;
-import org.jbpt.petri.Place;
-import org.jbpt.petri.Transition;
-import org.jbpt.petri.unfolding.OccurrenceNet;
-import org.jbpt.petri.unfolding.SoundUnfolding;
-import org.jbpt.pm.Activity;
-import org.jbpt.pm.AndGateway;
-import org.jbpt.pm.Gateway;
-import org.jbpt.pm.ProcessModel;
-import org.jbpt.pm.XorGateway;
-import org.jbpt.pm.structure.ProcessModel2NetSystem;
-import org.jbpt.throwable.TransformationException;
-import org.jbpt.utils.IOUtils;
 
 
 public class SoundUnfoldingTest extends TestCase {
 	
-	public void test1() throws TransformationException, FileNotFoundException {
+	/*public void test1() throws TransformationException, FileNotFoundException {
 		ProcessModel p = new ProcessModel();
 		
 		Activity ti = new Activity("I");
@@ -77,12 +61,12 @@ public class SoundUnfoldingTest extends TestCase {
 		IOUtils.toFile("net.dot", net.toDOT());
 		
 		SoundUnfolding unf = new SoundUnfolding(net);
-		OccurrenceNet bpnet = unf.getOccurrenceNet();
+		IOccurrenceNet bpnet = unf.getOccurrenceNet();
 		IOUtils.toFile("unf.dot", bpnet.toDOT());
 		IOUtils.toFile("unf_unsafe.dot", bpnet.toDOTcs(unf.getLocallyUnsafeConditions()));
 		IOUtils.toFile("unf_deadlock.dot", bpnet.toDOTcs(unf.getLocalDeadlockConditions()));
 		
 		System.out.println(unf.getLocallyUnsafeConditions());
 		System.out.println(unf.getLocalDeadlockConditions());
-	}
+	}*/
 }

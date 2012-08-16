@@ -9,11 +9,11 @@ import org.jbpt.bp.RelSetType;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Node;
 import org.jbpt.petri.Transition;
+import org.jbpt.petri.unfolding.CompletePrefixUnfolding;
+import org.jbpt.petri.unfolding.CompletePrefixUnfoldingSetup;
 import org.jbpt.petri.unfolding.OccurrenceNet;
-import org.jbpt.petri.unfolding.OrderingRelation;
-import org.jbpt.petri.unfolding.Unfolding;
-import org.jbpt.petri.unfolding.UnfoldingSetup;
-import org.jbpt.petri.unfolding.order.EsparzaAdequateOrderForArbitrarySystems;
+import org.jbpt.petri.unfolding.OrderingRelationType;
+import org.jbpt.petri.unfolding.order.AdequateOrderType;
 
 
 /**
@@ -50,7 +50,7 @@ public class RelSetCreatorUnfolding extends AbstractRelSetCreator implements Rel
 	}
 	
 	// the unfolding
-	protected Unfolding unfolding;
+	protected CompletePrefixUnfolding unfolding;
 	
 	// the unfolding as an occurrence net
 	protected OccurrenceNet occurrenceNet;
@@ -97,11 +97,11 @@ public class RelSetCreatorUnfolding extends AbstractRelSetCreator implements Rel
 		/*
 		 * Derive unfolding
 		 */
-		UnfoldingSetup setup = new UnfoldingSetup();
-		setup.ADEQUATE_ORDER = new EsparzaAdequateOrderForArbitrarySystems();
+		CompletePrefixUnfoldingSetup setup = new CompletePrefixUnfoldingSetup();
+		setup.ADEQUATE_ORDER = AdequateOrderType.ESPARZA_FOR_ARBITRARY_SYSTEMS;
 		
-		this.unfolding = new Unfolding(pn,setup);
-		this.occurrenceNet = this.unfolding.getOccurrenceNet();
+		this.unfolding = new CompletePrefixUnfolding(pn,setup);
+		this.occurrenceNet = (OccurrenceNet) this.unfolding.getOccurrenceNet();
 		
 //		System.out.println(this.occurrenceNet.toDOT());
 		
@@ -165,9 +165,7 @@ public class RelSetCreatorUnfolding extends AbstractRelSetCreator implements Rel
 	}
 	
 	private long getDistanceInStepMatrix(Transition node1, Transition node2) {
-		if (!node1.equals(node2) && this.unfolding.getOrderingRelation(
-				this.occurrenceNet.getEvent(node1),
-				this.occurrenceNet.getEvent(node2)).equals(OrderingRelation.CONCURRENT)) 
+		if (!node1.equals(node2) && this.occurrenceNet.getOrderingRelation(node1, node2).equals(OrderingRelationType.CONCURRENT)) 
 			return 1;
 		
 		return stepMatrix[this.nodesForStepMatrix.indexOf(node1)][this.nodesForStepMatrix.indexOf(node2)];

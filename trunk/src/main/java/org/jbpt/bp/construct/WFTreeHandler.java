@@ -22,13 +22,14 @@ import org.jbpt.petri.Node;
 import org.jbpt.petri.PetriNet;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
-import org.jbpt.petri.wft.WFTree;
-import org.jbpt.petri.wft.WFTreeBondType;
-import org.jbpt.petri.wft.WFTreeLoopOrientationType;
+import org.jbpt.petri.wftree.AbstractWFTree;
+import org.jbpt.petri.wftree.WFTree;
+import org.jbpt.petri.wftree.WFTreeBondType;
+import org.jbpt.petri.wftree.WFTreeLoopOrientationType;
 
 public class WFTreeHandler {
 
-	private WFTree<Flow,Node,Place,Transition> wfTree = null;
+	private AbstractWFTree<Flow,Node,Place,Transition> wfTree = null;
 
 	private Map<Node, IRPSTNode<Flow, Node>> node2wfTreeNode = new HashMap<>();
 	
@@ -37,22 +38,22 @@ public class WFTreeHandler {
 	private Map<BehaviouralProfile<NetSystem, Node>,Map<Node,Node>> bp2nodemapping = new HashMap<>();	
 	private Map<IRPSTNode<Flow, Node>,Vector<IRPSTNode<Flow, Node>>> orderedPNodes = new HashMap<>();
 	
-	public WFTreeHandler(PetriNet net) {
+	public WFTreeHandler(NetSystem netClone) {
 		
 		/*
 		 * Isolate the transitions that we are interested in
 		 */
-		PetriNet.TRANSFORMATIONS.isolateTransitions(net);
+		PetriNet.TRANSFORMATIONS.isolateTransitions(netClone);
 		
 		/*
 		 * Create the WFTree
 		 */
-		this.wfTree = new WFTree<>(net);
+		this.wfTree = new WFTree(netClone);
 	
 		/*
 		 * Check the net for requirements
 		 */
-		if (!PetriNet.STRUCTURAL_CHECKS.isWorkflowNet(net)) throw new IllegalArgumentException();
+		if (!PetriNet.STRUCTURAL_CHECKS.isWorkflowNet(netClone)) throw new IllegalArgumentException();
 		//if (!PetriNet.StructuralClassChecks.isExtendedFreeChoice((PetriNet)this.wfTree.getGraph())) throw new IllegalArgumentException();
 		
 		/*
