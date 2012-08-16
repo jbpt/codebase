@@ -11,11 +11,8 @@ import org.jbpt.petri.INetSystem;
 import org.jbpt.petri.INode;
 import org.jbpt.petri.IPlace;
 import org.jbpt.petri.ITransition;
-import org.jbpt.petri.PetriNet;
-import org.jbpt.petri.Place;
-import org.jbpt.petri.Transition;
 
-public class AbstractBranchingProcess<BPN extends IBPNode<N>, C extends ICondition<BPN,C,E,F,N,P,T,M>, E extends IEvent<BPN,C,E,F,N,P,T,M>, F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition, M extends IMarking<F,N,P,T>> 
+public abstract class AbstractBranchingProcess<BPN extends IBPNode<N>, C extends ICondition<BPN,C,E,F,N,P,T,M>, E extends IEvent<BPN,C,E,F,N,P,T,M>, F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition, M extends IMarking<F,N,P,T>> 
 		implements IBranchingProcess<BPN,C,E,F,N,P,T,M> {
 	// originative net system
 	protected INetSystem<F,N,P,T,M> sys = null;
@@ -366,40 +363,4 @@ public class AbstractBranchingProcess<BPN extends IBPNode<N>, C extends IConditi
 		this.countEvents++;
 		return true;
 	}*/
-	
-	@Override
-	public PetriNet getPetriNet() {
-		PetriNet result = new PetriNet();
-		
-		Map<Transition,E> t2e = new HashMap<Transition,E>();
-		Map<Place,C>  p2c = new HashMap<Place,C>();
-		Map<E,Transition> e2t = new HashMap<E,Transition>();
-		Map<C,Place>  c2p = new HashMap<C,Place>();
-		
-		for (E e : this.getEvents()) {
-			Transition t = new Transition(e.getName());
-			result.addTransition(t);
-			e2t.put(e,t);
-			t2e.put(t,e);
-		}
-			
-		for (C c : this.getConditions()) {
-			Place p = new Place(c.getName());
-			result.addPlace(p);
-			c2p.put(c,p);
-			p2c.put(p,c);
-		}
-		
-		for (E e : this.getEvents()) {
-			for (C c : e.getPreConditions()) {
-				result.addFlow(c2p.get(c), e2t.get(e));
-			}
-		}
-		
-		for (C c : this.getConditions()) {
-			result.addFlow(e2t.get(c.getPreEvent()),c2p.get(c));
-		}
-		
-		return result;
-	}
 }

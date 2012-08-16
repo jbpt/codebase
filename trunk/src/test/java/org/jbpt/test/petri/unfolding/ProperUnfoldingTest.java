@@ -1,11 +1,26 @@
 package org.jbpt.test.petri.unfolding;
 
+import java.io.FileNotFoundException;
+
 import junit.framework.TestCase;
+
+import org.jbpt.petri.NetSystem;
+import org.jbpt.petri.Place;
+import org.jbpt.petri.Transition;
+import org.jbpt.petri.unfolding.OccurrenceNet;
+import org.jbpt.petri.unfolding.ProperCompletePrefixUnfolding;
+import org.jbpt.pm.Activity;
+import org.jbpt.pm.AndGateway;
+import org.jbpt.pm.ProcessModel;
+import org.jbpt.pm.XorGateway;
+import org.jbpt.pm.structure.ProcessModel2NetSystem;
+import org.jbpt.throwable.TransformationException;
+import org.jbpt.utils.IOUtils;
 
 
 public class ProperUnfoldingTest extends TestCase {
 	
-	/*public void test1() throws TransformationException, FileNotFoundException {
+	public void test1() throws TransformationException, FileNotFoundException {
 		ProcessModel p = new ProcessModel();
 		
 		Activity ti = new Activity("I");
@@ -68,8 +83,8 @@ public class ProperUnfoldingTest extends TestCase {
 		net.loadNaturalMarking();
 		IOUtils.toFile("net1.dot", net.toDOT());
 		
-		ProperUnfolding unf = new ProperUnfolding(net);
-		IOccurrenceNet bpnet = unf.getOccurrenceNet();
+		ProperCompletePrefixUnfolding unf = new ProperCompletePrefixUnfolding(net);
+		OccurrenceNet bpnet = (OccurrenceNet) unf.getOccurrenceNet();
 		IOUtils.toFile("unf1.dot", bpnet.toDOT());
 	}
 	
@@ -136,8 +151,8 @@ public class ProperUnfoldingTest extends TestCase {
 		net.loadNaturalMarking();
 		IOUtils.toFile("net2.dot", net.toDOT());
 		
-		ProperUnfolding unf = new ProperUnfolding(net);
-		IOccurrenceNet bpnet = unf.getOccurrenceNet();
+		ProperCompletePrefixUnfolding unf = new ProperCompletePrefixUnfolding(net);
+		OccurrenceNet bpnet = (OccurrenceNet)unf.getOccurrenceNet();
 		IOUtils.toFile("unf2.dot", bpnet.toDOT());
 	}
 	
@@ -198,8 +213,8 @@ public class ProperUnfoldingTest extends TestCase {
 		net.loadNaturalMarking();
 		IOUtils.toFile("net3.dot", net.toDOT());
 		
-		ProperUnfolding unf = new ProperUnfolding(net);
-		IOccurrenceNet bpnet = unf.getOccurrenceNet();
+		ProperCompletePrefixUnfolding unf = new ProperCompletePrefixUnfolding(net);
+		OccurrenceNet bpnet = (OccurrenceNet)unf.getOccurrenceNet();
 		IOUtils.toFile("unf3.dot", bpnet.toDOT());
 	}
 	
@@ -254,8 +269,8 @@ public class ProperUnfoldingTest extends TestCase {
 		net.loadNaturalMarking();
 		IOUtils.toFile("net4.dot", net.toDOT());
 		
-		ProperUnfolding unf = new ProperUnfolding(net);
-		IOccurrenceNet bpnet = unf.getOccurrenceNet();
+		ProperCompletePrefixUnfolding unf = new ProperCompletePrefixUnfolding(net);
+		OccurrenceNet bpnet = (OccurrenceNet)unf.getOccurrenceNet();
 		IOUtils.toFile("unf4.dot", bpnet.toDOT());
-	}*/
+	}
 }

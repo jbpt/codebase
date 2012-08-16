@@ -13,6 +13,7 @@ import org.jbpt.petri.IMarking;
 import org.jbpt.petri.INode;
 import org.jbpt.petri.IPlace;
 import org.jbpt.petri.ITransition;
+import org.jbpt.petri.Marking;
 
 
 public class AbstractLocalConfiguration<BPN extends IBPNode<N>, C extends ICondition<BPN,C,E,F,N,P,T,M>, E extends IEvent<BPN,C,E,F,N,P,T,M>, F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition, M extends IMarking<F,N,P,T>>
@@ -23,7 +24,7 @@ public class AbstractLocalConfiguration<BPN extends IBPNode<N>, C extends ICondi
 	
 	private E e = null;							// event
 	private ICut<BPN,C,E,F,N,P,T,M> cut = null;	// cut
-	private Collection<P> marking = null;		// marking of cut
+	private M marking = null;					// marking of cut
 	private List<T> vec = null;					// quasi Parikh vector
 	private List<Set<E>> foata = null;			// Foata normal form
 	private ICompletePrefixUnfolding<BPN,C,E,F,N,P,T,M> CPU = null;
@@ -49,11 +50,13 @@ public class AbstractLocalConfiguration<BPN extends IBPNode<N>, C extends ICondi
 		return this.cut;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
-	public Collection<P> getMarking() {
+	public M getMarking() {
 		if (this.marking == null) {
-			/*try {
+			try {
 				this.marking = (M) Marking.class.newInstance();
+				this.marking.setPetriNet(this.CPU.getOriginativeNetSystem());
 			} catch (InstantiationException | IllegalAccessException e) {
 				return null;
 			}			
@@ -61,11 +64,6 @@ public class AbstractLocalConfiguration<BPN extends IBPNode<N>, C extends ICondi
 			for (C c : this.getCut()) {
 				if (c.getPlace() == null) this.marking.put(c.getPlace(), 1);
 				this.marking.put(c.getPlace(), this.marking.get(c.getPlace())+1);
-			}*/
-			
-			this.marking = new ArrayList<P>();
-			for (C c : this.getCut()) {
-				this.marking.add(c.getPlace());
 			}
 		}
 		

@@ -15,7 +15,7 @@ public interface ILocalConfiguration<BPN extends IBPNode<N>, C extends IConditio
 
 	public ICut<BPN,C,E,F,N,P,T,M> getCut();
 
-	public Collection<P> getMarking();
+	public M getMarking();
 
 	public List<T> getQuasiParikhVector();
 
