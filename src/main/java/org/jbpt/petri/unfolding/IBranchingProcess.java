@@ -114,13 +114,26 @@ public interface IBranchingProcess<BPN extends IBPNode<N>, C extends ICondition<
 	 */
 	public E createEvent(T transition, ICoSet<BPN,C,E,F,N,P,T,M> preset);
 	
-	public ICut<BPN,C,E,F,N,P,T,M> getInitialCut();
-	
+	/**
+	 * Factory method to provide a co-set of the branching process implementation.
+	 * 
+	 * @return A fresh co-set.
+	 */
 	public ICoSet<BPN,C,E,F,N,P,T,M> createCoSet();
 	
+	/**
+	 * Factory method to provide a cut of the branching process implementation.
+	 * 
+	 * @return A fresh cut.
+	 */
 	public ICut<BPN,C,E,F,N,P,T,M> createCut();
 	
-	public Set<BPN> getCausalPredecessors(BPN node);
+	/**
+	 * Get initial cut of this branching process, i.e., the set of condition without input events.
+	 * 
+	 * @return Initial cut of this branching process. 
+	 */
+	public ICut<BPN,C,E,F,N,P,T,M> getInitialCut();	
 	
 	/**
 	 * Check if this branching process is conflict free. 
@@ -129,4 +142,14 @@ public interface IBranchingProcess<BPN extends IBPNode<N>, C extends ICondition<
 	 * @return <tt>true</tt> if this branching process is conflict free; otherwise <tt></tt>.
 	 */
 	public boolean isConflictFree();
+	
+	/**
+	 * Get causal predecessors of a given node of this branching process.
+	 * 
+	 * @param node Node of this branching process.
+	 * @return Set of all causal predecessors of the given node.
+	 */
+	public Set<BPN> getCausalPredecessors(BPN node);
+	
+	public void setNetSystem(INetSystem<F,N,P,T,M> system);
 }

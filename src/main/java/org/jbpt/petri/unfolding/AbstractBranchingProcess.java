@@ -14,28 +14,42 @@ import org.jbpt.petri.ITransition;
 
 public abstract class AbstractBranchingProcess<BPN extends IBPNode<N>, C extends ICondition<BPN,C,E,F,N,P,T,M>, E extends IEvent<BPN,C,E,F,N,P,T,M>, F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition, M extends IMarking<F,N,P,T>> 
 		implements IBranchingProcess<BPN,C,E,F,N,P,T,M> {
+	
 	// originative net system
 	protected INetSystem<F,N,P,T,M> sys = null;
 	
-	protected Set<E> events	= new HashSet<E>();	
-	protected Set<C> conds	= new HashSet<C>();
-	protected ICut<BPN,C,E,F,N,P,T,M> iniBP = (ICut<BPN,C,E,F,N,P,T,M>)this.createCut();
+	protected Set<E> events	= null;	
+	protected Set<C> conds	= null;
+	protected ICut<BPN,C,E,F,N,P,T,M> iniBP = null;
 	
 	// causality: maps node of unfolding to a set of preceding nodes
-	protected Map<BPN,Set<BPN>> ca = new HashMap<BPN,Set<BPN>>();
+	protected Map<BPN,Set<BPN>> ca = null;
 	// concurrency: maps node of unfolding to a set of concurrent nodes
-	protected Map<BPN,Set<BPN>> co = new HashMap<BPN,Set<BPN>>();
+	protected Map<BPN,Set<BPN>> co = null;
 	
 	// indexes for conflict and concurrency relations 
-	private Map<BPN,Set<BPN>> EX    = new HashMap<BPN,Set<BPN>>();
-	private Map<BPN,Set<BPN>> notEX = new HashMap<BPN,Set<BPN>>();
-	private Map<BPN,Set<BPN>> CO    = new HashMap<BPN,Set<BPN>>();
-	private Map<BPN,Set<BPN>> notCO = new HashMap<BPN,Set<BPN>>();
+	private Map<BPN,Set<BPN>> EX    = null;
+	private Map<BPN,Set<BPN>> notEX = null;
+	private Map<BPN,Set<BPN>> CO    = null;
+	private Map<BPN,Set<BPN>> notCO = null;
 	
 	protected AbstractBranchingProcess() {}
 	
 	protected AbstractBranchingProcess(INetSystem<F,N,P,T,M> sys) {
-		this.sys = sys;
+		this.setNetSystem(sys);
+	}
+	
+	protected void initialize() {
+		this.events	= new HashSet<E>();	
+		this.conds	= new HashSet<C>();
+		this.iniBP	= this.createCut();
+		this.ca		= new HashMap<BPN,Set<BPN>>();
+		this.co		= new HashMap<BPN,Set<BPN>>();
+		this.EX		= new HashMap<BPN,Set<BPN>>();
+		this.notEX	= new HashMap<BPN,Set<BPN>>();
+		this.CO		= new HashMap<BPN,Set<BPN>>();
+		this.notCO	= new HashMap<BPN,Set<BPN>>();
+		
 		this.constructInitialBranchingProcess();
 	}
 
@@ -328,6 +342,14 @@ public abstract class AbstractBranchingProcess<BPN extends IBPNode<N>, C extends
 		}
 		
 		return true;
+	}
+	
+	@Override
+	public void setNetSystem(INetSystem<F,N,P,T,M> system) {
+		if (system==null) return;
+		
+		this.sys = system;
+		this.initialize();
 	}
 	
 	/*protected boolean appendEvent2(Event e) {
