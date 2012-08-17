@@ -15,14 +15,15 @@ import org.jbpt.petri.Transition;
  * @author Artem Polyvyanyy
  */
 public class CompletePrefixUnfolding extends
-		AbstractCompletePrefixUnfolding<BPNode,Condition,Event,Flow,Node,Place,Transition,Marking> {
-
-	public CompletePrefixUnfolding(INetSystem<Flow,Node,Place,Transition,Marking> sys, CompletePrefixUnfoldingSetup setup) {
-		super(sys, setup);
-	}
+		AbstractCompletePrefixUnfolding<BPNode,Condition,Event,Flow,Node,Place,Transition,Marking> 
+{
 
 	public CompletePrefixUnfolding(INetSystem<Flow,Node,Place,Transition,Marking> sys) {
 		super(sys);
+	}
+	
+	public CompletePrefixUnfolding(INetSystem<Flow,Node,Place,Transition,Marking> sys, CompletePrefixUnfoldingSetup setup) {
+		super(sys, setup);
 	}
 	
 }
