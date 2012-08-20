@@ -71,6 +71,7 @@ public abstract class AbstractCompletePrefixUnfolding<BPN extends IBPNode<N>, C 
 		// net system must be different from null
 		if (this.sys==null) return;
 		// initial branching process must not be empty
+		this.constructInitialBranchingProcess();
 		if (this.iniBP.isEmpty()) return;
 		
 		// initialise

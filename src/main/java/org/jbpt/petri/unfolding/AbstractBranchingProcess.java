@@ -1,5 +1,6 @@
 package org.jbpt.petri.unfolding;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -14,7 +15,7 @@ import org.jbpt.petri.ITransition;
 
 public abstract class AbstractBranchingProcess<BPN extends IBPNode<N>, C extends ICondition<BPN,C,E,F,N,P,T,M>, E extends IEvent<BPN,C,E,F,N,P,T,M>, F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition, M extends IMarking<F,N,P,T>> 
 		implements IBranchingProcess<BPN,C,E,F,N,P,T,M> {
-	
+
 	// originative net system
 	protected INetSystem<F,N,P,T,M> sys = null;
 	
@@ -33,7 +34,9 @@ public abstract class AbstractBranchingProcess<BPN extends IBPNode<N>, C extends
 	private Map<BPN,Set<BPN>> CO    = null;
 	private Map<BPN,Set<BPN>> notCO = null;
 	
-	protected AbstractBranchingProcess() {}
+	protected AbstractBranchingProcess() {
+		this.initialize();
+	}
 	
 	protected AbstractBranchingProcess(INetSystem<F,N,P,T,M> sys) {
 		this.setNetSystem(sys);
@@ -49,11 +52,11 @@ public abstract class AbstractBranchingProcess<BPN extends IBPNode<N>, C extends
 		this.notEX	= new HashMap<BPN,Set<BPN>>();
 		this.CO		= new HashMap<BPN,Set<BPN>>();
 		this.notCO	= new HashMap<BPN,Set<BPN>>();
-		
-		this.constructInitialBranchingProcess();
 	}
 
-	private void constructInitialBranchingProcess() {
+	@Override
+	public void constructInitialBranchingProcess() {
+		if (!this.conds.isEmpty()) return;
 		for (P p : this.sys.getMarking().toMultiSet()) {
 			C c = this.createCondition(p,null);
 			this.appendCondition(c);
@@ -68,8 +71,12 @@ public abstract class AbstractBranchingProcess<BPN extends IBPNode<N>, C extends
 
 	@Override
 	public Set<C> getConditions(P place) {
-		// TODO Auto-generated method stub
-		return null;
+		Set<C> result = new HashSet<C>();
+		for (C c : this.conds) {
+			if (c.getPlace().equals(place))
+				result.add(c);
+		}
+		return result;
 	}
 
 	@Override
@@ -79,8 +86,12 @@ public abstract class AbstractBranchingProcess<BPN extends IBPNode<N>, C extends
 
 	@Override
 	public Set<E> getEvents(T transition) {
-		// TODO Auto-generated method stub
-		return null;
+		Set<E> result = new HashSet<E>();
+		for (E e : this.events) {
+			if (e.getTransition().equals(transition))
+				result.add(e);
+		}
+		return result;
 	}
 
 	@Override
@@ -218,9 +229,12 @@ public abstract class AbstractBranchingProcess<BPN extends IBPNode<N>, C extends
 		return e;
 	}
 	
-	protected void appendCondition(C c) {
-		this.conds.add(c);
-		this.updateCausalityCondition(c);
+	@Override
+	public boolean appendCondition(C condition) {
+		this.conds.add(condition);
+		this.updateCausalityCondition(condition);
+		
+		return true;
 	}
 		
 	@SuppressWarnings("unchecked")
@@ -236,9 +250,10 @@ public abstract class AbstractBranchingProcess<BPN extends IBPNode<N>, C extends
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected boolean appendEvent(E e) {
-		this.events.add(e);		
-		this.updateCausalityEvent(e);
+	@Override
+	public boolean appendEvent(E event) {
+		this.events.add(event);		
+		this.updateCausalityEvent(event);
 		
 		// add conditions that correspond to post-places of transition that corresponds to new event
 		ICoSet<BPN,C,E,F,N,P,T,M> postConditions = null;
@@ -248,12 +263,12 @@ public abstract class AbstractBranchingProcess<BPN extends IBPNode<N>, C extends
 			e1.printStackTrace();
 		}
 		
-		for (P s : this.sys.getPostset(e.getTransition())) {
-			C c = this.createCondition(s,e);
+		for (P s : this.sys.getPostset(event.getTransition())) {
+			C c = this.createCondition(s,event);
 			postConditions.add(c);
 			this.appendCondition(c);
 		}
-		e.setPostConditions(postConditions);
+		event.setPostConditions(postConditions);
 
 		return true;
 	}
@@ -347,9 +362,58 @@ public abstract class AbstractBranchingProcess<BPN extends IBPNode<N>, C extends
 	@Override
 	public void setNetSystem(INetSystem<F,N,P,T,M> system) {
 		if (system==null) return;
-		
 		this.sys = system;
 		this.initialize();
+	}
+	
+	@Override
+	public boolean isSafe() {
+		for (C c1 : this.conds) {
+			for (C c2 : this.conds) {
+				if (c1.equals(c2)) continue;
+				if (c1.getPlace().equals(c2.getPlace()))
+					return true;
+			}	
+		}
+		return false;
+	}
+	
+	@Override
+	public Set<C> getMin() {
+		return this.iniBP;
+	}
+
+	@Override
+	public Set<C> getMax() {
+		Set<C> result = new HashSet<C>(this.conds);
+		for (E e : this.events) {
+			result.removeAll(e.getPreConditions());
+		}
+		return result;
+	}
+	
+	@Override
+	public Set<P> getPlaces(Collection<C> conditions) {
+		Set<P> result = new HashSet<P>();
+		if (conditions==null) return result;
+		
+		for (C c : conditions) {
+			result.add(c.getPlace());
+		}
+		
+		return result;
+	}
+
+	@Override
+	public Set<T> getTransitions(Collection<E> events) {
+		Set<T> result = new HashSet<T>();
+		if (events==null) return result;
+		
+		for (E e : events) {
+			result.add(e.getTransition());
+		}
+		
+		return result;
 	}
 	
 	/*protected boolean appendEvent2(Event e) {

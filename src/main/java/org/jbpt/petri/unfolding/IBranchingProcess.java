@@ -1,5 +1,6 @@
 package org.jbpt.petri.unfolding;
 
+import java.util.Collection;
 import java.util.Set;
 
 import org.jbpt.petri.IFlow;
@@ -14,8 +15,8 @@ import org.jbpt.petri.ITransition;
  * 
  * @author Artem Polyvyanyy
  */
-public interface IBranchingProcess<BPN extends IBPNode<N>, C extends ICondition<BPN,C,E,F,N,P,T,M>, E extends IEvent<BPN,C,E,F,N,P,T,M>, F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition, M extends IMarking<F,N,P,T>> {
-	
+public interface IBranchingProcess<BPN extends IBPNode<N>, C extends ICondition<BPN,C,E,F,N,P,T,M>, E extends IEvent<BPN,C,E,F,N,P,T,M>, F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition, M extends IMarking<F,N,P,T>>
+{
 	/**
 	 * Get conditions of this branching process.
 	 * 
@@ -151,5 +152,71 @@ public interface IBranchingProcess<BPN extends IBPNode<N>, C extends ICondition<
 	 */
 	public Set<BPN> getCausalPredecessors(BPN node);
 	
+	/**
+	 * Set net system of this branching process. 
+	 * Once the new net system is set, the old branching process is cleared and the initial branching process for the new net system is constructued. 
+	 * 
+	 * @param system Net system to use as the originative system of this branching process.
+	 */
 	public void setNetSystem(INetSystem<F,N,P,T,M> system);
+	
+	/**
+	 * Check if this branching process is safe.
+	 * 
+	 * @return <tt>true</tt> if this branching process is safe; <tt>false</tt> otherwise.
+	 */
+	public boolean isSafe();
+	
+	/**
+	 * Get minimum, i.e., conditions without input events, of this branching process.  
+	 * Note that minimum of a branching process is a cut (maximal co-set of conditions)!
+	 * 
+	 * @return Set of conditions without input events. 
+	 */
+	public Set<C> getMin();
+	
+	/**
+	 * Get maximum, i.e., conditions without output events, of this branching process. 
+	 * Note that maximum of a conflict-free (see {@code IBranchingProcess.isConflictFree()}) branching process is a cut (maximal co-set of conditions)!
+	 * 
+	 * @return Set of conditions without input events. 
+	 */
+	public Set<C> getMax();
+	
+	/**
+	 * Get places of the originative net system that are associated with the given conditions.
+	 *  
+	 * @param conditions Conditions of this branching process.
+	 * @return Set of places associated with the given conditions.
+	 */
+	public Set<P> getPlaces(Collection<C> conditions);
+	
+	/**
+	 * Get transitions of the originative net system that are associated with the given events.
+	 *  
+	 * @param events Events of this branching process.
+	 * @return Set of transitions associated with the given events.
+	 */
+	public Set<T> getTransitions(Collection<E> events);
+
+	/**
+	 * Append condition to this branching process.
+	 * 
+	 * @param condition Condition to append.
+	 * @return <tt>true</tt> if condition was appended.
+	 */
+	public boolean appendCondition(C condition);
+
+	/**
+	 * Append event to this branching process.
+	 * 
+	 * @param condition Event to append.
+	 * @return <tt>true</tt> if event was appended.
+	 */
+	public boolean appendEvent(E event);
+
+	/**
+	 * Construct initial branching process (only if this branching process is empty).
+	 */
+	public void constructInitialBranchingProcess();
 }
