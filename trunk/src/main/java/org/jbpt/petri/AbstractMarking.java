@@ -72,6 +72,21 @@ public abstract class AbstractMarking<F extends IFlow<N>, N extends INode, P ext
 		
 		return result;
 	}
+	
+	@Override
+	public void fromMultiSet(Collection<P> places) {
+		this.clear();
+		
+		for (P p : places) {
+			if (!this.net.getPlaces().contains(p)) continue;
+			
+			Integer tokens = this.get(p);
+			if (tokens==null)
+				this.put(p,1);
+			else
+				this.put(p,tokens+1);
+		}
+	}
 
 	@Override
 	public Integer remove(P place) {

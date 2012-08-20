@@ -36,6 +36,14 @@ public interface IMarking<F extends IFlow<N>, N extends INode, P extends IPlace,
 	 * @return Marking as a multi-set of places.
 	 */
 	public Collection<P> toMultiSet();
+	
+	/**
+	 * Construct this marking from the given multi-set of places.
+	 * The multi-set contains each place as many times as there are tokens at the place.
+	 * 
+	 * @param places Multi-set of places.
+	 */
+	public void fromMultiSet(Collection<P> places);
 
 	/**
 	 * Clear this marking.
@@ -74,7 +82,18 @@ public interface IMarking<F extends IFlow<N>, N extends INode, P extends IPlace,
 	 */
 	public IPetriNet<F,N,P,T> getPetriNet();
 	
+	/**
+	 * Create fresh marking and associate it with a given net.
+	 * 
+	 * @param net Petri net.
+	 * @return Fresh marking associated wuth the given 'net'.
+	 */
 	public IMarking<F,N,P,T> createMarking(IPetriNet<F,N,P,T> net);
 	
+	/**
+	 * Set net to associate this marking with.
+	 * 
+	 * @param net Petri net to associate this marking with.
+	 */
 	public void setPetriNet(IPetriNet<F,N,P,T> net);
 }

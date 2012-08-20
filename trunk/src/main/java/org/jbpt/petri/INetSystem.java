@@ -91,5 +91,7 @@ public interface INetSystem<F extends IFlow<N>, N extends INode, P extends IPlac
 	 * @return <tt>true</tt> if place is marked; otherwise <tt>false</tt>.
 	 */
 	public boolean isMarked(P place);
+	
+	public IMarking<F,N,P,T> createMarking();
 
 }

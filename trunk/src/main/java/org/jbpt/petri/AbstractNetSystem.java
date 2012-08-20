@@ -17,7 +17,6 @@ public abstract class AbstractNetSystem<F extends IFlow<N>, N extends INode, P e
 		extends AbstractPetriNet<F,N,P,T> 
 		implements INetSystem<F,N,P,T,M> 
 {
-	
 	protected M marking = null;
 	
 	@SuppressWarnings("unchecked")
@@ -229,5 +228,10 @@ public abstract class AbstractNetSystem<F extends IFlow<N>, N extends INode, P e
 		for (Map.Entry<P,Integer> entry : newMarking.entrySet()) {
 			this.marking.put(entry.getKey(),entry.getValue());
 		}
+	}
+	
+	@Override
+	public IMarking<F,N,P,T> createMarking() {
+		return this.marking.createMarking(this);
 	}
 }
