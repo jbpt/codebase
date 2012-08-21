@@ -366,16 +366,17 @@ public abstract class AbstractBranchingProcess<BPN extends IBPNode<N>, C extends
 		this.initialize();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean isSafe() {
 		for (C c1 : this.conds) {
 			for (C c2 : this.conds) {
 				if (c1.equals(c2)) continue;
-				if (c1.getPlace().equals(c2.getPlace()))
-					return true;
+				if (c1.getPlace().equals(c2.getPlace()) && this.areConcurrent((BPN)c1,(BPN)c2))
+					return false;
 			}	
 		}
-		return false;
+		return true;
 	}
 	
 	@Override
@@ -414,6 +415,19 @@ public abstract class AbstractBranchingProcess<BPN extends IBPNode<N>, C extends
 		}
 		
 		return result;
+	}
+	
+	@Override
+	public IOccurrenceNet<BPN,C,E,F,N,P,T,M> getOccurrenceNet() {		
+		try {
+			@SuppressWarnings("unchecked")
+			IOccurrenceNet<BPN,C,E,F,N,P,T,M> occ = (IOccurrenceNet<BPN,C,E,F,N,P,T,M>) OccurrenceNet.class.newInstance();
+			occ.setBranchingProcess(this);
+			return occ;
+		} catch (InstantiationException | IllegalAccessException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 	/*protected boolean appendEvent2(Event e) {

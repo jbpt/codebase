@@ -219,4 +219,11 @@ public interface IBranchingProcess<BPN extends IBPNode<N>, C extends ICondition<
 	 * Construct initial branching process (only if this branching process is empty).
 	 */
 	public void constructInitialBranchingProcess();
+	
+	/**
+	 * Get occurrence net.
+	 * 
+	 * @return Occurrence net.
+	 */
+	public IOccurrenceNet<BPN,C,E,F,N,P,T,M> getOccurrenceNet();
 }
