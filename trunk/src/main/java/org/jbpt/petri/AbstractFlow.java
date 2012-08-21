@@ -13,7 +13,7 @@ public abstract class AbstractFlow<N extends INode> extends AbstractDirectedEdge
 	/**
 	 * Constructor of a flow relation.
 	 * 
-	 * @param g A directed graph
+	 * @param g A directed graph.
 	 * @param source Source node.
 	 * @param target Target node.
 	 */

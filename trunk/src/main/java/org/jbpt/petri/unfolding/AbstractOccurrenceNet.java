@@ -42,11 +42,17 @@ public abstract class AbstractOccurrenceNet<BPN extends IBPNode<N>, C extends IC
 	public void setCompletePrefixUnfolding(ICompletePrefixUnfolding<BPN,C,E,F,N,P,T,M> cpu) {
 		this.cpu = cpu;
 		this.clear();
-		construct();
+		construct(this.cpu);
 	}
 	
-	private void construct() {
-		for (E e : this.cpu.getEvents()) {
+	@Override
+	public void setBranchingProcess(IBranchingProcess<BPN,C,E,F,N,P,T,M> bp) {
+		this.clear();
+		construct(bp);
+	}
+
+	private void construct(IBranchingProcess<BPN,C,E,F,N,P,T,M> bp) {
+		for (E e : bp.getEvents()) {
         	T t = this.createTransition();
         	t.setLabel(e.getName());
         	this.addTransition(t);
@@ -54,7 +60,7 @@ public abstract class AbstractOccurrenceNet<BPN extends IBPNode<N>, C extends IC
         	t2e.put(t,e);
         }
                 
-        for (C c : this.cpu.getConditions()) {
+        for (C c : bp.getConditions()) {
         	P p = this.createPlace();
         	p.setLabel(c.getName());
         	this.addPlace(p);
@@ -62,17 +68,16 @@ public abstract class AbstractOccurrenceNet<BPN extends IBPNode<N>, C extends IC
         	p2c.put(p,c);
         }
         
-        for (E e : this.cpu.getEvents()) {
+        for (E e : bp.getEvents()) {
         	for (C c : e.getPreConditions()) {
         		this.addFlow(c2p.get(c), e2t.get(e));
         	}
         }
         
-        for (C c : this.cpu.getConditions()) {
+        for (C c : bp.getConditions()) {
         	this.addFlow(e2t.get(c.getPreEvent()),c2p.get(c));
         }       
-}
-
+	}
 	
 	@Override
 	public ICompletePrefixUnfolding<BPN,C,E,F,N,P,T,M> getCompletePrefixUnfolding() {
@@ -125,6 +130,7 @@ public abstract class AbstractOccurrenceNet<BPN extends IBPNode<N>, C extends IC
 	@Override
 	public Set<T> getCutoffEvents() {
 		Set<T> result = new HashSet<T>();
+		if (this.cpu == null) return result;
 		for (E e :this.cpu.getCutoffEvents()) result.add(this.e2t.get(e));
 		return result;
 	}
@@ -136,6 +142,7 @@ public abstract class AbstractOccurrenceNet<BPN extends IBPNode<N>, C extends IC
 	
 	@Override
 	public boolean isCutoffEvent(T t) {
+		if (this.cpu == null) return false;
 		return this.cpu.isCutoffEvent(t2e.get(t));
 	}
 

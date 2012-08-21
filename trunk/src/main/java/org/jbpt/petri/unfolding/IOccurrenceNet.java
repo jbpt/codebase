@@ -36,5 +36,7 @@ public interface IOccurrenceNet<BPN extends IBPNode<N>, C extends ICondition<BPN
 	public Set<P> getCutInducedByLocalConfiguration(T t);
 	
 	public void setCompletePrefixUnfolding(ICompletePrefixUnfolding<BPN,C,E,F,N,P,T,M> cpu);
+	
+	public void setBranchingProcess(IBranchingProcess<BPN,C,E,F,N,P,T,M> bp);
 
 }

@@ -202,6 +202,7 @@ public abstract class AbstractMarking<F extends IFlow<N>, N extends INode, P ext
 		IMarking<F,N,P,T> m = null;
 		try {
 			m = (IMarking<F,N,P,T>) Marking.class.newInstance();
+			m.setPetriNet(net);
 			return m;
 		} catch (InstantiationException | IllegalAccessException exception) {
 			return m;
