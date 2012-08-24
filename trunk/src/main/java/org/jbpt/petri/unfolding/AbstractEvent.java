@@ -59,12 +59,12 @@ public abstract class AbstractEvent<BPN extends IBPNode<N>, C extends ICondition
 	
 	@Override
 	public String toString() {
-		return "["+this.getTransition().getName()+","+this.getPreConditions()+"]";
+		return this.getName();
 	}
 	
 	@Override
 	public String getName() {
-		return this.t.getName()+"-"+this.ID;
+		return String.format("%s-%s",this.t.getName(),this.ID);
 	}
 	
 	@Override

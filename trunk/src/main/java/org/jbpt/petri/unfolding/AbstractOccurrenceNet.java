@@ -24,6 +24,40 @@ public abstract class AbstractOccurrenceNet<BPN extends IBPNode<N>, C extends IC
 		implements IOccurrenceNet<BPN,C,E,F,N,P,T,M>
 {
 
+	@Override
+	public F addFlow(N from, N to) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Set<N> getSourceNodes() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Set<N> getSinkNodes() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Collection<P> getPlaces(Collection<C> conditions) {
+		Collection<P> result = new ArrayList<P>();
+		for (C c : conditions)
+			result.add(this.c2p.get(c));
+		return result;
+	}
+
+	@Override
+	public Collection<T> getTransitions(Collection<E> events) {
+		Collection<T> result = new ArrayList<T>();
+		for (E e : events)
+			result.add(this.e2t.get(e));
+		return result;
+	}
+
 	ICompletePrefixUnfolding<BPN,C,E,F,N,P,T,M> cpu = null;
 	
 	private Map<T,E> t2e = new HashMap<T,E>();
@@ -146,28 +180,17 @@ public abstract class AbstractOccurrenceNet<BPN extends IBPNode<N>, C extends IC
 		return this.cpu.isCutoffEvent(t2e.get(t));
 	}
 
-	
+	@Override
 	public String toDOT() {
-		return this.toDOT(new ArrayList<P>());
+		return this.toDOT(new ArrayList<P>(),new ArrayList<T>());
 	}
 	
-	
-	public String toDOTcs(Collection<C> cs) {
-		if (cs == null) return "";
-		Collection<P> ps = new ArrayList<P>();
+	@Override
+	public String toDOT(Collection<P> places, Collection<T> transitions) {
+		if (places == null) return "";
+		if (transitions == null) return "";
 		
-		for (C c : cs) {
-			ps.add(this.c2p.get(c));
-		}
-		
-		return this.toDOT(ps);
-	}
-	
-	
-	public String toDOT(Collection<P> ps) {
-		if (ps == null) return "";
-		
-		String result = "digraph G {\n";
+		String result = "digraph G { label=\"" + this.getName() + "\";\n";
 		result += "graph [fontname=\"Helvetica\" fontsize=10 nodesep=0.35 ranksep=\"0.25 equally\"];\n";
 		result += "node [fontname=\"Helvetica\" fontsize=10 fixedsize style=filled penwidth=\"2\"];\n";
 		result += "edge [fontname=\"Helvetica\" fontsize=10 arrowhead=normal color=black];\n";
@@ -175,7 +198,7 @@ public abstract class AbstractOccurrenceNet<BPN extends IBPNode<N>, C extends IC
 		result += "node [shape=circle];\n";
 		
 		for (P p : this.getPlaces()) {
-			if (ps.contains(p))
+			if (places.contains(p))
 				result += String.format("\tn%s[label=\"%s\" width=\".5\" height=\".5\" fillcolor=red];\n", p.getId().replace("-", ""), p.getName());
 			else
 				result += String.format("\tn%s[label=\"%s\" width=\".5\" height=\".5\" fillcolor=white];\n", p.getId().replace("-", ""), p.getName());
@@ -189,6 +212,10 @@ public abstract class AbstractOccurrenceNet<BPN extends IBPNode<N>, C extends IC
 			if (this.isCutoffEvent(t)) {
 				if (t.getName()=="") result += String.format("\tn%s[label=\"%s\" width=\".5\" height=\".1\" fillcolor=orange];\n", t.getId().replace("-", ""), t.getName());
 				else result += String.format("\tn%s[label=\"%s\" width=\".5\" height=\".5\" fillcolor=orange];\n", t.getId().replace("-", ""), t.getName());	
+			}
+			else if (transitions.contains(t)) {
+				if (t.getName()=="") result += String.format("\tn%s[label=\"%s\" width=\".5\" height=\".1\" fillcolor=\"#9ACD32\"];\n", t.getId().replace("-", ""), t.getName());
+				else result += String.format("\tn%s[label=\"%s\" width=\".5\" height=\".5\" fillcolor=green];\n", t.getId().replace("-", ""), t.getName());	
 			}
 			else {
 				if (t.getName()=="") result += String.format("\tn%s[label=\"%s\" width=\".5\" height=\".1\" fillcolor=white];\n", t.getId().replace("-", ""), t.getName());
