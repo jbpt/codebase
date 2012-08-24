@@ -1,5 +1,6 @@
 package org.jbpt.petri.unfolding;
 
+import java.util.Collection;
 import java.util.Set;
 
 import org.jbpt.petri.IFlow;
@@ -20,8 +21,12 @@ public interface IOccurrenceNet<BPN extends IBPNode<N>, C extends ICondition<BPN
 	public C getCondition(P p);
 
 	public P getPlace(C c);
+	
+	public Collection<P> getPlaces(Collection<C> conditions);
 
 	public T getTransition(E e);
+	
+	public Collection<T> getTransitions(Collection<E> events);
 
 	public BPN getUnfoldingNode(N n);
 
@@ -38,5 +43,7 @@ public interface IOccurrenceNet<BPN extends IBPNode<N>, C extends ICondition<BPN
 	public void setCompletePrefixUnfolding(ICompletePrefixUnfolding<BPN,C,E,F,N,P,T,M> cpu);
 	
 	public void setBranchingProcess(IBranchingProcess<BPN,C,E,F,N,P,T,M> bp);
+	
+	public String toDOT(Collection<P> places, Collection<T> transitions);
 
 }
