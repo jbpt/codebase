@@ -1,10 +1,12 @@
 package org.jbpt.utils;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.Set;
 
@@ -40,31 +42,57 @@ public class IOUtils {
 	 *             in case the DOT binary is not found or the file can't be
 	 *             written
 	 */
-	public static void invokeDOT(String fileName, String dotSource,
+	public static void invokeDOT(String directory, String fileName, String dotSource,
 			String... extraDotParameters) throws IOException {
 		final String[] args;
-		if (extraDotParameters != null && extraDotParameters.length > 0) {
-			args = new String[extraDotParameters.length+1];
+		if (extraDotParameters != null && extraDotParameters.length > 0 
+				&&  !extraDotParameters[0].isEmpty()) {
+			args = new String[extraDotParameters.length+4];
 			// DOT binary has to be 1st parameter
 			args[0] = getDOTPath();
 			// Add extra parameters
 			for (int i = 0; i < extraDotParameters.length; i++) {
 				args[i+1] = extraDotParameters[i];
 			}
+			args[extraDotParameters.length] = "-Tpng";
+			args[extraDotParameters.length+1] = "-v";
+			args[extraDotParameters.length+2] = "-o"+fileName; 
 		} else {
 			// Use default settings
 			args = new String[] { getDOTPath(), "-Eshape=normal",
-					"-Nshape=ellipse", "-Tpng"};
+					"-Nshape=ellipse", "-Tpng", "-v", "-o"+fileName};
 		}
+		
 		final ProcessBuilder pb = new ProcessBuilder(args);
-		pb.redirectOutput(new File(fileName));
+		pb.directory(new File(directory));
 		pb.redirectErrorStream(true);
+		
 		final Process dotProcess = pb.start();
 		BufferedWriter out = new BufferedWriter(new PrintWriter(
 				dotProcess.getOutputStream()));
 		out.write(dotSource);
 		out.flush();
+		out.close();
+				
+		BufferedReader br = new BufferedReader(new InputStreamReader(dotProcess.getInputStream()));
+		
+		@SuppressWarnings("unused")
+		int line;
+		while ((line = br.read()) != -1) {
+			//NoOp just consume every output silently
+		}
+
+		//Wait until Graphviz finishes
+		try {
+		    dotProcess.waitFor();
+		} catch (InterruptedException e) {
+		    Thread.interrupted();
+		}
 	}
+	
+	public static void invokeDOT(String directory, String fileName, String dotSource) throws IOException {
+		invokeDOT(directory, fileName, dotSource, new String[0]);
+	}	
 	
 	private static String getDOTPath() throws IOException {
 		if (DEFAULT_GRAPHVIZ_DEFAULT_PATH != null) {
