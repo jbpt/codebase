@@ -46,4 +46,8 @@ public interface ICompletePrefixUnfolding<BPN extends IBPNode<N>, C extends ICon
 	 * @return Ordered list of transitions of the originative system which was used to construct this complete prefix unfolding.
 	 */
 	public List<T> getTotalOrderOfTransitions();
+	
+	public boolean isHealthyCutoffEvent(E event);
+	
+	public boolean isProper();
 }

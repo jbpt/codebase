@@ -16,6 +16,7 @@ import org.jbpt.petri.ITransition;
  * @author Artem Polyvyanyy
  */
 public interface IBranchingProcess<BPN extends IBPNode<N>, C extends ICondition<BPN,C,E,F,N,P,T,M>, E extends IEvent<BPN,C,E,F,N,P,T,M>, F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition, M extends IMarking<F,N,P,T>>
+		extends IOrderingRelationsDescriptor<BPN,N>
 {
 	/**
 	 * Get conditions of this branching process.
@@ -51,51 +52,6 @@ public interface IBranchingProcess<BPN extends IBPNode<N>, C extends ICondition<
 	 * @return The originative net system of this branching process. 
 	 */
 	public INetSystem<F,N,P,T,M> getOriginativeNetSystem();
-
-	/**
-	 * Check if two nodes of this branching process are in the causal relation.
-	 * 
-	 * @param n1 Node of this branching process.
-	 * @param n2 Node of this branching process.
-	 * @return <tt>true</tt> if 'n1' and 'n2' are in the causal relation; otherwise <tt>false</tt>.
-	 */
-	public boolean areCausal(BPN n1, BPN n2);
-
-	/**
-	 * Check if two nodes of this branching process are in the inverse causal relation.
-	 * 
-	 * @param n1 Node of this branching process.
-	 * @param n2 Node of this branching process.
-	 * @return <tt>true</tt> if 'n1' and 'n2' are in the inverse causal relation; otherwise <tt>false</tt>.
-	 */
-	public boolean areInverseCausal(BPN n1, BPN n2);
-
-	/**
-	 * Check if two nodes of this branching process are concurrent.
-	 * 
-	 * @param n1 Node of this branching process.
-	 * @param n2 Node of this branching process.
-	 * @return <tt>true</tt> if 'n1' and 'n2' are concurrent; otherwise <tt>false</tt>.
-	 */
-	public boolean areConcurrent(BPN n1, BPN n2);
-
-	/**
-	 * Check if two nodes of this branching process are in conflict.
-	 * 
-	 * @param n1 Node of this branching process.
-	 * @param n2 Node of this branching process.
-	 * @return <tt>true</tt> if 'n1' and 'n2' are in conflict; otherwise <tt>false</tt>.
-	 */
-	public boolean areInConflict(BPN n1, BPN n2);
-
-	/**
-	 * Get ordering relation between two nodes of this branching process.
-	 * 
-	 * @param n1 Node of this branching process.
-	 * @param n2 Node of this branching process.
-	 * @return Ordering relation between 'n1' and 'n2', see {@link OrderingRelationType}.
-	 */
-	public OrderingRelationType getOrderingRelation(BPN n1, BPN n2);
 	
 	/**
 	 * Factory method to provide a condition of the branching process implementation.

@@ -1,13 +1,10 @@
 package org.jbpt.test.petri.unfolding;
 
-import java.io.FileNotFoundException;
-
 import junit.framework.TestCase;
 
 import org.jbpt.petri.NetSystem;
-import org.jbpt.petri.Place;
-import org.jbpt.petri.Transition;
-import org.jbpt.petri.unfolding.OccurrenceNet;
+import org.jbpt.petri.unfolding.Event;
+import org.jbpt.petri.unfolding.OrderingRelationsGraph;
 import org.jbpt.petri.unfolding.ProperCompletePrefixUnfolding;
 import org.jbpt.pm.Activity;
 import org.jbpt.pm.AndGateway;
@@ -15,12 +12,136 @@ import org.jbpt.pm.ProcessModel;
 import org.jbpt.pm.XorGateway;
 import org.jbpt.pm.structure.ProcessModel2NetSystem;
 import org.jbpt.throwable.TransformationException;
-import org.jbpt.utils.IOUtils;
 
-
-public class ProperUnfoldingTest extends TestCase {
+/**
+ * Proper complete prefix unfolding tests. 
+ *
+ * @author Artem Polyvyanyy
+ *
+ */
+public class ProperCompletePrefixUnfoldingTest extends TestCase {
 	
-	public void test1() throws TransformationException, FileNotFoundException {
+	/**
+	 * Basic acyclic rigid test.
+	 * 
+	 * Test is based on Figure 8 and Figure 9(a) in:
+	 * Artem Polyvyanyy, Luciano García-Bañuelos, Marlon Dumas: Structuring acyclic process models. Inf. Syst. 37(6): 518-538 (2012)
+	 */
+	public void testBasicAcyclicRigid() throws TransformationException {
+		ProcessModel p = new ProcessModel();
+		
+		Activity ti = new Activity();
+		Activity to = new Activity();
+		Activity ta = new Activity("A");
+		Activity tb = new Activity("B");
+		Activity tc = new Activity("C");
+		Activity td = new Activity("D");
+		
+		XorGateway gu = new XorGateway();
+		XorGateway gx = new XorGateway();
+		XorGateway gy = new XorGateway();
+		
+		AndGateway gv = new AndGateway();
+		AndGateway gw = new AndGateway();
+		AndGateway gz = new AndGateway();
+		
+		p.addControlFlow(ti,gu);
+		p.addControlFlow(gu,ta);
+		p.addControlFlow(gu,tb);
+		p.addControlFlow(ta,gv);
+		p.addControlFlow(tb,gw);
+		p.addControlFlow(gv,gx);
+		p.addControlFlow(gw,gy);
+		p.addControlFlow(gv,gy);
+		p.addControlFlow(gw,gx);
+		p.addControlFlow(gx,tc);
+		p.addControlFlow(gy,td);
+		p.addControlFlow(tc,gz);
+		p.addControlFlow(td,gz);
+		p.addControlFlow(gz,to);
+		
+		NetSystem net = ProcessModel2NetSystem.transform(p);
+		ProperCompletePrefixUnfolding pcpu = new ProperCompletePrefixUnfolding(net);
+		OrderingRelationsGraph orgraph = new OrderingRelationsGraph(pcpu);
+		
+		assertEquals(4,orgraph.getEvents().size());
+		
+		for (Event e1 : orgraph.getEvents()) {
+			for (Event e2 : orgraph.getEvents()) {
+				if (e1.equals(e2))
+					assertTrue(orgraph.areConcurrent(e1,e2));
+				else {
+					if (e1.getTransition().getLabel().equals("A")) {
+						if (e2.getTransition().getLabel().equals("B")) {
+							assertTrue(orgraph.areInConflict(e1,e2));
+							assertTrue(orgraph.areInConflict(e2,e1));
+						}
+						if (e2.getTransition().getLabel().equals("C")) {
+							assertTrue(orgraph.areCausal(e1,e2));
+							assertTrue(orgraph.areInverseCausal(e2,e1));
+						}
+						if (e2.getTransition().getLabel().equals("D")) {
+							assertTrue(orgraph.areCausal(e1,e2));
+							assertTrue(orgraph.areInverseCausal(e2,e1));
+						}
+					}
+					if (e1.getTransition().getLabel().equals("B")) {
+						if (e2.getTransition().getLabel().equals("A")) {
+							assertTrue(orgraph.areInConflict(e1,e2));
+							assertTrue(orgraph.areInConflict(e2,e1));
+						}
+						if (e2.getTransition().getLabel().equals("C")) {
+							assertTrue(orgraph.areCausal(e1,e2));
+							assertTrue(orgraph.areInverseCausal(e2,e1));
+						}
+						if (e2.getTransition().getLabel().equals("D")) {
+							assertTrue(orgraph.areCausal(e1,e2));
+							assertTrue(orgraph.areInverseCausal(e2,e1));
+						}
+					}
+					if (e1.getTransition().getLabel().equals("C")) {
+						if (e2.getTransition().getLabel().equals("A")) {
+							assertTrue(orgraph.areInverseCausal(e1,e2));
+							assertTrue(orgraph.areCausal(e2,e1));
+						}
+						if (e2.getTransition().getLabel().equals("B")) {
+							assertTrue(orgraph.areInverseCausal(e1,e2));
+							assertTrue(orgraph.areCausal(e2,e1));
+						}
+						if (e2.getTransition().getLabel().equals("D")) {
+							assertTrue(orgraph.areConcurrent(e1,e2));
+							assertTrue(orgraph.areConcurrent(e2,e1));
+						}
+					}
+					if (e1.getTransition().getLabel().equals("D")) {
+						if (e2.getTransition().getLabel().equals("A")) {
+							assertTrue(orgraph.areInverseCausal(e1,e2));
+							assertTrue(orgraph.areCausal(e2,e1));
+						}
+						if (e2.getTransition().getLabel().equals("B")) {
+							assertTrue(orgraph.areInverseCausal(e1,e2));
+							assertTrue(orgraph.areCausal(e2,e1));
+						}
+						if (e2.getTransition().getLabel().equals("C")) {
+							assertTrue(orgraph.areConcurrent(e1,e2));
+							assertTrue(orgraph.areConcurrent(e2,e1));
+						}
+					}
+				}
+			}
+		}
+		
+		//this.serialize(p,net,occnet,orgraph);
+	}
+
+	/*private void serialize(ProcessModel p, NetSystem net, OccurrenceNet bpnet, OrderingRelationsGraph orGraph) {
+		IOUtils.toFile("model.dot", p.toDOT());
+		IOUtils.toFile("net.dot", net.toDOT());
+		IOUtils.toFile("unf.dot", bpnet.toDOT());
+		IOUtils.toFile("orgraph.dot", orGraph.toDOT());
+	}*/
+	
+	/*public void test1() throws TransformationException, FileNotFoundException {
 		ProcessModel p = new ProcessModel();
 		
 		Activity ti = new Activity("I");
@@ -272,5 +393,5 @@ public class ProperUnfoldingTest extends TestCase {
 		ProperCompletePrefixUnfolding unf = new ProperCompletePrefixUnfolding(net);
 		OccurrenceNet bpnet = (OccurrenceNet)unf.getOccurrenceNet();
 		IOUtils.toFile("unf4.dot", bpnet.toDOT());
-	}
+	}*/
 }
