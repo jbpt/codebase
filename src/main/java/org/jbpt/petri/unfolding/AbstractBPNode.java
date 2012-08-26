@@ -1,6 +1,6 @@
 package org.jbpt.petri.unfolding;
 
-import org.jbpt.hypergraph.abs.GObject;
+import org.jbpt.hypergraph.abs.Vertex;
 import org.jbpt.petri.INode;
 
 /**
@@ -8,6 +8,11 @@ import org.jbpt.petri.INode;
  * 
  * @author Artem Polyvyanyy
  */
-public abstract class AbstractBPNode<N extends INode> extends GObject implements IBPNode<N> {
+public abstract class AbstractBPNode<N extends INode> extends Vertex implements IBPNode<N> {
 	protected int ID = 0;
+	
+	@Override
+	public String getLabel() {
+		return this.getName();
+	}
 }

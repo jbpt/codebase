@@ -10,12 +10,8 @@ import org.jbpt.petri.INode;
 import org.jbpt.petri.IPlace;
 import org.jbpt.petri.ITransition;
 
-
-
 /**
- * Proper complete prefix unfolding
- * 
- * Used for structuring
+ * Proper complete prefix unfolding.
  *  
  * @author Artem Polyvyanyy
  */
@@ -24,7 +20,6 @@ public abstract class AbstractProperCompletePrefixUnfolding<BPN extends IBPNode<
 {
 	public AbstractProperCompletePrefixUnfolding() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public AbstractProperCompletePrefixUnfolding(INetSystem<F,N,P,T,M> sys, CompletePrefixUnfoldingSetup setup) {
@@ -36,7 +31,7 @@ public abstract class AbstractProperCompletePrefixUnfolding<BPN extends IBPNode<
 	}
 
 	/**
-	 * Check healthy property (check cutoff extension)
+	 * Check healthy property
 	 */
 	@Override
 	protected E checkCutoffB(E e, E corr) {

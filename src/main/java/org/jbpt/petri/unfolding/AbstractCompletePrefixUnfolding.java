@@ -32,7 +32,8 @@ import org.jbpt.petri.unfolding.order.UnfoldingAdequateOrder;
  */
 public abstract class AbstractCompletePrefixUnfolding<BPN extends IBPNode<N>, C extends ICondition<BPN,C,E,F,N,P,T,M>, E extends IEvent<BPN,C,E,F,N,P,T,M>, F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition, M extends IMarking<F,N,P,T>>
 				extends AbstractBranchingProcess<BPN,C,E,F,N,P,T,M>
-				implements ICompletePrefixUnfolding<BPN,C,E,F,N,P,T,M> {
+				implements ICompletePrefixUnfolding<BPN,C,E,F,N,P,T,M> 
+{
 
 	// setup to use when constructing this complete prefix unfolding
 	protected CompletePrefixUnfoldingSetup setup = null;
@@ -538,5 +539,34 @@ public abstract class AbstractCompletePrefixUnfolding<BPN extends IBPNode<N>, C 
 			exception.printStackTrace();
 			return e;
 		}
+	}
+	
+	@Override
+	public boolean isHealthyCutoffEvent(E event) {
+		E corr = this.getCorrespondingEvent(event);
+		if (corr==null) return false;
+		
+		Set<C> ecs = new HashSet<C>(event.getLocalConfiguration().getCut());
+		Set<C> ccs = new HashSet<C>(corr.getLocalConfiguration().getCut());
+		
+		ecs.removeAll(event.getPostConditions());
+		ccs.removeAll(corr.getPostConditions());
+		
+		if (ecs.equals(ccs)) 
+			return true;
+		
+		return false;
+	}
+	
+	@Override
+	public boolean isProper() {
+		for (E e : this.getEvents()) {
+			E corr = this.getCorrespondingEvent(e);
+			if (corr==null) continue;
+			
+			if (!this.isHealthyCutoffEvent(e))
+				return false;
+		}
+		return true;
 	}
 }

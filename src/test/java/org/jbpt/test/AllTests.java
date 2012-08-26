@@ -9,6 +9,7 @@ import org.jbpt.test.bp.CBPCreatorIdempotenceTest;
 import org.jbpt.test.bp.RelSetAlgebraTest;
 import org.jbpt.test.bp.RelSetComputationTest;
 import org.jbpt.test.bp.RelSetLogCreatorTest;
+import org.jbpt.test.petri.unfolding.ProperCompletePrefixUnfoldingTest;
 import org.jbpt.test.tree.BCTreeExtensiveTest;
 import org.jbpt.test.tree.BCTreeTest;
 import org.jbpt.test.tree.RPSTExtensiveTest;
@@ -43,6 +44,10 @@ public class AllTests {
 		suite.addTestSuite(TCTreeTest.class);
 		suite.addTestSuite(WFTreeTest.class);
 		// Tests of jBPT trees [END]
+		
+		// Tests of unfolding [BEGIN]		
+		suite.addTestSuite(ProperCompletePrefixUnfoldingTest.class);
+		// Tests of unfolding [END]
 		
 		return suite;
 	}
