@@ -16,7 +16,7 @@ import org.jbpt.petri.ITransition;
  * @author Artem Polyvyanyy
  */
 public interface IBranchingProcess<BPN extends IBPNode<N>, C extends ICondition<BPN,C,E,F,N,P,T,M>, E extends IEvent<BPN,C,E,F,N,P,T,M>, F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition, M extends IMarking<F,N,P,T>>
-		extends IOrderingRelationsDescriptor<BPN,N>
+		extends IOrderingRelationsDescriptor<BPN,N>, Cloneable
 {
 	/**
 	 * Get conditions of this branching process.
@@ -182,4 +182,6 @@ public interface IBranchingProcess<BPN extends IBPNode<N>, C extends ICondition<
 	 * @return Occurrence net.
 	 */
 	public IOccurrenceNet<BPN,C,E,F,N,P,T,M> getOccurrenceNet();
+	
+	public IBranchingProcess<BPN,C,E,F,N,P,T,M> clone();
 }
