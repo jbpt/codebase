@@ -1,8 +1,10 @@
 package org.jbpt.petri.unfolding;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -18,6 +20,8 @@ public abstract class AbstractBranchingProcess<BPN extends IBPNode<N>, C extends
 
 	// originative net system
 	protected INetSystem<F,N,P,T,M> sys = null;
+	
+	protected List<E> history = null;
 	
 	protected Set<E> events	= null;	
 	protected Set<C> conds	= null;
@@ -43,7 +47,8 @@ public abstract class AbstractBranchingProcess<BPN extends IBPNode<N>, C extends
 	}
 	
 	protected void initialize() {
-		this.events	= new HashSet<E>();	
+		this.history = new ArrayList<E>();
+		this.events	= new HashSet<E>();
 		this.conds	= new HashSet<C>();
 		this.iniBP	= this.createCut();
 		this.ca		= new HashMap<BPN,Set<BPN>>();
@@ -270,6 +275,7 @@ public abstract class AbstractBranchingProcess<BPN extends IBPNode<N>, C extends
 		}
 		event.setPostConditions(postConditions);
 
+		this.history.add(event);
 		return true;
 	}
 	
@@ -428,6 +434,46 @@ public abstract class AbstractBranchingProcess<BPN extends IBPNode<N>, C extends
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public IBranchingProcess<BPN,C,E,F,N,P,T,M> clone() {
+		IBranchingProcess<BPN,C,E,F,N,P,T,M> clone = null;
+		try {
+			clone = (IBranchingProcess<BPN,C,E,F,N,P,T,M>)BranchingProcess.class.newInstance();
+		} catch (InstantiationException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		
+		clone.setNetSystem(this.sys);
+		
+		for (C c : this.conds) {
+			if (c.getPreEvent()!=null) continue;
+			C newC = this.createCondition(c.getPlace(), null);
+			clone.appendCondition(newC);
+		}
+		
+		for (E e : this.history) {
+			E newE = this.createEvent(e.getTransition(), null);
+			ICoSet<BPN,C,E,F,N,P,T,M> preset = this.createCoSet();
+			
+			Set<C> max = new HashSet<C>(clone.getMax());
+			for (C c2 : e.getPreConditions()) {
+				for (C c1 : max) {
+					if (c1.getPlace().equals(c2.getPlace())) {
+						preset.add(c1);
+						max.remove(c1);
+						break;
+					}
+				}
+			}
+			
+			newE.setPreConditions(preset);
+			clone.appendEvent(newE);
+		}
+		
+		return clone;
 	}
 	
 	/*protected boolean appendEvent2(Event e) {
