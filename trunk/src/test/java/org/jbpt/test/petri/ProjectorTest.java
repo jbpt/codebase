@@ -36,7 +36,7 @@ public class ProjectorTest extends TestCase {
 		projectionSet.removeAll(pn.getSilentTransitions());
 		
 		projector.reducePetriNetBasedOnProjectionSet(pn, projectionSet);
-		
+	
 		assertEquals(19, pn.getTransitions().size());
 		assertEquals(14, pn.getPlaces().size());
 		assertEquals(40, pn.getFlow().size());

@@ -38,10 +38,10 @@ public class PetriNetProjector<F extends IFlow<N>, N extends INode, P extends IP
 		for (T t : notInProjectionSet) {
 			Set<P> pre = pn.getPreset(t);
 
-			if(pre.size() < 2) {
+			if(pre.size() == 1) {
 				P pre_p = (P) pre.iterator().next();
 				Set<T> possiblyConcurrentTransitions = pn.getPostset(pre_p);
-				if (possiblyConcurrentTransitions.size() < 2) //only one outgoing arc to current transition and no parallel transition
+				if (possiblyConcurrentTransitions.size() < 2) 
 					if (pn.getPostset(t).size() < 2)
 						applyReductionRuleA(pn, t);
 			}
@@ -50,17 +50,14 @@ public class PetriNetProjector<F extends IFlow<N>, N extends INode, P extends IP
 		//Rule b)
 		for (T t : notInProjectionSet) {
 			Set<P> suc = pn.getPostset(t);
-			if(suc.size() < 2){
+			if(suc.size() == 1){
 				P p = (P) suc.iterator().next();
 				Set<T> parallel = pn.getPreset(p);
 				if(parallel.size() < 2){
 					Set<T> sucTs = pn.getPostset(p);
 					
-					if(sucTs.size() < 2){
-						T sucT = (T) sucTs.iterator().next();
-						if(pn.getPreset(sucT).size() < 2){
-							applyReductionRuleB(pn, t);
-						}
+					if(sucTs.size() == 1){
+						applyReductionRuleB(pn, t);
 					}
 				}
 			}
@@ -70,7 +67,7 @@ public class PetriNetProjector<F extends IFlow<N>, N extends INode, P extends IP
 		//Rule c)
 		for (T t : notInProjectionSet) {
 			Set<P> pre = pn.getPreset(t);
-			if(pre.size() < 2){
+			if(pre.size() == 1){
 				P p = (P) pre.iterator().next();
 				Set<T> parallel = pn.getPostset(p);
 				if(parallel.size() < 2){
@@ -123,7 +120,7 @@ public class PetriNetProjector<F extends IFlow<N>, N extends INode, P extends IP
 			Set<P> preset = pn.getPreset(t);
 			Set<P> postset = pn.getPostset(t);
 			
-			if(preset.size() < 2 && postset.size() < 2) {
+			if(preset.size() == 1 && postset.size() == 1) {
 				P pre = (P) preset.iterator().next(); 
 				Set<T> parallelTs = pn.getPostset(pre); 
 				
@@ -145,12 +142,8 @@ public class PetriNetProjector<F extends IFlow<N>, N extends INode, P extends IP
 			Set<P> pre = pn.getPreset(t);
 			Set<P> suc = pn.getPostset(t);
 
-			if(pre.size() < 2 && suc.size() < 2){
-				P pre_p = (P) pre.iterator().next(); 
-				P suc_p = (P) suc.iterator().next();
-				if(pre_p.equals(suc_p))
+			if(pre.containsAll(suc) && suc.containsAll(pre))
 					tToRemove.add(t);
-			}
 		}
 		pn.removeTransitions(tToRemove);
 		
@@ -160,12 +153,9 @@ public class PetriNetProjector<F extends IFlow<N>, N extends INode, P extends IP
 			Set<T> preTs = pn.getPreset(p);
 			Set<T> sucTs = pn.getPostset(p);
 
-			if (preTs.size() < 2 && sucTs.size() < 2) {
-				T t = (T) preTs.iterator().next();
-				if (t.equals((T) sucTs.iterator().next())) {
-					pToRemove.add(p); 	
-				}				
-			}
+			if (preTs.containsAll(sucTs) && sucTs.containsAll(preTs))
+				pToRemove.add(p); 	
+			
 		}
 		pn.removePlaces(pToRemove);
 	}
