@@ -183,5 +183,12 @@ public interface IBranchingProcess<BPN extends IBPNode<N>, C extends ICondition<
 	 */
 	public IOccurrenceNet<BPN,C,E,F,N,P,T,M> getOccurrenceNet();
 	
+	/**
+	 * Check if a given collection of conditions is a cut in this branching process. 
+	 * @param conditions Collection of conditions.
+	 * @return <tt>true</tt> if the given collection of conditions is a cut of this branching process; otherwise <tt>false</tt>.
+	 */
+	public boolean isCut(Collection<C> conditions);
+	
 	public IBranchingProcess<BPN,C,E,F,N,P,T,M> clone();
 }

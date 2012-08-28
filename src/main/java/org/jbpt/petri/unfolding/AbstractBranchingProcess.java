@@ -16,7 +16,8 @@ import org.jbpt.petri.IPlace;
 import org.jbpt.petri.ITransition;
 
 public abstract class AbstractBranchingProcess<BPN extends IBPNode<N>, C extends ICondition<BPN,C,E,F,N,P,T,M>, E extends IEvent<BPN,C,E,F,N,P,T,M>, F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition, M extends IMarking<F,N,P,T>> 
-		implements IBranchingProcess<BPN,C,E,F,N,P,T,M> {
+		implements IBranchingProcess<BPN,C,E,F,N,P,T,M> 
+{
 
 	// originative net system
 	protected INetSystem<F,N,P,T,M> sys = null;
@@ -474,6 +475,39 @@ public abstract class AbstractBranchingProcess<BPN extends IBPNode<N>, C extends
 		}
 		
 		return clone;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public boolean isCut(Collection<C> conditions) {
+		for (C c1 : conditions) {
+			Collection<C> cs = new ArrayList<C>(conditions);
+			cs.remove(c1);
+			for (C c2 : cs) {
+				if (c1.equals(c2)) return false;
+				
+				if (!this.areConcurrent((BPN)c1,(BPN)c2))
+					return false;
+			}
+		}
+		
+		for (C c : this.getConditions()) {
+			if (conditions.contains(c)) continue; 
+			
+			boolean flag = true;			
+			for (C cc : conditions) {
+				if (!this.areConcurrent((BPN)c,(BPN)cc)) {
+					flag = false;
+					break;
+				}
+			}
+			
+			if (flag)
+				return false;
+			
+		}
+		
+		return true;
 	}
 	
 	/*protected boolean appendEvent2(Event e) {
