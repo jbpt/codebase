@@ -130,20 +130,13 @@ public class PNMLSerializer extends DefaultHandler
 					xmlReader.parse(new InputSource(inStream));	
 				}
 			}
-			catch (IOException e)
-			{
+			catch (IOException e) {
 				System.out.println("Error reading PNML-File.");
 			}
 		}
-		catch (SAXException e)
-		{
+		catch (SAXException e) {
 			System.out.println("SAX Exception: " + e.getMessage());
 		}
-	
-		// add an initial token to each source place
-		// Artem: we should not put tokens if they do not come from PNML file 
-		/*for (Place p : pn.getSourcePlaces())
-			pn.getMarking().put(p,1);*/
 	
 		return pn;
 	}
