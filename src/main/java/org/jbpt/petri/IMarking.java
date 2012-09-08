@@ -96,4 +96,6 @@ public interface IMarking<F extends IFlow<N>, N extends INode, P extends IPlace,
 	 * @param net Petri net to associate this marking with.
 	 */
 	public void setPetriNet(IPetriNet<F,N,P,T> net);
+	
+	public Object clone();
 }

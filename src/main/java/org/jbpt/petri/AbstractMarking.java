@@ -214,4 +214,23 @@ public abstract class AbstractMarking<F extends IFlow<N>, N extends INode, P ext
 		this.clear();
 		this.net = net;
 	}
+	
+	@Override
+	public Object clone() {
+		@SuppressWarnings("unchecked")
+		AbstractMarking<F,N,P,T> clone = (AbstractMarking<F,N,P,T>) super.clone();
+		
+		return clone;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		for (P p : this.net.getPlaces())
+			if (this.get(p) > 0)
+				sb.append(p.getId() + "^" + this.get(p) + " ");
+		
+		return sb.toString();
+	}
+
 }
