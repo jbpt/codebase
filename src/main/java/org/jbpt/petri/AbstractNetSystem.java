@@ -84,15 +84,39 @@ public abstract class AbstractNetSystem<F extends IFlow<N>, N extends INode, P e
 	@Override
 	public Set<T> getEnabledTransitions() {
 		Set<T> result = new HashSet<T>();
-		Set<P> marked = new HashSet<P>(this.getMarkedPlaces());
 		
 		for (T t : this.getTransitions()) {
-			if (marked.containsAll(this.getPreset(t)))
+			if (this.getMarkedPlaces().containsAll(this.getPreset(t)))
 				result.add(t);
 		}
 		
 		return result;
 	}
+	
+	@Override
+	public Set<T> getEnabledTransitions(Set<T> lastEnabled, T lastFired) {
+		Set<T> enabled = new HashSet<>(lastEnabled);
+		/*
+		 * Old disabled?
+		 */
+		for (T t : lastEnabled) {
+			if (!this.getMarkedPlaces().containsAll(this.getPreset(t)))
+				enabled.remove(t);
+				
+		}
+		
+		/*
+		 * New enabled?
+		 */
+		for (P p : this.getPostset(lastFired)) {
+			for (T t : this.getPostset(p)) {
+				if (this.getMarkedPlaces().containsAll(this.getPreset(t)))
+					enabled.add(t);
+			}
+		}
+		return enabled;
+	}
+
 
 	@Override
 	public boolean isEnabled(T t) {
@@ -223,6 +247,9 @@ public abstract class AbstractNetSystem<F extends IFlow<N>, N extends INode, P e
 	@Override
 	public void loadMarking(M newMarking) {
 		if (newMarking.getPetriNet()!=this) return;
+		
+		if (this.marking.equals(newMarking))
+			return;
 		
 		this.marking.clear();
 		for (Map.Entry<P,Integer> entry : newMarking.entrySet()) {
