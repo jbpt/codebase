@@ -1,7 +1,5 @@
 package org.jbpt.test.petri;
 
-import java.util.Set;
-
 import junit.framework.TestCase;
 
 import org.jbpt.petri.Flow;
@@ -31,11 +29,8 @@ public class ProjectorTest extends TestCase {
 		assertEquals(43, pn.getTransitions().size());
 		assertEquals(38, pn.getPlaces().size());
 		assertEquals(88, pn.getFlow().size());
-		
-		Set<Transition> projectionSet = pn.getTransitions();
-		projectionSet.removeAll(pn.getSilentTransitions());
-		
-		projector.reducePetriNetBasedOnProjectionSet(pn, projectionSet);
+				
+		projector.reducePetriNetBasedOnProjectionSet(pn, pn.getObservableTransitions());
 	
 		assertEquals(19, pn.getTransitions().size());
 		assertEquals(14, pn.getPlaces().size());
