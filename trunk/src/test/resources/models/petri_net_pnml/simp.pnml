@@ -270,6 +270,10 @@
         <name>
             <text></text>
          </name>
+       <initialMarking>
+        <text>1</text>
+      </initialMarking>
+         
     </place>
     <place id="place_30">
         <graphics>
@@ -635,8 +639,7 @@
             <dimension x="13" y="13" />
         </graphics>
         <name>
-            <text>customer 
-extension</text>
+            <text>customer extension</text>
          </name>
         <toolspecific tool="ProM" version="5.2">
         </toolspecific>
