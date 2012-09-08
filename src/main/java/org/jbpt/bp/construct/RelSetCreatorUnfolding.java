@@ -118,7 +118,8 @@ public class RelSetCreatorUnfolding extends AbstractRelSetCreator implements Rel
 		
 		for (Node t : nodes)
 			if (t instanceof Transition)
-				this.transitionsForBaseOrderMatrix.add((Transition)t);
+				if (!this.transitionsForBaseOrderMatrix.contains((Transition)t))
+					this.transitionsForBaseOrderMatrix.add((Transition)t);
 		
 		this.deriveBaseOrderRelation(rs);
 
