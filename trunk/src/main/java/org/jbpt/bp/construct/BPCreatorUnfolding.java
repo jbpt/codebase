@@ -104,7 +104,8 @@ public class BPCreatorUnfolding extends AbstractRelSetCreator implements RelSetC
 		
 		for (Node t : nodes)
 			if (t instanceof Transition)
-				this.transitionsForWeakOrderMatrix.add((Transition)t);
+				if (!this.transitionsForWeakOrderMatrix.contains((Transition)t))
+					this.transitionsForWeakOrderMatrix.add((Transition)t);
 		
 		this.deriveWeakOrderRelation();
 
