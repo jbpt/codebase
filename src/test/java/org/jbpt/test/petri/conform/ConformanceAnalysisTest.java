@@ -27,7 +27,8 @@ public class ConformanceAnalysisTest {
 		 * Load the net that is used as a running example in 
 		 * "Process Compliance Analysis based on Behavioural Profiles"
 		 */
-		NetSystem net = serializer.parse("src/org/jbpt/test/petri/conform/conf_test.pnml");
+		NetSystem net = serializer.parse("src/test/java/org/jbpt/test/petri/conform/conf_test.pnml");
+		net.loadNaturalMarking();
 		
 		/*
 		 * Create example traces, same as used as examples in 
@@ -50,10 +51,8 @@ public class ConformanceAnalysisTest {
 		Trace trace5 = new Trace(t5);
 		trace5.setId(5);
 		
-		/* Derive the causal behavioural profile for the net system
-		 * 
-		 * Tree method is more efficient, but currently broken
-		 * So, we rely on unfolding method 
+		/* 
+		 * Derive the causal behavioural profile for the net system
 		 */
 		CausalBehaviouralProfile<NetSystem, Node> baseProfile = 
 				//CBPCreatorTree.getInstance().deriveCausalBehaviouralProfile(net);
