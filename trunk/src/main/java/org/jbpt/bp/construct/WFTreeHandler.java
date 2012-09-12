@@ -87,8 +87,8 @@ public class WFTreeHandler {
 		if (pathA.size()<2 || pathB.size()<2) return false;
 		
 		List<IRPSTNode<Flow,Node>> children = this.wfTree.getPolygonChildren(lca);
-		System.out.println(children.indexOf(pathA.get(1)));
-		System.out.println(children.indexOf(pathB.get(1)));
+//		System.out.println(children.indexOf(pathA.get(1)));
+//		System.out.println(children.indexOf(pathB.get(1)));
 		
 		if (children.indexOf(pathA.get(1))<children.indexOf(pathB.get(1)))
 			return true;
@@ -179,14 +179,6 @@ public class WFTreeHandler {
 		
 		// Get path from ROOT to gamma
 		List<IRPSTNode<Flow, Node>> path = this.wfTree.getDownwardPath(this.wfTree.getRoot(), gamma);
-		
-		  
-		if (alpha.equals(beta)) { // x||x ?
-			for (IRPSTNode<Flow, Node> node: path) {
-				if (this.wfTree.getRefinedBondType(node)==WFTreeBondType.LOOP) return true;
-				if (node.getType()==TCType.RIGID) return false;
-			}
-		}
 		
 		// check path from ROOT to the parent of gamma
 		for (int i=0; i<path.size()-1; i++) { 
