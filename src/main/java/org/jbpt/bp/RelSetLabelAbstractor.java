@@ -22,7 +22,7 @@ public class RelSetLabelAbstractor {
 		List<LabelEntity> labels = new ArrayList<LabelEntity>();
 		
 		for (N e : rs.getEntities())
-			if (!labels.contains(e.getLabel()))
+			if (!labels.contains(new LabelEntity(e.getLabel())))
 				labels.add(new LabelEntity(e.getLabel()));
 		
 		RelSet<M,LabelEntity> result = new RelSet<M, LabelEntity>(rs.getModel(), labels);
