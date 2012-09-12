@@ -29,7 +29,9 @@ public class CBPForTraceLabelAbstractor {
 		for (TraceEntry e : cbp.getEntities()) {
 			if (e.getLabel().equals(""))
 				continue;
-			labels.add(new LabelEntity(e.getLabel()));
+			LabelEntity le = new LabelEntity(e.getLabel());
+			if (!labels.contains(le))
+				labels.add(le);
 		}
 		
 		CausalBehaviouralProfile<Trace,LabelEntity> result = new CausalBehaviouralProfile<Trace, LabelEntity>(cbp.getModel(), labels);
