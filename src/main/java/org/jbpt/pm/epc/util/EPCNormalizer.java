@@ -270,25 +270,25 @@ public class EPCNormalizer {
 	}
 	
 	public void handleORJoins() {
-		for(FlowNode v : this.epc.getFlowNodes()) {
+		for(FlowNode v : new HashSet<>(this.epc.getFlowNodes())) {
 			if ((v instanceof Gateway) && !(this.closure.isInLoop(v))) {
 				Gateway connector =  (Gateway)v;
 				if (isPureJoin(connector) && v instanceof OrConnector) {
-					IFlowNode predecessor = getCommonPredecessor(connector);
+					FlowNode predecessor = getCommonPredecessor(connector);
 					if (predecessor  instanceof Gateway) {
 						if (predecessor instanceof OrConnector) {
-							connector = new AndConnector();
-							predecessor = new AndConnector();
+							replaceBy(connector, new AndConnector());
+							replaceBy(predecessor, new AndConnector());
 						}
 						else {
 							if (predecessor instanceof AndConnector){
-								connector = new AndConnector();
+								replaceBy(connector, new AndConnector());
 							} else if (predecessor instanceof OrConnector){
-								connector = new OrConnector();
+								replaceBy(connector, new OrConnector());
 							} else if (predecessor instanceof XorConnector){
-								connector = new XorConnector();
+								replaceBy(connector, new XorConnector());
 							} else {
-								connector = new AndConnector();
+								replaceBy(connector, new AndConnector());
 							}
 						}
 					}
@@ -306,15 +306,29 @@ public class EPCNormalizer {
 		}
 	}
 
+	private void replaceBy(FlowNode toReplace, FlowNode replaceBy) {
+			this.epc.addFlowNode(replaceBy);
+			for (FlowNode v2 : this.epc.getDirectPredecessors(toReplace))
+				this.epc.addControlFlow(v2, replaceBy);
+			
+			for (FlowNode v2 : this.epc.getDirectSuccessors(toReplace))
+				this.epc.addControlFlow(replaceBy, v2);
+			
+			this.epc.removeFlowNode(toReplace);
+			this.closure = new TransitiveClosure<ControlFlow<FlowNode>, FlowNode>(this.epc);
+	}
+	
 	public void replaceORSplitsByANDSplits() {
-		for(IFlowNode v : this.epc.getFlowNodes()) {
+		
+		for(FlowNode v : new HashSet<>(this.epc.getFlowNodes())) {
 			if (v instanceof Gateway) {
 				Gateway connector =  (Gateway)v;
 				if (isPureSplit(connector) && v instanceof OrConnector) {
-					v = new AndConnector();
+					replaceBy(v, new AndConnector());
 				}
 			}
 		}
+		
 	}
 	
 	protected Gateway createStartClosure(Gateway end) {
