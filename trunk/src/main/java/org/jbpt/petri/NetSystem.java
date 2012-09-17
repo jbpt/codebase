@@ -25,6 +25,14 @@ public class NetSystem extends AbstractNetSystem<Flow,Node,Place,Transition,Mark
 		}
 	}
 	
+	public NetSystem(PetriNet petriNet) {
+		this();
+		for (Node n : petriNet.getNodes())
+			this.addNode(n);
+		for (Flow f : petriNet.getFlow())
+			this.addFlow(f.getSource(), f.getTarget());
+	}
+	
 	@Override
 	public Flow addFlow(Node from, Node to) {
 		if (from == null || to == null) return null;
