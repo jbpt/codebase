@@ -332,7 +332,13 @@ public class EPCNormalizer {
 	}
 	
 	protected Gateway createStartClosure(Gateway end) {
-		Gateway start = new AndConnector();
+		Gateway start = new XorConnector();
+		if (end instanceof AndConnector){
+			start = new AndConnector();
+		} else if (end instanceof OrConnector){
+			start = new OrConnector();
+		}
+		
 		start.setId(getIdString());
 
 		for (FlowNode o : this.epc.getDirectPredecessors(end)) {
@@ -346,7 +352,13 @@ public class EPCNormalizer {
 	}
 	
 	protected Gateway createEndClosure(Gateway start) {
-		Gateway end = new AndConnector();
+		Gateway end = new XorConnector();
+		if (start instanceof AndConnector){
+			end = new AndConnector();
+		} else if (start instanceof OrConnector){
+			end = new OrConnector();
+		}
+
 		end.setId(getIdString());
 
 		for (FlowNode o : this.epc.getDirectSuccessors(start)) {
