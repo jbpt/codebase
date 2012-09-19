@@ -63,7 +63,6 @@ public class PetriNetProjector<F extends IFlow<N>, N extends INode, P extends IP
 			}
 		}
 		
-		
 		//Rule c)
 		for (T t : notInProjectionSet) {
 			Set<P> pre = pn.getPreset(t);
@@ -73,7 +72,7 @@ public class PetriNetProjector<F extends IFlow<N>, N extends INode, P extends IP
 				if(parallel.size() < 2){
 					Set<T> preT = pn.getPreset(p);
 					
-					if(preT.size() < 2){
+					if(preT.size() == 1){
 						Set<P> placeSet = pn.getPostset(preT.iterator().next());
 						if(placeSet.size() < 2){
 							applyReductionRuleC(pn, t);
