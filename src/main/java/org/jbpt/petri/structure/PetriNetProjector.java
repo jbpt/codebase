@@ -33,7 +33,7 @@ public class PetriNetProjector<F extends IFlow<N>, N extends INode, P extends IP
 		
 		Set<T> notInProjectionSet = new HashSet<>(pn.getTransitions());
 		notInProjectionSet.removeAll(projectionSet);
-		
+
 		//Rule a)
 		for (T t : notInProjectionSet) {
 			Set<P> pre = pn.getPreset(t);
@@ -82,31 +82,24 @@ public class PetriNetProjector<F extends IFlow<N>, N extends INode, P extends IP
 			}
 		}
 		
-		
 		//Rule d)
 		Set<P> pToRemove = new HashSet<>();
-		for (T t : notInProjectionSet) {
-			//more than one place in postset?
-			Set<P> suc_p = pn.getPostset(t);
-			if(suc_p.size() > 1) {
-				//more than one place with equal preset and postset?
+		for (P p1 : pn.getPlaces()) {
+			if (pToRemove.contains(p1))
+				continue;
+			for (P p2 : pn.getPlaces()) {
+				if (p1.equals(p2))
+					continue;
 				
-				for (P node : suc_p) {
-					Set<T> preset = pn.getPreset(node);
-					Set<T> postset = pn.getPostset(node);
-					
-					if(preset.size() < 2 && postset.size() < 2) {
-						for (P node2 : suc_p) {
-							if(node.equals(node2))
-								continue;
-							Set<T> preset2 = pn.getPreset(node2);
-							Set<T> postset2 = pn.getPostset(node2);
-							if (preset.equals(preset2) && postset.equals(postset2)) {
-								T postT = (T) postset2.iterator().next();
-								if(notInProjectionSet.contains(postT)) 
-									pToRemove.add(node2); 
-							}
-						}
+				Set<T> preset = pn.getPreset(p1);
+				Set<T> postset = pn.getPostset(p1);
+				Set<T> preset2 = pn.getPreset(p2);
+				Set<T> postset2 = pn.getPostset(p2);
+				
+				if(preset.size() == 1 && postset.size() == 1
+						&& preset2.size() == 1 && postset2.size() == 1) {
+					if (preset.equals(preset2) && postset.equals(postset2)) {
+							pToRemove.add(p2); 
 					}
 				}
 			}
@@ -115,26 +108,28 @@ public class PetriNetProjector<F extends IFlow<N>, N extends INode, P extends IP
 		
 		//Rule e)
 		Set<T> tToRemove = new HashSet<>();
-		for (T t : notInProjectionSet) {
-			Set<P> preset = pn.getPreset(t);
-			Set<P> postset = pn.getPostset(t);
-			
-			if(preset.size() == 1 && postset.size() == 1) {
-				P pre = (P) preset.iterator().next(); 
-				Set<T> parallelTs = pn.getPostset(pre); 
+		for (T t1 : pn.getTransitions()) {
+			if (tToRemove.contains(t1))
+				continue;
+			for (T t2 : notInProjectionSet) {
+				if (t1.equals(t2))
+					continue;
 				
-				for (T parallelT : parallelTs) {
-					if(t != parallelT && notInProjectionSet.contains(parallelT)) {
-						Set<P> preset2 = pn.getPreset(parallelT);
-						Set<P> postset2 = pn.getPostset(parallelT);
-						if (preset.equals(preset2) && postset.equals(postset2))
-							tToRemove.add(parallelT);
+				Set<P> preset = pn.getPreset(t1);
+				Set<P> postset = pn.getPostset(t1);
+				Set<P> preset2 = pn.getPreset(t2);
+				Set<P> postset2 = pn.getPostset(t2);
+				
+				if(preset.size() == 1 && postset.size() == 1
+						&& preset2.size() == 1 && postset2.size() == 1) {
+					if (preset.equals(preset2) && postset.equals(postset2)) {
+							tToRemove.add(t2); 
 					}
 				}
 			}
 		}
 		pn.removeTransitions(tToRemove);
-					
+		
 		//Rule f)
 		tToRemove = new HashSet<>();
 		for (T t : notInProjectionSet) {
