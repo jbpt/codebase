@@ -53,7 +53,7 @@ public class PetriNetStructuralChecks<F extends IFlow<N>, N extends INode, P ext
 		for (T t1 : net.getTransitions()) {
 			for (T t2 : net.getTransitions()) {
 				for (P p : net.getPlaces()) {
-					if (net.getPostset(t1).contains(p) && net.getPostset(t2).contains(p))
+					if (net.getPreset(t1).contains(p) && net.getPreset(t2).contains(p))
 						isFC &= net.getPreset(t1).equals(net.getPreset(t2));
 					if (!isFC) 
 						break outer;
