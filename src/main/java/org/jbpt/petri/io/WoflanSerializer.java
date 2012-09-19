@@ -119,7 +119,10 @@ public class WoflanSerializer {
 			}
 			bufWriter.write("\n");
 			for (Transition t : sys.getTransitions()) {
-				bufWriter.write("trans \"" + formatId(t.getId()) + "\"\n");
+				if (!t.getLabel().equals(""))
+					bufWriter.write("trans \"" + formatId(t.getLabel()) + "\"\n");
+				else
+					bufWriter.write("trans \"" + formatId(t.getId()) + "\"\n");
 				bufWriter.write("in ");
 				for (Node n : sys.getDirectPredecessors(t)) {
 					bufWriter.write("\"" + formatId(n.getId()) + "\" ");
