@@ -10,25 +10,32 @@ import java.util.Collection;
  * @author Michael Gilleland
  * @author Artem Polyvyanyy
  *
- * @param <O> Template type for elements to generate combinations for.
+ * @param <X> Template for elements to use when generating combinations.
  */
-public class CombinationGenerator<O> {
+public class CombinationGenerator<X> {
 
-	private O[] arr;
+	private X[] arr;
 	private int[] a;
 	private int n;
 	private int r;
 	private BigInteger numLeft;
 	private BigInteger total;
 	
+	
+	/**
+	 * Constructor.
+	 * 
+	 * @param objs Collection of objects to generate combinations.
+	 * @param r Size of combinations to generate.
+	 */
 	@SuppressWarnings("unchecked")
-	public CombinationGenerator (Collection<O> objs, int r) {
+	public CombinationGenerator (Collection<X> objs, int r) {
 		if (r > objs.size() || objs.size() < 1 || r < 1)
 			throw new IllegalArgumentException ();
 	 
 		this.n		= objs.size();
 		this.r		= r;
-		this.arr	= (O[]) objs.toArray(); 
+		this.arr	= (X[]) objs.toArray(); 
 		this.a		= new int[r];
 		BigInteger nFact = getFactorial(n);
 		BigInteger rFact = getFactorial(r);
@@ -81,7 +88,7 @@ public class CombinationGenerator<O> {
 	/**
 	 * Generate next combination (algorithm from Rosen p. 286).
 	 */
-	public Collection<O> getNextCombination () {
+	public Collection<X> getNextCombination () {
 		if (this.numLeft.equals(total)) {
 			this.numLeft = this.numLeft.subtract (BigInteger.ONE);
 			return this.indicesToArray(a);
@@ -96,8 +103,8 @@ public class CombinationGenerator<O> {
 		return this.indicesToArray(a);
 	}
 	
-	private Collection<O> indicesToArray(int[] a) {
-		Collection<O> result = new ArrayList<O>();
+	private Collection<X> indicesToArray(int[] a) {
+		Collection<X> result = new ArrayList<X>();
 		for (int i = 0; i < this.r; i++) {
 			result.add(arr[a[i]]);
 		}
