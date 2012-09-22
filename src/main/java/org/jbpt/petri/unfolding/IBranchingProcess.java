@@ -1,6 +1,7 @@
 package org.jbpt.petri.unfolding;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import org.jbpt.petri.IFlow;
@@ -189,6 +190,20 @@ public interface IBranchingProcess<BPN extends IBPNode<N>, C extends ICondition<
 	 * @return <tt>true</tt> if the given collection of conditions is a cut of this branching process; otherwise <tt>false</tt>.
 	 */
 	public boolean isCut(Collection<C> conditions);
+	
+	/**
+	 * Get cuts of this branching process that refer to the provided collection of places. 
+	 * @param places Collection of places of the originative net system.
+	 * @return Cuts that refer to the provided collection of places.
+	 */
+	public Set<ICut<BPN,C,E,F,N,P,T,M>> getCuts(Collection<P> places);
+	
+	/**
+	 * Get log of events which was used to construct this branching process.
+	 * 
+	 * @return List of events in the order they were appended to this branching process.
+	 */
+	public List<E> getLog();
 	
 	public IBranchingProcess<BPN,C,E,F,N,P,T,M> clone();
 }

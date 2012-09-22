@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jbpt.algo.ListCombinationGenerator;
+import org.jbpt.algo.MultiSetUtils;
 import org.jbpt.petri.IFlow;
 import org.jbpt.petri.IMarking;
 import org.jbpt.petri.INetSystem;
@@ -18,11 +20,10 @@ import org.jbpt.petri.ITransition;
 public abstract class AbstractBranchingProcess<BPN extends IBPNode<N>, C extends ICondition<BPN,C,E,F,N,P,T,M>, E extends IEvent<BPN,C,E,F,N,P,T,M>, F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition, M extends IMarking<F,N,P,T>> 
 		implements IBranchingProcess<BPN,C,E,F,N,P,T,M> 
 {
-
 	// originative net system
 	protected INetSystem<F,N,P,T,M> sys = null;
 	
-	protected List<E> history = null;
+	protected List<E> log = null;
 	
 	protected Set<E> events	= null;	
 	protected Set<C> conds	= null;
@@ -48,7 +49,7 @@ public abstract class AbstractBranchingProcess<BPN extends IBPNode<N>, C extends
 	}
 	
 	protected void initialize() {
-		this.history = new ArrayList<E>();
+		this.log = new ArrayList<E>();
 		this.events	= new HashSet<E>();
 		this.conds	= new HashSet<C>();
 		this.iniBP	= this.createCut();
@@ -276,7 +277,7 @@ public abstract class AbstractBranchingProcess<BPN extends IBPNode<N>, C extends
 		}
 		event.setPostConditions(postConditions);
 
-		this.history.add(event);
+		this.log.add(event);
 		return true;
 	}
 	
@@ -455,7 +456,7 @@ public abstract class AbstractBranchingProcess<BPN extends IBPNode<N>, C extends
 			clone.appendCondition(newC);
 		}
 		
-		for (E e : this.history) {
+		for (E e : this.log) {
 			E newE = this.createEvent(e.getTransition(), null);
 			ICoSet<BPN,C,E,F,N,P,T,M> preset = this.createCoSet();
 			
@@ -508,6 +509,35 @@ public abstract class AbstractBranchingProcess<BPN extends IBPNode<N>, C extends
 		}
 		
 		return true;
+	}
+	
+	@Override
+	public Set<ICut<BPN,C,E,F,N,P,T,M>> getCuts(Collection<P> places) {
+		Set<ICut<BPN,C,E,F,N,P,T,M>> result = new HashSet<>();
+		List<List<C>> conds = new ArrayList<List<C>>();
+		
+		for (P p : places) {
+			conds.add(new ArrayList<C>(this.getConditions(p)));
+		}
+		
+		ListCombinationGenerator<C> lcg = new ListCombinationGenerator<C>(conds);
+		
+		while(lcg.hasMoreCombinations()) {
+			List<C> cs = lcg.getNextCombination();
+			if (!MultiSetUtils.isSet(cs)) continue;
+			if (this.isCut(cs)) {
+				ICut<BPN,C,E,F,N,P,T,M> cut = this.createCut();
+				cut.addAll(cs);
+				result.add(cut);
+			}
+		}
+		
+		return result;
+	}
+	
+	@Override
+	public List<E> getLog() {
+		return this.log;
 	}
 	
 	/*protected boolean appendEvent2(Event e) {
