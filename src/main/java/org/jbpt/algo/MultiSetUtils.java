@@ -47,8 +47,8 @@ public class MultiSetUtils {
 	/**
 	 * Check if two multi-sets are exactly the same.
 	 * 
-	 * @param ms1 Multi-set. 
-	 * @param ms2 Multi-set. 
+	 * @param ms1 Multi-set.
+	 * @param ms2 Multi-set.
 	 * @return <tt>true</tt> if 'ms1' and 'ms2' are exactly the same; otherwise <tt>false</tt>.
 	 */
 	public static boolean areEqual(Collection<?> ms1, Collection<?> ms2) {
