@@ -108,7 +108,7 @@ public class ConformanceRootCauseAnalysis {
 	 */
 	protected class RootCauseAnalysisForTrace {
 		
-		private int traceId;
+		private String traceId;
 		
 		private List<BPViolationTuple> bpViolations = new ArrayList<BPViolationTuple>();
 		private List<ViolationTuple> coViolations = new ArrayList<ViolationTuple>();
@@ -116,7 +116,7 @@ public class ConformanceRootCauseAnalysis {
 		private Map<String,Integer> numberOfBPViolationsRelatedToTask = new HashMap<String,Integer>();
 		private Map<String,Integer> numberOfCoViolationsRelatedToTask = new HashMap<String,Integer>();
 				
-		public RootCauseAnalysisForTrace(int traceId) {
+		public RootCauseAnalysisForTrace(String traceId) {
 			this.traceId = traceId;
 		}
 		
@@ -193,7 +193,7 @@ public class ConformanceRootCauseAnalysis {
 		}
 	}
 	
-	protected List<Integer> traceIds = new ArrayList<Integer>(); 
+	protected List<String> traceIds = new ArrayList<String>(); 
 	
 	protected List<ViolationTupleInclSupport> violations = new ArrayList<ViolationTupleInclSupport>();
 	protected List<ViolationImplicationTupel> violationImplicationsAboveThreshold = new ArrayList<ViolationImplicationTupel>();
@@ -264,7 +264,7 @@ public class ConformanceRootCauseAnalysis {
 					continue;
 				
 				float supportForBothPairs = 0;
-				for (Integer trace : this.traceIds) {
+				for (String trace : this.traceIds) {
 					 if (this.violationsForTraces.get(this.violations.indexOf(v1)).contains(this.traceIds.indexOf(trace))
 							 && this.violationsForTraces.get(this.violations.indexOf(v2)).contains(this.traceIds.indexOf(trace)))
 							supportForBothPairs++;
