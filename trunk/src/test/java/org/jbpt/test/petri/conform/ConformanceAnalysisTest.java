@@ -41,15 +41,15 @@ public class ConformanceAnalysisTest {
 		String t5[] = {"F","C","D","G"};
 		
 		Trace trace1 = new Trace(t1);
-		trace1.setId(1);
+		trace1.setId("1");
 		Trace trace2 = new Trace(t2);
-		trace2.setId(2);
+		trace2.setId("2");
 		Trace trace3 = new Trace(t3);
-		trace3.setId(3);
+		trace3.setId("3");
 		Trace trace4 = new Trace(t4);
-		trace4.setId(4);
+		trace4.setId("4");
 		Trace trace5 = new Trace(t5);
-		trace5.setId(5);
+		trace5.setId("5");
 		
 		/* 
 		 * Derive the causal behavioural profile for the net system
@@ -125,7 +125,7 @@ public class ConformanceAnalysisTest {
 		
 		int checked = 0;
 		for (ConformanceAnalysis.TraceAnalysisTask p : conformanceAnalysis.getAnalysisTasks()) {
-			if (p.getTraceProfile().getModel().getId() == 1) {
+			if (p.getTraceProfile().getModel().getId().equals("1")) {
 				checked++;
 				Assert.assertEquals(1.0f, p.getConstraintRelativeBehaviouralProfileConformance());
 				Assert.assertEquals(1.0f, p.getModelRelativeBehaviouralProfileConformance());
@@ -134,7 +134,7 @@ public class ConformanceAnalysisTest {
 				Assert.assertEquals(1.0f, p.getConstraintRelativeConformance());
 				Assert.assertEquals(1.0f, p.getModelRelativeConformance());
 			}
-			if (p.getTraceProfile().getModel().getId() == 2) {
+			if (p.getTraceProfile().getModel().getId().equals("2")) {
 				checked++;
 				Assert.assertEquals(0.82608694f, p.getConstraintRelativeBehaviouralProfileConformance());
 				Assert.assertEquals(0.8367347f, p.getModelRelativeBehaviouralProfileConformance());
@@ -143,7 +143,7 @@ public class ConformanceAnalysisTest {
 				Assert.assertEquals(0.82222223f, p.getConstraintRelativeConformance());
 				Assert.assertEquals(0.8677686f, p.getModelRelativeConformance());
 			}
-			if (p.getTraceProfile().getModel().getId() == 3) {
+			if (p.getTraceProfile().getModel().getId().equals("3")) {
 				checked++;
 				Assert.assertEquals(0.8f, p.getConstraintRelativeBehaviouralProfileConformance());
 				Assert.assertEquals(0.8367347f, p.getModelRelativeBehaviouralProfileConformance());
@@ -152,7 +152,7 @@ public class ConformanceAnalysisTest {
 				Assert.assertEquals(0.73913044f, p.getConstraintRelativeConformance());
 				Assert.assertEquals(0.8490566f, p.getModelRelativeConformance());
 			}
-			if (p.getTraceProfile().getModel().getId() == 4) {
+			if (p.getTraceProfile().getModel().getId().equals("4")) {
 				checked++;
 				Assert.assertEquals(1.0f, p.getConstraintRelativeBehaviouralProfileConformance());
 				Assert.assertEquals(1.0f, p.getModelRelativeBehaviouralProfileConformance());
@@ -161,7 +161,7 @@ public class ConformanceAnalysisTest {
 				Assert.assertEquals(0.8f, p.getConstraintRelativeConformance());
 				Assert.assertEquals(0.85714287f, p.getModelRelativeConformance());
 			}
-			if (p.getTraceProfile().getModel().getId() == 5) {
+			if (p.getTraceProfile().getModel().getId().equals("5")) {
 				checked++;
 				Assert.assertEquals(1.0f, p.getConstraintRelativeBehaviouralProfileConformance());
 				Assert.assertEquals(1.0f, p.getModelRelativeBehaviouralProfileConformance());
