@@ -19,7 +19,7 @@ public class Trace implements IEntityModel<TraceEntry> {
 	/**
 	 * The id of the trace.
 	 */
-	protected int id;
+	protected String id;
 	
 	/**
 	 * The trace as a list of trace entries.
@@ -82,11 +82,11 @@ public class Trace implements IEntityModel<TraceEntry> {
 		return trace.size();
 	}
 
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 	
