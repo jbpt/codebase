@@ -3,9 +3,11 @@ package org.jbpt.test.tree;
 
 import junit.framework.TestCase;
 
+import org.jbpt.algo.tree.mdt.IMDTNode;
 import org.jbpt.algo.tree.mdt.MDT;
 import org.jbpt.algo.tree.mdt.MDTNode;
-import org.jbpt.algo.tree.mdt.MDTNode.NodeType;
+import org.jbpt.algo.tree.mdt.MDTType;
+import org.jbpt.graph.DirectedEdge;
 import org.jbpt.graph.DirectedGraph;
 import org.jbpt.hypergraph.abs.Vertex;
 
@@ -31,21 +33,22 @@ public class MDTTest extends TestCase {
 		MDT mdt = new MDT(graph);
 		
 		// RESULT: LINEAR[a, COMPLETE_0[LINEAR[d, b], LINEAR[e, c]]]
-		assertTrue(mdt.getRoot().getType().equals(NodeType.LINEAR));
-		assertTrue(mdt.getRoot().getChildren().size() == 2);
+		assertTrue(mdt.getRoot().getType().equals(MDTType.LINEAR));
+		System.out.println(mdt.getRoot());
+		assertTrue(mdt.getChildren(mdt.getRoot()).size() == 2);
 		
-		MDTNode trivial = null, complete0 = null;
+		IMDTNode<DirectedEdge, Vertex> trivial = null, complete0 = null;
 		
-		for (MDTNode child: mdt.getRoot().getChildren()) {
-			if (child.getType().equals(NodeType.TRIVIAL))
+		for (IMDTNode<DirectedEdge, Vertex> child: mdt.getChildren(mdt.getRoot())) {
+			if (child.getType().equals(MDTType.TRIVIAL))
 				trivial = child;
-			else if (child.getType().equals(NodeType.COMPLETE))
+			else if (child.getType().equals(MDTType.COMPLETE))
 				complete0 = child;
 		}
 		
 		assertTrue(trivial != null && complete0 != null);
 		assertTrue(complete0.getColor() == 0);
-		assertTrue(complete0.getChildren().size() == 2);
+		assertTrue(mdt.getChildren(complete0).size() == 2);
 	}
 
 }

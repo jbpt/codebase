@@ -11,9 +11,9 @@ import java.util.Set;
 
 import org.jbpt.algo.tree.mdt.ComponentGraph;
 import org.jbpt.algo.tree.mdt.MDTNode;
-import org.jbpt.algo.tree.mdt.MDTNode.NodeType;
 import org.jbpt.graph.DirectedEdge;
 import org.jbpt.graph.DirectedGraph;
+import org.jbpt.graph.abs.AbstractTree;
 import org.jbpt.hypergraph.abs.Vertex;
 
 /**
@@ -27,9 +27,8 @@ import org.jbpt.hypergraph.abs.Vertex;
  * 
  * @author Luciano Garcia-Banuelos
  */
-public class MDT {
+public class MDT extends AbstractTree<IMDTNode> {
 	private DirectedGraph graph;
-	private MDTNode root;
 
 	public MDT(DirectedGraph graph) {
 		this.graph = graph;
@@ -57,13 +56,13 @@ public class MDT {
 			DirectedEdge v_w = graph.getDirectedEdge(v, w);
 			
 												// Four cases:
-			if (w_v != null && v_w != null)		// (w,v),(v,w) \in V(G)
+			if (w_v != null && v_w != null)		// (w,v),(v,w) \in E(G)
 				partitions.get(0).add(w);
-			else if (w_v != null)				// (w,v) \in V(G) /\ (v,w) \nin V(G)
+			else if (w_v != null)				// (w,v) \in E(G) /\ (v,w) \nin E(G)
 				partitions.get(1).add(w);
-			else if (v_w != null)				// (w,v) \nin V(G) /\ (v,w) \in V(G)
+			else if (v_w != null)				// (w,v) \nin E(G) /\ (v,w) \in E(G)
 				partitions.get(2).add(w);
-			else								// (w,v), (v,w) \nin V(G)
+			else								// (w,v), (v,w) \nin E(G)
 				partitions.get(3).add(w);				
 		}
 		
@@ -140,7 +139,8 @@ public class MDT {
 		Vertex v = dom.iterator().next();
 		
 		// Create a node in the MDT
-		MDTNode t = new MDTNode(dom, v);
+		MDTNode t = new MDTNode(this, dom, v);
+		addVertex(t);
 		
 		// Dom is a singleton, then t is a TRIVIAL
 		if (dom.size() == 1) return t;
@@ -153,18 +153,20 @@ public class MDT {
 		while (gpp.getVertices().size() > 0) {
 			Set<Vertex> tmp = gpp.getPartitionUnion();
 			tmp.add(v);
-			u.setValue(tmp);
+			u.setClan(tmp);
 			
 			tmp = new HashSet<Vertex>();
 			tmp.add(v);
-			MDTNode w = new MDTNode(tmp, v);
-			u.addChild(w);
+			MDTNode w = new MDTNode(this, tmp, v);
+			addVertex(w);
+			addChild(u, w);
+			
 			Set<Vertex> sinks = gpp.getSinkNodes();
 			Set<Set<Vertex>> F = gpp.getPartitions(sinks);
 			gpp.removeVertices(sinks);
 			
 			if (sinks.size() == 1 && F.size() > 1)
-				u.setType(NodeType.PRIMITIVE);
+				u.setType(MDTType.PRIMITIVE);
 			else {
 				if (F.size() < 1) {
 					System.out.println("Sinks.size() " + sinks.size());
@@ -175,31 +177,35 @@ public class MDT {
 				
 				if ((graph.getDirectedEdge(v, x) != null && graph.getDirectedEdge(x, v) != null) ||
 						(!(graph.getDirectedEdge(v, x) != null) && !(graph.getDirectedEdge(x, v) != null))) {
-					u.setType(NodeType.COMPLETE);
+					u.setType(MDTType.COMPLETE);
 					u.setColor(graph.getDirectedEdge(v, x) != null ? 1 : 0);
 				} else
-					u.setType(NodeType.LINEAR);
+					u.setType(MDTType.LINEAR);
 			}
 			
 			for (Set<Vertex> partition: F) {	
 				MDTNode root = decompose(partition);
-				if (((u.getType() == NodeType.COMPLETE && root.getType() == NodeType.COMPLETE) ||
-						(u.getType() == NodeType.LINEAR && root.getType() == NodeType.LINEAR)) &&
+				if (((u.getType() == MDTType.COMPLETE && root.getType() == MDTType.COMPLETE) ||
+						(u.getType() == MDTType.LINEAR && root.getType() == MDTType.LINEAR)) &&
 						u.getColor() == root.getColor())
-					u.addChildren(root.getChildren());
+					
+					for (IMDTNode child: getChildren(root))
+						addChild(u, child);
 				else
-					u.addChild(root);
+					addChild(u, root);
 			}
 			u = w;
 		}
 		return t;
 	}
 	
+	@Override
 	public String toString() {
 		return root.toString();
 	}
 	
-	public MDTNode getRoot() {
-		return root;
+	@Override
+	public IMDTNode reRoot(IMDTNode v) {
+		throw new UnsupportedOperationException("An MDT cannot be modified!");
 	}
 }
