@@ -5,7 +5,6 @@ import junit.framework.TestCase;
 
 import org.jbpt.algo.tree.mdt.IMDTNode;
 import org.jbpt.algo.tree.mdt.MDT;
-import org.jbpt.algo.tree.mdt.MDTNode;
 import org.jbpt.algo.tree.mdt.MDTType;
 import org.jbpt.graph.DirectedEdge;
 import org.jbpt.graph.DirectedGraph;
@@ -30,7 +29,7 @@ public class MDTTest extends TestCase {
 		graph.addEdge(b, d);
 		graph.addEdge(c, e);
 		
-		MDT mdt = new MDT(graph);
+		MDT<DirectedEdge,Vertex> mdt = new MDT<DirectedEdge,Vertex>(graph);
 		
 		// RESULT: LINEAR[a, COMPLETE_0[LINEAR[d, b], LINEAR[e, c]]]
 		assertTrue(mdt.getRoot().getType().equals(MDTType.LINEAR));

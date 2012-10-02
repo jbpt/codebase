@@ -11,9 +11,9 @@ public class MDTNode<E extends IDirectedEdge<V>, V extends IVertex> extends Vert
 	private V proxy;
 	private MDTType type;
 	private int color;
-	private MDT mdt;
+	private MDT<E,V> mdt;
 
-	public MDTNode(MDT mdt, Collection<V> clan, V proxy) {
+	public MDTNode(MDT<E,V> mdt, Collection<V> clan, V proxy) {
 		this.clan = clan;
 		this.proxy = proxy;
 		this.type = MDTType.TRIVIAL;
