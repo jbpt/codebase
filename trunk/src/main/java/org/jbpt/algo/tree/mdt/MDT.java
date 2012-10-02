@@ -11,10 +11,10 @@ import java.util.Set;
 
 import org.jbpt.algo.tree.mdt.ComponentGraph;
 import org.jbpt.algo.tree.mdt.MDTNode;
-import org.jbpt.graph.DirectedEdge;
-import org.jbpt.graph.DirectedGraph;
+import org.jbpt.graph.abs.AbstractDirectedGraph;
 import org.jbpt.graph.abs.AbstractTree;
-import org.jbpt.hypergraph.abs.Vertex;
+import org.jbpt.graph.abs.IDirectedEdge;
+import org.jbpt.hypergraph.abs.IVertex;
 
 /**
  * This class computes the Modular Decomposition Tree of a directed graph.
@@ -27,10 +27,10 @@ import org.jbpt.hypergraph.abs.Vertex;
  * 
  * @author Luciano Garcia-Banuelos
  */
-public class MDT extends AbstractTree<IMDTNode> {
-	private DirectedGraph graph;
+public class MDT<E extends IDirectedEdge<V>, V extends IVertex> extends AbstractTree<IMDTNode<E,V>> {
+	private AbstractDirectedGraph<E, V> graph;
 
-	public MDT(DirectedGraph graph) {
+	public MDT(AbstractDirectedGraph<E, V> graph) {
 		this.graph = graph;
 		this.root = decompose(graph.getVertices());
 	}
@@ -46,14 +46,14 @@ public class MDT extends AbstractTree<IMDTNode> {
 	 * @param vertices	Set of vertices to partition
 	 * @param v			Vertex to guide partitioning
 	 */
-	private List<Set<Vertex>> partitionSubsets(Collection<Vertex> vertices, Vertex v) {		
-		List<Set<Vertex>> partitions = new ArrayList<Set<Vertex>>(4);
+	private List<Set<V>> partitionSubsets(Collection<V> vertices, V v) {		
+		List<Set<V>> partitions = new ArrayList<Set<V>>(4);
 		for (int i = 0; i<4; i++)
-			partitions.add(new HashSet<Vertex>());
+			partitions.add(new HashSet<V>());
 		
-		for (Vertex w: vertices) {
-			DirectedEdge w_v = graph.getDirectedEdge(w, v);
-			DirectedEdge v_w = graph.getDirectedEdge(v, w);
+		for (V w: vertices) {
+			E w_v = graph.getDirectedEdge(w, v);
+			E v_w = graph.getDirectedEdge(v, w);
 			
 												// Four cases:
 			if (w_v != null && v_w != null)		// (w,v),(v,w) \in E(G)
@@ -76,22 +76,22 @@ public class MDT extends AbstractTree<IMDTNode> {
 	 * @param v		   vertex used for partitioning
 	 * @return
 	 */
-	private Collection<Set<Vertex>> partition(Collection<Vertex> vertices, Vertex v) {
+	private Collection<Set<V>> partition(Collection<V> vertices, V v) {
 		// L - Family of partition classes 
-		Set<Set<Vertex>> l = new HashSet<Set<Vertex>>();
+		Set<Set<V>> l = new HashSet<Set<V>>();
 		// Z - Unprocessed outsiders
-		Map<Set<Vertex>, Set<Vertex>> z = new HashMap<Set<Vertex>, Set<Vertex>>();
+		Map<Set<V>, Set<V>> z = new HashMap<Set<V>, Set<V>>();
 		
 		// Place holder
-		Set<Set<Vertex>> result = new LinkedHashSet<Set<Vertex>>();
+		Set<Set<V>> result = new LinkedHashSet<Set<V>>();
 		
 		// Initially, there is one partition class S = V(g) \ {v} in L
-		Set<Vertex> s = new HashSet<Vertex>(vertices);
+		Set<V> s = new HashSet<V>(vertices);
 		s.remove(v);
 		l.add(s);
 		
 		// with Z(S) = {v}
-		Set<Vertex> _v_ = new HashSet<Vertex>();
+		Set<V> _v_ = new HashSet<V>();
 		_v_.add(v);
 		z.put(s, _v_);
 		
@@ -100,15 +100,15 @@ public class MDT extends AbstractTree<IMDTNode> {
 			s = l.iterator().next(); l.remove(s);
 			
 			// Let w be an arbitrary member of Z(S)
-			Vertex w = z.get(s).iterator().next();
+			V w = z.get(s).iterator().next();
 			
 			// Partition S into maximal subsets that are not distinguished by w
 			// -- for each resulting subset W
-			for (Set<Vertex> W: partitionSubsets(s, w)) {
+			for (Set<V> W: partitionSubsets(s, w)) {
 				if (W.isEmpty()) continue;
 				
 				// Let Z(W) = (S \ W) \cup Z(S) \ {w}
-				Set<Vertex> tmp = new HashSet<Vertex>(s);
+				Set<V> tmp = new HashSet<V>(s);
 				tmp.removeAll(W);
 				tmp.addAll(z.get(s));
 				tmp.remove(w);
@@ -132,48 +132,43 @@ public class MDT extends AbstractTree<IMDTNode> {
 	 * @param dom
 	 * @return
 	 */
-	private MDTNode decompose(Collection<Vertex> dom) {
+	private IMDTNode<E,V> decompose(Collection<V> dom) {
 		if (dom.size() == 0) return null; // Nothing to do
 		
 		// Select one vertex from dom
-		Vertex v = dom.iterator().next();
+		V v = dom.iterator().next();
 		
 		// Create a node in the MDT
-		MDTNode t = new MDTNode(this, dom, v);
+		MDTNode<E,V> t = new MDTNode<E,V>(this, dom, v);
 		addVertex(t);
 		
 		// Dom is a singleton, then t is a TRIVIAL
 		if (dom.size() == 1) return t;
 		
-		Collection<Set<Vertex>> m = partition(dom, v);
+		Collection<Set<V>> m = partition(dom, v);
 		
-		ComponentGraph gpp = new ComponentGraph(graph, m, v);
-		MDTNode u = t;
+		ComponentGraph<E,V> gpp = new ComponentGraph<E,V>(graph, m, v);
+		MDTNode<E,V> u = t;
 		
 		while (gpp.getVertices().size() > 0) {
-			Set<Vertex> tmp = gpp.getPartitionUnion();
+			Set<V> tmp = gpp.getPartitionUnion();
 			tmp.add(v);
 			u.setClan(tmp);
 			
-			tmp = new HashSet<Vertex>();
+			tmp = new HashSet<V>();
 			tmp.add(v);
-			MDTNode w = new MDTNode(this, tmp, v);
+			MDTNode<E,V> w = new MDTNode<E,V>(this, tmp, v);
 			addVertex(w);
 			addChild(u, w);
 			
-			Set<Vertex> sinks = gpp.getSinkNodes();
-			Set<Set<Vertex>> F = gpp.getPartitions(sinks);
+			Set<V> sinks = gpp.getSinkNodes();
+			Set<Set<V>> F = gpp.getPartitions(sinks);
 			gpp.removeVertices(sinks);
 			
 			if (sinks.size() == 1 && F.size() > 1)
 				u.setType(MDTType.PRIMITIVE);
 			else {
-				if (F.size() < 1) {
-					System.out.println("Sinks.size() " + sinks.size());
-					System.out.println(F);
-					System.exit(-1);
-				}
-				Vertex x = F.iterator().next().iterator().next();
+				V x = F.iterator().next().iterator().next();
 				
 				if ((graph.getDirectedEdge(v, x) != null && graph.getDirectedEdge(x, v) != null) ||
 						(!(graph.getDirectedEdge(v, x) != null) && !(graph.getDirectedEdge(x, v) != null))) {
@@ -183,13 +178,13 @@ public class MDT extends AbstractTree<IMDTNode> {
 					u.setType(MDTType.LINEAR);
 			}
 			
-			for (Set<Vertex> partition: F) {	
-				MDTNode root = decompose(partition);
+			for (Set<V> partition: F) {	
+				IMDTNode<E,V> root = decompose(partition);
 				if (((u.getType() == MDTType.COMPLETE && root.getType() == MDTType.COMPLETE) ||
 						(u.getType() == MDTType.LINEAR && root.getType() == MDTType.LINEAR)) &&
 						u.getColor() == root.getColor())
 					
-					for (IMDTNode child: getChildren(root))
+					for (IMDTNode<E,V> child: getChildren(root))
 						addChild(u, child);
 				else
 					addChild(u, root);
@@ -205,7 +200,7 @@ public class MDT extends AbstractTree<IMDTNode> {
 	}
 	
 	@Override
-	public IMDTNode reRoot(IMDTNode v) {
+	public IMDTNode<E,V> reRoot(IMDTNode<E,V> v) {
 		throw new UnsupportedOperationException("An MDT cannot be modified!");
 	}
 }

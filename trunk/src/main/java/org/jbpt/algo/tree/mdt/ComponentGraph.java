@@ -7,23 +7,25 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
-import org.jbpt.graph.DirectedEdge;
-import org.jbpt.graph.DirectedGraph;
+import org.jbpt.graph.abs.AbstractDirectedGraph;
+import org.jbpt.graph.abs.IDirectedEdge;
+import org.jbpt.hypergraph.abs.IVertex;
 import org.jbpt.hypergraph.abs.Vertex;
 
-public class ComponentGraph extends DirectedGraph {
-	Map<Vertex, Set<Set<Vertex>>> pmap;
+public class ComponentGraph<E extends IDirectedEdge<V>, V extends IVertex> extends AbstractDirectedGraph<E, V> {
+	Map<V, Set<Set<V>>> pmap;
 	
-	public ComponentGraph(DirectedGraph g, Collection<Set<Vertex>> m, Vertex v) {
+	public ComponentGraph(AbstractDirectedGraph<E, V> g, Collection<Set<V>> m, V v) {
 		super();
 		
-		pmap = new HashMap<Vertex, Set<Set<Vertex>>>();
+		pmap = new HashMap<V, Set<Set<V>>>();
 		
 		// Build component graph
-		Map<Vertex, Vertex> map = new HashMap<Vertex, Vertex>();
+		Map<V, V> map = new HashMap<V, V>();
 		
-		for (Set<Vertex> p: m) {
-			Vertex vp = new Vertex("CG:"+p.toString());
+		for (Set<V> p: m) {
+			@SuppressWarnings("unchecked")
+			V vp = (V) new Vertex("CG:"+p.toString());
 			addVertex(vp);
 			
 			// vp is a vertex in the ComponentGraph, which is then associated with
@@ -31,16 +33,16 @@ public class ComponentGraph extends DirectedGraph {
 			map.put(vp, p.iterator().next());
 			
 			// Initialize the set of partitions associated to each node in the component graph
-			Set<Set<Vertex>> sopart =  new HashSet<Set<Vertex>>();
+			Set<Set<V>> sopart =  new HashSet<Set<V>>();
 			sopart.add(p);
 			pmap.put(vp, sopart);
 		}
 		
-		for (Vertex xp: map.keySet()) {
-			Vertex x = map.get(xp);
+		for (V xp: map.keySet()) {
+			V x = map.get(xp);
 			if (x.equals(v)) continue;
-			for (Vertex yp: map.keySet()) {
-				Vertex y = map.get(yp);
+			for (V yp: map.keySet()) {
+				V y = map.get(yp);
 				if (y.equals(v) || x.equals(y)) continue;
 				
 				if (distinguishes(g, x, y, v))
@@ -52,29 +54,29 @@ public class ComponentGraph extends DirectedGraph {
 		contractSCC();
 	}
 
-	public Set<Set<Vertex>> getPartitions(Set<Vertex> vertices) {
-		Set<Set<Vertex>> result = new HashSet<Set<Vertex>>();
-		for (Vertex v: vertices)
+	public Set<Set<V>> getPartitions(Set<V> vertices) {
+		Set<Set<V>> result = new HashSet<Set<V>>();
+		for (V v: vertices)
 			result.addAll(pmap.get(v));
 		return result;
 	}
 	
-	public Set<Vertex> getPartitionUnion() {
-		Set<Vertex> result = new HashSet<Vertex>();
-		for (Vertex vertex: getVertices()) {
-			for (Set<Vertex> bs: pmap.get(vertex))
+	public Set<V> getPartitionUnion() {
+		Set<V> result = new HashSet<V>();
+		for (V vertex: getVertices()) {
+			for (Set<V> bs: pmap.get(vertex))
 				result.addAll(bs);
 		}
 		return result;
 	}
 	
 	public void contractSCC() {		
-		Set<Set<Vertex>> scc = kosaraju();
+		Set<Set<V>> scc = kosaraju();
 		
-		for (Set<Vertex> cc : scc) {
+		for (Set<V> cc : scc) {
 			if (cc.size() > 1) {
-				Set<Set<Vertex>> parts = getPartitions(cc);
-				Vertex v = cc.iterator().next();
+				Set<Set<V>> parts = getPartitions(cc);
+				V v = cc.iterator().next();
 				cc.remove(v);
 				removeVertices(cc);
 				pmap.put(v, parts);
@@ -84,17 +86,17 @@ public class ComponentGraph extends DirectedGraph {
 
 	
 	// Computation of Strongly Connected Components using the Kosaraju-Sharir's algorithm
-	private Set<Set<Vertex>> kosaraju() {
-		Set<Set<Vertex>> scc = new HashSet<Set<Vertex>>();
-		Stack<Vertex> stack = new Stack<Vertex>();
-		Set<Vertex> visited = new HashSet<Vertex>();
-		for (Vertex vertex: getVertices())
+	private Set<Set<V>> kosaraju() {
+		Set<Set<V>> scc = new HashSet<Set<V>>();
+		Stack<V> stack = new Stack<V>();
+		Set<V> visited = new HashSet<V>();
+		for (V vertex: getVertices())
 			if (!visited.contains(vertex))
 				searchForward(vertex, stack, visited);			
 
 		visited.clear();
 		while(!stack.isEmpty()) {
-			Set<Vertex> component = new HashSet<Vertex>();
+			Set<V> component = new HashSet<V>();
 			searchBackward(stack.peek(), visited, component);
 			scc.add(component);
 			stack.removeAll(component);
@@ -102,39 +104,39 @@ public class ComponentGraph extends DirectedGraph {
 		return scc;
 	}
 
-	private void searchBackward(Vertex node, Set<Vertex> visited, Set<Vertex> component) {
-		Stack<Vertex> worklist = new Stack<Vertex>();
+	private void searchBackward(V node, Set<V> visited, Set<V> component) {
+		Stack<V> worklist = new Stack<V>();
 		worklist.push(node);
 		while (!worklist.isEmpty()) {
-			Vertex curr = worklist.pop();
+			V curr = worklist.pop();
 			visited.add(curr);
 			component.add(curr);
-			for (Vertex pred: getDirectPredecessors(curr))
+			for (V pred: getDirectPredecessors(curr))
 				if (!visited.contains(pred) && !worklist.contains(pred))
 					worklist.add(pred);
 		}
 	}
 
-	private void searchForward(Vertex curr, Stack<Vertex> stack, Set<Vertex> visited) {
+	private void searchForward(V curr, Stack<V> stack, Set<V> visited) {
 		visited.add(curr);
-		for (Vertex succ: getDirectSuccessors(curr))
+		for (V succ: getDirectSuccessors(curr))
 			if (!visited.contains(succ))
 				searchForward(succ, stack, visited);
 		stack.push(curr);
 	}
 
-	private boolean distinguishes(DirectedGraph g, Vertex x, Vertex y,
-			Vertex z) {		
+	private boolean distinguishes(AbstractDirectedGraph<E, V> g, V x, V y,
+			V z) {		
 		return (hasEdge(g, x, y) != hasEdge(g, x, z)) || (hasEdge(g, y, x) != hasEdge(g, z, x));
 	}
 	
-	private boolean hasEdge(DirectedGraph g, Vertex x, Vertex y) {
+	private boolean hasEdge(AbstractDirectedGraph<E, V> g, V x, V y) {
 		return g.getDirectedEdge(x, y) != null;
 	}
 
-	public Set<Vertex> getSinkNodes() {
-		Set<Vertex> sinks = new HashSet<Vertex>(getVertices());
-		for (DirectedEdge e: getEdges())
+	public Set<V> getSinkNodes() {
+		Set<V> sinks = new HashSet<V>(getVertices());
+		for (E e: getEdges())
 			sinks.remove(e.getSource());
 		return sinks;
 	}
