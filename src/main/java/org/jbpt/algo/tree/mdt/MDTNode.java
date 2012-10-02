@@ -1,28 +1,27 @@
 package org.jbpt.algo.tree.mdt;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
+import org.jbpt.graph.abs.IDirectedEdge;
+import org.jbpt.hypergraph.abs.IVertex;
 import org.jbpt.hypergraph.abs.Vertex;
 
-public class MDTNode extends Vertex {
-	public enum NodeType {TRIVIAL, COMPLETE, LINEAR, PRIMITIVE};
-	private Collection<Vertex> value;
-	private Vertex proxy;
-	private NodeType type;
-	private Set<MDTNode> children;
+public class MDTNode<E extends IDirectedEdge<V>, V extends IVertex> extends Vertex implements IMDTNode<E, V> {
+	private Collection<V> clan;
+	private V proxy;
+	private MDTType type;
 	private int color;
+	private MDT mdt;
 
-	public MDTNode(Collection<Vertex> value, Vertex proxy) {
-		this.value = value;
+	public MDTNode(MDT mdt, Collection<V> clan, V proxy) {
+		this.clan = clan;
 		this.proxy = proxy;
-		this.type = NodeType.TRIVIAL;
+		this.type = MDTType.TRIVIAL;
 		this.color = 0;
-		this.children = new HashSet<MDTNode>();
+		this.mdt = mdt;
 	}
 
-	public Vertex getProxy() {
+	public V getProxy() {
 		return proxy;
 	}
 
@@ -34,31 +33,19 @@ public class MDTNode extends Vertex {
 		this.color = color;
 	}
 
-	public Set<MDTNode> getChildren() {
-		return children;
-	}
-
-	public void addChild(MDTNode child) {
-		children.add(child);
-	}
-
-	public void addChildren(Set<MDTNode> children) {
-		this.children.addAll(children);
-	}
-
-	public Collection<Vertex> getValue() {
-		return value;
+	public Collection<V> getClan() {
+		return clan;
 	}
 	
-	public void setValue(Collection<Vertex> value) {
-		this.value = value;
+	public void setClan(Collection<V> clan) {
+		this.clan = clan;
 	}
 	
-	public NodeType getType() {
+	public MDTType getType() {
 		return type;
 	}
 
-	public void setType(NodeType type) {
+	public void setType(MDTType type) {
 		this.type = type;
 	}
 	
@@ -71,22 +58,22 @@ public class MDTNode extends Vertex {
 	 * @return
 	 */
 	public Object accept(MDTVisitor visitor, Object obj) {
-		if (type == NodeType.TRIVIAL)
+		if (type == MDTType.TRIVIAL)
 			return visitor.visitTrivial(this, obj);
-		else if (type == NodeType.COMPLETE)
+		else if (type == MDTType.COMPLETE)
 			return visitor.visitComplete(this, obj, color);
-		else if (type == NodeType.LINEAR)
+		else if (type == MDTType.LINEAR)
 			return visitor.visitLinear(this, obj);
 		else
 			return visitor.visitPrimitive(this, obj);
 	}
 	
 	public String toString() {
-		if (type == NodeType.TRIVIAL)
-			return value.iterator().next().toString();
-		else if (type == NodeType.COMPLETE)
-			return type + "_" + color + children;
+		if (type == MDTType.TRIVIAL)
+			return clan.iterator().next().toString();
+		else if (type == MDTType.COMPLETE)
+			return type + "_" + color + mdt.getChildren(this);
 		else
-			return type.toString() + children;
+			return type.toString() + mdt.getChildren(this);
 	}
 }
