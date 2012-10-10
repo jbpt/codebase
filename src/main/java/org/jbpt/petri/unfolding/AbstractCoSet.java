@@ -1,5 +1,6 @@
 package org.jbpt.petri.unfolding;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -70,7 +71,12 @@ public class AbstractCoSet<BPN extends IBPNode<N>, C extends ICondition<BPN,C,E,
 	}
 
 	@Override
-	public Set<P> getPlaces() {
-		return this.p2cs.keySet();
+	public Collection<P> getPlaces() {
+		Collection<P> result = new ArrayList<P>();
+		
+		for (C c : this)
+			result.add(c.getPlace());
+		
+		return result;
 	}
 }

@@ -1,5 +1,6 @@
 package org.jbpt.petri.unfolding;
 
+import java.util.Collection;
 import java.util.Set;
 
 import org.jbpt.petri.IFlow;
@@ -14,6 +15,6 @@ public interface ICoSet<BPN extends IBPNode<N>, C extends ICondition<BPN,C,E,F,N
 
 	public Set<C> getConditions(P place);
 
-	public Set<P> getPlaces();
+	public Collection<P> getPlaces();
 
 }
