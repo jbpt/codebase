@@ -65,6 +65,7 @@ public class RPSTExtensiveTest extends TestCase {
 				rpst = new RPST<Flow,Node>(sys);
 				long stop = System.nanoTime();
 				long time = (stop - start) / 5;
+				assertNotNull(rpst.getRoot());
 				
 				IOUtils.toFile(name+".tree.dot", rpst.toDOT());
 				bat.write("dot -Tpng -o"+name+".tree.png "+name+".tree.dot\n");

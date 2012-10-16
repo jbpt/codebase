@@ -215,7 +215,7 @@ public class TCTree<E extends IEdge<V>, V extends IVertex> extends AbstractTree<
 	 * @param ve2nodes Index.
 	 */
 	private void constructTree(Map<Object,Set<TCTreeNode<E,V>>> ve2nodes) {
-		TCTreeNode<E,V> tobeRoot = null;
+		TCTreeNode<E,V> tobeRoot = this.getVertices().size()==1 ? this.getVertices().iterator().next() : null;
 		
 		Set<TCTreeNode<E,V>> visited = new HashSet<TCTreeNode<E,V>>();
 		for (Map.Entry<Object,Set<TCTreeNode<E,V>>> entry : ve2nodes.entrySet()) {
