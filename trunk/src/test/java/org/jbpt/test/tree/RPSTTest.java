@@ -536,4 +536,40 @@ public class RPSTTest extends TestCase {
 			assertTrue(node.getFragment().containsAll(edges));
 		}
 	}
+	
+	public void test_sequence() {
+		System.out.println("SIMPLE SEQUENCE");
+		MultiDirectedGraph g = new MultiDirectedGraph();
+		
+		Vertex u = new Vertex("u");
+		Vertex v = new Vertex("v");
+		Vertex w = new Vertex("w");
+		Vertex x = new Vertex("x");
+		
+		g.addEdge(u,v);
+		g.addEdge(v,w);
+		g.addEdge(w,x);
+		
+		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
+		IOUtils.toFile("rpst.dot", rpst.toDOT());
+		
+		for (IRPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
+			System.out.print(node.getName() + ": ");
+			for (IRPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
+				System.out.print(child.getName() + " ");	
+			}
+			System.out.println();
+		}
+		
+		System.out.println("ROOT:" + rpst.getRoot());
+		
+		assertNotNull(rpst.getRoot());
+		assertEquals(1,rpst.getRPSTNodes(TCType.POLYGON).size());
+		assertEquals(3,rpst.getRPSTNodes(TCType.TRIVIAL).size());
+		assertEquals(0,rpst.getRPSTNodes(TCType.RIGID).size());
+		assertEquals(0,rpst.getRPSTNodes(TCType.BOND).size());
+		assertEquals(TCType.POLYGON, rpst.getRoot().getType());
+		
+		System.out.println("-----------------------------------------------------------------------");
+	}
 }
