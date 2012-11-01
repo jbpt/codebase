@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>org.jbpt</groupId>
+        <artifactId>jbpt-parent</artifactId>
+        <version>0.2</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.jbpt</groupId>
+    <artifactId>jbpt-petri</artifactId>
+    <packaging>jar</packaging>
+    <version>0.2.314</version>
+
+	<name>Business Process Technologies 4 Java - Petri Net Module</name>
+	<description>
+	</description>
+
+    <prerequisites>
+        <maven>2.2.1</maven>
+    </prerequisites>
+	
+	<build>
+		<finalName>jbpt-petri</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+			</plugin>
+			<plugin>			
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+    <dependencies>
+		<dependency>
+			<groupId>org.jbpt</groupId>
+			<artifactId>jbpt-core</artifactId>
+			<version>${jbpt.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jbpt</groupId>
+			<artifactId>jbpt-deco</artifactId>
+			<version>${jbpt.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20090211</version>
+		</dependency>		
+    </dependencies>
+	
+</project>
