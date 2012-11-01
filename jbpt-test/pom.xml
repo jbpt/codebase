@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>org.jbpt</groupId>
+        <artifactId>jbpt-parent</artifactId>
+        <version>0.2</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.jbpt</groupId>
+    <artifactId>jbpt-test</artifactId>
+    <packaging>pom</packaging>
+    <version>0.2.314</version>
+
+	<name>Business Process Technologies 4 Java - Test Module</name>
+	<description>
+	</description>
+
+    <prerequisites>
+        <maven>2.2.1</maven>
+    </prerequisites>
+	
+	<build>
+		<plugins>
+			<!-- Test Plugins -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.12</version>
+				<configuration>
+					<!-- For the moment just run the tests defined in AllTests -->
+					<includes>
+						<include>**/*AllTests.java</include>
+					</includes>
+				</configuration>
+			</plugin>		
+		</plugins>
+	</build>
+
+    <dependencies>
+		<dependency>
+			<groupId>org.jbpt</groupId>
+			<artifactId>jbpt-core</artifactId>
+			<version>${jbpt.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jbpt</groupId>
+			<artifactId>jbpt-bp</artifactId>
+			<version>${jbpt.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>org.jbpt</groupId>
+			<artifactId>jbpt-bpm</artifactId>
+			<version>${jbpt.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jbpt</groupId>
+			<artifactId>jbpt-petri</artifactId>
+			<version>${jbpt.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jbpt</groupId>
+			<artifactId>jbpt-deco</artifactId>
+			<version>${jbpt.version}</version>
+		</dependency>	
+    </dependencies>
+
+</project>
