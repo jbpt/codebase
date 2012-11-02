@@ -11,7 +11,6 @@ import org.jbpt.algo.tree.tctree.TCType;
 import org.jbpt.graph.DirectedEdge;
 import org.jbpt.graph.MultiDirectedGraph;
 import org.jbpt.hypergraph.abs.Vertex;
-import org.jbpt.utils.IOUtils;
 
 public class RPSTTest extends TestCase {
 	
@@ -40,7 +39,7 @@ public class RPSTTest extends TestCase {
 		g.addEdge(x,t);
 		
 		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
-		IOUtils.toFile("rpst.dot", rpst.toDOT());
+		//IOUtils.toFile("rpst.dot", rpst.toDOT());
 		
 		for (IRPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
 			System.out.print(node.getName() + ": ");
@@ -89,7 +88,7 @@ public class RPSTTest extends TestCase {
 		g.addEdge(z,t);
 		
 		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
-		IOUtils.toFile("rpst.dot", rpst.toDOT());
+		//IOUtils.toFile("rpst.dot", rpst.toDOT());
 		
 		for (IRPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
 			System.out.print(node.getName() + ": ");
@@ -164,7 +163,7 @@ public class RPSTTest extends TestCase {
 		g.addEdge(v7,t);
 		
 		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
-		IOUtils.toFile("rpst.dot", rpst.toDOT());
+		//IOUtils.toFile("rpst.dot", rpst.toDOT());
 		
 		for (IRPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
 			System.out.print(node.getName() + ": ");
@@ -217,7 +216,7 @@ public class RPSTTest extends TestCase {
 		g.addEdge(v,t);
 		
 		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
-		IOUtils.toFile("rpst.dot", rpst.toDOT());
+		//IOUtils.toFile("rpst.dot", rpst.toDOT());
 		
 		for (IRPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
 			System.out.print(node.getName() + ": ");
@@ -274,7 +273,7 @@ public class RPSTTest extends TestCase {
 		g.addEdge(u,t);
 		
 		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);		
-		IOUtils.toFile("rpst.dot", rpst.toDOT());
+		//IOUtils.toFile("rpst.dot", rpst.toDOT());
 		
 		for (IRPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
 			System.out.print(node.getName() + ": ");
@@ -330,7 +329,7 @@ public class RPSTTest extends TestCase {
 		g.addEdge(w,u);
 		
 		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
-		IOUtils.toFile("rpst.dot", rpst.toDOT());
+		//IOUtils.toFile("rpst.dot", rpst.toDOT());
 		
 		for (IRPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
 			System.out.print(node.getName() + ": ");
@@ -391,7 +390,7 @@ public class RPSTTest extends TestCase {
 		g.addEdge(w,v);
 		
 		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
-		IOUtils.toFile("rpst.dot", rpst.toDOT());
+		//IOUtils.toFile("rpst.dot", rpst.toDOT());
 		
 		for (IRPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
 			System.out.print(node.getName() + ": ");
@@ -447,7 +446,7 @@ public class RPSTTest extends TestCase {
 		g.addEdge(w,q);
 		
 		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
-		IOUtils.toFile("rpst.dot", rpst.toDOT());
+		//IOUtils.toFile("rpst.dot", rpst.toDOT());
 		
 		for (IRPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
 			System.out.print(node.getName() + ": ");
@@ -504,7 +503,7 @@ public class RPSTTest extends TestCase {
 		g.addEdge(z,q);
 		
 		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
-		IOUtils.toFile("rpst.dot", rpst.toDOT());
+		//IOUtils.toFile("rpst.dot", rpst.toDOT());
 		
 		for (IRPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
 			System.out.print(node.getName() + ": ");
@@ -551,7 +550,7 @@ public class RPSTTest extends TestCase {
 		g.addEdge(w,x);
 		
 		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
-		IOUtils.toFile("rpst.dot", rpst.toDOT());
+		//IOUtils.toFile("rpst.dot", rpst.toDOT());
 		
 		for (IRPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
 			System.out.print(node.getName() + ": ");
@@ -569,6 +568,83 @@ public class RPSTTest extends TestCase {
 		assertEquals(0,rpst.getRPSTNodes(TCType.RIGID).size());
 		assertEquals(0,rpst.getRPSTNodes(TCType.BOND).size());
 		assertEquals(TCType.POLYGON, rpst.getRoot().getType());
+		
+		System.out.println("-----------------------------------------------------------------------");
+	}
+	
+	public void test_disconnected() {
+		System.out.println("DISCONNECTED AND STRUCTURED");
+		MultiDirectedGraph g = new MultiDirectedGraph();
+		
+		Vertex v1 = new Vertex("v1");
+		Vertex v2 = new Vertex("v2");
+		Vertex v3 = new Vertex("v3");
+		Vertex v4 = new Vertex("v4");
+		Vertex v5 = new Vertex("v5");
+		Vertex v6 = new Vertex("v6");
+		Vertex v7 = new Vertex("v7");
+		Vertex v8 = new Vertex("v8");
+		Vertex v9 = new Vertex("v9");
+		Vertex v10 = new Vertex("v10");
+		Vertex v11 = new Vertex("v11");
+		Vertex v12 = new Vertex("v12");
+		Vertex v13 = new Vertex("v13");
+		Vertex v14 = new Vertex("v14");
+		Vertex v15 = new Vertex("v15");
+		Vertex v16 = new Vertex("v16");
+		Vertex v17 = new Vertex("v17");
+		Vertex v18 = new Vertex("v18");
+		Vertex v19 = new Vertex("v19");
+		Vertex v20 = new Vertex("v20");
+		Vertex v21 = new Vertex("v21");
+		Vertex v22 = new Vertex("v22");
+		
+		g.addEdge(v1,v2);
+		g.addEdge(v2,v3);
+		g.addEdge(v3,v4);
+		g.addEdge(v4,v5);
+		g.addEdge(v5,v6);
+		g.addEdge(v6,v7);
+		g.addEdge(v7,v16);
+		g.addEdge(v2,v8);
+		g.addEdge(v8,v9);
+		g.addEdge(v9,v10);
+		g.addEdge(v10,v11);
+		g.addEdge(v11,v12);
+		g.addEdge(v12,v13);
+		g.addEdge(v10,v13);
+		g.addEdge(v13,v14);
+		g.addEdge(v14,v15);
+		g.addEdge(v15,v16);
+		g.addEdge(v16,v17);
+		g.addEdge(v18,v19);
+		g.addEdge(v19,v20);
+		g.addEdge(v20,v21);
+		g.addEdge(v21,v22);
+		
+		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
+		//IOUtils.toFile("rpst.dot", rpst.toDOT());
+		
+		for (IRPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
+			if (rpst.isRoot(node)) {
+				assertNull(node.getEntry());
+				assertNull(node.getExit());
+			}
+			else {
+				assertNotNull(node.getEntry());
+				assertNotNull(node.getExit());	
+			}
+			
+			System.out.println(node.getName() + ": (" + node.getEntry() + "," + node.getExit() + ")");
+			
+		}
+		assertNotNull(rpst.getRoot());
+		
+		assertEquals(5,rpst.getRPSTNodes(TCType.POLYGON).size());
+		assertEquals(22,rpst.getRPSTNodes(TCType.TRIVIAL).size());
+		assertEquals(0,rpst.getRPSTNodes(TCType.RIGID).size());
+		assertEquals(3,rpst.getRPSTNodes(TCType.BOND).size());
+		assertEquals(TCType.BOND, rpst.getRoot().getType());
 		
 		System.out.println("-----------------------------------------------------------------------");
 	}
