@@ -536,8 +536,107 @@ public class RPSTTest extends TestCase {
 		}
 	}
 	
-	public void test_sequence() {
-		System.out.println("SIMPLE SEQUENCE");
+	public void test_edge() {
+		System.out.println("ONE EDGE SEQUENCE");
+		MultiDirectedGraph g = new MultiDirectedGraph();
+		
+		Vertex u = new Vertex("u");
+		Vertex v = new Vertex("v");
+		
+		g.addEdge(u,v);
+		
+		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
+		//IOUtils.toFile("rpst.dot", rpst.toDOT());
+		
+		for (IRPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
+			System.out.print(node.getName() + ": ");
+			for (IRPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
+				System.out.print(child.getName() + " ");	
+			}
+			System.out.println();
+		}
+		
+		System.out.println("ROOT:" + rpst.getRoot());
+		
+		assertNotNull(rpst.getRoot());
+		assertEquals(0,rpst.getRPSTNodes(TCType.POLYGON).size());
+		assertEquals(1,rpst.getRPSTNodes(TCType.TRIVIAL).size());
+		assertEquals(0,rpst.getRPSTNodes(TCType.RIGID).size());
+		assertEquals(0,rpst.getRPSTNodes(TCType.BOND).size());
+		assertEquals(TCType.TRIVIAL, rpst.getRoot().getType());
+		
+		System.out.println("-----------------------------------------------------------------------");
+	}
+	
+	public void test_sequence_two() {
+		System.out.println("SIMPLE SEQUENCE (2)");
+		MultiDirectedGraph g = new MultiDirectedGraph();
+		
+		Vertex u = new Vertex("u");
+		Vertex v = new Vertex("v");
+		Vertex w = new Vertex("w");
+		
+		g.addEdge(u,v);
+		g.addEdge(v,w);
+		
+		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
+		//IOUtils.toFile("rpst.dot", rpst.toDOT());
+		
+		for (IRPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
+			System.out.print(node.getName() + ": ");
+			for (IRPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
+				System.out.print(child.getName() + " ");	
+			}
+			System.out.println();
+		}
+		
+		System.out.println("ROOT:" + rpst.getRoot());
+		
+		assertNotNull(rpst.getRoot());
+		assertEquals(1,rpst.getRPSTNodes(TCType.POLYGON).size());
+		assertEquals(2,rpst.getRPSTNodes(TCType.TRIVIAL).size());
+		assertEquals(0,rpst.getRPSTNodes(TCType.RIGID).size());
+		assertEquals(0,rpst.getRPSTNodes(TCType.BOND).size());
+		assertEquals(TCType.POLYGON, rpst.getRoot().getType());
+		
+		System.out.println("-----------------------------------------------------------------------");
+	}
+	
+	public void test_bond_two() {
+		System.out.println("SIMPLE BOND (2)");
+		MultiDirectedGraph g = new MultiDirectedGraph();
+		
+		Vertex u = new Vertex("u");
+		Vertex v = new Vertex("v");
+		
+		g.addEdge(u,v);
+		g.addEdge(u,v);
+		
+		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
+		//IOUtils.toFile("rpst.dot", rpst.toDOT());
+		
+		for (IRPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
+			System.out.print(node.getName() + ": ");
+			for (IRPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
+				System.out.print(child.getName() + " ");	
+			}
+			System.out.println();
+		}
+		
+		System.out.println("ROOT:" + rpst.getRoot());
+		
+		assertNotNull(rpst.getRoot());
+		assertEquals(0,rpst.getRPSTNodes(TCType.POLYGON).size());
+		assertEquals(2,rpst.getRPSTNodes(TCType.TRIVIAL).size());
+		assertEquals(0,rpst.getRPSTNodes(TCType.RIGID).size());
+		assertEquals(1,rpst.getRPSTNodes(TCType.BOND).size());
+		assertEquals(TCType.BOND, rpst.getRoot().getType());
+		
+		System.out.println("-----------------------------------------------------------------------");
+	}
+	
+	public void test_sequence_three() {
+		System.out.println("SIMPLE SEQUENCE (3)");
 		MultiDirectedGraph g = new MultiDirectedGraph();
 		
 		Vertex u = new Vertex("u");

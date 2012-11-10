@@ -66,7 +66,7 @@ public class RPST<E extends IDirectedEdge<V>, V extends IVertex> extends Abstrac
 	 */
 	public RPST(IDirectedGraph<E,V> graph) {
 		if (graph==null) return;
-		if (graph.getEdges().isEmpty()) return;
+		if (graph.getEdges().isEmpty()) return;	
 		
 		this.ne2oe = new HashMap<DirectedEdge,E>();
 		this.ov2nv = new HashMap<V,Vertex>();
@@ -199,37 +199,43 @@ public class RPST<E extends IDirectedEdge<V>, V extends IVertex> extends Abstrac
 		// construct RPST nodes
 		Map<TCTreeNode<DirectedEdge,Vertex>,RPSTNode<E,V>> t2r = new HashMap<TCTreeNode<DirectedEdge,Vertex>,RPSTNode<E,V>>();
 		
-		for (IDirectedEdge<TCTreeNode<DirectedEdge,Vertex>> edge : this.tctree.getEdges()) {
-			TCTreeNode<DirectedEdge,Vertex> src = edge.getSource();
-			TCTreeNode<DirectedEdge,Vertex> tgt = edge.getTarget();
-			
-			// ignore extra edges
-			if (tgt.getType()==TCType.TRIVIAL && tgt.getSkeleton().getOriginalEdges().isEmpty())
-				continue;
-			
-			RPSTNode<E,V> rsrc = t2r.get(src);
-			RPSTNode<E,V> rtgt = t2r.get(tgt);
-			
-			if (rsrc==null) {
-				rsrc = new RPSTNode<E,V>(this, src);
+		if (this.tctree.getEdges().isEmpty()) {
+			this.root = new RPSTNode<E,V>(this, tctree.getVertices().iterator().next());
+			this.addVertex(this.root);
+		}
+		else {
+			for (IDirectedEdge<TCTreeNode<DirectedEdge,Vertex>> edge : this.tctree.getEdges()) {
+				TCTreeNode<DirectedEdge,Vertex> src = edge.getSource();
+				TCTreeNode<DirectedEdge,Vertex> tgt = edge.getTarget();
 				
-				t2r.put(src, rsrc);
-			}
+				// ignore extra edges
+				if (tgt.getType()==TCType.TRIVIAL && tgt.getSkeleton().getOriginalEdges().isEmpty())
+					continue;
 				
-			if (rtgt==null) {
-				rtgt = new RPSTNode<E,V>(this, tgt);
+				RPSTNode<E,V> rsrc = t2r.get(src);
+				RPSTNode<E,V> rtgt = t2r.get(tgt);
 				
-				if (rtgt.getType()==TCType.TRIVIAL)  {
-					rtgt.setName(rtgt.getFragment().toString());
+				if (rsrc==null) {
+					rsrc = new RPSTNode<E,V>(this, src);
+					
+					t2r.put(src, rsrc);
+				}
+					
+				if (rtgt==null) {
+					rtgt = new RPSTNode<E,V>(this, tgt);
+					
+					if (rtgt.getType()==TCType.TRIVIAL)  {
+						rtgt.setName(rtgt.getFragment().toString());
+					}
+					
+					t2r.put(tgt, rtgt);
 				}
 				
-				t2r.put(tgt, rtgt);
+				if (this.tctree.isRoot(src)) this.root = rsrc;
+				if (this.tctree.isRoot(tgt)) this.root = rtgt;
+				
+				this.addEdge(rsrc,rtgt);
 			}
-			
-			if (this.tctree.isRoot(src)) this.root = rsrc;
-			if (this.tctree.isRoot(tgt)) this.root = rtgt;
-			
-			this.addEdge(rsrc,rtgt);
 		}
 	}
 	
