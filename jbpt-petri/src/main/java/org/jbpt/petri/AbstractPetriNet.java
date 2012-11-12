@@ -18,8 +18,8 @@ import org.jbpt.graph.abs.AbstractDirectedGraph;
  * @author Matthias Weidlich
  * @author Andreas Meyer
  */
-public abstract class AbstractPetriNet<F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition> extends AbstractDirectedGraph<F,N> implements IPetriNet<F,N,P,T> {	
-
+public abstract class AbstractPetriNet<F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition> extends AbstractDirectedGraph<F,N> implements IPetriNet<F,N,P,T> {
+	
 	/**
 	 * Empty constructor.
 	 */
@@ -387,6 +387,26 @@ public abstract class AbstractPetriNet<F extends IFlow<N>, N extends INode, P ex
 	@Override
 	public Set<N> getMax() {
 		return this.getSinkNodes();
+	}
+	
+	@Override
+	public Set<N> getSourceNodes() {
+		Set<N> result = new HashSet<N>();
+		for (N n : this.getNodes())
+			if (this.getPreset(n).isEmpty())
+				result.add(n);
+		
+		return result;
+	}
+	
+	@Override
+	public Set<N> getSinkNodes() {
+		Set<N> result = new HashSet<N>();
+		for (N n : this.getNodes())
+			if (this.getPostset(n).isEmpty())
+				result.add(n);
+		
+		return result;
 	}
 	
 	@SuppressWarnings("unchecked")

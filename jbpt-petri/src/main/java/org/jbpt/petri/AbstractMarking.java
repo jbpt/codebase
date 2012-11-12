@@ -21,8 +21,7 @@ public abstract class AbstractMarking<F extends IFlow<N>, N extends INode, P ext
 	// associated net
 	private IPetriNet<F,N,P,T> net = null;
 	
-	public AbstractMarking() {
-	}
+	public AbstractMarking() {}
 	
 	/**
 	 * Construct a marking and associate it with a given net.
@@ -216,11 +215,28 @@ public abstract class AbstractMarking<F extends IFlow<N>, N extends INode, P ext
 	}
 	
 	@Override
-	public Object clone() {
-		@SuppressWarnings("unchecked")
-		AbstractMarking<F,N,P,T> clone = (AbstractMarking<F,N,P,T>) super.clone();
+	public boolean fire(T transition) {
+		if (!this.net.getTransitions().contains(transition)) return false;
 		
-		return clone;
+		for (P p : this.net.getPreset(transition)) {
+			if (this.get(p)==0) return false;
+		}
+		
+		for (P p : this.net.getPreset(transition))
+			this.put(p, this.get(p)-1);
+		
+		for (P p : this.net.getPostset(transition))
+			this.put(p, this.get(p)+1);
+		
+		return true;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public IMarking<F,N,P,T> clone() {
+		AbstractMarking<F,N,P,T> cloneMarking = (AbstractMarking<F,N,P,T>) super.clone(); 
+		cloneMarking.net = this.net;
+		return cloneMarking;
 	}
 	
 	@Override

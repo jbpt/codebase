@@ -9,8 +9,6 @@ import java.util.Set;
 /**
  * Implementation of a net system.
  * 
- * TODO lift to interfaces
- * 
  * @author Artem Polyvyanyy
  */
 public abstract class AbstractNetSystem<F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition, M extends IMarking<F,N,P,T>> 
@@ -116,6 +114,26 @@ public abstract class AbstractNetSystem<F extends IFlow<N>, N extends INode, P e
 		}
 		return enabled;
 	}
+	
+	@Override
+	public Set<T> getEnabledTransitionsAtMarking(M marking) {
+		Set<T> result = new HashSet<T>();
+		
+		for (T t : this.getTransitions()) {
+			boolean flag = true;
+			for (P p : this.getPreset(t)) {
+				if (!marking.isMarked(p)) {
+					flag = false;
+					break;
+				}
+			}
+			
+			if (flag) 
+				result.add(t);
+		}
+		
+		return result;
+	}
 
 
 	@Override
@@ -135,18 +153,8 @@ public abstract class AbstractNetSystem<F extends IFlow<N>, N extends INode, P e
 	}
 
 	@Override
-	public boolean fire(T t) {
-		if (!this.getTransitions().contains(t)) return false;
-		
-		if (!this.isEnabled(t)) return false;
-		
-		for (P p : this.getPreset(t))
-			this.marking.put(p, this.marking.get(p)-1);
-		
-		for (P p : this.getPostset(t))
-			this.marking.put(p, this.marking.get(p)+1);
-		
-		return true;
+	public boolean fire(T transition) {
+		return this.marking.fire(transition);
 	}
 
 	@Override

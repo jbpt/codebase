@@ -44,6 +44,14 @@ public interface INetSystem<F extends IFlow<N>, N extends INode, P extends IPlac
 	 * @return Enabled transitions of this net system.
 	 */
 	public Set<T> getEnabledTransitions(Set<T> lastEnabled, T lastFired);
+	
+	/**
+	 * Get enabled transitions of this net system at a given marking
+	 *  
+	 * @param marking Marking of this net system.
+	 * @return Enabled transitions of this net system at the given marking.
+	 */
+	public Set<T> getEnabledTransitionsAtMarking(M marking);
 
 	/**
 	 * Check if a given transition is enabled.
