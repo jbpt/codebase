@@ -11,7 +11,7 @@ import java.util.Set;
  * 
  * @author Artem Polyvyanyy
  */
-public abstract class AbstractRun<F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition, M extends IMarking<F,N,P,T>> 
+public class AbstractRun<F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition, M extends IMarking<F,N,P,T>> 
 		extends ArrayList<T> 
 		implements IRun<F,N,P,T,M> {
 
@@ -30,6 +30,10 @@ public abstract class AbstractRun<F extends IFlow<N>, N extends INode, P extends
 		this.markings = new ArrayList<M>();
 		this.markings.add(currentMarking);
 	}
+	
+	public AbstractRun() {
+		this.markings = new ArrayList<M>();
+	};
 	
 	@SuppressWarnings("unchecked")
 	public AbstractRun(INetSystem<F,N,P,T,M> sys) {
@@ -56,6 +60,8 @@ public abstract class AbstractRun<F extends IFlow<N>, N extends INode, P extends
 			marking.fire(arg0);
 			this.markings.add(marking);
 			this.currentMarking = marking;
+			this.possibleExtensions.clear();
+			this.possibleExtensions.addAll(this.sys.getEnabledTransitionsAtMarking(marking));
 			return super.add(arg0);
 		}
 		else
@@ -106,10 +112,14 @@ public abstract class AbstractRun<F extends IFlow<N>, N extends INode, P extends
 		run.currentMarking = (M) this.currentMarking.clone();
 		run.possibleExtensions = new HashSet<T>(this.possibleExtensions);
 		run.sys = this.sys;
-		run.addAll(this);
+		run.copyTransitions(this);
 		run.markings.addAll(this.markings);
 		
 		return run;
+	}
+	
+	private void copyTransitions(IRun<F,N,P,T,M> run) {
+		super.addAll(run);
 	}
 
 	@Override
@@ -144,17 +154,6 @@ public abstract class AbstractRun<F extends IFlow<N>, N extends INode, P extends
 
 	@Override
 	public List<T> subList(int arg0, int arg1) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public Object[] toArray() {
-		throw new UnsupportedOperationException();
-	}
-
-	@SuppressWarnings("hiding")
-	@Override
-	public <T> T[] toArray(T[] arg0) {
 		throw new UnsupportedOperationException();
 	}
 
