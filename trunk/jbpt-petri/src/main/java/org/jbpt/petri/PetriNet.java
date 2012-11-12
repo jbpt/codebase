@@ -2,7 +2,6 @@ package org.jbpt.petri;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Set;
 
 import org.jbpt.algo.graph.DirectedGraphAlgorithms;
 import org.jbpt.petri.structure.PetriNetStructuralChecks;
@@ -40,15 +39,5 @@ public class PetriNet extends AbstractPetriNet<Flow,Node,Place,Transition> {
 		}
 		
 		return null;
-	}
-	
-	@Override
-	public Set<Node> getSourceNodes() {
-		return PetriNet.DIRECTED_GRAPH_ALGORITHMS.getSources(this);
-	}
-	
-	@Override
-	public Set<Node> getSinkNodes() {
-		return PetriNet.DIRECTED_GRAPH_ALGORITHMS.getSinks(this);
 	}
 }

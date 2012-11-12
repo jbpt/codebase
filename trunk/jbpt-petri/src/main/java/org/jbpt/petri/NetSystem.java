@@ -2,7 +2,6 @@ package org.jbpt.petri;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Set;
 
 
 /**
@@ -49,15 +48,5 @@ public class NetSystem extends AbstractNetSystem<Flow,Node,Place,Transition,Mark
 		}
 		
 		return null;
-	}
-
-	@Override
-	public Set<Node> getSourceNodes() {
-		return PetriNet.DIRECTED_GRAPH_ALGORITHMS.getSources(this);
-	}
-	
-	@Override
-	public Set<Node> getSinkNodes() {
-		return PetriNet.DIRECTED_GRAPH_ALGORITHMS.getSinks(this);
 	}
 }

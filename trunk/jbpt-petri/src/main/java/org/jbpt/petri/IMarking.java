@@ -97,5 +97,15 @@ public interface IMarking<F extends IFlow<N>, N extends INode, P extends IPlace,
 	 */
 	public void setPetriNet(IPetriNet<F,N,P,T> net);
 	
-	public Object clone();
+	/**
+	 * Fire a transition. 
+	 * Transition fires only if it is enabled. 
+	 * Firing of a transition removes one token from every input place and adds one token to every output place of the transition. 
+	 * 
+	 * @param transition Transition to fire.
+	 * @return <tt>true</tt> if firing took place; otherwise <tt>false</tt>.
+	 */
+	public boolean fire(T transition);
+	
+	public IMarking<F,N,P,T> clone();
 }
