@@ -135,9 +135,7 @@ public class AbstractStateSpace<E extends IDirectedEdge<V>, V extends IState<F,N
 		if (!this.m2s.containsKey(fromMarking)) return false;
 		if (!this.m2s.containsKey(toMarking)) return false;
 		
-		this.DGA.hasPath(this,this.m2s.get(fromMarking),this.m2s.get(toMarking));
-		
-		return false;
+		return this.DGA.hasPath(this,this.m2s.get(fromMarking),this.m2s.get(toMarking));
 	}
 	
 }
