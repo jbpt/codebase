@@ -10,7 +10,7 @@ import org.jbpt.hypergraph.abs.Vertex;
 public class AbstractState<F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition, M extends IMarking<F,N,P,T>>
 	extends Vertex 
 	implements IState<F,N,P,T,M> {
-	
+
 	private M marking = null;
 	
 	protected AbstractState() {}
@@ -32,6 +32,11 @@ public class AbstractState<F extends IFlow<N>, N extends INode, P extends IPlace
 	@Override
 	public String toString() {
 		return this.marking.toString();
+	}
+	
+	@Override
+	public String getLabel() {
+		return this.toString();
 	}
 
 }

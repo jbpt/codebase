@@ -1,11 +1,13 @@
 package org.jbpt.petri;
 
 
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.jbpt.algo.graph.DirectedGraphAlgorithms;
 import org.jbpt.graph.abs.AbstractDirectedGraph;
 import org.jbpt.graph.abs.IDirectedEdge;
 
@@ -18,18 +20,35 @@ public class AbstractStateSpace<E extends IDirectedEdge<V>, V extends IState<F,N
 		extends AbstractDirectedGraph<E,V>
 		implements IStateSpace<E,V,F,N,P,T,M> {
 	
+	private DirectedGraphAlgorithms<E,V> DGA = new DirectedGraphAlgorithms<>();
+	
 	private INetSystem<F,N,P,T,M> sys = null;
+	
+	Map<M,V> m2s = null;
 	
 	private boolean isComplete = false;
 	
+	/**
+	 * Construct a state space of a net system.
+	 * @param sys A net system.
+	 */
 	public AbstractStateSpace(INetSystem<F,N,P,T,M> sys) {
 		this.sys = sys;
+		
+		this.m2s = new HashMap<>();
 		
 		this.construct(Integer.MAX_VALUE);
 	}
 	
+	/**
+	 * Construct a state space of a net system up to a given number of states.
+	 * @param sys A net system. 
+	 * @param maxSize Number of states to construct.
+	 */
 	public AbstractStateSpace(INetSystem<F,N,P,T,M> sys, int maxSize) {
 		this.sys = sys;
+		
+		this.m2s = new HashMap<>();
 		
 		this.construct(maxSize);
 	}
@@ -45,8 +64,7 @@ public class AbstractStateSpace<E extends IDirectedEdge<V>, V extends IState<F,N
 		Queue<V> queue = new ConcurrentLinkedQueue<>();
 		queue.add(ini);
 		
-		Set<M> markings = new HashSet<M>();
-		markings.add(this.sys.getMarking());
+		m2s.put(this.sys.getMarking(),ini);
 		
 		while (!queue.isEmpty()) {
 			V v = queue.poll();
@@ -58,16 +76,18 @@ public class AbstractStateSpace<E extends IDirectedEdge<V>, V extends IState<F,N
 				M freshMarking = (M) v.getMarking().clone();
 				freshMarking.fire(t);
 				
-				if (markings.contains(freshMarking))
+				if (m2s.containsKey(freshMarking)) {
+					this.addEdge(v,m2s.get(freshMarking));
 					continue;
+				}
 				
-				if (markings.size()>=maxSize) {
+				if (m2s.size()>=maxSize) {
 					if (!queue.isEmpty()) this.isComplete = false;
 					return;
 				}
 					
 				V state = this.createState(freshMarking);
-				markings.add(freshMarking);
+				m2s.put(freshMarking,state);
 				queue.add(state);
 				this.addEdge(v,state);
 			}
@@ -87,18 +107,6 @@ public class AbstractStateSpace<E extends IDirectedEdge<V>, V extends IState<F,N
 	}
 
 	@Override
-	public boolean isReachable(IState<F,N,P,T,M> state) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isReachable(IState<F,N,P,T,M> fromState, IState<F,N,P,T,M> toState) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public INetSystem<F,N,P,T,M> getNetSystem() {
 		return this.sys;
 	}
@@ -115,6 +123,21 @@ public class AbstractStateSpace<E extends IDirectedEdge<V>, V extends IState<F,N
 		state.setMarking(marking);
 		
 		return state;
+	}
+
+	@Override
+	public boolean isReachable(M marking) {
+		return this.m2s.containsKey(marking);
+	}
+
+	@Override
+	public boolean isReachable(M fromMarking, M toMarking) {
+		if (!this.m2s.containsKey(fromMarking)) return false;
+		if (!this.m2s.containsKey(toMarking)) return false;
+		
+		this.DGA.hasPath(this,this.m2s.get(fromMarking),this.m2s.get(toMarking));
+		
+		return false;
 	}
 	
 }

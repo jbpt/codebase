@@ -26,21 +26,21 @@ public interface IStateSpace<E extends IDirectedEdge<V>, V extends IState<F,N,P,
 	public boolean isComplete();
 	
 	/**
-	 * Check if a given state is reachable.
+	 * Check if a given marking is reachable.
 	 * 
-	 * @param state A state.
-	 * @return <tt>true</tt> if the given state is reachable in this state space; otherwise <tt>false</tt>.
+	 * @param marking A marking.
+	 * @return <tt>true</tt> if the given marking is reachable in this state space; otherwise <tt>false</tt>.
 	 */
-	public boolean isReachable(IState<F,N,P,T,M> state);
+	public boolean isReachable(M marking);
 	
 	/**
-	 * Check if a given state is reachable from another state.
+	 * Check if a given marking is reachable from another marking.
 	 * 
-	 * @param fromState A state.
-	 * @param toState A state.
-	 * @return <tt>true</tt> if the state 'toState' is reachable from the state 'fromState' in this state space; otherwise <tt>false</tt>.
+	 * @param fromMarking A marking.
+	 * @param toMarking A marking.
+	 * @return <tt>true</tt> if the marking 'toMarking' is reachable from the marking 'fromMarking' in this state space; otherwise <tt>false</tt>.
 	 */
-	public boolean isReachable(IState<F,N,P,T,M> fromState, IState<F,N,P,T,M> toState);
+	public boolean isReachable(M fromMarking, M toMarking);
 	
 	/**
 	 * Get net system for which this state space is constructed.
