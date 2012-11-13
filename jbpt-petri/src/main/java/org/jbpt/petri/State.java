@@ -7,6 +7,8 @@ package org.jbpt.petri;
  */
 public class State extends AbstractState<Flow,Node,Place,Transition,Marking> {
 	
+	public State() {}
+	
 	public State(Marking marking) {
 		super(marking);
 	}

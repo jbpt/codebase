@@ -1,5 +1,7 @@
 package org.jbpt.test.petri;
 
+import java.io.IOException;
+
 import junit.framework.TestCase;
 
 import org.jbpt.petri.Flow;
@@ -7,16 +9,17 @@ import org.jbpt.petri.Marking;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Node;
 import org.jbpt.petri.Place;
+import org.jbpt.petri.StateSpace;
 import org.jbpt.petri.Transition;
 import org.jbpt.petri.behavior.SimpleStateSpace;
 import org.jbpt.petri.io.PNMLSerializer;
 import org.jbpt.petri.structure.PetriNetProjector;
 import org.junit.Test;
 
-public class SimpleStateSpaceTest extends TestCase {
+public class StateSpaceTest extends TestCase {
 
 	@Test
-	public void testSimpleStateSpace() {
+	public void testSimpleStateSpace() throws IOException {
 		PNMLSerializer ser = new PNMLSerializer();
 		NetSystem netSystem = ser.parse("src/test/resources/models/petri_net_pnml/simp.pnml");
 
@@ -35,10 +38,15 @@ public class SimpleStateSpaceTest extends TestCase {
 		space.create();
 		assertEquals(121, space.getNumberOfMarkings());
 		
+		StateSpace stateSpace = new StateSpace(netSystem);
+		assertEquals(121, stateSpace.size());
+		
+		//IOUtils.invokeDOT("./", "ns1.png", netSystem.toDOT());
+		//IOUtils.invokeDOT("./", "ss1.png", stateSpace.toDOT());
 	}
 
 	@Test
-	public void testSimpleStateSpaceReducedNet() {
+	public void testSimpleStateSpaceReducedNet() throws IOException {
 		PNMLSerializer ser = new PNMLSerializer();
 		NetSystem netSystem = ser.parse("src/test/resources/models/petri_net_pnml/simp.pnml");
 
@@ -52,7 +60,12 @@ public class SimpleStateSpaceTest extends TestCase {
 		SimpleStateSpace<Flow, Node, Place, Transition, Marking> space = new SimpleStateSpace<>(netSystem);
 		space.create();
 		assertEquals(18, space.getNumberOfMarkings());
-
+		
+		StateSpace stateSpace = new StateSpace(netSystem);
+		assertEquals(18, stateSpace.size());
+		
+		//IOUtils.invokeDOT("./", "ns2.png", netSystem.toDOT());
+		//IOUtils.invokeDOT("./", "ss2.png", stateSpace.toDOT());
 	}
 
 }
