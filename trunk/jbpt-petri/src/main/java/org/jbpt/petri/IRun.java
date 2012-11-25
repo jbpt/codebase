@@ -9,7 +9,7 @@ import java.util.Set;
  * @author Artem Polyvyanyy
  */
 public interface IRun<F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition, M extends IMarking<F,N,P,T>> 
-		extends List<T> {
+		extends List<IStep<F,N,P,T,M>> {
 	
 	/**
 	 * Get transitions that can fire and extend this run.
@@ -25,13 +25,6 @@ public interface IRun<F extends IFlow<N>, N extends INode, P extends IPlace, T e
 	 * @return <tt>true</tt> if transition was appended; otherwise <tt>false</tt>.
 	 */
 	public boolean append(T transition);
-	
-	/**
-	 * Get list of markings induced by this run.
-	 * 
-	 * @return List of visited markings.
-	 */
-	public List<M> getMarkings();
 	
 	/**
 	 * Clone this run.

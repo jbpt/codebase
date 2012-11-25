@@ -3,7 +3,8 @@ package org.jbpt.petri;
 import org.jbpt.hypergraph.abs.IVertex;
 
 /**
- * Interface to a state of a net system
+ * Interface to a state of a net system.
+ * 
  * @author Artem Polyvyanyy
  */
 public interface IState<F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition, M extends IMarking<F,N,P,T>>
