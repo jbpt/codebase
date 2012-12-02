@@ -42,8 +42,6 @@ public class AbstractRun<F extends IFlow<N>, N extends INode, P extends IPlace, 
 	public Set<T> getPossibleExtensions() {		
 		return this.possibleExtensions;
 	}
-
-	
 	
 	@Override
 	public boolean append(T transition) {
@@ -112,32 +110,39 @@ public class AbstractRun<F extends IFlow<N>, N extends INode, P extends IPlace, 
 	
 	@Override
 	public boolean addAll(int arg0, Collection<? extends IStep<F,N,P,T,M>> arg1) {
-		throw new UnsupportedOperationException("Cannot modify runs by adding transitions at arbitrary position.");
+		throw new UnsupportedOperationException("Cannot modify runs by adding steps at arbitrary position.");
 	}
 	
 	@Override
 	public void add(int arg0, IStep<F,N,P,T,M> arg1) {
-		throw new UnsupportedOperationException("Cannot modify runs by adding transitions at arbitrary position.");
+		throw new UnsupportedOperationException("Cannot modify runs by adding steps at arbitrary position.");
 	}
 	
 	@Override
 	public IStep<F,N,P,T,M> remove(int arg0) {
-		throw new UnsupportedOperationException("Cannot remove transitions from runs.");
+		if (arg0==this.size()-1) {
+			IStep<F,N,P,T,M> result = super.remove(arg0);
+			this.currentMarking = this.get(this.size()-1).getOutputMarking();
+			this.possibleExtensions = new HashSet<T>(this.sys.getEnabledTransitionsAtMarking(this.currentMarking));
+			return result;
+		}
+		else
+			throw new UnsupportedOperationException("Cannot remove steps other than from the end of the run.");
 	}
 
 	@Override
 	public boolean remove(Object arg0) {
-		throw new UnsupportedOperationException("Cannot remove transitions from runs.");
+		throw new UnsupportedOperationException("Cannot remove steps from runs.");
 	}
 
 	@Override
 	public boolean removeAll(Collection<?> arg0) {
-		throw new UnsupportedOperationException("Cannot remove transitions from runs.");
+		throw new UnsupportedOperationException("Cannot remove steps from runs.");
 	}
 
 	@Override
 	protected void removeRange(int arg0, int arg1) {
-		throw new UnsupportedOperationException("Cannot remove transitions from runs.");
+		throw new UnsupportedOperationException("Cannot remove steps from runs.");
 	}
 
 	@Override
