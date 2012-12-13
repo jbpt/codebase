@@ -1,11 +1,14 @@
 package org.jbpt.petri;
 
+import org.jbpt.hypergraph.abs.Vertex;
+
 /**
  * Implementation of a step of a net system.
  * 
  * @author Artem Polyvyanyy
  */
-public class AbstractStep<F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition, M extends IMarking<F,N,P,T>> 
+public class AbstractStep<F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition, M extends IMarking<F,N,P,T>>
+		extends Vertex
 		implements IStep<F,N,P,T,M> {
 
 	protected IPetriNet<F,N,P,T> net = null;
@@ -19,7 +22,7 @@ public class AbstractStep<F extends IFlow<N>, N extends INode, P extends IPlace,
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected AbstractStep(IPetriNet<F,N,P,T> net, M inputMarking, T transition) {
+	public AbstractStep(IPetriNet<F,N,P,T> net, M inputMarking, T transition) {
 		this.net = net;
 		this.inputMarking = inputMarking;
 		this.transition = transition;
@@ -39,7 +42,7 @@ public class AbstractStep<F extends IFlow<N>, N extends INode, P extends IPlace,
 		this.outputMarking.fire(this.transition);
 	}
 	
-	protected AbstractStep(IPetriNet<F,N,P,T> net, M inputMarking, T transition, M outputMarking) {
+	public AbstractStep(IPetriNet<F,N,P,T> net, M inputMarking, T transition, M outputMarking) {
 		this.net = net;
 		this.inputMarking	= inputMarking;
 		this.transition		= transition;
@@ -75,25 +78,43 @@ public class AbstractStep<F extends IFlow<N>, N extends INode, P extends IPlace,
 		
 		if (this.getPetriNet()!=that.getPetriNet()) return false;
 		
-		if (!this.getInputMarking().equals(that.getInputMarking())) return false;
-		if (!this.getOutputMarking().equals(that.getOutputMarking())) return false;
-		if (!this.getTransition().equals(that.getTransition())) return false;
+		if (this.getInputMarking()==null) {
+			if (that.getInputMarking()!=null) return false;
+		}
+		else if (!this.getInputMarking().equals(that.getInputMarking())) return false;
+		
+		if (this.getOutputMarking()==null) {
+			if (that.getOutputMarking()!=null) return false;
+		}
+		else if (!this.getOutputMarking().equals(that.getOutputMarking())) return false;
+		
+		if (this.getTransition()==null) {
+			if (that.getTransition()!=null) return false;
+		}
+		else if (!this.getTransition().equals(that.getTransition())) return false;
 		
 		return true;
 	}
 
 	@Override
 	public int hashCode() {
-		return 7 * this.inputMarking.hashCode() + 11 * this.transition.hashCode();
+		return 7 * (this.inputMarking==null ? 0 : this.inputMarking.hashCode()) + 11 * (this.transition==null ? 0 : this.transition.hashCode());
 	}
 
 	@Override
 	public String toString() {
-		return String.format("%s[%s>%s", this.inputMarking.toString(), this.transition.toString(), this.outputMarking.toString());
+		return String.format("%s[%s>%s", this.inputMarking == null ? "null" : this.inputMarking.toString(), 
+											this.transition == null ? "null" : this.transition.toString(),
+											this.outputMarking == null ? "null" : this.outputMarking.toString());
 	}
 	
 	@Override
 	public T getCommand() {
 		return this.transition;
+	}
+	
+	@Override
+	public String getLabel() {
+		return this.toString();
 	}
 }
