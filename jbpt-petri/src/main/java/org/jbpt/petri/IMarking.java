@@ -107,5 +107,23 @@ public interface IMarking<F extends IFlow<N>, N extends INode, P extends IPlace,
 	 */
 	public boolean fire(T transition);
 	
+	/**
+	 * Check if this marking is n-bounded, i.e., there are at most n tokens at every place. 
+	 * @param n 
+	 * @return <tt>true</tt> if this marking is n-bounded; otherwise <tt>false</tt>. 
+	 */
+	public boolean isBounded(int n);
+	
+	/**
+	 * Check if this marking is safe, i.e., there is at most one token at every place. 
+	 * @param n 
+	 * @return <tt>true</tt> if this marking is safe; otherwise <tt>false</tt>. 
+	 */
+	public boolean isSafe();
+	
+	/**
+	 * Clone this marking. 
+	 * @return Cloned version of this marking.
+	 */
 	public IMarking<F,N,P,T> clone();
 }

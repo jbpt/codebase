@@ -238,4 +238,18 @@ public abstract class AbstractMarking<F extends IFlow<N>, N extends INode, P ext
 		cloneMarking.net = this.net;
 		return cloneMarking;
 	}
+	
+	@Override
+	public boolean isBounded(int n) {
+		for (Map.Entry<P,Integer> entry : this.entrySet()) {
+			if (entry.getValue()>n)
+				return false;
+		}
+		return true;
+	}
+
+	@Override
+	public boolean isSafe() {
+		return this.isBounded(1);
+	}
 }
