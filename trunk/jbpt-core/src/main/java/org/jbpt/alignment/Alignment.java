@@ -254,6 +254,7 @@ public class Alignment<M extends IEntityModel<N>, N extends IEntity>  {
 					c.firstSet.addAll(this.reversedCorrespondenceRelation.get(n2));
 					checked.addAll(this.reversedCorrespondenceRelation.get(n2));
 				}
+				result.add(c);
 			}			
 			return result;
 		}
