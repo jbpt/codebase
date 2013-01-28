@@ -13,6 +13,8 @@ import org.jbpt.graph.abs.IDirectedGraph;
 import org.jbpt.hypergraph.abs.IVertex;
 
 /**
+ * Computes the graph edit distance for two directed graphs.
+ * 
  * 
  * @author matthias.weidlich
  * @author remco.dijkman
@@ -31,8 +33,6 @@ public class GraphEditDistance<G extends IDirectedGraph<E,V>,E extends IDirected
 	
 	private int distance = -1; 
 	
-	private double distanceSimilarity = -1; 
-
 	public class VPair {
 		public V v1;
 		public V v2;
@@ -58,12 +58,6 @@ public class GraphEditDistance<G extends IDirectedGraph<E,V>,E extends IDirected
 		return distance;
 	}
 
-	public double getDistanceSimilarity() {
-		if (this.distanceSimilarity == -1)
-			this.computeGED();
-		return distanceSimilarity;
-	}
-
 	private void computeGED() {
 		
 		int totalNrVertices = this.g1.getVertices().size() + this.g2.getVertices().size();
@@ -77,37 +71,23 @@ public class GraphEditDistance<G extends IDirectedGraph<E,V>,E extends IDirected
 		Map<V,Integer> vid2togid = new HashMap<>();
 
 		int gid = 1;
-		int groupedVertices = 0;
 		
 		for (Correspondence<V> c : this.alignment.getAlignmentAsCorrespondences()) {
 
 			verticesFrom1Used.addAll(c.firstSet);
 			verticesFrom2Used.addAll(c.secondSet);
 
-			Set<String> s1Label = new HashSet<String>();
-			Set<String> s2Label = new HashSet<String>();
-			
-			for (V v1: c.firstSet){
-				s1Label.add(v1.getLabel());
+			for (V v1: c.firstSet)
 				vid1togid.put(v1, gid);
-			}
-			if (c.firstSet.size() > 1)
-				groupedVertices += c.firstSet.size();
-			
-			for (V v2: c.secondSet){
-				s2Label.add(v2.getLabel());
+
+			for (V v2: c.secondSet)
 				vid2togid.put(v2, gid);
-			}
-			if (c.secondSet.size() > 1)
-				groupedVertices += c.secondSet.size();
 			
 			gid++;
 		}
 		
 		int skippedVertices = totalNrVertices - verticesFrom1Used.size() - verticesFrom2Used.size();
 
-		// Substituted edges are edges that are not mapped.
-		// First, create the set of all edges in Graph 2.
 		Set<VPair> edgesIn1 = new HashSet<>();
 		for (E e : g1.getEdges())
 			edgesIn1.add(new VPair(e.getSource(), e.getTarget()));
@@ -122,7 +102,7 @@ public class GraphEditDistance<G extends IDirectedGraph<E,V>,E extends IDirected
 		for (VPair e1: edgesIn1){
 			Integer gsrc = vid1togid.get(e1.v1);
 			Integer gtgt = vid1togid.get(e1.v2);
-			if ((gsrc != null) && (gtgt != null)){
+			if ((gsrc != null) && (gtgt != null)) {
 				if (gsrc.equals(gtgt))
 					groupedEdges += 1;
 				else
@@ -133,7 +113,7 @@ public class GraphEditDistance<G extends IDirectedGraph<E,V>,E extends IDirected
 		for (VPair e2: edgesIn2){
 			Integer gsrc = vid2togid.get(e2.v1);
 			Integer gtgt = vid2togid.get(e2.v2);
-			if ((gsrc != null) && (gtgt != null)){
+			if ((gsrc != null) && (gtgt != null)) {
 				if (gsrc.equals(gtgt))
 					groupedEdges += 1;
 				else
@@ -142,21 +122,11 @@ public class GraphEditDistance<G extends IDirectedGraph<E,V>,E extends IDirected
 			}
 		}
 
-		translatedEdgesIn1.retainAll(translatedEdgesIn2); //These are mapped edges
+		translatedEdgesIn1.retainAll(translatedEdgesIn2); 
 		int mappedEdges = translatedEdgesIn1.size();
 		int skippedEdges = totalNrEdges - groupedEdges - 2 * mappedEdges;
-		int substitutions = verticesFrom1Used.size() + verticesFrom2Used.size();
-		double vskip = (1.0 * skippedVertices) / (1.0 * totalNrVertices);
-		double vgroup = (1.0 * groupedVertices) / (1.0 * totalNrVertices);
 
 		this.distance = skippedVertices + skippedEdges;
-		
-//		if (totalNrEdges == 0) {
-//			this.distanceSimilarity = ((((1.0 * weightSkippedVertex * vskip) + (weightGroupedVertex * vgroup) + (weightSubstitutedVertex * vsubs))/(weightSkippedVertex+weightSubstitutedVertex+weightGroupedVertex); 			
-//		}else{
-//			double eskip = (skippedEdges / (1.0 * totalNrEdges)); 
-//			editDistance = ((weightSkippedVertex * vskip) + (weightGroupedVertex * vgroup)+ (weightSubstitutedVertex * vsubs) + (weightSkippedEdge * eskip))/(weightSkippedVertex+weightSubstitutedVertex+weightSkippedEdge+weightGroupedVertex); 			
-//		}
 	}
  
 }
