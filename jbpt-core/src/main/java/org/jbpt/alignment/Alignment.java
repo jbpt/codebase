@@ -14,7 +14,7 @@ import org.jbpt.hypergraph.abs.IEntityModel;
  * correspondence relation.
  * 
  * See <code>initCorrespondenceRelation</code> for a simple method 
- * that initialises the alignment with elementary 1:1 
+ * that initialises the alignment with 
  * correspondences that are derived based on the names of the 
  * entities(string equality).
  * 
@@ -224,4 +224,38 @@ public class Alignment<M extends IEntityModel<N>, N extends IEntity>  {
 				}
 			}
 		}
+		
+		/**
+		 * Returns the given alignment as a set of correspondences. This method is 
+		 * provided for convenience only since the actual alignment is stored in the 
+		 * correspondence relation. 
+		 * 
+		 * The result is well-defined only in case the correspondence relation is 
+		 * non-overlapping. 
+		 * 
+		 * @return a set of correspondences, i.e., pairs of sets of entities
+		 */
+		public Set<Correspondence<N>> getAlignmentAsCorrespondences() {
+			Set<Correspondence<N>> result = new HashSet<>();
+			
+			// not well-defined if the correspondences are overlapping
+			assert(!this.isOverlapping());
+			
+			Set<N> checked = new HashSet<>();
+			for (N n1 : this.correspondenceRelation.keySet()) {
+				if (checked.contains(n1))
+					continue;
+				
+				checked.add(n1);
+				Correspondence<N> c = new Correspondence<>();
+				c.firstSet.add(n1);
+				c.secondSet.addAll(this.correspondenceRelation.get(n1));
+				for (N n2 : this.correspondenceRelation.get(n1)) {
+					c.firstSet.addAll(this.reversedCorrespondenceRelation.get(n2));
+					checked.addAll(this.reversedCorrespondenceRelation.get(n2));
+				}
+			}			
+			return result;
+		}
+			
 }
