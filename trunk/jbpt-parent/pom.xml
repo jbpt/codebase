@@ -116,4 +116,12 @@
 		</dependency>
 	</dependencies>
 	
+	<modules>
+		<module>../jbpt-bp</module>
+		<module>../jbpt-bpm</module>
+		<module>../jbpt-core</module>
+		<module>../jbpt-deco</module>
+		<module>../jbpt-petri</module>
+		<module>../jbpt-test</module>
+	</modules>
 </project>
