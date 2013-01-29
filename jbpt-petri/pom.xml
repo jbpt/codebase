@@ -6,10 +6,10 @@
         <groupId>org.jbpt</groupId>
         <artifactId>jbpt-parent</artifactId>
         <version>0.2</version>
+        <relativePath>../jbpt-parent</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.jbpt</groupId>
     <artifactId>jbpt-petri</artifactId>
     <packaging>jar</packaging>
     <version>0.2.314</version>
