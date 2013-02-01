@@ -1,6 +1,7 @@
 package org.jbpt.petri;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 
 import org.jbpt.graph.abs.IDirectedGraph;
@@ -371,4 +372,14 @@ public interface IPetriNet<F extends IFlow<N>, N extends INode, P extends IPlace
 	 * Clear this net.
 	 */
 	public void clear();
+	
+	/**
+	 * Clone this  Petri net.
+	 */
+	public IPetriNet<F,N,P,T> clone();
+	
+	/**
+	 * Clone this Petri net. The set <code>map</code> is a map from nodes of the original net to nodes of the cloned net.
+	 */
+	public IPetriNet<F,N,P,T> clone(Map<N,N> map);
 }

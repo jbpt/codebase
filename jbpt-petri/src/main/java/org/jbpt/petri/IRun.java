@@ -32,4 +32,11 @@ public interface IRun<F extends IFlow<N>, N extends INode, P extends IPlace, T e
 	 * @return Clone of this run.
 	 */
 	public IRun<F,N,P,T,M> clone();
+	
+	/**
+	 * Set net system of this run.  
+	 * 
+	 * @param system Net system to use as the originative system of this run.
+	 */
+	public void setNetSystem(INetSystem<F,N,P,T,M> system);
 }

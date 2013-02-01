@@ -42,4 +42,9 @@ public class Transition extends Node implements ITransition {
 	public boolean isObservable() {
 		return !this.isSilent();
 	}
+	
+	@Override
+	public ITransition clone() {
+		return (ITransition) super.clone();
+	}
 }

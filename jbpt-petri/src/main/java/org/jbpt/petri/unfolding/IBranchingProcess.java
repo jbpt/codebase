@@ -168,9 +168,17 @@ public interface IBranchingProcess<BPN extends IBPNode<N>, C extends ICondition<
 	 * Append event to this branching process.
 	 * 
 	 * @param condition Event to append.
-	 * @return <tt>true</tt> if event was appended.
+	 * @return <tt>true</tt> if event was appended; otherwise <tt>false</tt>.
 	 */
 	public boolean appendEvent(E event);
+	
+	/**
+	 * Append a frsh event that corresponds to the given transition.
+	 *   
+	 * @param transition Transition that a fresh event should refer to.
+	 * @return <tt>true</tt> if event was appended; otherwise <tt>false</tt>.
+	 */
+	public boolean appendTransition(T transition);
 
 	/**
 	 * Construct initial branching process (only if this branching process is empty).

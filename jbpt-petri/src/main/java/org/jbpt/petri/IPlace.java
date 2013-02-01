@@ -7,4 +7,6 @@ package org.jbpt.petri;
  * @author Artem Polyvyanyy
  */
 public interface IPlace extends INode {
+	
+	public IPlace clone();
 }

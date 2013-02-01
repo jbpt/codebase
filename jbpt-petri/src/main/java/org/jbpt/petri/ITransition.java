@@ -20,4 +20,9 @@ public interface ITransition extends INode {
 	 * @return <tt>true</tt> if label of this transition is not the empty string; otherwise <tt>false</tt>.
 	 */
 	public boolean isObservable();
+	
+	/**
+	 * Clone this transition.
+	 */
+	public ITransition clone();
 }

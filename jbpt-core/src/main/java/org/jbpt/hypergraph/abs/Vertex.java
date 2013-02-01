@@ -8,6 +8,7 @@ package org.jbpt.hypergraph.abs;
 public class Vertex extends GObject implements IVertex
 {	
 	private int x = 0, y = 0, w = 0, h = 0;
+	
 	public Vertex() {
 		super();
 	}

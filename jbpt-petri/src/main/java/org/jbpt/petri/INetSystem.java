@@ -1,5 +1,6 @@
 package org.jbpt.petri;
 
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -109,6 +110,20 @@ public interface INetSystem<F extends IFlow<N>, N extends INode, P extends IPlac
 	 */
 	public boolean isMarked(P place);
 	
+	/**
+	 * Create a marking of this net system.
+	 * @return A marking of this net system. 
+	 */
 	public IMarking<F,N,P,T> createMarking();
+	
+	/**
+	 * Clone this net system.
+	 */
+	public INetSystem<F,N,P,T,M> clone();
+	
+	/**
+	 * Clone this net system. The set <code>map</code> is a map from nodes of the original net to nodes of the cloned net.
+	 */
+	public INetSystem<F,N,P,T,M> clone(Map<N,N> map);
 
 }
