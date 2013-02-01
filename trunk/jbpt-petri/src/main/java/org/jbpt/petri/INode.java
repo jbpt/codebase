@@ -22,4 +22,9 @@ public interface INode extends IVertex {
 	 * @param label String to use as label of this node. 
 	 */
 	public void setLabel(String label);
+	
+	/**
+	 * Clone this Petri net node.
+	 */
+	public INode clone();
 }

@@ -17,7 +17,13 @@ import org.jbpt.petri.INode;
 import org.jbpt.petri.IPlace;
 import org.jbpt.petri.ITransition;
 
-public abstract class AbstractBranchingProcess<BPN extends IBPNode<N>, C extends ICondition<BPN,C,E,F,N,P,T,M>, E extends IEvent<BPN,C,E,F,N,P,T,M>, F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition, M extends IMarking<F,N,P,T>> 
+/**
+ * Abstract implementation of a branching process of a net system.
+ * 
+ * @author Artem Polyvyanyy
+ */
+public abstract class AbstractBranchingProcess<BPN extends IBPNode<N>, C extends ICondition<BPN,C,E,F,N,P,T,M>, E extends IEvent<BPN,C,E,F,N,P,T,M>, 
+												F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition, M extends IMarking<F,N,P,T>> 
 		implements IBranchingProcess<BPN,C,E,F,N,P,T,M> 
 {
 	// originative net system
@@ -279,6 +285,28 @@ public abstract class AbstractBranchingProcess<BPN extends IBPNode<N>, C extends
 
 		this.log.add(event);
 		return true;
+	}
+	
+	@Override
+	public boolean appendTransition(T transition) {
+		ICoSet<BPN,C,E,F,N,P,T,M> preset = this.createCoSet();
+		
+		Set<C> max = this.getMax();
+		for (P p : this.getOriginativeNetSystem().getPreset(transition)) {
+			boolean flag = false;
+			for (C c : this.getMax()) {
+				if (c.getPlace().equals(p) && max.contains(c)) {
+					preset.add(c);
+					max.remove(c);
+					flag = true;
+				}
+			}
+			
+			if (!flag) return false;
+		}
+		
+		E e = this.createEvent(transition, preset);
+		return this.appendEvent(e);
 	}
 	
 	@SuppressWarnings("unchecked")

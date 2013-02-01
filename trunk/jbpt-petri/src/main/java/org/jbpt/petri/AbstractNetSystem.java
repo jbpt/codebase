@@ -193,45 +193,42 @@ public abstract class AbstractNetSystem<F extends IFlow<N>, N extends INode, P e
 	}
 	
 	@Override
-	public AbstractNetSystem<F,N,P,T,M> clone() {
-		Map<N,N> nodeMapping = new HashMap<N,N>();
-		@SuppressWarnings("unchecked")
-		AbstractNetSystem<F,N,P,T,M> clone = (AbstractNetSystem<F,N,P,T,M>) super.clone(nodeMapping);
-		cloneHelper(clone, nodeMapping);
-		
-		return clone;
+	public INetSystem<F,N,P,T,M> clone() {
+		return this.clone(new HashMap<N,N>());
 	}
 	
-	@Override
-	public AbstractNetSystem<F,N,P,T,M> clone(Map<N,N> nodeMapping) {
-		if (nodeMapping==null)
-			nodeMapping = new HashMap<N,N>();
-		
-		@SuppressWarnings("unchecked")
-		AbstractNetSystem<F,N,P,T,M> clone = (AbstractNetSystem<F,N,P,T,M>) super.clone(nodeMapping);
-		cloneHelper(clone,nodeMapping);
-		
-		return clone;
-	}
-	
-	/**
-	 * This method clones the marking of the net system. 
-	 * 
-	 * @param clone A clone object.
-	 * @param nodeMapping Mapping of nodes of the original net system to nodes of its clone object. 
-	 */
 	@SuppressWarnings("unchecked")
-	private void cloneHelper(AbstractNetSystem<F,N,P,T,M> clone, Map<N,N> nodeMapping) {
+	@Override
+	public INetSystem<F,N,P,T,M> clone(Map<N,N> map) {
+		INetSystem<F,N,P,T,M> clone = null;
 		try {
-			clone.marking = (M) Marking.class.newInstance();
-			clone.marking.setPetriNet(clone);
-		} catch (InstantiationException | IllegalAccessException e) {
-			e.printStackTrace();
+			clone = (INetSystem<F,N,P,T,M>) NetSystem.class.newInstance();
+		}
+		catch (InstantiationException | IllegalAccessException exception) {
+			return null;
 		}
 		
-		// initialise marking according to original net system
-		for (P p : this.getMarkedPlaces()) 
-			clone.putTokens((P) nodeMapping.get(p), this.getTokens(p));
+		for (P p : this.getPlaces()) {
+			P np = (P) p.clone();
+			map.put((N)p,(N)np);
+			clone.addPlace(np);
+		}
+		
+		for (T t : this.getTransitions()) {
+			T nt = (T) t.clone();
+			map.put((N)t,(N)nt);
+			clone.addTransition(nt);
+		}
+		
+		for (F f : this.getFlow()) {
+			clone.addFlow(map.get(f.getSource()), map.get(f.getTarget()));
+		}
+		
+		for (P p : this.getPlaces()) {
+			clone.putTokens((P)map.get(p), this.getTokens(p));
+		}
+		
+		return clone;
 	}
 
 	@Override

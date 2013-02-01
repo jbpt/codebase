@@ -32,4 +32,9 @@ public class Place extends Node implements IPlace {
 	public Place(String label, String desc) {
 		super(label,desc);
 	}
+	
+	@Override
+	public IPlace clone() {
+		return (IPlace) super.clone();
+	}
 }

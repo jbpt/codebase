@@ -140,7 +140,7 @@ public abstract class GObject implements IGObject {
 	}
 	
 	@Override
-	public GObject clone() {
+	public IGObject clone() {
 		GObject clone = null;
 		try {
 			clone = (GObject) super.clone();

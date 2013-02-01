@@ -18,7 +18,8 @@ import org.jbpt.graph.abs.AbstractDirectedGraph;
  * @author Matthias Weidlich
  * @author Andreas Meyer
  */
-public abstract class AbstractPetriNet<F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition> extends AbstractDirectedGraph<F,N> implements IPetriNet<F,N,P,T> {
+public abstract class AbstractPetriNet<F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition> 
+	extends AbstractDirectedGraph<F,N> implements IPetriNet<F,N,P,T> {
 	
 	/**
 	 * Empty constructor.
@@ -409,41 +410,41 @@ public abstract class AbstractPetriNet<F extends IFlow<N>, N extends INode, P ex
 		return result;
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
-	public AbstractPetriNet<F,N,P,T> clone() {		
-		AbstractPetriNet<F,N,P,T> clone = (AbstractPetriNet<F,N,P,T>) super.clone();
-		
-		return this.cloneHelper(clone, new HashMap<N,N>());
+	public IPetriNet<F,N,P,T> clone() {
+		return this.clone(new HashMap<N,N>());
 	}
 	
 	@SuppressWarnings("unchecked")
-	private AbstractPetriNet<F,N,P,T> cloneHelper(AbstractPetriNet<F,N,P,T> clone, Map<N,N> nodeMapping) {
-		clone.clearMembers();
-
-		for (N n : this.getNodes()) {
-			N cn = (N)n.clone();
-			clone.addVertex(cn);
-			nodeMapping.put(n,cn);
+	@Override
+	public IPetriNet<F,N,P,T> clone(Map<N,N> map) {
+		IPetriNet<F,N,P,T> clone = null;
+		try {
+			clone = (IPetriNet<F,N,P,T>) PetriNet.class.newInstance();
+		}
+		catch (InstantiationException | IllegalAccessException exception) {
+			return null;
+		}
+		
+		for (P p : this.getPlaces()) {
+			P np = (P) p.clone();
+			map.put((N)p,(N)np);
+			clone.addPlace(np);
+		}
+		
+		for (T t : this.getTransitions()) {
+			T nt = (T) t.clone();
+			map.put((N)t,(N)nt);
+			clone.addTransition(nt);
 		}
 		
 		for (F f : this.getFlow()) {
-			F cf = clone.addFlow(nodeMapping.get(f.getSource()),nodeMapping.get(f.getTarget()));
-			
-			if (f.getName() != null)
-				cf.setName(new String(f.getName()));
-			if (f.getDescription() != null)
-				cf.setDescription(new String(f.getDescription()));
+			clone.addFlow(map.get(f.getSource()), map.get(f.getTarget()));
 		}
 		
 		return clone;
 	}
 	
-	@SuppressWarnings("unchecked")
-	public AbstractPetriNet<F,N,P,T> clone(Map<N,N> nodeMapping) {
-		AbstractPetriNet<F,N,P,T> clone = (AbstractPetriNet<F,N,P,T>) super.clone();
-		return cloneHelper(clone, nodeMapping);
-	}
 	
 	@Override
 	public String toDOT() {

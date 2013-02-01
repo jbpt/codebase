@@ -22,20 +22,16 @@ public class AbstractRun<F extends IFlow<N>, N extends INode, P extends IPlace, 
 	M initialMarking = null;
 	Set<T> possibleExtensions = null;
 	
+	public AbstractRun() {};
+	
+	public AbstractRun(INetSystem<F,N,P,T,M> sys) {
+		this.setNetSystem(sys);
+	}
+	
 	@SuppressWarnings("unchecked")
 	private void reset() {
 		this.currentMarking = (M) this.initialMarking.clone();
 		this.possibleExtensions = new HashSet<T>(this.sys.getEnabledTransitionsAtMarking(this.currentMarking));
-	}
-	
-	public AbstractRun() {
-	};
-	
-	@SuppressWarnings("unchecked")
-	public AbstractRun(INetSystem<F,N,P,T,M> sys) {
-		this.initialMarking = (M) sys.getMarking().clone();
-		this.sys = sys;
-		this.reset();
 	}
 	
 	@Override
@@ -153,5 +149,14 @@ public class AbstractRun<F extends IFlow<N>, N extends INode, P extends IPlace, 
 	@Override
 	public IStep<F,N,P,T,M> set(int arg0, IStep<F,N,P,T,M> arg1) {
 		throw new UnsupportedOperationException("Cannot modify runs at arbitrary positions.");
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void setNetSystem(INetSystem<F,N,P,T,M> system) {
+		this.initialMarking = (M) system.getMarking().clone();
+		this.sys = system;
+		this.reset();
+		
 	}
 }

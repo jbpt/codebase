@@ -8,7 +8,7 @@ import org.jbpt.hypergraph.abs.Vertex;
  * 
  * @author Artem Polyvyanyy
  */
-public abstract class Node extends Vertex implements INode {
+public class Node extends Vertex implements INode {
 	
 	/**
 	 * Empty constructor.
@@ -49,5 +49,10 @@ public abstract class Node extends Vertex implements INode {
 	@Override
 	public void setLabel(String label) {
 		this.setName(label);
+	}
+	
+	@Override
+	public INode clone() {
+		return (INode)super.clone();
 	}
 }
