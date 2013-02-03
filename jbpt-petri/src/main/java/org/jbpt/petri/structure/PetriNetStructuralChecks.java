@@ -64,11 +64,11 @@ public class PetriNetStructuralChecks<F extends IFlow<N>, N extends INode, P ext
 	}
 	
 	/**
-	 * Check if a given Petri net is S-net. 
+	 * Check if a given Petri net is an S-net. 
 	 * A net is an S-net if and only if every its transition has exactly one input place and exactly one output place. 
 	 * 
 	 * @param net A Petri net.
-	 * @return <tt>true</tt> if the net is S-net; otherwise <tt>false</tt>;
+	 * @return <tt>true</tt> if the net is S-net; otherwise <tt>false</tt>.
 	 */
 	public boolean isSNet(IPetriNet<F,N,P,T> net) {
 		for (T t : net.getTransitions())
@@ -79,15 +79,30 @@ public class PetriNetStructuralChecks<F extends IFlow<N>, N extends INode, P ext
 	}
 
 	/**
-	 * Check if a given Petri net is T-net. 
+	 * Check if a given net is a T-net. 
 	 * A net is a T-net if and only if every its place has exactly one input transition and exactly one output transition.
 	 * 
 	 * @param net A Petri net
-	 * @return <tt>true</tt> if the net is T-net; otherwise <tt>false</tt>;
+	 * @return <tt>true</tt> if the net is T-net; otherwise <tt>false</tt>.
 	 */
 	public boolean isTNet(IPetriNet<F,N,P,T> net) {
 		for (P p : net.getPlaces())
 			if (net.getPreset(p).size()!=1 || net.getPostset(p).size()!=1)
+				return false;
+		
+		return true;
+	}
+	
+	/**
+	 * Check if a net is a conflict-free net.
+	 * A net is an conflict-free if and only if every its place has at most one input place and at most one output place.
+	 * 
+	 * @param net A Petri net.
+	 * @return <tt>true</tt> if the net is conflict-free; otherwise <tt>false</tt>.
+	 */
+	public boolean isConflictFree(IPetriNet<F,N,P,T> net) {
+		for (P p : net.getPlaces())
+			if (net.getPreset(p).size()>1 || net.getPostset(p).size()>1)
 				return false;
 		
 		return true;
