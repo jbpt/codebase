@@ -1,7 +1,7 @@
 package org.jbpt.petri.io;
 
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -97,6 +97,7 @@ public class PNMLSerializer extends DefaultHandler
 		return parseContent(file, null);
 	}
 
+
 	/**
 	 * Parses a NetSystem from the given file name if it is not <code>null</code>.
 	 * Otherwise, the byte array containing the PNML-content is parsed.
@@ -122,12 +123,14 @@ public class PNMLSerializer extends DefaultHandler
 			try
 			{
 				if(file != null) {
-					FileReader r;
-					r = new FileReader(file);
-					xmlReader.parse(new InputSource(r));					
+					FileInputStream fileStream = new FileInputStream(file);
+					InputSource is = new InputSource(fileStream);
+					xmlReader.parse(is);
+					
 				} else if (pnmlContent != null) {
 					StringReader inStream = new StringReader(new String(pnmlContent));
-					xmlReader.parse(new InputSource(inStream));	
+					InputSource is = new InputSource(inStream);
+					xmlReader.parse(is);
 				}
 			}
 			catch (IOException e) {
