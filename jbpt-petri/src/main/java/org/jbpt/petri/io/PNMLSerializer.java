@@ -50,7 +50,8 @@ public class PNMLSerializer extends DefaultHandler
 	private boolean place, placeName, placeNameText, placeMarking, placeMarkingText;
 	private boolean arc;
 	private boolean transition, transitionName, transitionNameText;
-
+	private boolean toolspecific;
+	
 	private NetSystem pn;
 
 	private HashMap<String, Node> nodes;
@@ -70,6 +71,7 @@ public class PNMLSerializer extends DefaultHandler
 		this.placeMarking = false;
 		this.placeMarkingText = false;
 		this.arc = false;
+		this.toolspecific = false;
 		this.transition = false;
 		this.transitionName = false;
 		this.transitionNameText = false;
@@ -160,6 +162,9 @@ public class PNMLSerializer extends DefaultHandler
 		else if(arc) {
 
 		}
+		else if(toolspecific) {
+
+		}
 		else if (place) {
 			if (localName.equals("name"))
 				placeName = true;
@@ -191,6 +196,9 @@ public class PNMLSerializer extends DefaultHandler
 			nodes.put(t.getId(), t);
 			pn.addTransition(t);
 			this.currentTransitionID = t.getId();
+		}
+		else if (localName.equals("toolspecific")){
+			toolspecific = true;
 		}
 	}
 
@@ -231,6 +239,9 @@ public class PNMLSerializer extends DefaultHandler
 		}
 		else if (localName.equals("transition")){
 			transition = false;
+		}
+		else if (localName.equals("toolspecific")){
+			toolspecific = false;
 		}
 	}
 
