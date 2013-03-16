@@ -185,6 +185,7 @@ public class PNMLSerializer extends DefaultHandler
 			place = true;
 			Place p = new Place(attributes.getValue(0));
 			p.setId(attributes.getValue(0));
+			p.setName("");
 			nodes.put(p.getId(), p);
 			pn.addPlace(p);
 			this.currentPlaceID = p.getId();
@@ -193,6 +194,7 @@ public class PNMLSerializer extends DefaultHandler
 			transition = true;
 			Transition t = new Transition();
 			t.setId(attributes.getValue(0));
+			t.setName("");
 			nodes.put(t.getId(), t);
 			pn.addTransition(t);
 			this.currentTransitionID = t.getId();
@@ -207,22 +209,19 @@ public class PNMLSerializer extends DefaultHandler
 		super.characters(ch, start, length);
 
 		if (placeNameText) {
-			placeNameText = false;
-			placeName = false;
+			
 		}
 		else if (placeMarkingText) {
 			char[] text = new char[length];
 			System.arraycopy(ch, start, text, 0, length);
 			this.pn.getMarking().put((Place) this.nodes.get(currentPlaceID),Integer.valueOf(new String(text)));
-			placeMarkingText = false;
-			placeMarking = false;
+			
 		}
 		else if (transitionNameText) {
 			char[] text = new char[length];
 			System.arraycopy(ch, start, text, 0, length);
-			this.nodes.get(currentTransitionID).setName(normalizeTransitionLabel(new String(text)));
-			transitionNameText = false;
-			transitionName = false;
+			String name = this.nodes.get(currentTransitionID).getName() + new String(text);
+			this.nodes.get(currentTransitionID).setName(name);
 		}
 	}
 
@@ -231,7 +230,26 @@ public class PNMLSerializer extends DefaultHandler
 			throws SAXException {
 		super.endElement(uri, localName, qName);
 
-		if (localName.equals("arc")) {
+		if (localName.equals("text")) {
+			if (transitionNameText) {
+				transitionNameText = false;
+				String name = normalizeTransitionLabel(this.nodes.get(currentTransitionID).getName());
+				this.nodes.get(currentTransitionID).setName(name);
+			}
+			else if (placeNameText)
+				placeNameText = false;
+			else if (placeMarkingText)
+				placeMarkingText = false;
+		}
+		else if (localName.equals("name")) {
+			if (transitionName)
+				transitionName = false;
+			else if (placeName)
+				placeName = false;
+			else if (placeMarking)
+				placeMarking = false;
+		}
+		else if (localName.equals("arc")) {
 			arc = false;
 		}
 		else if (localName.equals("place")){
