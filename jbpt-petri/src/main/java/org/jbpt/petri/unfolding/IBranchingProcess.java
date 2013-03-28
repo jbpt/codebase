@@ -12,7 +12,7 @@ import org.jbpt.petri.IPlace;
 import org.jbpt.petri.ITransition;
 
 /**
- * Interface to a branching process of a net system.
+ * An interface to a Branching Process of a net system ({@link INetSystem}).
  * 
  * @author Artem Polyvyanyy
  */
