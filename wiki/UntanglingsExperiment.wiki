@@ -1,3 +1,10 @@
-= Untanglings: A Novel Approach to Behavioral Analysis of Process Models (Experiment) =
+== Untanglings: A Novel Approach to Behavioral Analysis of Process Models ==
+
+===Implementation===
+
+Implementations of the baseline and reduction-based algorithms for computing representative untanglings of net systems are published in 
+`org.jbpt.petri.untangling.*` package of the _jbpt_ project.
+
+===Experiment===
 
 The experiment will be uploaded within next 48h.
