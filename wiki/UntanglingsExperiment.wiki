@@ -7,4 +7,4 @@ Implementations of the baseline and reduction-based algorithms for computing rep
 
 ===Experiment===
 
-The experiment will be uploaded within next 48h.
+An experiment on the reduction-based construction of representative untanglings of net systems can be downloaded [https://code.google.com/p/jbpt/downloads/detail?name=UntanglingsExperiment.zip here].
