@@ -9,7 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.util.Set;
+import java.util.Collection;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -30,11 +30,9 @@ public class IOUtils {
 	private static final String DEFAULT_GRAPHVIZ_WINDOWS_PATH = "C://Program Files (x86)//Graphviz 2.28//bin//dot.exe";
 	private static final String DEFAULT_GRAPHVIZ_LINUX_PATH = "/usr/bin/dot";
 	
-	private static final String TARGET_PREFIX = "target/";
-	
 	public static void toFile(String fileName, String content) {
 		try {
-			BufferedWriter out = new BufferedWriter(new FileWriter(TARGET_PREFIX + fileName));
+			BufferedWriter out = new BufferedWriter(new FileWriter(fileName));
 			out.write(content);
 			out.close();
 		}
@@ -141,7 +139,7 @@ public class IOUtils {
 		for (String str: row) {
 			if ((++i) < row.length) {
 				out.print(str);
-				out.print(";");
+				out.print(",");
 			} else {
 				out.println(str);
 			}
@@ -155,7 +153,7 @@ public class IOUtils {
 	 * @param captions a string array with the captions for the csv file
 	 * @param rows a set of string arrays, the lines to write 
 	 */
-	public static void writeResultsToFile(String fileName, String[] captions, Set<String[]> rows) {
+	public static void writeResultsToFile(String fileName, String[] captions, Collection<String[]> rows) {
 		
 		try {
 			FileOutputStream stream = new FileOutputStream(new File(fileName));
