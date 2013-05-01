@@ -87,7 +87,7 @@ public class AbstractRun<F extends IFlow<N>, N extends INode, P extends IPlace, 
 		return (IRun<F,N,P,T,M>)run;
 	}
 	
-	private void copyTransitions(IRun<F,N,P,T,M> run) {
+	protected void copyTransitions(IRun<F,N,P,T,M> run) {
 		for (IStep<F,N,P,T,M> step : run) {
 			this.append(step.getTransition());
 		}
