@@ -98,7 +98,7 @@ public class AbstractStep<F extends IFlow<N>, N extends INode, P extends IPlace,
 
 	@Override
 	public int hashCode() {
-		return super.hashCode();
+		return this.inputMarking.hashCode() + 7 * this.transition.hashCode() + 11 * this.outputMarking.hashCode();
 	}
 
 	@Override

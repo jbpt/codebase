@@ -16,11 +16,11 @@ public class AbstractRun<F extends IFlow<N>, N extends INode, P extends IPlace, 
 
 	private static final long serialVersionUID = -4466441471941425047L;
 	
-	INetSystem<F,N,P,T,M> sys = null;
+	protected INetSystem<F,N,P,T,M> sys = null;
 	
-	M currentMarking = null;
-	M initialMarking = null;
-	Set<T> possibleExtensions = null;
+	protected M currentMarking = null;
+	protected M initialMarking = null;
+	protected Set<T> possibleExtensions = null;
 	
 	public AbstractRun() {};
 	
