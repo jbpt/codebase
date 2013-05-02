@@ -54,32 +54,27 @@ public class AbstractUntanglingRun<F extends IFlow<N>, N extends INode, P extend
 	
 	@Override
 	public boolean append(T transition) {
-		if (this.possibleExtensions.contains(transition)) {
-			IStep<F,N,P,T,M> step = this.createStep(this.sys,this.currentMarking,transition);
-			this.currentMarking = step.getOutputMarking();
-			this.possibleExtensions.clear();
-			this.possibleExtensions.addAll(this.sys.getEnabledTransitionsAtMarking(this.currentMarking));
-			boolean result = super.add(step);
+		boolean result = super.append(transition);
 			
-			if (result) {
-				int last = this.size()-1;
-				Integer preLast = this.s2p.get(step);
+		if (result) {
+			int last = this.size()-1;
+			IStep<F,N,P,T,M> step = this.get(last);
+			Integer preLast = this.s2p.get(step);
+			this.s2p.put(step,last);
+			
+			if (preLast!=null) {
 				this.s2p.put(step,last);
+				Interval interval = new Interval(preLast,last);
 				
-				if (preLast!=null) {
-					this.s2p.put(step,last);
-					Interval interval = new Interval(preLast,last);
-					
-					Set<IStep<F,N,P,T,M>> steps = new HashSet<>();
-					for (int i=interval.getL()+1; i<interval.getR(); i++) {
-						steps.add(this.get(i));
-					}
-					
-					for (int i=0; i<interval.getL(); i++)
-						steps.remove(this.get(i));
-					
-					this.i2s.put(interval,steps);
+				Set<IStep<F,N,P,T,M>> steps = new HashSet<>();
+				for (int i=interval.getL()+1; i<interval.getR(); i++) {
+					steps.add(this.get(i));
 				}
+				
+				for (int i=0; i<interval.getL(); i++)
+					steps.remove(this.get(i));
+				
+				this.i2s.put(interval,steps);
 			}
 			
 			for (Map.Entry<Interval,Set<IStep<F,N,P,T,M>>> entry : this.i2s.entrySet()) {
@@ -88,16 +83,9 @@ public class AbstractUntanglingRun<F extends IFlow<N>, N extends INode, P extend
 				if (entry.getValue().isEmpty())
 					this.isSignificant = false;
 			}
-			
-			return result;
 		}
-		else
-			return false;
-	}
-
-	@Override
-	public void setNetSystem(INetSystem<F,N,P,T,M> system) {
-		throw new UnsupportedOperationException("Cannot modify runs by adding steps at arbitrary position.");
+		
+		return result;
 	}
 
 	@Override

@@ -11,5 +11,7 @@ public interface IUntanglingRun<F extends IFlow<N>, N extends INode, P extends I
 		extends IRun<F,N,P,T,M> {
 	
 	public boolean isSignificant();
+	
+	public IUntanglingRun<F,N,P,T,M> clone();
 
 }

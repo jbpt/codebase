@@ -26,7 +26,7 @@ import org.jbpt.petri.unfolding.IEvent;
  */
 public class AbstractReductionBasedRepresentativeUntangling<BPN extends IBPNode<N>, C extends ICondition<BPN,C,E,F,N,P,T,M>, E extends IEvent<BPN,C,E,F,N,P,T,M>, 
 													F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition, M extends IMarking<F,N,P,T>> 
-		extends AbstractBaselineRepresentativeUntangling<BPN,C,E,F,N,P,T,M>
+		extends AbstractBaselineRepresentativeUntanglingNaive<BPN,C,E,F,N,P,T,M>
 {
 
 	private Map<F,List<N>> abs = null;
