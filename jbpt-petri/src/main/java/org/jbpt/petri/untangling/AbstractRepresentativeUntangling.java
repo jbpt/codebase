@@ -130,6 +130,20 @@ public abstract class AbstractRepresentativeUntangling<BPN extends IBPNode<N>, C
 		return run;
 	}
 	
+	@SuppressWarnings("unchecked")
+	protected IUntanglingRun<F,N,P,T,M> createUntanglingRun(INetSystem<F,N,P,T,M> sys) {
+		IUntanglingRun<F,N,P,T,M> run = null;
+		try {
+			run = (IUntanglingRun<F,N,P,T,M>) UntanglingRun.class.newInstance();
+			run.setNetSystem(sys);
+			return run;
+		} catch (InstantiationException | IllegalAccessException exception) {
+			exception.printStackTrace();
+		}
+		
+		return run;
+	}
+	
 	public void serializeProcesses() {
 		int i=1;
 		for (IProcess<BPN,C,E,F,N,P,T,M> pi : this.getProcesses()) {
@@ -286,6 +300,5 @@ public abstract class AbstractRepresentativeUntangling<BPN extends IBPNode<N>, C
 	
 	public long getTime() {
 		return this.time;
-				
 	}
 }

@@ -10,6 +10,7 @@ import org.jbpt.petri.IMarking;
 import org.jbpt.petri.INetSystem;
 import org.jbpt.petri.INode;
 import org.jbpt.petri.IPlace;
+import org.jbpt.petri.IRun;
 import org.jbpt.petri.ITransition;
 import org.jbpt.petri.structure.PetriNetStructuralChecks;
 import org.jbpt.petri.unfolding.IBPNode;
@@ -21,11 +22,11 @@ import org.jbpt.petri.unfolding.IEvent;
  * 
  * @author Artem Polyvyanyy
  */
-public class AbstractBaselineRepresentativeUntangling<BPN extends IBPNode<N>, C extends ICondition<BPN,C,E,F,N,P,T,M>, E extends IEvent<BPN,C,E,F,N,P,T,M>, 
+public class AbstractBaselineRepresentativeUntanglingNaive<BPN extends IBPNode<N>, C extends ICondition<BPN,C,E,F,N,P,T,M>, E extends IEvent<BPN,C,E,F,N,P,T,M>, 
 													F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition, M extends IMarking<F,N,P,T>> 
 		extends AbstractRepresentativeUntangling<BPN,C,E,F,N,P,T,M>
 {
-	public AbstractBaselineRepresentativeUntangling(INetSystem<F,N,P,T,M> sys, UntanglingSetup setup) {
+	public AbstractBaselineRepresentativeUntanglingNaive(INetSystem<F,N,P,T,M> sys, UntanglingSetup setup) {
 		super(sys, setup);
 	}
 
@@ -34,14 +35,14 @@ public class AbstractBaselineRepresentativeUntangling<BPN extends IBPNode<N>, C 
 	 * 
 	 * @param sys Net system to untangle.
 	 */
-	public AbstractBaselineRepresentativeUntangling(INetSystem<F,N,P,T,M> sys) {
+	public AbstractBaselineRepresentativeUntanglingNaive(INetSystem<F,N,P,T,M> sys) {
 		super(sys);
 	}
 	
 	@Override
 	protected void constructRuns(INetSystem<F,N,P,T,M> system) {
-		Queue<IUntanglingRun<F,N,P,T,M>> queue = new ConcurrentLinkedQueue<>();
-		IUntanglingRun<F,N,P,T,M> ini = this.createUntanglingRun(system);
+		Queue<IRun<F,N,P,T,M>> queue = new ConcurrentLinkedQueue<>();
+		IRun<F,N,P,T,M> ini = this.createRun(system);
 		
 		// if system has no conflicts and is acyclic its untangling is trivial
 		PetriNetStructuralChecks<F,N,P,T> sc = new PetriNetStructuralChecks<>();
@@ -61,7 +62,7 @@ public class AbstractBaselineRepresentativeUntangling<BPN extends IBPNode<N>, C 
 		this.significantRunCounter++;
 		
 		while (!queue.isEmpty()) {
-			IUntanglingRun<F,N,P,T,M> run = queue.poll();
+			IRun<F,N,P,T,M> run = queue.poll();
 			
 			// safeness check (extra)
 			if (run.size()>0 && !run.get(run.size()-1).getOutputMarking().isSafe()) {
@@ -79,10 +80,10 @@ public class AbstractBaselineRepresentativeUntangling<BPN extends IBPNode<N>, C 
 			else {
 				boolean allExtensionsInsignificant = true;
 				for (T t : PE) {
-					IUntanglingRun<F,N,P,T,M> freshRun = run.clone();
+					IRun<F,N,P,T,M> freshRun = run.clone();
 					freshRun.append(t);
 					
-					if (freshRun.isSignificant()) {
+					if (this.isSignificant(freshRun)) {
 						queue.add(freshRun);
 						this.significantRunCounter++;
 						allExtensionsInsignificant = false;
