@@ -625,4 +625,38 @@ public class RPSTTest extends TestCase {
 		assertEquals(1,rpst.getVertices().size());
 		assertEquals(TCType.TRIVIAL, rpst.getRoot().getType());
 	}
+	
+	public void testSingleVertex() {
+		System.out.println(String.format("%s : %s", this.getClass().getName(), Thread.currentThread().getStackTrace()[1].getMethodName()));
+		
+		MultiDirectedGraph g = new MultiDirectedGraph();
+		
+		Vertex a = new Vertex("a");
+
+		g.addVertex(a);
+		
+		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
+
+		assertEquals(0,rpst.getVertices().size());
+		assertNull(rpst.getRoot());
+	}
+	
+	public void testThreeVertices() {
+		System.out.println(String.format("%s : %s", this.getClass().getName(), Thread.currentThread().getStackTrace()[1].getMethodName()));
+		
+		MultiDirectedGraph g = new MultiDirectedGraph();
+		
+		Vertex a = new Vertex("a");
+		Vertex b = new Vertex("b");
+		Vertex c = new Vertex("c");
+
+		g.addVertex(a);
+		g.addVertex(b);
+		g.addVertex(c);
+		
+		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
+
+		assertEquals(0,rpst.getVertices().size());
+		assertNull(rpst.getRoot());
+	}
 }
