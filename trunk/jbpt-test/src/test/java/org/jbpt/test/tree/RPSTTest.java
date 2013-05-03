@@ -1,5 +1,6 @@
 package org.jbpt.test.tree;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -20,7 +21,8 @@ public class RPSTTest extends TestCase {
 	 * See Figure 6.
 	 */
 	public void testWSFM10_Figure6() {
-		System.out.println("WSFM'10: Figure 6");
+		System.out.println(String.format("%s : %s", this.getClass().getName(), Thread.currentThread().getStackTrace()[1].getMethodName()));
+		
 		MultiDirectedGraph g = new MultiDirectedGraph();
 		
 		Vertex s = new Vertex("s");
@@ -39,15 +41,6 @@ public class RPSTTest extends TestCase {
 		g.addEdge(x,t);
 		
 		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
-		//IOUtils.toFile("rpst.dot", rpst.toDOT());
-		
-		for (IRPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
-			System.out.print(node.getName() + ": ");
-			for (IRPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
-				System.out.print(child.getName() + " ");
-			}
-			System.out.println();
-		}
 		
 		performBasicChecks(g,rpst);
 		assertEquals(9,rpst.getRPSTNodes().size());
@@ -64,7 +57,6 @@ public class RPSTTest extends TestCase {
 		assertEquals("u",rpst.getRPSTNodes(TCType.RIGID).iterator().next().getEntry().getName());
 		assertEquals("x",rpst.getRPSTNodes(TCType.RIGID).iterator().next().getExit().getName());
 		assertEquals(5,rpst.getRPSTNodes(TCType.RIGID).iterator().next().getFragment().size());
-		System.out.println("-----------------------------------------------------------------------");
 	}
 	
 	/**
@@ -73,7 +65,8 @@ public class RPSTTest extends TestCase {
 	 * See Figures 8 & 9.
 	 */
 	public void testWSFM10_Figures8and9() {
-		System.out.println("WSFM'10: Figures 8 & 9");
+		System.out.println(String.format("%s : %s", this.getClass().getName(), Thread.currentThread().getStackTrace()[1].getMethodName()));
+		
 		MultiDirectedGraph g = new MultiDirectedGraph();
 		
 		Vertex s = new Vertex("s");
@@ -88,15 +81,6 @@ public class RPSTTest extends TestCase {
 		g.addEdge(z,t);
 		
 		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
-		//IOUtils.toFile("rpst.dot", rpst.toDOT());
-		
-		for (IRPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
-			System.out.print(node.getName() + ": ");
-			for (IRPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
-				System.out.print(child.getName() + " ");	
-			}
-			System.out.println();
-		}
 		
 		performBasicChecks(g,rpst);
 		assertEquals(8,rpst.getRPSTNodes().size());
@@ -114,7 +98,6 @@ public class RPSTTest extends TestCase {
 			assertEquals("y",bond.getEntry().getName());
 			assertEquals("z",bond.getExit().getName());
 		}
-		System.out.println("-----------------------------------------------------------------------");
 	}
 	
 	/**
@@ -123,7 +106,8 @@ public class RPSTTest extends TestCase {
 	 * See Figure 11.
 	 */
 	public void testBPM08_Figure6() {
-		System.out.println("BPM'08: Figure 6");
+		System.out.println(String.format("%s : %s", this.getClass().getName(), Thread.currentThread().getStackTrace()[1].getMethodName()));
+		
 		MultiDirectedGraph g = new MultiDirectedGraph();
 		
 		Vertex s = new Vertex("s");
@@ -163,15 +147,6 @@ public class RPSTTest extends TestCase {
 		g.addEdge(v7,t);
 		
 		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
-		//IOUtils.toFile("rpst.dot", rpst.toDOT());
-		
-		for (IRPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
-			System.out.print(node.getName() + ": ");
-			for (IRPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
-				System.out.print(child.getName() + " ");	
-			}
-			System.out.println();
-		}
 		
 		performBasicChecks(g,rpst);
 		assertEquals(19,rpst.getRPSTNodes().size());
@@ -187,8 +162,6 @@ public class RPSTTest extends TestCase {
 		assertEquals("v5",rpst.getRPSTNodes(TCType.BOND).iterator().next().getEntry().getName());
 		assertEquals("v7",rpst.getRPSTNodes(TCType.BOND).iterator().next().getExit().getName());
 		assertEquals(5,rpst.getRPSTNodes(TCType.BOND).iterator().next().getFragment().size());
-		
-		System.out.println("-----------------------------------------------------------------------");
 	}
 	
 	/**
@@ -197,7 +170,8 @@ public class RPSTTest extends TestCase {
 	 * See Figure 11.
 	 */
 	public void testWSFM10_Figure11() {
-		System.out.println("WSFM'10: Figure 11");
+		System.out.println(String.format("%s : %s", this.getClass().getName(), Thread.currentThread().getStackTrace()[1].getMethodName()));
+		
 		MultiDirectedGraph g = new MultiDirectedGraph();
 		
 		Vertex s = new Vertex("s");
@@ -216,15 +190,6 @@ public class RPSTTest extends TestCase {
 		g.addEdge(v,t);
 		
 		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
-		//IOUtils.toFile("rpst.dot", rpst.toDOT());
-		
-		for (IRPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
-			System.out.print(node.getName() + ": ");
-			for (IRPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
-				System.out.print(child.getName() + " ");	
-			}
-			System.out.println();
-		}
 		
 		performBasicChecks(g,rpst);
 		assertEquals(11,rpst.getRPSTNodes().size());
@@ -249,8 +214,6 @@ public class RPSTTest extends TestCase {
 			assertEquals("v",bond.getExit().getName());
 			assertEquals(5,bond.getFragment().size());
 		}
-		
-		System.out.println("-----------------------------------------------------------------------");
 	}
 	
 	/**
@@ -259,7 +222,8 @@ public class RPSTTest extends TestCase {
 	 * See Figure 12(a).
 	 */
 	public void testWSFM10_Figure12a() {
-		System.out.println("WSFM'10: Figure 12(a)");
+		System.out.println(String.format("%s : %s", this.getClass().getName(), Thread.currentThread().getStackTrace()[1].getMethodName()));
+		
 		MultiDirectedGraph g = new MultiDirectedGraph();
 		
 		Vertex s = new Vertex("s");
@@ -272,16 +236,7 @@ public class RPSTTest extends TestCase {
 		g.addEdge(v,u);
 		g.addEdge(u,t);
 		
-		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);		
-		//IOUtils.toFile("rpst.dot", rpst.toDOT());
-		
-		for (IRPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
-			System.out.print(node.getName() + ": ");
-			for (IRPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
-				System.out.print(child.getName() + " ");	
-			}
-			System.out.println();
-		}
+		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
 		
 		performBasicChecks(g,rpst);
 		assertEquals(6,rpst.getRPSTNodes().size());
@@ -302,8 +257,6 @@ public class RPSTTest extends TestCase {
 				assertEquals(2,polygon.getFragment().size());
 			}
 		}
-		
-		System.out.println("-----------------------------------------------------------------------");
 	}
 	
 	/**
@@ -312,7 +265,8 @@ public class RPSTTest extends TestCase {
 	 * See Figure 12(b).
 	 */
 	public void testWSFM10_Figure12b() {
-		System.out.println("WSFM'10: Figure 12(b)");
+		System.out.println(String.format("%s : %s", this.getClass().getName(), Thread.currentThread().getStackTrace()[1].getMethodName()));
+		
 		MultiDirectedGraph g = new MultiDirectedGraph();
 		
 		Vertex s = new Vertex("s");
@@ -329,15 +283,6 @@ public class RPSTTest extends TestCase {
 		g.addEdge(w,u);
 		
 		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
-		//IOUtils.toFile("rpst.dot", rpst.toDOT());
-		
-		for (IRPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
-			System.out.print(node.getName() + ": ");
-			for (IRPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
-				System.out.print(child.getName() + " ");	
-			}
-			System.out.println();
-		}
 		
 		performBasicChecks(g,rpst);
 		assertEquals(10,rpst.getRPSTNodes().size());
@@ -363,8 +308,6 @@ public class RPSTTest extends TestCase {
 			assertEquals(bond.getEntry().getName(),bond.getExit().getName());
 			assertEquals("u",bond.getEntry().getName());
 		}
-		
-		System.out.println("-----------------------------------------------------------------------");
 	}
 	
 	/**
@@ -373,7 +316,8 @@ public class RPSTTest extends TestCase {
 	 * See Figure 12(c).
 	 */
 	public void testWSFM10_Figure12c() {
-		System.out.println("WSFM'10: Figure 12(c)");
+		System.out.println(String.format("%s : %s", this.getClass().getName(), Thread.currentThread().getStackTrace()[1].getMethodName()));
+		
 		MultiDirectedGraph g = new MultiDirectedGraph();
 		
 		Vertex s = new Vertex("s");
@@ -390,15 +334,6 @@ public class RPSTTest extends TestCase {
 		g.addEdge(w,v);
 		
 		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
-		//IOUtils.toFile("rpst.dot", rpst.toDOT());
-		
-		for (IRPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
-			System.out.print(node.getName() + ": ");
-			for (IRPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
-				System.out.print(child.getName() + " ");	
-			}
-			System.out.println();
-		}
 		
 		performBasicChecks(g,rpst);
 		assertEquals(9,rpst.getRPSTNodes().size());
@@ -417,8 +352,6 @@ public class RPSTTest extends TestCase {
 				assertEquals(polygon.getEntry().getName(),polygon.getExit().getName());
 			}
 		}
-		
-		System.out.println("-----------------------------------------------------------------------");
 	}
 	
 	/**
@@ -427,7 +360,8 @@ public class RPSTTest extends TestCase {
 	 * See Figure 13.
 	 */
 	public void testWSFM10_Figure13() {
-		System.out.println("WSFM'10: Figure 13");
+		System.out.println(String.format("%s : %s", this.getClass().getName(), Thread.currentThread().getStackTrace()[1].getMethodName()));
+		
 		MultiDirectedGraph g = new MultiDirectedGraph();
 		
 		Vertex u = new Vertex("u");
@@ -446,15 +380,6 @@ public class RPSTTest extends TestCase {
 		g.addEdge(w,q);
 		
 		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
-		//IOUtils.toFile("rpst.dot", rpst.toDOT());
-		
-		for (IRPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
-			System.out.print(node.getName() + ": ");
-			for (IRPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
-				System.out.print(child.getName() + " ");	
-			}
-			System.out.println();
-		}
 		
 		performBasicChecks(g,rpst);
 		assertEquals(11,rpst.getRPSTNodes().size());
@@ -475,8 +400,6 @@ public class RPSTTest extends TestCase {
 				assertEquals(3,polygon.getFragment().size());
 			}
 		}
-		
-		System.out.println("-----------------------------------------------------------------------");
 	}
 	
 	/**
@@ -485,7 +408,8 @@ public class RPSTTest extends TestCase {
 	 * See Figure 14.
 	 */
 	public void testWSFM10_Figure14() {
-		System.out.println("WSFM'10: Figure 14");
+		System.out.println(String.format("%s : %s", this.getClass().getName(), Thread.currentThread().getStackTrace()[1].getMethodName()));
+		
 		MultiDirectedGraph g = new MultiDirectedGraph();
 		
 		Vertex u = new Vertex("u");
@@ -503,15 +427,6 @@ public class RPSTTest extends TestCase {
 		g.addEdge(z,q);
 		
 		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
-		//IOUtils.toFile("rpst.dot", rpst.toDOT());
-		
-		for (IRPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
-			System.out.print(node.getName() + ": ");
-			for (IRPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
-				System.out.print(child.getName() + " ");	
-			}
-			System.out.println();
-		}
 		
 		performBasicChecks(g,rpst);
 		assertEquals(9,rpst.getRPSTNodes().size());
@@ -519,8 +434,6 @@ public class RPSTTest extends TestCase {
 		assertEquals(2,rpst.getRPSTNodes(TCType.BOND).size());
 		assertEquals(2,rpst.getRPSTNodes(TCType.POLYGON).size());
 		assertEquals(0,rpst.getRPSTNodes(TCType.RIGID).size());
-		
-		System.out.println("-----------------------------------------------------------------------");
 	}
 	
 	private void performBasicChecks(MultiDirectedGraph g, RPST<DirectedEdge, Vertex> rpst) {
@@ -536,8 +449,9 @@ public class RPSTTest extends TestCase {
 		}
 	}
 	
-	public void test_edge() {
-		System.out.println("ONE EDGE SEQUENCE");
+	public void testSingleEdge() {
+		System.out.println(String.format("%s : %s", this.getClass().getName(), Thread.currentThread().getStackTrace()[1].getMethodName()));
+		
 		MultiDirectedGraph g = new MultiDirectedGraph();
 		
 		Vertex u = new Vertex("u");
@@ -546,30 +460,18 @@ public class RPSTTest extends TestCase {
 		g.addEdge(u,v);
 		
 		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
-		//IOUtils.toFile("rpst.dot", rpst.toDOT());
-		
-		for (IRPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
-			System.out.print(node.getName() + ": ");
-			for (IRPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
-				System.out.print(child.getName() + " ");	
-			}
-			System.out.println();
-		}
-		
-		System.out.println("ROOT:" + rpst.getRoot());
-		
+
 		assertNotNull(rpst.getRoot());
 		assertEquals(0,rpst.getRPSTNodes(TCType.POLYGON).size());
 		assertEquals(1,rpst.getRPSTNodes(TCType.TRIVIAL).size());
 		assertEquals(0,rpst.getRPSTNodes(TCType.RIGID).size());
 		assertEquals(0,rpst.getRPSTNodes(TCType.BOND).size());
 		assertEquals(TCType.TRIVIAL, rpst.getRoot().getType());
-		
-		System.out.println("-----------------------------------------------------------------------");
 	}
 	
-	public void test_sequence_two() {
-		System.out.println("SIMPLE SEQUENCE (2)");
+	public void testSequenceOfTwoEdges() {
+		System.out.println(String.format("%s : %s", this.getClass().getName(), Thread.currentThread().getStackTrace()[1].getMethodName()));
+		
 		MultiDirectedGraph g = new MultiDirectedGraph();
 		
 		Vertex u = new Vertex("u");
@@ -580,17 +482,6 @@ public class RPSTTest extends TestCase {
 		g.addEdge(v,w);
 		
 		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
-		//IOUtils.toFile("rpst.dot", rpst.toDOT());
-		
-		for (IRPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
-			System.out.print(node.getName() + ": ");
-			for (IRPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
-				System.out.print(child.getName() + " ");	
-			}
-			System.out.println();
-		}
-		
-		System.out.println("ROOT:" + rpst.getRoot());
 		
 		assertNotNull(rpst.getRoot());
 		assertEquals(1,rpst.getRPSTNodes(TCType.POLYGON).size());
@@ -598,12 +489,11 @@ public class RPSTTest extends TestCase {
 		assertEquals(0,rpst.getRPSTNodes(TCType.RIGID).size());
 		assertEquals(0,rpst.getRPSTNodes(TCType.BOND).size());
 		assertEquals(TCType.POLYGON, rpst.getRoot().getType());
-		
-		System.out.println("-----------------------------------------------------------------------");
 	}
 	
-	public void test_bond_two() {
-		System.out.println("SIMPLE BOND (2)");
+	public void testSimpleBond() {
+		System.out.println(String.format("%s : %s", this.getClass().getName(), Thread.currentThread().getStackTrace()[1].getMethodName()));
+		
 		MultiDirectedGraph g = new MultiDirectedGraph();
 		
 		Vertex u = new Vertex("u");
@@ -613,17 +503,6 @@ public class RPSTTest extends TestCase {
 		g.addEdge(u,v);
 		
 		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
-		//IOUtils.toFile("rpst.dot", rpst.toDOT());
-		
-		for (IRPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
-			System.out.print(node.getName() + ": ");
-			for (IRPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
-				System.out.print(child.getName() + " ");	
-			}
-			System.out.println();
-		}
-		
-		System.out.println("ROOT:" + rpst.getRoot());
 		
 		assertNotNull(rpst.getRoot());
 		assertEquals(0,rpst.getRPSTNodes(TCType.POLYGON).size());
@@ -631,12 +510,11 @@ public class RPSTTest extends TestCase {
 		assertEquals(0,rpst.getRPSTNodes(TCType.RIGID).size());
 		assertEquals(1,rpst.getRPSTNodes(TCType.BOND).size());
 		assertEquals(TCType.BOND, rpst.getRoot().getType());
-		
-		System.out.println("-----------------------------------------------------------------------");
 	}
 	
-	public void test_sequence_three() {
-		System.out.println("SIMPLE SEQUENCE (3)");
+	public void testSequenceOfThreeEdges() {
+		System.out.println(String.format("%s : %s", this.getClass().getName(), Thread.currentThread().getStackTrace()[1].getMethodName()));
+		
 		MultiDirectedGraph g = new MultiDirectedGraph();
 		
 		Vertex u = new Vertex("u");
@@ -649,17 +527,6 @@ public class RPSTTest extends TestCase {
 		g.addEdge(w,x);
 		
 		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
-		//IOUtils.toFile("rpst.dot", rpst.toDOT());
-		
-		for (IRPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
-			System.out.print(node.getName() + ": ");
-			for (IRPSTNode<DirectedEdge,Vertex> child : rpst.getPolygonChildren(node)) {
-				System.out.print(child.getName() + " ");	
-			}
-			System.out.println();
-		}
-		
-		System.out.println("ROOT:" + rpst.getRoot());
 		
 		assertNotNull(rpst.getRoot());
 		assertEquals(1,rpst.getRPSTNodes(TCType.POLYGON).size());
@@ -667,12 +534,11 @@ public class RPSTTest extends TestCase {
 		assertEquals(0,rpst.getRPSTNodes(TCType.RIGID).size());
 		assertEquals(0,rpst.getRPSTNodes(TCType.BOND).size());
 		assertEquals(TCType.POLYGON, rpst.getRoot().getType());
-		
-		System.out.println("-----------------------------------------------------------------------");
 	}
 	
-	public void test_disconnected() {
-		System.out.println("DISCONNECTED AND STRUCTURED");
+	public void testStructuredDisconnected() {
+		System.out.println(String.format("%s : %s", this.getClass().getName(), Thread.currentThread().getStackTrace()[1].getMethodName()));
+		
 		MultiDirectedGraph g = new MultiDirectedGraph();
 		
 		Vertex v1 = new Vertex("v1");
@@ -722,7 +588,6 @@ public class RPSTTest extends TestCase {
 		g.addEdge(v21,v22);
 		
 		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
-		//IOUtils.toFile("rpst.dot", rpst.toDOT());
 		
 		for (IRPSTNode<DirectedEdge,Vertex> node : rpst.getRPSTNodes()) {
 			if (rpst.isRoot(node)) {
@@ -733,9 +598,6 @@ public class RPSTTest extends TestCase {
 				assertNotNull(node.getEntry());
 				assertNotNull(node.getExit());	
 			}
-			
-			System.out.println(node.getName() + ": (" + node.getEntry() + "," + node.getExit() + ")");
-			
 		}
 		assertNotNull(rpst.getRoot());
 		
@@ -744,7 +606,23 @@ public class RPSTTest extends TestCase {
 		assertEquals(0,rpst.getRPSTNodes(TCType.RIGID).size());
 		assertEquals(3,rpst.getRPSTNodes(TCType.BOND).size());
 		assertEquals(TCType.BOND, rpst.getRoot().getType());
+	}
+	
+	public void testVertexAndEdge() throws IOException {
+		System.out.println(String.format("%s : %s", this.getClass().getName(), Thread.currentThread().getStackTrace()[1].getMethodName()));
 		
-		System.out.println("-----------------------------------------------------------------------");
+		MultiDirectedGraph g = new MultiDirectedGraph();
+		
+		Vertex a = new Vertex("a");
+		Vertex b = new Vertex("b");
+		Vertex c = new Vertex("c");
+		
+		g.addEdge(a,b);
+		g.addVertex(c);
+		
+		RPST<DirectedEdge,Vertex> rpst = new RPST<DirectedEdge,Vertex>(g);
+
+		assertEquals(1,rpst.getVertices().size());
+		assertEquals(TCType.TRIVIAL, rpst.getRoot().getType());
 	}
 }

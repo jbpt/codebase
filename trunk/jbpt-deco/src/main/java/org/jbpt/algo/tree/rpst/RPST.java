@@ -110,6 +110,9 @@ public class RPST<E extends IDirectedEdge<V>, V extends IVertex> extends Abstrac
 		
 		// copy vertices
 		for (V v : this.diGraph.getVertices()) {
+			if (this.diGraph.getIncomingEdges(v).isEmpty() && this.diGraph.getOutgoingEdges(v).isEmpty())
+				continue;
+				
 			if (this.diGraph.getIncomingEdges(v).isEmpty()) 
 				sources.add(v);
 			
