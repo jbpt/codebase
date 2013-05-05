@@ -28,10 +28,13 @@ import org.jbpt.utils.IOUtils;
 public abstract class AbstractRepresentativeUntangling<BPN extends IBPNode<N>, C extends ICondition<BPN,C,E,F,N,P,T,M>, E extends IEvent<BPN,C,E,F,N,P,T,M>, 
 														F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition, M extends IMarking<F,N,P,T>>
 {
-	protected INetSystem<F,N,P,T,M> sys = null;
-	protected INetSystem<F,N,P,T,M> reducedSys = null;
+	protected INetSystem<F,N,P,T,M> 	sys = null;
+	protected INetSystem<F,N,P,T,M> 	reducedSys = null;
 	
-	protected Set<IRun<F,N,P,T,M>> runs = null;
+	protected Set<IRun<F,N,P,T,M>> 		runs = null;
+	
+	protected TreeStep<F,N,P,T,M>		torRoot = null;
+	protected Set<TreeStep<F,N,P,T,M>>	torLeaves = null;
 	
 	protected Collection<IProcess<BPN,C,E,F,N,P,T,M>> processes = null;
 	protected Collection<IProcess<BPN,C,E,F,N,P,T,M>> reducedProcesses = null;
@@ -202,6 +205,30 @@ public abstract class AbstractRepresentativeUntangling<BPN extends IBPNode<N>, C
 				}
 				
 				if (!flag) return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	Set<IStep<F,N,P,T,M>> steps = new HashSet<>();
+	
+	protected boolean isSignificantCubic(IRun<F,N,P,T,M> run) {
+		for (int i=0; i<run.size(); i++) {
+			for (int j=i+1; j<run.size(); j++) {
+				if (!run.get(i).equals(run.get(j))) continue;
+				
+				steps.clear();
+				for (int k=i+1; k<j; k++) steps.add(run.get(k));
+				if (steps.isEmpty()) return false;
+				for (int m=0; m<i; m++) {
+					if (steps.remove(run.get(m)))
+						if (steps.isEmpty()) return false;		
+				}
+				for (int m=j+1; m<run.size(); m++) {
+					if (steps.remove(run.get(m)))
+						if (steps.isEmpty()) return false;		
+				}
 			}
 		}
 		

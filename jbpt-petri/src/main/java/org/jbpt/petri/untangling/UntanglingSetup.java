@@ -16,4 +16,9 @@ public class UntanglingSetup {
 	 * Reduce isomorphic processes.
 	 */
 	public boolean ISOMORPHISM_REDUCTION = false;
+	
+	/**
+	 * Algorithm for checking significance property of a run.
+	 */
+	public SignificanceCheckType SIGNIFICANCE_CHECK = SignificanceCheckType.EXHAUSTIVE;
 }
