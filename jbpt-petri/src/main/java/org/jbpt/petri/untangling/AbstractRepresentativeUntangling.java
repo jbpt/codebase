@@ -82,8 +82,8 @@ public abstract class AbstractRepresentativeUntangling<BPN extends IBPNode<N>, C
 		if (this.setup.SIGNIFICANCE_CHECK == SignificanceCheckType.TREE_OF_RUNS) {
 			for (TreeStep<F,N,P,T,M> step : this.torLeaves) {
 				IRun<F,N,P,T,M> run = this.constructRun(step);
-				/*if (this.cyclic)
-					System.err.println(run);*/
+				if (this.cyclic)
+					System.err.println(run);
 				this.runs.add(run);
 			}
 		}

@@ -205,14 +205,14 @@ public class AbstractBaselineRepresentativeUntangling<BPN extends IBPNode<N>, C 
 			return;
 		}
 		
-		/*if (dga.isCyclic(system)) {
+		if (dga.isCyclic(system)) {
 			System.out.println("cyclic");
 			try {
 				IOUtils.invokeDOT(".", "ss.png", system.toDOT());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}*/
+		}
 			
 		
 		// perform complex stuff
