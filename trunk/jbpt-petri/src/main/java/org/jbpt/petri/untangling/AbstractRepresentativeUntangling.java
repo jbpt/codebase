@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.jbpt.petri.IFlow;
@@ -34,7 +35,7 @@ public abstract class AbstractRepresentativeUntangling<BPN extends IBPNode<N>, C
 	protected Set<IRun<F,N,P,T,M>> 		runs = null;
 	
 	protected TreeStep<F,N,P,T,M>		torRoot = null;
-	protected Set<TreeStep<F,N,P,T,M>>	torLeaves = null;
+	protected List<TreeStep<F,N,P,T,M>>	torLeaves = null;
 	
 	protected Collection<IProcess<BPN,C,E,F,N,P,T,M>> processes = null;
 	protected Collection<IProcess<BPN,C,E,F,N,P,T,M>> reducedProcesses = null;
@@ -45,6 +46,8 @@ public abstract class AbstractRepresentativeUntangling<BPN extends IBPNode<N>, C
 	protected UntanglingSetup setup;
 	
 	protected long time = 0;
+	
+	protected boolean cyclic = false;
 	
 	public AbstractRepresentativeUntangling(INetSystem<F,N,P,T,M> sys) {
 		this(sys, new UntanglingSetup());
@@ -67,6 +70,24 @@ public abstract class AbstractRepresentativeUntangling<BPN extends IBPNode<N>, C
 		this.constructRuns(this.sys);
 		long stop = System.nanoTime();
 		this.time = stop - start;
+		
+		if (this.cyclic) {
+			try {
+				IOUtils.invokeDOT(".", "s.png", this.reducedSys.toDOT());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}	
+		}
+		
+		if (this.setup.SIGNIFICANCE_CHECK == SignificanceCheckType.TREE_OF_RUNS) {
+			for (TreeStep<F,N,P,T,M> step : this.torLeaves) {
+				IRun<F,N,P,T,M> run = this.constructRun(step);
+				/*if (this.cyclic)
+					System.err.println(run);*/
+				this.runs.add(run);
+			}
+		}
+		
 		this.constructProcesses();
 	}
 	
@@ -92,18 +113,34 @@ public abstract class AbstractRepresentativeUntangling<BPN extends IBPNode<N>, C
 	
 	protected void constructProcesses() {		
 		this.processes = new ArrayList<>();
-		
+
 		for (IRun<F,N,P,T,M> run : this.runs) {
 			IProcess<BPN,C,E,F,N,P,T,M> pi = this.createProcess(this.sys);	
 
-			for (IStep<F,N,P,T,M> step : run) {
-				pi.appendTransition(step.getTransition());
+			for (IStep<F,N,P,T,M> s : run) {
+				pi.appendTransition(s.getTransition());
 			}
 			
 			this.processes.add(pi);
-		}
+		}	
 	}
 	
+	private IRun<F,N,P,T,M> constructRun(TreeStep<F,N,P,T,M> step) {
+		List<TreeStep<F,N,P,T,M>> list = new ArrayList<>();
+		TreeStep<F,N,P,T,M> s = step;
+		while (s.getTransition()!=null) {
+			list.add(0,s);
+			s = s.getParent();
+		}
+		
+		IRun<F,N,P,T,M> run = this.createRun(this.reducedSys);
+		for (TreeStep<F,N,P,T,M> ss : list) {
+			run.append(ss.getTransition());
+		}
+		
+		return run;
+	}
+
 	@SuppressWarnings("unchecked")
 	protected IProcess<BPN,C,E,F,N,P,T,M> createProcess(INetSystem<F,N,P,T,M> sys) {
 		IProcess<BPN,C,E,F,N,P,T,M> pi = null;

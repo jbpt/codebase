@@ -78,11 +78,11 @@ public class TreeStep<F extends IFlow<N>, N extends INode, P extends IPlace, T e
 			TreeStep<F,N,P,T,M> step = new TreeStep<F,N,P,T,M>(this.system, this, this.outputMarking, t, m, this.getPosition()+1);
 			
 			if (tsSize!=i) {
-				step.index = this.index.clone();
+				step.index = this.index;
 				step.index.process(step);
 			}
 			else {
-				step.index = this.index;
+				step.index = this.index.clone();
 				step.index.process(step);
 			}
 			
