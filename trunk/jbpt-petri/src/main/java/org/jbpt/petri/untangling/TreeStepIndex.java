@@ -40,27 +40,30 @@ public class TreeStepIndex<F extends IFlow<N>, N extends INode, P extends IPlace
 	
 	public TreeStepIndex() {}
 	
-	public void process(TreeStep<F,N,P,T,M> step) {		
-		Integer preLast = this.s2p.get(step);
-		this.s2p.put(step,step.getPosition());
+	public void process(TreeStep<F,N,P,T,M> step) {
+		Integer last	= step.getPosition();
+		Integer preLast	= this.s2p.get(step);
+		
+		this.s2p.put(step,last);
 		
 		if (preLast!=null) {
-			Interval interval = new Interval(preLast,step.getPosition());
+			Interval interval = new Interval(preLast,last);
 			
 			Set<TreeStep<F,N,P,T,M>> steps = new HashSet<>();
 			
-			TreeStep<F,N,P,T,M> s = step;
-			while (s.getTransition()!=null) {
-				if (s.getPosition()>interval.getL() && s.getPosition()<interval.getR())
-					steps.add(s);
+			TreeStep<F,N,P,T,M> s = step.getParent();
+			if (s!=null) {
+				while (s.getTransition()!=null) {
+					if (s.getPosition()>interval.getL())
+						steps.add(s);
+					else if (s.getPosition()<interval.getL())
+						steps.remove(s);
+						
+					s = s.getParent();
+				}
 				
-				if (s.getPosition()<interval.getL() || s.getPosition()>interval.getR())
-					steps.remove(s);
-					
-				s = s.getParent();
+				this.i2s.put(interval,steps);
 			}
-			
-			this.i2s.put(interval,steps);
 		}
 		
 		for (Map.Entry<Interval,Set<TreeStep<F,N,P,T,M>>> entry : this.i2s.entrySet()) {
@@ -80,8 +83,13 @@ public class TreeStepIndex<F extends IFlow<N>, N extends INode, P extends IPlace
 		TreeStepIndex<F,N,P,T,M> clone = new TreeStepIndex<>();
 		
 		clone.isSignificant = this.isSignificant;
-		clone.i2s = new HashMap<>(this.i2s);
+		
 		clone.s2p = new HashMap<>(this.s2p);
+		
+		clone.i2s = new HashMap<>();
+		for (Map.Entry<Interval,Set<TreeStep<F,N,P,T,M>>> entry : this.i2s.entrySet()) {
+			clone.i2s.put(entry.getKey(),new HashSet<>(entry.getValue()));
+		}
 		
 		return clone;
 	}

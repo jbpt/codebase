@@ -1,6 +1,5 @@
 package org.jbpt.petri.untangling;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Queue;
 import java.util.Set;
@@ -18,7 +17,6 @@ import org.jbpt.petri.structure.PetriNetStructuralChecks;
 import org.jbpt.petri.unfolding.IBPNode;
 import org.jbpt.petri.unfolding.ICondition;
 import org.jbpt.petri.unfolding.IEvent;
-import org.jbpt.utils.IOUtils;
 
 /**
  * An abstract implementation of the baseline algorithm for computing representative untanglings of net systems ({@link INetSystem}). 
@@ -205,40 +203,22 @@ public class AbstractBaselineRepresentativeUntangling<BPN extends IBPNode<N>, C 
 			return;
 		}
 		
-		if (dga.isCyclic(system)) {
-			System.out.println("cyclic");
-			try {
-				IOUtils.invokeDOT(".", "ss.png", system.toDOT());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-			
-		
 		// perform complex stuff
 		if (!this.torRoot.isSafe()) {
 			this.safe = false;
 			return;
 		}
-		
-		if (dga.isCyclic(system))
-			this.cyclic = true;
-		
+
 		queue.add(this.torRoot);
 		this.significantRunCounter++;
 		
 		while (!queue.isEmpty()) {
 			TreeStep<F,N,P,T,M> curr = queue.poll();
 			
-			/*if (queue.isEmpty())
-				System.out.println();*/
-			
 			Set<TreeStep<F,N,P,T,M>> PE = curr.getPossibleExtensions();
 			
-			if (PE.isEmpty()) {
-				if (curr.transition!=null)
-					this.torLeaves.add(curr);
-			}
+			if (PE.isEmpty())
+				this.torLeaves.add(curr);
 			else {
 				boolean allExtensionsInsignificant = true;
 				
@@ -256,9 +236,8 @@ public class AbstractBaselineRepresentativeUntangling<BPN extends IBPNode<N>, C 
 					}
 				}
 				
-				if (allExtensionsInsignificant) {
+				if (allExtensionsInsignificant)
 					this.torLeaves.add(curr);
-				}
 			}
 		}
 	}

@@ -217,10 +217,6 @@ public class AbstractReductionBasedRepresentativeUntangling<BPN extends IBPNode<
 					P en	= (P) start;
 					T ex	= (T) end;
 					
-					/*if (system.getPostset(en).size()>1 && system.getPreset(ex).size()>1) {
-						System.out.println(",PROBLEMATIC_EDGE,");
-					}*/
-					
 					if (system.getPostset(en).size()==1 || system.getPreset(ex).size()==1) { // not a join
 						List<N> list = this.getOrderedNodes(sequence);
 						system.removeNodes(list);
@@ -237,27 +233,6 @@ public class AbstractReductionBasedRepresentativeUntangling<BPN extends IBPNode<
 						F f = system.addFlow(en, last);
 						result.put(f,list);
 					}
-					
-					
-					
-					
-					/*if (system.getPostset(en).size()==1 || system.getPreset(ex).size()==1) {
-						List<N> list = this.getOrderedNodes(sequence);
-						system.removeNodes(list);
-						F f = system.addFlow(en, ex);
-						result.put(f,list);	
-					}
-					else if (sequence.size()<5) continue;
-					else {					
-						List<N> list = this.getOrderedNodes(sequence);
-						en	= (P) list.get(1);
-						ex	= (T) end;
-						list.remove(0);
-						list.remove(0);
-						system.removeNodes(list);
-						F f = system.addFlow(en, ex);
-						result.put(f,list);	
-					}*/
 				}
 			}
 			else {
