@@ -71,19 +71,9 @@ public abstract class AbstractRepresentativeUntangling<BPN extends IBPNode<N>, C
 		long stop = System.nanoTime();
 		this.time = stop - start;
 		
-		if (this.cyclic) {
-			try {
-				IOUtils.invokeDOT(".", "s.png", this.reducedSys.toDOT());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}	
-		}
-		
 		if (this.setup.SIGNIFICANCE_CHECK == SignificanceCheckType.TREE_OF_RUNS) {
 			for (TreeStep<F,N,P,T,M> step : this.torLeaves) {
 				IRun<F,N,P,T,M> run = this.constructRun(step);
-				if (this.cyclic)
-					System.err.println(run);
 				this.runs.add(run);
 			}
 		}
@@ -128,14 +118,17 @@ public abstract class AbstractRepresentativeUntangling<BPN extends IBPNode<N>, C
 	private IRun<F,N,P,T,M> constructRun(TreeStep<F,N,P,T,M> step) {
 		List<TreeStep<F,N,P,T,M>> list = new ArrayList<>();
 		TreeStep<F,N,P,T,M> s = step;
-		while (s.getTransition()!=null) {
-			list.add(0,s);
+		list.add(s);
+		while (s.getParent()!=null) {
 			s = s.getParent();
+			list.add(0,s);
 		}
 		
-		IRun<F,N,P,T,M> run = this.createRun(this.reducedSys);
+		INetSystem<F,N,P,T,M> netSystem = (this.reducedSys==null) ? this.sys : this.reducedSys;
+		IRun<F,N,P,T,M> run = this.createRun(netSystem);
 		for (TreeStep<F,N,P,T,M> ss : list) {
-			run.append(ss.getTransition());
+			if (ss.getTransition()!=null)
+				run.append(ss.getTransition());
 		}
 		
 		return run;
