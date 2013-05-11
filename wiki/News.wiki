@@ -1,6 +1,7 @@
 #labels Featured
 = News =
 
+  * 11 May 2013 - jBPT version 0.2.393 released. The new release includes more tests, minor fix of the RPST implementation, first version of GED (graph edit distance) algorithm, improvements of core Petri net classes, and initial implementation of the results of the theory of untanglings of net systems.
   * 5 April 2013 - A paper on the mission of the jBPT library will be published at [http://www.pros.upv.es/index.php/en/call-for-papers-caise2013/caise-forum CAiSE Forum]. The paper can be downloaded [http://eprints.qut.edu.au/59637/ here].
   * 31 March 2013 - Published an [https://code.google.com/p/jbpt/downloads/detail?name=UntanglingsExperiment.zip experiment] on the reduction-based construction of representative untanglings of net systems.
   * 28 January 2013 - jBPT version 0.2.363 released. The new release includes more tests, as well as new functionality on runs and state space of Petri net systems, and an implementation of an algorithm for computation of minimal distances between all vertices of a directed graph.
