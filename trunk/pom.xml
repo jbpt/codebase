@@ -7,7 +7,7 @@
 
 	<groupId>org.jbpt</groupId>
 	<artifactId>jbpt</artifactId>
-	<version>0.2.314</version>
+	<version>0.2.393</version>
 	<packaging>pom</packaging>
 
 	<name>Business Process Technologies 4 Java</name>

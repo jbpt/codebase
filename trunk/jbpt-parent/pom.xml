@@ -13,7 +13,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>Cp1252</project.build.sourceEncoding>
-		<jbpt.version>0.2.314</jbpt.version>
+		<jbpt.version>0.2.393</jbpt.version>
 	</properties>
 
 	<!-- Plugins to execute on Build -->
