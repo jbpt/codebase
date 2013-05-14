@@ -12,7 +12,7 @@
 
     <artifactId>jbpt-test</artifactId>
     <packaging>pom</packaging>
-    <version>0.2.314</version>
+    <version>0.2.393</version>
 
 	<name>Business Process Technologies 4 Java - Test Module</name>
 	<description>
