@@ -204,33 +204,30 @@ public class AbstractReductionBasedRepresentativeUntangling<BPN extends IBPNode<
 					F f = system.addFlow(en, last);
 					result.put(f,list);
 				}
-				else { // O->...->[] !!! can lead to deadlocks
-					// Option 1: remove everything between  entry and exit
-					/*P en	= (P) start;
-					T ex	= (T) end;
-					List<N> list = this.getOrderedNodes(sequence);
-					system.removeNodes(list);
-					F f = system.addFlow(en,ex);
-					result.put(f,list);*/
-					
-					// Option 2: avoid potential deadlocks
+				else { // O->...->[]
 					P en	= (P) start;
 					T ex	= (T) end;
 					
-					if (system.getPostset(en).size()==1 || system.getPreset(ex).size()==1) { // not a join
-						List<N> list = this.getOrderedNodes(sequence);
-						system.removeNodes(list);
-						F f = system.addFlow(en,ex);
-						result.put(f,list);
+					F f = null;
+					boolean safe = system.getPostset(en).size()==1 || system.getPreset(ex).size()==1; // cannot introduce deadlock
+					
+					if (safe) {
+						f = system.addFlow(en,ex);
+						if (f!=null) {
+							List<N> list = this.getOrderedNodes(sequence);
+							system.removeNodes(list);
+							result.put(f,list);	
+						}
 					}
-					else { // a join
+					
+					if (!safe && f==null) {
 						if (sequence.size()<5) continue;
 						List<N> list = this.getOrderedNodes(sequence);
 						T last = (T) list.get(list.size()-2);
 						list.remove(list.size()-1);
 						list.remove(list.size()-1);
 						system.removeNodes(list);
-						F f = system.addFlow(en, last);
+						f = system.addFlow(en, last);
 						result.put(f,list);
 					}
 				}
@@ -239,10 +236,23 @@ public class AbstractReductionBasedRepresentativeUntangling<BPN extends IBPNode<
 				if (end instanceof IPlace) { // []->...->O
 					T en	= (T) start;
 					P ex	= (P) end;
-					List<N> list = this.getOrderedNodes(sequence);
-					system.removeNodes(list);
+					
 					F f = system.addFlow(en, ex);
-					result.put(f,list);
+					if (f==null) { // edge already exists
+						if (sequence.size()<5) continue;
+						List<N> list = this.getOrderedNodes(sequence);
+						P last = (P) list.get(list.size()-2);
+						list.remove(list.size()-1);
+						list.remove(list.size()-1);
+						system.removeNodes(list);
+						f = system.addFlow(en, last);
+						result.put(f,list);
+					}
+					else {
+						List<N> list = this.getOrderedNodes(sequence);
+						system.removeNodes(list);
+						result.put(f,list);
+					}
 				}
 				else { // []->...->[]
 					T en = (T) start;
