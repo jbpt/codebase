@@ -168,8 +168,7 @@ public class PNMLSerializer extends DefaultHandler
 		else if (place) {
 			if (localName.equals("name"))
 				placeName = true;
-			
-			if (localName.equals("initialMarking"))
+			else if (localName.equals("initialMarking"))
 				placeMarking = true;
 		}
 		else if (transition) {
@@ -246,7 +245,8 @@ public class PNMLSerializer extends DefaultHandler
 				transitionName = false;
 			else if (placeName)
 				placeName = false;
-			else if (placeMarking)
+		}
+		else if (localName.equals("initialMarking")) {
 				placeMarking = false;
 		}
 		else if (localName.equals("arc")) {
