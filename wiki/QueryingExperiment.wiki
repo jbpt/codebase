@@ -1,5 +1,5 @@
 #labels Experiment,Querying
-== Untanglings: A Novel Approach to Behavioral Analysis of Process Models ==
+==Efficient Behavioral Querying of Process Models==
 
 ===Implementation===
 
@@ -10,4 +10,5 @@ Implementation of the querying technique is published in
 `org.jbpt.petri.querying.*` package of the _jbpt_ project.
 
 ===Experiments===
-  * June 2013. An experiment of the novel behavioral querying technique can be downloaded [http://code.google.com/p/jbpt/downloads/detail?name=QueryingExperimentJun13.zip here].
+
+  * June 2013. The experiment that evaluates our behavioral querying technique can be downloaded [http://code.google.com/p/jbpt/downloads/detail?name=QueryingExperimentJun13.zip here].
