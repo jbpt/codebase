@@ -173,7 +173,7 @@ public interface IBranchingProcess<BPN extends IBPNode<N>, C extends ICondition<
 	public boolean appendEvent(E event);
 	
 	/**
-	 * Append a frsh event that corresponds to the given transition.
+	 * Append a fresh event that corresponds to the given transition.
 	 *   
 	 * @param transition Transition that a fresh event should refer to.
 	 * @return <tt>true</tt> if event was appended; otherwise <tt>false</tt>.
