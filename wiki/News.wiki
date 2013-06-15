@@ -1,6 +1,7 @@
 #labels Featured
-= News =
+= News Archive=
 
+  * 15 June 2013 - new experiments on net system [http://code.google.com/p/jbpt/downloads/detail?name=UntanglingsExperimentJun13.zip untangling] and [http://code.google.com/p/jbpt/downloads/detail?name=QueryingExperimentJun13.zip querying] published in the Downloads section.
   * 11 May 2013 - jBPT version 0.2.393 released. The new release includes more tests, minor fix of the RPST implementation, first version of GED (graph edit distance) algorithm, improvements of core Petri net classes, and initial implementation of the results of the theory of untanglings of net systems.
   * 5 April 2013 - A paper on the mission of the jBPT library will be published at [http://www.pros.upv.es/index.php/en/call-for-papers-caise2013/caise-forum CAiSE Forum]. The paper can be downloaded [http://eprints.qut.edu.au/59637/ here].
   * 31 March 2013 - Published an [https://code.google.com/p/jbpt/downloads/detail?name=UntanglingsExperiment.zip experiment] on the reduction-based construction of representative untanglings of net systems.
@@ -10,6 +11,6 @@
   * 19 September 2012 - jBPT version 0.2.314 released. Twice more functionality in the twice smaller library!
   * 18 September 2012 - jBPT is now prepared for Eclipse to be imported either as a Maven or as standard Java project. Please never check in your local .classpath and/or .project file. 
   * 29 August 2012 - Visit jBPT at Ohloh. https://www.ohloh.net/p/jbpt
-  * 31 July 2012 - jBPT is a Maven project from now on, see DeveloperGuide for details
+  * 31 July 2012 - jBPT is a Maven project from now on, see DeveloperGuide for details.
   * 19 June 2012 - jBPT goes in the core of APROMORE project by underpinning the canonical format, and with RPST implementation used for version control and clone detection.
   * 14 June 2012 - From now on jBPT is made available under the terms of the GNU Lesser General Public License 3.
