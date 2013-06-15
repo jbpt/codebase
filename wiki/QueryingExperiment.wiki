@@ -1,2 +1,13 @@
-#labels Experiment
-This page will be updated in the next 24h.
+#labels Experiment,Querying
+== Untanglings: A Novel Approach to Behavioral Analysis of Process Models ==
+
+===Implementation===
+
+Implementations of the baseline and reduction-based algorithms for computing representative untanglings of net systems are published in 
+`org.jbpt.petri.untangling.*` package of the _jbpt_ project.
+
+Implementation of the querying technique is published in 
+`org.jbpt.petri.querying.*` package of the _jbpt_ project.
+
+===Experiments===
+  * June 2013. An experiment of the novel behavioral querying technique. It can be downloaded [http://code.google.com/p/jbpt/downloads/detail?name=QueryingExperimentJun13.zip here].
