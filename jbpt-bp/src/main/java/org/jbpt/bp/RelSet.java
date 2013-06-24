@@ -3,8 +3,10 @@ package org.jbpt.bp;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.jbpt.hypergraph.abs.IEntity;
 import org.jbpt.hypergraph.abs.IEntityModel;
@@ -385,6 +387,24 @@ public class RelSet<M,N extends IEntity> implements IEntityModel<N> {
 				cMatrix[i][j] = getComplementRelation(matrix[i][j]);
 
 		return cProfile;
+	}
+	
+	public HashMap<RelSetType, HashSet<String>> getRelationsByType(Set<RelSetType> relationTypes) {
+		
+		HashMap<RelSetType, HashSet<String>> relations = new HashMap<RelSetType, HashSet<String>>();
+				
+		for (RelSetType relationType : relationTypes ) {
+			relations.put(relationType, new HashSet<String>());
+		}
+		
+		
+		for (int i = 0; i < matrix.length; i++) {
+			for (int j = 0; j <= i; j++) {
+				relations.get(matrix[i][j]).add(entities.get(i) + ";" + entities.get(j));
+			}
+		}
+		
+		return relations;
 	}
 
 }
