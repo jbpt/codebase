@@ -131,7 +131,12 @@ public class ProcessModel2NetSystem {
 			else res = new Transition();
 			
 			res.setId(node.getId());
-			res.setName(node.getName());
+			
+			if (!node.getName().equals("")) {
+				res.setName(node.getName());
+				res.setLabel(node.getName());
+			}
+			
 			res.setDescription(node.getDescription());
 			res.setTag(node.getTag());
 			

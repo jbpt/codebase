@@ -3,12 +3,15 @@ package org.jbpt.petri;
 import org.jbpt.hypergraph.abs.Vertex;
 
 /**
- * Implementation of a Petri net node. 
+ * Implementation of a Petri net node.
+ *  
  * A node of a Petri net is either a {@link Place} or {@link Transition}. 
  * 
  * @author Artem Polyvyanyy
  */
 public class Node extends Vertex implements INode {
+	
+	private String label = "";
 	
 	/**
 	 * Empty constructor.
@@ -18,24 +21,36 @@ public class Node extends Vertex implements INode {
 	}
 	
 	/**
-	 * Constructor with label of the node parameter.
+	 * Constructor with name of this node as the only parameter.
 	 *  
-	 * @param label String to use as a label of this node. 
+	 * @param name Name of this node. 
 	 */
-	public Node(String label) {
-		super();
+	public Node(String name) {
+		super(name);
+		
+		this.setLabel(name);
+	}
+	
+	/**
+	 * Constructor with name and label as parameters.
+	 * 
+	 * @param name Name of this node.
+	 * @param label Label of this node.
+	 */
+	public Node(String name, String label) {
+		super(name);
 		
 		this.setLabel(label);
 	}
 	
 	/**
-	 * Constructor with label and description of the node parameters.
+	 * Constructor with name, label and description as parameters.
 	 * 
 	 * @param label String to use as a label of this node. 
 	 * @param desc String to use as a description of this node. 
 	 */
-	public Node(String label, String desc) {
-		super();
+	public Node(String name, String label, String desc) {
+		super(name);
 		
 		this.setLabel(label);
 		this.setDescription(desc);
@@ -43,16 +58,19 @@ public class Node extends Vertex implements INode {
 
 	@Override
 	public String getLabel() {
-		return this.getName();
+		return this.label;
 	}
 
 	@Override
 	public void setLabel(String label) {
-		this.setName(label);
+		this.label = label;
 	}
 	
 	@Override
 	public INode clone() {
-		return (INode)super.clone();
+		INode node = (INode)super.clone();
+		node.setLabel(this.getLabel());
+		
+		return node;
 	}
 }

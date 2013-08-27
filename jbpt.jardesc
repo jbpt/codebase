@@ -12,13 +12,10 @@
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="true" exportOutputFolder="false">
         <javaElement handleIdentifier="=jbpt-petri/src\/main\/java"/>
-        <javaElement handleIdentifier="=jbpt-bp/src\/main\/java"/>
         <javaElement handleIdentifier="=jbpt-bpm/src\/main\/java"/>
-        <javaElement handleIdentifier="=jbpt-core/src\/main\/java"/>
-        <file path="/jbpt-parent/VERSION"/>
-        <file path="/jbpt-parent/AUTHORS"/>
-        <javaElement handleIdentifier="=jbpt-bpm/src\/main\/resources"/>
+        <javaElement handleIdentifier="=jbpt-bp/src\/main\/java"/>
         <javaElement handleIdentifier="=jbpt-deco/src\/main\/java"/>
-        <file path="/jbpt-parent/LICENSE"/>
+        <javaElement handleIdentifier="=jbpt-bpm/src\/main\/resources"/>
+        <javaElement handleIdentifier="=jbpt-core/src\/main\/java"/>
     </selectedElements>
 </jardesc>
