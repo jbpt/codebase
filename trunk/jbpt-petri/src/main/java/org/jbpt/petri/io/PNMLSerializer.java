@@ -220,7 +220,7 @@ public class PNMLSerializer extends DefaultHandler
 			char[] text = new char[length];
 			System.arraycopy(ch, start, text, 0, length);
 			String name = this.nodes.get(currentTransitionID).getName() + new String(text);
-			this.nodes.get(currentTransitionID).setName(name);
+			this.nodes.get(currentTransitionID).setLabel(name);
 		}
 	}
 

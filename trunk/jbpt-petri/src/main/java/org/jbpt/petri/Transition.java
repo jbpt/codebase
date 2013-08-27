@@ -7,30 +7,20 @@ package org.jbpt.petri;
  */
 public class Transition extends Node implements ITransition {
 	
-	/**
-	 * Empty constructor.
-	 */
 	public Transition() {
 		super();
 	}
 	
-	/**
-	 * Constructor with label of the transition parameter.
-	 *  
-	 * @param label String to use as a label of this transition. 
-	 */
-	public Transition(String label) {
-		super(label);
+	public Transition(String name) {
+		super(name);
 	}
 	
-	/**
-	 * Constructor with label and description of the transition parameters.
-	 * 
-	 * @param label String to use as a label of this transition. 
-	 * @param desc String to use as a description of this transition. 
-	 */
-	public Transition(String label, String desc) {
-		super(label,desc);
+	public Transition(String name, String label) {
+		super(label,label);
+	}
+	
+	public Transition(String name, String label, String desc) {
+		super(name,label,desc);
 	}
 	
 	@Override

@@ -6,31 +6,21 @@ package org.jbpt.petri;
  * @author Artem Polyvyanyy
  */
 public class Place extends Node implements IPlace {
-	
-	/**
-	 * Empty constructor.
-	 */
+
 	public Place() {
 		super();
 	}
 	
-	/**
-	 * Constructor with label of the place parameter.
-	 *  
-	 * @param label String to use as a label of this place. 
-	 */
-	public Place(String label) {
-		super(label);
+	public Place(String name) {
+		super(name);
 	}
 	
-	/**
-	 * Constructor with label and description of the place parameters.
-	 * 
-	 * @param label String to use as a label of this place. 
-	 * @param desc String to use as a description of this place. 
-	 */
-	public Place(String label, String desc) {
-		super(label,desc);
+	public Place(String name, String label) {
+		super(label,label);
+	}
+	
+	public Place(String name, String label, String desc) {
+		super(label,label,desc);
 	}
 	
 	@Override
