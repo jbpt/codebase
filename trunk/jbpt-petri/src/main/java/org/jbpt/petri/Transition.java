@@ -16,7 +16,7 @@ public class Transition extends Node implements ITransition {
 	}
 	
 	public Transition(String name, String label) {
-		super(label,label);
+		super(name,label);
 	}
 	
 	public Transition(String name, String label, String desc) {
