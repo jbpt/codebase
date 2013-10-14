@@ -22,7 +22,7 @@ public class ProjectorTest extends TestCase {
 		assertEquals(38, pn.getPlaces().size());
 		assertEquals(88, pn.getFlow().size());
 
-		PetriNetProjector<Flow, Node, Place, Transition> projector = new PetriNetProjector<>();
+		PetriNetProjector<Flow, Node, Place, Transition> projector = new PetriNetProjector<Flow, Node, Place, Transition>();
 		
 		projector.reducePetriNetBasedOnProjectionSet(pn, pn.getTransitions());
 		

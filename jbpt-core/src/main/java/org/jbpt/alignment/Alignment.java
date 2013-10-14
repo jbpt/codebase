@@ -236,18 +236,18 @@ public class Alignment<M extends IEntityModel<N>, N extends IEntity>  {
 		 * @return a set of correspondences, i.e., pairs of sets of entities
 		 */
 		public Set<Correspondence<N>> getAlignmentAsCorrespondences() {
-			Set<Correspondence<N>> result = new HashSet<>();
+			Set<Correspondence<N>> result = new HashSet<Correspondence<N>>();
 			
 			// not well-defined if the correspondences are overlapping
 			assert(!this.isOverlapping());
 			
-			Set<N> checked = new HashSet<>();
+			Set<N> checked = new HashSet<N>();
 			for (N n1 : this.correspondenceRelation.keySet()) {
 				if (checked.contains(n1))
 					continue;
 				
 				checked.add(n1);
-				Correspondence<N> c = new Correspondence<>();
+				Correspondence<N> c = new Correspondence<N>();
 				c.firstSet.add(n1);
 				c.secondSet.addAll(this.correspondenceRelation.get(n1));
 				for (N n2 : this.correspondenceRelation.get(n1)) {

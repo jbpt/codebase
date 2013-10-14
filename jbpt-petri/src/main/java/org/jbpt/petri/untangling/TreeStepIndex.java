@@ -13,8 +13,8 @@ import org.jbpt.petri.ITransition;
 
 public class TreeStepIndex<F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition, M extends IMarking<F,N,P,T>> 
 {
-	HashMap<TreeStep<F,N,P,T,M>,Integer> s2p = new HashMap<>();
-	HashMap<Interval,Set<TreeStep<F,N,P,T,M>>> i2s = new HashMap<>();
+	HashMap<TreeStep<F,N,P,T,M>,Integer> s2p = new HashMap<TreeStep<F, N, P, T, M>, Integer>();
+	HashMap<Interval,Set<TreeStep<F,N,P,T,M>>> i2s = new HashMap<Interval, Set<TreeStep<F, N, P, T, M>>>();
 	
 	boolean isSignificant = true;
 
@@ -49,7 +49,7 @@ public class TreeStepIndex<F extends IFlow<N>, N extends INode, P extends IPlace
 		if (preLast!=null) {
 			Interval interval = new Interval(preLast,last);
 			
-			Set<TreeStep<F,N,P,T,M>> steps = new HashSet<>();
+			Set<TreeStep<F,N,P,T,M>> steps = new HashSet<TreeStep<F, N, P, T, M>>();
 			
 			TreeStep<F,N,P,T,M> s = step.getParent();
 			if (s!=null) {
@@ -80,15 +80,15 @@ public class TreeStepIndex<F extends IFlow<N>, N extends INode, P extends IPlace
 
 	@Override
 	protected TreeStepIndex<F,N,P,T,M> clone() {
-		TreeStepIndex<F,N,P,T,M> clone = new TreeStepIndex<>();
+		TreeStepIndex<F,N,P,T,M> clone = new TreeStepIndex<F, N, P, T, M>();
 		
 		clone.isSignificant = this.isSignificant;
 		
-		clone.s2p = new HashMap<>(this.s2p);
+		clone.s2p = new HashMap<TreeStep<F, N, P, T, M>, Integer>(this.s2p);
 		
-		clone.i2s = new HashMap<>();
+		clone.i2s = new HashMap<Interval, Set<TreeStep<F, N, P, T, M>>>();
 		for (Map.Entry<Interval,Set<TreeStep<F,N,P,T,M>>> entry : this.i2s.entrySet()) {
-			clone.i2s.put(entry.getKey(),new HashSet<>(entry.getValue()));
+			clone.i2s.put(entry.getKey(),new HashSet<TreeStep<F, N, P, T, M>>(entry.getValue()));
 		}
 		
 		return clone;

@@ -81,19 +81,19 @@ public class AbstractCompletePrefixUnfolding<BPN extends IBPNode<N>, C extends I
 		
 		switch (this.setup.ADEQUATE_ORDER) {
 			case ESPARZA_FOR_ARBITRARY_SYSTEMS:
-				this.ADEQUATE_ORDER = new EsparzaAdequateOrderForArbitrarySystems<>();
+				this.ADEQUATE_ORDER = new EsparzaAdequateOrderForArbitrarySystems<BPN, C, E, F, N, P, T, M>();
 				break;
 			case ESPARZA_FOR_SAFE_SYSTEMS:
-				this.ADEQUATE_ORDER = new EsparzaAdequateTotalOrderForSafeSystems<>();
+				this.ADEQUATE_ORDER = new EsparzaAdequateTotalOrderForSafeSystems<BPN, C, E, F, N, P, T, M>();
 				break;
 			case MCMILLAN:
-				this.ADEQUATE_ORDER = new McMillanAdequateOrder<>();
+				this.ADEQUATE_ORDER = new McMillanAdequateOrder<BPN, C, E, F, N, P, T, M>();
 				break;
 			case UNFOLDING:
-				this.ADEQUATE_ORDER = new UnfoldingAdequateOrder<>();
+				this.ADEQUATE_ORDER = new UnfoldingAdequateOrder<BPN, C, E, F, N, P, T, M>();
 				break;
 			default:
-				this.ADEQUATE_ORDER = new EsparzaAdequateTotalOrderForSafeSystems<>();
+				this.ADEQUATE_ORDER = new EsparzaAdequateTotalOrderForSafeSystems<BPN, C, E, F, N, P, T, M>();
 				break;
 		}
 		
@@ -326,7 +326,10 @@ public class AbstractCompletePrefixUnfolding<BPN extends IBPNode<N>, C extends I
 			IOccurrenceNet<BPN,C,E,F,N,P,T,M> occ = (IOccurrenceNet<BPN,C,E,F,N,P,T,M>) OccurrenceNet.class.newInstance();
 			occ.setCompletePrefixUnfolding(this);
 			return occ;
-		} catch (InstantiationException | IllegalAccessException e) {
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+			return null;
+		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 			return null;
 		}
@@ -535,7 +538,10 @@ public class AbstractCompletePrefixUnfolding<BPN extends IBPNode<N>, C extends I
 			e.setPreConditions(preConditions);
 			e.setCompletePrefixUnfolding(this);
 			return e;
-		} catch (InstantiationException | IllegalAccessException exception) {
+		} catch (InstantiationException exception) {
+			exception.printStackTrace();
+			return e;
+		} catch (IllegalAccessException exception) {
 			exception.printStackTrace();
 			return e;
 		}

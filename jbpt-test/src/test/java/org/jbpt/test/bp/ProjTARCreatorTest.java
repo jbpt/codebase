@@ -58,7 +58,7 @@ public class ProjTARCreatorTest extends TestCase {
 		assertEquals(38, netSystem.getPlaces().size());
 		assertEquals(88, netSystem.getFlow().size());
 		
-		PetriNetProjector<Flow, Node, Place, Transition> projector = new PetriNetProjector<>();
+		PetriNetProjector<Flow, Node, Place, Transition> projector = new PetriNetProjector<Flow, Node, Place, Transition>();
 		projector.reducePetriNetBasedOnProjectionSet(netSystem, netSystem.getObservableTransitions());
 
 		RelSet<NetSystem, Node> tar = ProjTARCreatorStateSpace.getInstance().deriveRelationSet(netSystem, new HashSet<Node>(netSystem.getObservableTransitions()));

@@ -270,7 +270,7 @@ public class EPCNormalizer {
 	}
 	
 	public void handleORJoins() {
-		for(FlowNode v : new HashSet<>(this.epc.getFlowNodes())) {
+		for(FlowNode v : new HashSet<FlowNode>(this.epc.getFlowNodes())) {
 			if ((v instanceof Gateway) && !(this.closure.isInLoop(v))) {
 				Gateway connector =  (Gateway)v;
 				if (isPureJoin(connector) && v instanceof OrConnector) {
@@ -320,7 +320,7 @@ public class EPCNormalizer {
 	
 	public void replaceORSplitsByANDSplits() {
 		
-		for(FlowNode v : new HashSet<>(this.epc.getFlowNodes())) {
+		for(FlowNode v : new HashSet<FlowNode>(this.epc.getFlowNodes())) {
 			if (v instanceof Gateway) {
 				Gateway connector =  (Gateway)v;
 				if (isPureSplit(connector) && v instanceof OrConnector) {

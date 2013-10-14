@@ -27,8 +27,8 @@ public class AbstractUntanglingRun<F extends IFlow<N>, N extends INode, P extend
 		super(sys);
 	}
 
-	HashMap<IStep<F,N,P,T,M>,Integer> s2p = new HashMap<>();
-	HashMap<Interval,Set<IStep<F,N,P,T,M>>> i2s = new HashMap<>();
+	HashMap<IStep<F,N,P,T,M>,Integer> s2p = new HashMap<IStep<F, N, P, T, M>, Integer>();
+	HashMap<Interval,Set<IStep<F,N,P,T,M>>> i2s = new HashMap<Interval, Set<IStep<F, N, P, T, M>>>();
 	
 	boolean isSignificant = true;
 	
@@ -66,7 +66,7 @@ public class AbstractUntanglingRun<F extends IFlow<N>, N extends INode, P extend
 				this.s2p.put(step,last);
 				Interval interval = new Interval(preLast,last);
 				
-				Set<IStep<F,N,P,T,M>> steps = new HashSet<>();
+				Set<IStep<F,N,P,T,M>> steps = new HashSet<IStep<F, N, P, T, M>>();
 				for (int i=interval.getL()+1; i<interval.getR(); i++) {
 					steps.add(this.get(i));
 				}
@@ -99,7 +99,9 @@ public class AbstractUntanglingRun<F extends IFlow<N>, N extends INode, P extend
 		AbstractUntanglingRun<F,N,P,T,M> run = null;
 		try {
 			run = AbstractUntanglingRun.class.newInstance();
-		} catch (InstantiationException | IllegalAccessException exception) {
+		} catch (InstantiationException exception) {
+			return null;
+		} catch (IllegalAccessException exception) {
 			return null;
 		}
 		

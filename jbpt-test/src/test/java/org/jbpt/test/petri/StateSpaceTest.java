@@ -27,7 +27,7 @@ public class StateSpaceTest extends TestCase {
 		assertEquals(38, netSystem.getPlaces().size());
 		assertEquals(88, netSystem.getFlow().size());
 		
-		SimpleStateSpace<Flow, Node, Place, Transition, Marking> space = new SimpleStateSpace<>(netSystem);
+		SimpleStateSpace<Flow, Node, Place, Transition, Marking> space = new SimpleStateSpace<Flow, Node, Place, Transition, Marking>(netSystem);
 		
 		space.createUpToNumberOfMarkings(0);
 		assertEquals(1, space.getNumberOfMarkings());
@@ -54,10 +54,10 @@ public class StateSpaceTest extends TestCase {
 		assertEquals(38, netSystem.getPlaces().size());
 		assertEquals(88, netSystem.getFlow().size());
 		
-		PetriNetProjector<Flow, Node, Place, Transition> projector = new PetriNetProjector<>();
+		PetriNetProjector<Flow, Node, Place, Transition> projector = new PetriNetProjector<Flow, Node, Place, Transition>();
 		projector.reducePetriNetBasedOnProjectionSet(netSystem, netSystem.getObservableTransitions());
 		
-		SimpleStateSpace<Flow, Node, Place, Transition, Marking> space = new SimpleStateSpace<>(netSystem);
+		SimpleStateSpace<Flow, Node, Place, Transition, Marking> space = new SimpleStateSpace<Flow, Node, Place, Transition, Marking>(netSystem);
 		space.create();
 		assertEquals(18, space.getNumberOfMarkings());
 		

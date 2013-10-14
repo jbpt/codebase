@@ -42,7 +42,7 @@ public class GraphEditDistance<G extends IDirectedGraph<E,V>,E extends IDirected
 	public GraphEditDistance(G g1, G g2) {
 		this.g1 = g1;
 		this.g2 = g2;
-		this.alignment = new Alignment<>(this.g1, this.g2);
+		this.alignment = new Alignment<G, V>(this.g1, this.g2);
 		this.alignment.initCorrespondenceRelation();
 	}
 
@@ -63,12 +63,12 @@ public class GraphEditDistance<G extends IDirectedGraph<E,V>,E extends IDirected
 		int totalNrVertices = this.g1.getVertices().size() + this.g2.getVertices().size();
 		int totalNrEdges = this.g1.getEdges().size() + this.g2.getEdges().size();
 
-		Set<V> verticesFrom1Used = new HashSet<>();
-		Set<V> verticesFrom2Used = new HashSet<>();
+		Set<V> verticesFrom1Used = new HashSet<V>();
+		Set<V> verticesFrom2Used = new HashSet<V>();
 
 		//Relate each vertex to a group
-		Map<V,Integer> vid1togid = new HashMap<>();
-		Map<V,Integer> vid2togid = new HashMap<>();
+		Map<V,Integer> vid1togid = new HashMap<V, Integer>();
+		Map<V,Integer> vid2togid = new HashMap<V, Integer>();
 
 		int gid = 1;
 		
@@ -88,15 +88,15 @@ public class GraphEditDistance<G extends IDirectedGraph<E,V>,E extends IDirected
 		
 		int skippedVertices = totalNrVertices - verticesFrom1Used.size() - verticesFrom2Used.size();
 
-		Set<VPair> edgesIn1 = new HashSet<>();
+		Set<VPair> edgesIn1 = new HashSet<VPair>();
 		for (E e : g1.getEdges())
 			edgesIn1.add(new VPair(e.getSource(), e.getTarget()));
-		Set<VPair> edgesIn2 = new HashSet<>();
+		Set<VPair> edgesIn2 = new HashSet<VPair>();
 		for (E e : g2.getEdges())
 			edgesIn2.add(new VPair(e.getSource(), e.getTarget()));
 		
-		Collection<VPair> translatedEdgesIn1 = new HashSet<>();
-		Collection<VPair> translatedEdgesIn2 = new HashSet<>();
+		Collection<VPair> translatedEdgesIn1 = new HashSet<VPair>();
+		Collection<VPair> translatedEdgesIn2 = new HashSet<VPair>();
 
 		int groupedEdges = 0;
 		for (VPair e1: edgesIn1){

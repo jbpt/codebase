@@ -64,7 +64,7 @@ public class TreeStep<F extends IFlow<N>, N extends INode, P extends IPlace, T e
 
 	@SuppressWarnings("unchecked")
 	public Set<TreeStep<F,N,P,T,M>> getPossibleExtensions() {
-		Set<TreeStep<F,N,P,T,M>> result = new HashSet<>();
+		Set<TreeStep<F,N,P,T,M>> result = new HashSet<TreeStep<F, N, P, T, M>>();
 		
 		Set<T> ts = this.system.getEnabledTransitionsAtMarking(this.outputMarking);
 		int tsSize = ts.size();

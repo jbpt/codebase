@@ -422,7 +422,9 @@ public abstract class AbstractPetriNet<F extends IFlow<N>, N extends INode, P ex
 		try {
 			clone = (IPetriNet<F,N,P,T>) PetriNet.class.newInstance();
 		}
-		catch (InstantiationException | IllegalAccessException exception) {
+		catch (InstantiationException exception) {
+			return null;
+		} catch (IllegalAccessException exception) {
 			return null;
 		}
 		
@@ -486,7 +488,9 @@ public abstract class AbstractPetriNet<F extends IFlow<N>, N extends INode, P ex
 		try {
 			t = (T) Transition.class.newInstance();
 			return t;
-		} catch (InstantiationException | IllegalAccessException exception) {
+		} catch (InstantiationException exception) {
+			return t;
+		} catch (IllegalAccessException exception) {
 			return t;
 		}
 	}
@@ -498,7 +502,9 @@ public abstract class AbstractPetriNet<F extends IFlow<N>, N extends INode, P ex
 		try {
 			p = (P) Place.class.newInstance();
 			return p;
-		} catch (InstantiationException | IllegalAccessException exception) {
+		} catch (InstantiationException exception) {
+			return p;
+		} catch (IllegalAccessException exception) {
 			return p;
 		}
 	}

@@ -31,12 +31,12 @@ public class WFTreeHandler {
 
 	private AbstractWFTree<Flow,Node,Place,Transition> wfTree = null;
 
-	private Map<Node, IRPSTNode<Flow, Node>> node2wfTreeNode = new HashMap<>();
+	private Map<Node, IRPSTNode<Flow, Node>> node2wfTreeNode = new HashMap<Node, IRPSTNode<Flow, Node>>();
 	
-	private Map<IRPSTNode<Flow, Node>,BehaviouralProfile<NetSystem, Node>> node2bp = new HashMap<>();
-	private Map<IRPSTNode<Flow, Node>,CausalBehaviouralProfile<NetSystem, Node>> node2cbp = new HashMap<>();
-	private Map<BehaviouralProfile<NetSystem, Node>,Map<Node,Node>> bp2nodemapping = new HashMap<>();	
-	private Map<IRPSTNode<Flow, Node>,Vector<IRPSTNode<Flow, Node>>> orderedPNodes = new HashMap<>();
+	private Map<IRPSTNode<Flow, Node>,BehaviouralProfile<NetSystem, Node>> node2bp = new HashMap<IRPSTNode<Flow, Node>, BehaviouralProfile<NetSystem, Node>>();
+	private Map<IRPSTNode<Flow, Node>,CausalBehaviouralProfile<NetSystem, Node>> node2cbp = new HashMap<IRPSTNode<Flow, Node>, CausalBehaviouralProfile<NetSystem, Node>>();
+	private Map<BehaviouralProfile<NetSystem, Node>,Map<Node,Node>> bp2nodemapping = new HashMap<BehaviouralProfile<NetSystem, Node>, Map<Node, Node>>();	
+	private Map<IRPSTNode<Flow, Node>,Vector<IRPSTNode<Flow, Node>>> orderedPNodes = new HashMap<IRPSTNode<Flow, Node>, Vector<IRPSTNode<Flow, Node>>>();
 	
 	public WFTreeHandler(NetSystem netClone) {
 		
@@ -256,9 +256,9 @@ public class WFTreeHandler {
 	 * @return true if child is in some loop, false otherwise
 	 */
 	private boolean isChildInLoop(IRPSTNode<Flow, Node> parent, IRPSTNode<Flow, Node> child) {
-		Set<Node> visited = new HashSet<>();
+		Set<Node> visited = new HashSet<Node>();
 		Collection<IRPSTNode<Flow, Node>> searchGraph = this.wfTree.getChildren(parent);
-		Queue<Node> queue = new LinkedList<>();
+		Queue<Node> queue = new LinkedList<Node>();
 		
 		Node start = child.getExit();
 		Node end = child.getEntry();
@@ -301,7 +301,7 @@ public class WFTreeHandler {
 		 */
 		NetSystem net = new NetSystem();
 		
-		Map<Node,Node> nodeCopies = new HashMap<>();
+		Map<Node,Node> nodeCopies = new HashMap<Node, Node>();
 
 		try {
 			for (Node n : subnet.getVertices()) {

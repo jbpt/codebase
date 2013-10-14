@@ -22,8 +22,8 @@ public class Correspondence<E extends IEntity> {
 	public Set<E> secondSet;
 
 	public Correspondence() {
-		this.firstSet = new HashSet<>();
-		this.secondSet = new HashSet<>();
+		this.firstSet = new HashSet<E>();
+		this.secondSet = new HashSet<E>();
 	}
 
 	public Correspondence(Set<E> firstSet, Set<E> secondSet) {
