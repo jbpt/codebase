@@ -31,7 +31,7 @@ public class PetriNetProjector<F extends IFlow<N>, N extends INode, P extends IP
 
 	public void reducePetriNetBasedOnProjectionSet(IPetriNet<F, N, P, T> pn, Set<T> projectionSet) {
 		
-		Set<T> notInProjectionSet = new HashSet<>(pn.getTransitions());
+		Set<T> notInProjectionSet = new HashSet<T>(pn.getTransitions());
 		notInProjectionSet.removeAll(projectionSet);
 
 		//Rule a)
@@ -83,7 +83,7 @@ public class PetriNetProjector<F extends IFlow<N>, N extends INode, P extends IP
 		}
 		
 		//Rule d)
-		Set<P> pToRemove = new HashSet<>();
+		Set<P> pToRemove = new HashSet<P>();
 		for (P p1 : pn.getPlaces()) {
 			if (pToRemove.contains(p1))
 				continue;
@@ -107,7 +107,7 @@ public class PetriNetProjector<F extends IFlow<N>, N extends INode, P extends IP
 		pn.removePlaces(pToRemove);
 		
 		//Rule e)
-		Set<T> tToRemove = new HashSet<>();
+		Set<T> tToRemove = new HashSet<T>();
 		for (T t1 : pn.getTransitions()) {
 			if (tToRemove.contains(t1))
 				continue;
@@ -131,7 +131,7 @@ public class PetriNetProjector<F extends IFlow<N>, N extends INode, P extends IP
 		pn.removeTransitions(tToRemove);
 		
 		//Rule f)
-		tToRemove = new HashSet<>();
+		tToRemove = new HashSet<T>();
 		for (T t : notInProjectionSet) {
 			Set<P> pre = pn.getPreset(t);
 			Set<P> suc = pn.getPostset(t);
@@ -142,7 +142,7 @@ public class PetriNetProjector<F extends IFlow<N>, N extends INode, P extends IP
 		pn.removeTransitions(tToRemove);
 		
 		//Rule g)
-		pToRemove = new HashSet<>();
+		pToRemove = new HashSet<P>();
 		for (P p : pn.getPlaces()){
 			Set<T> preTs = pn.getPreset(p);
 			Set<T> sucTs = pn.getPostset(p);

@@ -74,7 +74,9 @@ public class AbstractRun<F extends IFlow<N>, N extends INode, P extends IPlace, 
 		AbstractRun<F,N,P,T,M> run = null;
 		try {
 			run = AbstractRun.class.newInstance();
-		} catch (InstantiationException | IllegalAccessException exception) {
+		} catch (InstantiationException exception) {
+			return null;
+		} catch (IllegalAccessException exception) {
 			return null;
 		}
 		

@@ -38,7 +38,7 @@ public class AbstractUntanglingBasedBehavioralQuerying<BPN extends IBPNode<N>, C
 		setup.ISOMORPHISM_REDUCTION = false;
 		setup.SIGNIFICANCE_CHECK = SignificanceCheckType.TREE_OF_RUNS;
 		
-		this.repUnt = new AbstractReductionBasedRepresentativeUntangling<>(this.sys,setup);
+		this.repUnt = new AbstractReductionBasedRepresentativeUntangling<BPN, C, E, F, N, P, T, M>(this.sys,setup);
 		this.untangling = repUnt.getProcesses();
 		
 	}
@@ -103,7 +103,7 @@ public class AbstractUntanglingBasedBehavioralQuerying<BPN extends IBPNode<N>, C
 	
 	@Override
 	public boolean canOccurOneExpanded(Set<Set<String>> setsOfLabels) {
-		Set<String> sol = new HashSet<>();
+		Set<String> sol = new HashSet<String>();
 
 		for (Set<String> s : setsOfLabels)
 			sol.addAll(s);

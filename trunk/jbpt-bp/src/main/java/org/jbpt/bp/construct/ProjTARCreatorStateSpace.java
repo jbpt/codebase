@@ -59,7 +59,7 @@ public class ProjTARCreatorStateSpace extends AbstractRelSetCreator implements R
 		/*
 		 * Select projection set (only transitions)
 		 */
-		Set<Transition> selectedTransitions = new HashSet<>();
+		Set<Transition> selectedTransitions = new HashSet<Transition>();
 		for (Node t : nodes)
 			if (t instanceof Transition)
 				selectedTransitions.add((Transition)t);

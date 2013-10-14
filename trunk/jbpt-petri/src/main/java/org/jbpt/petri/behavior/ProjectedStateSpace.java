@@ -31,18 +31,18 @@ public class ProjectedStateSpace<F extends IFlow<N>, N extends INode, P extends 
 	public ProjectedStateSpace(INetSystem<F, N, P, T, M> netSystem, Set<T> projectionSet) {
 		super();
 		this.netSystem = netSystem;
-		this.enabled = new HashMap<>();
-		this.txM = new HashMap<>();
-		this.vTxM = new HashMap<>();
-		this.stateTransitions = new HashMap<>();
+		this.enabled = new HashMap<M, Set<T>>();
+		this.txM = new HashMap<T, Set<M>>();
+		this.vTxM = new HashMap<T, Set<M>>();
+		this.stateTransitions = new HashMap<M, Map<T, M>>();
 
-		this.projectionSetForStepMatrix = new HashMap<>();
+		this.projectionSetForStepMatrix = new HashMap<T, Integer>();
 		
 		/*
 		 * All transitions in the projection set get an id
 		 * for the step matrix
 		 */
-		List<T> tmpList = new ArrayList<>(projectionSet);
+		List<T> tmpList = new ArrayList<T>(projectionSet);
 		for (int i = 0; i < tmpList.size(); i++) 
 			this.projectionSetForStepMatrix.put(tmpList.get(i), i); 
 
@@ -72,7 +72,7 @@ public class ProjectedStateSpace<F extends IFlow<N>, N extends INode, P extends 
 		@SuppressWarnings("unchecked")
 		M iM = (M) this.netSystem.getMarking().clone();
 		
-		Set<T> iEnabled = new HashSet<>(this.netSystem.getEnabledTransitions());
+		Set<T> iEnabled = new HashSet<T>(this.netSystem.getEnabledTransitions());
 		
 		this.enabled.put(iM, iEnabled);
 		

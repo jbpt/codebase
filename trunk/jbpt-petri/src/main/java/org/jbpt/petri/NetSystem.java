@@ -19,7 +19,9 @@ public class NetSystem extends AbstractNetSystem<Flow,Node,Place,Transition,Mark
 		try {
 			this.marking = Marking.class.newInstance();
 			this.marking.setPetriNet(this);
-		} catch (InstantiationException | IllegalAccessException e) {
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}
 	}

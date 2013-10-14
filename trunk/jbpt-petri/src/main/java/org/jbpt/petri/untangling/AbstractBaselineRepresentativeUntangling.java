@@ -58,12 +58,12 @@ public class AbstractBaselineRepresentativeUntangling<BPN extends IBPNode<N>, C 
 	}
 	
 	private void constructRunsExhaustive(INetSystem<F,N,P,T,M> system) {
-		Queue<IRun<F,N,P,T,M>> queue = new ConcurrentLinkedQueue<>();
+		Queue<IRun<F,N,P,T,M>> queue = new ConcurrentLinkedQueue<IRun<F, N, P, T, M>>();
 		IRun<F,N,P,T,M> ini = this.createRun(system);
 		
 		// if system has no conflicts and is acyclic its untangling is trivial
-		PetriNetStructuralChecks<F,N,P,T> sc = new PetriNetStructuralChecks<>();
-		DirectedGraphAlgorithms<F,N> dga = new DirectedGraphAlgorithms<>();
+		PetriNetStructuralChecks<F,N,P,T> sc = new PetriNetStructuralChecks<F, N, P, T>();
+		DirectedGraphAlgorithms<F,N> dga = new DirectedGraphAlgorithms<F, N>();
 		if (sc.isConflictFree(system) && dga.isAcyclic(system)) {
 			Set<T> PE = ini.getPossibleExtensions();
 			while (!PE.isEmpty()) {
@@ -120,12 +120,12 @@ public class AbstractBaselineRepresentativeUntangling<BPN extends IBPNode<N>, C 
 	}
 	
 	private void constructRunsHashmapBased(INetSystem<F,N,P,T,M> system) {
-		Queue<IUntanglingRun<F,N,P,T,M>> queue = new ConcurrentLinkedQueue<>();
+		Queue<IUntanglingRun<F,N,P,T,M>> queue = new ConcurrentLinkedQueue<IUntanglingRun<F, N, P, T, M>>();
 		IUntanglingRun<F,N,P,T,M> ini = this.createUntanglingRun(system);
 		
 		// if system has no conflicts and is acyclic its untangling is trivial
-		PetriNetStructuralChecks<F,N,P,T> sc = new PetriNetStructuralChecks<>();
-		DirectedGraphAlgorithms<F,N> dga = new DirectedGraphAlgorithms<>();
+		PetriNetStructuralChecks<F,N,P,T> sc = new PetriNetStructuralChecks<F, N, P, T>();
+		DirectedGraphAlgorithms<F,N> dga = new DirectedGraphAlgorithms<F, N>();
 		if (sc.isConflictFree(system) && dga.isAcyclic(system)) {
 			Set<T> PE = ini.getPossibleExtensions();
 			while (!PE.isEmpty()) {
@@ -184,14 +184,14 @@ public class AbstractBaselineRepresentativeUntangling<BPN extends IBPNode<N>, C 
 	@SuppressWarnings("unchecked")
 	private void constructRunsTreeOfRuns(INetSystem<F,N,P,T,M> system) {
 		this.torRoot = new TreeStep<F,N,P,T,M>(system,null,null,null,(M)system.getMarking().clone(),0);
-		this.torRoot.index = new TreeStepIndex<>(); 
-		this.torLeaves = new ArrayList<>();
+		this.torRoot.index = new TreeStepIndex<F, N, P, T, M>(); 
+		this.torLeaves = new ArrayList<TreeStep<F, N, P, T, M>>();
 		
-		Queue<TreeStep<F,N,P,T,M>> queue = new ConcurrentLinkedQueue<>();		
+		Queue<TreeStep<F,N,P,T,M>> queue = new ConcurrentLinkedQueue<TreeStep<F, N, P, T, M>>();		
 		
 		// if system has no conflicts and is acyclic its untangling is trivial
-		PetriNetStructuralChecks<F,N,P,T> sc = new PetriNetStructuralChecks<>();
-		DirectedGraphAlgorithms<F,N> dga = new DirectedGraphAlgorithms<>();
+		PetriNetStructuralChecks<F,N,P,T> sc = new PetriNetStructuralChecks<F, N, P, T>();
+		DirectedGraphAlgorithms<F,N> dga = new DirectedGraphAlgorithms<F, N>();
 		if (sc.isConflictFree(system) && dga.isAcyclic(system)) {
 			IRun<F,N,P,T,M> ini = this.createRun(system);
 			Set<T> PE = ini.getPossibleExtensions();

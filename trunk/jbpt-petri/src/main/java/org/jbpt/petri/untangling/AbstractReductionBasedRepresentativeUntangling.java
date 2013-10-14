@@ -48,10 +48,10 @@ public class AbstractReductionBasedRepresentativeUntangling<BPN extends IBPNode<
 	
 	@Override
 	protected void constructRuns(INetSystem<F,N,P,T,M> system) {
-		map2 = new HashMap<>();
+		map2 = new HashMap<N, N>();
 		this.reducedSys = system.clone(map2);
 		
-		map = new HashMap<>();
+		map = new HashMap<N, N>();
 		for (Map.Entry<N,N> entry : map2.entrySet())
 			map.put(entry.getValue(), entry.getKey());
 		
@@ -69,7 +69,7 @@ public class AbstractReductionBasedRepresentativeUntangling<BPN extends IBPNode<
 	@Override
 	protected void constructProcesses() {
 		// construct reduced processes
-		this.reducedProcesses = new ArrayList<>();
+		this.reducedProcesses = new ArrayList<IProcess<BPN, C, E, F, N, P, T, M>>();
 		for (IRun<F,N,P,T,M> run : this.runs) {
 			IProcess<BPN,C,E,F,N,P,T,M> pi = this.createProcess(this.reducedSys);	
 
@@ -81,7 +81,7 @@ public class AbstractReductionBasedRepresentativeUntangling<BPN extends IBPNode<
 		}
 		
 		// construct processes of the original net
-		this.processes = new ArrayList<>();
+		this.processes = new ArrayList<IProcess<BPN, C, E, F, N, P, T, M>>();
 		for (IRun<F,N,P,T,M> run : this.runs) {
 			IProcess<BPN,C,E,F,N,P,T,M> pi = this.createProcess(this.sys);	
 
@@ -138,11 +138,11 @@ public class AbstractReductionBasedRepresentativeUntangling<BPN extends IBPNode<
 
 	@SuppressWarnings({ "unchecked" })
 	protected Map<F,List<N>> reduce(INetSystem<F,N,P,T,M> system) {
-		Map<F,List<N>> result = new HashMap<>();
+		Map<F,List<N>> result = new HashMap<F, List<N>>();
 		
 		// compute maximal sequences of trivial fragments
-		List<List<F>> maxSequences = new ArrayList<>();
-		Set<F> flow = new HashSet<>(system.getFlow());
+		List<List<F>> maxSequences = new ArrayList<List<F>>();
+		Set<F> flow = new HashSet<F>(system.getFlow());
 		List<F> seq = new ArrayList<F>();
 		boolean flag = false;
 		N entry = null;

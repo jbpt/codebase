@@ -27,9 +27,9 @@ public class SimpleStateSpace<F extends IFlow<N>, N extends INode, P extends IPl
 	public SimpleStateSpace(INetSystem<F, N, P, T, M> netSystem) {
 		super();
 		this.netSystem = netSystem;
-		this.enabled = new HashMap<>();
-		this.toVisit = new HashMap<>();
-		this.stateTransitions = new HashMap<>();
+		this.enabled = new HashMap<M, Set<T>>();
+		this.toVisit = new HashMap<M, Set<T>>();
+		this.stateTransitions = new HashMap<M, Map<T, M>>();
 	}
 	
 	public void create() {
@@ -81,7 +81,7 @@ public class SimpleStateSpace<F extends IFlow<N>, N extends INode, P extends IPl
 			this.enabled.put(nM, nEnabled);
 			
 			// check whether transitions have to be checked
-			Set<T> stillToCheck = new HashSet<>(nEnabled);
+			Set<T> stillToCheck = new HashSet<T>(nEnabled);
 			if (this.stateTransitions.containsKey(nM))
 				stillToCheck.removeAll(this.stateTransitions.get(nM).keySet());
 			
@@ -97,9 +97,9 @@ public class SimpleStateSpace<F extends IFlow<N>, N extends INode, P extends IPl
 	}
 
 	public void clear() {
-		this.enabled = new HashMap<>();
-		this.toVisit = new HashMap<>();
-		this.stateTransitions = new HashMap<>();
+		this.enabled = new HashMap<M, Set<T>>();
+		this.toVisit = new HashMap<M, Set<T>>();
+		this.stateTransitions = new HashMap<M, Map<T, M>>();
 	}
 	
 	public String toDOT() {
@@ -110,7 +110,7 @@ public class SimpleStateSpace<F extends IFlow<N>, N extends INode, P extends IPl
 		result += "\n";
 		result += "node [shape=circle];\n";
 		
-		List<M> tmpMarkings = new ArrayList<>(this.enabled.keySet());
+		List<M> tmpMarkings = new ArrayList<M>(this.enabled.keySet());
 		
 		for (int i = 0; i < tmpMarkings.size(); i++) {
 			result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".3\"];\n", i, tmpMarkings.get(i).toString());

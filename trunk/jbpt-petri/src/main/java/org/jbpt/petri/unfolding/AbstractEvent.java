@@ -129,7 +129,9 @@ public abstract class AbstractEvent<BPN extends IBPNode<N>, C extends ICondition
 		ILocalConfiguration<BPN, C, E, F, N, P, T, M> lc = null;
 		try {
 			lc = (ILocalConfiguration<BPN,C,E,F,N,P,T,M>)AbstractLocalConfiguration.class.newInstance();
-		} catch (InstantiationException | IllegalAccessException e) {
+		} catch (InstantiationException e) {
+			return null;
+		} catch (IllegalAccessException e) {
 			return null;
 		}
 		lc.setEvent((E)this);

@@ -64,7 +64,7 @@ public abstract class AbstractRepresentativeUntangling<BPN extends IBPNode<N>, C
 		this.setup = setup;
 		
 		this.sys = sys;
-		this.runs = new HashSet<>();
+		this.runs = new HashSet<IRun<F, N, P, T, M>>();
 		
 		long start = System.nanoTime();
 		this.constructRuns(this.sys);
@@ -102,7 +102,7 @@ public abstract class AbstractRepresentativeUntangling<BPN extends IBPNode<N>, C
 	}
 	
 	protected void constructProcesses() {		
-		this.processes = new ArrayList<>();
+		this.processes = new ArrayList<IProcess<BPN, C, E, F, N, P, T, M>>();
 
 		for (IRun<F,N,P,T,M> run : this.runs) {
 			IProcess<BPN,C,E,F,N,P,T,M> pi = this.createProcess(this.sys);	
@@ -116,7 +116,7 @@ public abstract class AbstractRepresentativeUntangling<BPN extends IBPNode<N>, C
 	}
 	
 	private IRun<F,N,P,T,M> constructRun(TreeStep<F,N,P,T,M> step) {
-		List<TreeStep<F,N,P,T,M>> list = new ArrayList<>();
+		List<TreeStep<F,N,P,T,M>> list = new ArrayList<TreeStep<F, N, P, T, M>>();
 		TreeStep<F,N,P,T,M> s = step;
 		list.add(s);
 		while (s.getParent()!=null) {
@@ -142,7 +142,9 @@ public abstract class AbstractRepresentativeUntangling<BPN extends IBPNode<N>, C
 			pi.setNetSystem(sys);
 			pi.constructInitialBranchingProcess();
 			return pi;
-		} catch (InstantiationException | IllegalAccessException exception) {
+		} catch (InstantiationException exception) {
+			exception.printStackTrace();
+		} catch (IllegalAccessException exception) {
 			exception.printStackTrace();
 		}
 		
@@ -156,7 +158,9 @@ public abstract class AbstractRepresentativeUntangling<BPN extends IBPNode<N>, C
 			run = (IRun<F,N,P,T,M>) Run.class.newInstance();
 			run.setNetSystem(sys);
 			return run;
-		} catch (InstantiationException | IllegalAccessException exception) {
+		} catch (InstantiationException exception) {
+			exception.printStackTrace();
+		} catch (IllegalAccessException exception) {
 			exception.printStackTrace();
 		}
 		
@@ -170,7 +174,9 @@ public abstract class AbstractRepresentativeUntangling<BPN extends IBPNode<N>, C
 			run = (IUntanglingRun<F,N,P,T,M>) UntanglingRun.class.newInstance();
 			run.setNetSystem(sys);
 			return run;
-		} catch (InstantiationException | IllegalAccessException exception) {
+		} catch (InstantiationException exception) {
+			exception.printStackTrace();
+		} catch (IllegalAccessException exception) {
 			exception.printStackTrace();
 		}
 		
@@ -241,7 +247,7 @@ public abstract class AbstractRepresentativeUntangling<BPN extends IBPNode<N>, C
 		return true;
 	}
 	
-	Set<IStep<F,N,P,T,M>> steps = new HashSet<>();
+	Set<IStep<F,N,P,T,M>> steps = new HashSet<IStep<F, N, P, T, M>>();
 	
 	protected boolean isSignificantCubic(IRun<F,N,P,T,M> run) {
 		for (int i=0; i<run.size(); i++) {

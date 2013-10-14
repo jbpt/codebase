@@ -57,9 +57,11 @@ public class AbstractLocalConfiguration<BPN extends IBPNode<N>, C extends ICondi
 			try {
 				this.marking = (M) Marking.class.newInstance();
 				this.marking.setPetriNet(this.CPU.getOriginativeNetSystem());
-			} catch (InstantiationException | IllegalAccessException e) {
+			} catch (IllegalAccessException e) {
 				return null;
-			}			
+			} catch (InstantiationException e) {
+				return null;
+			}		
 
 			for (C c : this.getCut()) {
 				if (c.getPlace() == null) this.marking.put(c.getPlace(), 1);

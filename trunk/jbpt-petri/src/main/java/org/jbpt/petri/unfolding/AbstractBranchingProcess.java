@@ -219,7 +219,9 @@ public abstract class AbstractBranchingProcess<BPN extends IBPNode<N>, C extends
 			c.setPlace(place);
 			c.setPreEvent(event);
 			return c;
-		} catch (InstantiationException | IllegalAccessException exception) {
+		} catch (InstantiationException exception) {
+			exception.printStackTrace();
+		} catch (IllegalAccessException exception) {
 			exception.printStackTrace();
 		}
 		
@@ -235,7 +237,9 @@ public abstract class AbstractBranchingProcess<BPN extends IBPNode<N>, C extends
 			e.setTransition(transition);
 			e.setPreConditions(preConditions);
 			return e;
-		} catch (InstantiationException | IllegalAccessException exception) {
+		} catch (InstantiationException exception) {
+			exception.printStackTrace();
+		} catch (IllegalAccessException exception) {
 			exception.printStackTrace();
 		}
 		
@@ -272,7 +276,9 @@ public abstract class AbstractBranchingProcess<BPN extends IBPNode<N>, C extends
 		ICoSet<BPN,C,E,F,N,P,T,M> postConditions = null;
 		try {
 			postConditions = (ICoSet<BPN,C,E,F,N,P,T,M>) AbstractCoSet.class.newInstance();
-		} catch (InstantiationException | IllegalAccessException e1) {
+		} catch (InstantiationException e1) {
+			e1.printStackTrace();
+		} catch (IllegalAccessException e1) {
 			e1.printStackTrace();
 		}
 		
@@ -360,7 +366,10 @@ public abstract class AbstractBranchingProcess<BPN extends IBPNode<N>, C extends
 	public ICoSet<BPN,C,E,F,N,P,T,M> createCoSet() {
 		try {
 			return (ICoSet<BPN,C,E,F,N,P,T,M>) CoSet.class.newInstance();
-		} catch (InstantiationException | IllegalAccessException e) {
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+			return null;
+		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 			return null;
 		}
@@ -371,7 +380,10 @@ public abstract class AbstractBranchingProcess<BPN extends IBPNode<N>, C extends
 	public ICut<BPN,C,E,F,N,P,T,M> createCut() {
 		try {
 			return (ICut<BPN,C,E,F,N,P,T,M>) Cut.class.newInstance();
-		} catch (InstantiationException | IllegalAccessException e) {
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+			return null;
+		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 			return null;
 		}
@@ -460,7 +472,10 @@ public abstract class AbstractBranchingProcess<BPN extends IBPNode<N>, C extends
 			IOccurrenceNet<BPN,C,E,F,N,P,T,M> occ = (IOccurrenceNet<BPN,C,E,F,N,P,T,M>) OccurrenceNet.class.newInstance();
 			occ.setBranchingProcess(this);
 			return occ;
-		} catch (InstantiationException | IllegalAccessException e) {
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+			return null;
+		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 			return null;
 		}
@@ -472,7 +487,9 @@ public abstract class AbstractBranchingProcess<BPN extends IBPNode<N>, C extends
 		IBranchingProcess<BPN,C,E,F,N,P,T,M> clone = null;
 		try {
 			clone = (IBranchingProcess<BPN,C,E,F,N,P,T,M>)BranchingProcess.class.newInstance();
-		} catch (InstantiationException | IllegalAccessException e) {
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}
 		
@@ -541,7 +558,7 @@ public abstract class AbstractBranchingProcess<BPN extends IBPNode<N>, C extends
 	
 	@Override
 	public Set<ICut<BPN,C,E,F,N,P,T,M>> getCuts(Collection<P> places) {
-		Set<ICut<BPN,C,E,F,N,P,T,M>> result = new HashSet<>();
+		Set<ICut<BPN,C,E,F,N,P,T,M>> result = new HashSet<ICut<BPN, C, E, F, N, P, T, M>>();
 		List<List<C>> conds = new ArrayList<List<C>>();
 		
 		for (P p : places) {

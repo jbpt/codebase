@@ -35,12 +35,14 @@ public abstract class AbstractProcessSetSystem<BPN extends IBPNode<N>, C extends
 		
 		this.system = sys;
 		
-		this.systems = new ArrayList<>();
+		this.systems = new ArrayList<IProcessSystem<BPN, C, E, F, N, P, T, M>>();
 		for (IProcess<BPN,C,E,F,N,P,T,M> pi : pis) {
 			IProcessSystem<BPN,C,E,F,N,P,T,M> pSystem = null;
 			try {
 				pSystem = (IProcessSystem<BPN,C,E,F,N,P,T,M>) ProcessSystem.class.newInstance();
-			} catch (InstantiationException | IllegalAccessException e) {
+			} catch (InstantiationException e) {
+				continue;
+			} catch (IllegalAccessException e) {
 				continue;
 			}
 			pSystem.setSystem(sys);
@@ -72,7 +74,7 @@ public abstract class AbstractProcessSetSystem<BPN extends IBPNode<N>, C extends
 
 	@Override
 	public boolean fire(T transition) {
-		Collection<IProcessSystem<BPN,C,E,F,N,P,T,M>> toRemove = new ArrayList<>();
+		Collection<IProcessSystem<BPN,C,E,F,N,P,T,M>> toRemove = new ArrayList<IProcessSystem<BPN, C, E, F, N, P, T, M>>();
 		
 		boolean flag = false;
 		for (IProcessSystem<BPN,C,E,F,N,P,T,M> sys : this.systems) {

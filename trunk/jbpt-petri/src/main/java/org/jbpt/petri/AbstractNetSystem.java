@@ -23,7 +23,9 @@ public abstract class AbstractNetSystem<F extends IFlow<N>, N extends INode, P e
 		try {
 			this.marking = (M) Marking.class.newInstance();
 			this.marking.setPetriNet(this);
-		} catch (InstantiationException | IllegalAccessException e) {
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}
 	}
@@ -93,7 +95,7 @@ public abstract class AbstractNetSystem<F extends IFlow<N>, N extends INode, P e
 	
 	@Override
 	public Set<T> getEnabledTransitions(Set<T> lastEnabled, T lastFired) {
-		Set<T> enabled = new HashSet<>(lastEnabled);
+		Set<T> enabled = new HashSet<T>(lastEnabled);
 		/*
 		 * Old disabled?
 		 */
@@ -204,7 +206,9 @@ public abstract class AbstractNetSystem<F extends IFlow<N>, N extends INode, P e
 		try {
 			clone = (INetSystem<F,N,P,T,M>) NetSystem.class.newInstance();
 		}
-		catch (InstantiationException | IllegalAccessException exception) {
+		catch (InstantiationException exception) {
+			return null;
+		} catch (IllegalAccessException exception) {
 			return null;
 		}
 		

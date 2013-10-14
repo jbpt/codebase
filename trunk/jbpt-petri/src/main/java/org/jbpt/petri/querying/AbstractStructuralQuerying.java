@@ -38,7 +38,7 @@ public class AbstractStructuralQuerying<BPN extends IBPNode<N>, C extends ICondi
 		if (setOfLabels==null) return true;
 		if (setOfLabels.isEmpty()) return true;
 		
-		Set<String> sol = new HashSet<>(setOfLabels);
+		Set<String> sol = new HashSet<String>(setOfLabels);
 		for (T t : this.sys.getTransitions()) {
 			if (sol.remove(t.getLabel())) {
 				if (sol.isEmpty())
@@ -67,7 +67,7 @@ public class AbstractStructuralQuerying<BPN extends IBPNode<N>, C extends ICondi
 		if (setsOfLabels==null) return true;
 		if (setsOfLabels.isEmpty()) return true;
 		
-		Set<Set<String>> ssol = new HashSet<>();
+		Set<Set<String>> ssol = new HashSet<Set<String>>();
 		for (T t : this.sys.getTransitions()) {
 			for (Set<String> sol : setsOfLabels) {
 				if (sol.contains(t.getLabel())) {

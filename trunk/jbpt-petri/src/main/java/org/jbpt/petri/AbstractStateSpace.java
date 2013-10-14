@@ -20,7 +20,7 @@ public class AbstractStateSpace<E extends IDirectedEdge<V>, V extends IState<F,N
 		extends AbstractDirectedGraph<E,V>
 		implements IStateSpace<E,V,F,N,P,T,M> {
 	
-	private DirectedGraphAlgorithms<E,V> DGA = new DirectedGraphAlgorithms<>();
+	private DirectedGraphAlgorithms<E,V> DGA = new DirectedGraphAlgorithms<E, V>();
 	
 	private INetSystem<F,N,P,T,M> sys = null;
 	
@@ -35,7 +35,7 @@ public class AbstractStateSpace<E extends IDirectedEdge<V>, V extends IState<F,N
 	public AbstractStateSpace(INetSystem<F,N,P,T,M> sys) {
 		this.sys = sys;
 		
-		this.m2s = new HashMap<>();
+		this.m2s = new HashMap<M, V>();
 		
 		this.construct(Integer.MAX_VALUE);
 	}
@@ -48,7 +48,7 @@ public class AbstractStateSpace<E extends IDirectedEdge<V>, V extends IState<F,N
 	public AbstractStateSpace(INetSystem<F,N,P,T,M> sys, int maxSize) {
 		this.sys = sys;
 		
-		this.m2s = new HashMap<>();
+		this.m2s = new HashMap<M, V>();
 		
 		this.construct(maxSize);
 	}
@@ -61,7 +61,7 @@ public class AbstractStateSpace<E extends IDirectedEdge<V>, V extends IState<F,N
 		V ini = this.createState(this.sys.getMarking());
 		this.addVertex(ini);
 		
-		Queue<V> queue = new ConcurrentLinkedQueue<>();
+		Queue<V> queue = new ConcurrentLinkedQueue<V>();
 		queue.add(ini);
 		
 		m2s.put(this.sys.getMarking(),ini);
