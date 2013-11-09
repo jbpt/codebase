@@ -1,6 +1,11 @@
-package org.jbpt.petri;
+package org.jbpt.automaton;
 
 import org.jbpt.hypergraph.abs.Vertex;
+import org.jbpt.petri.IFlow;
+import org.jbpt.petri.IMarking;
+import org.jbpt.petri.INode;
+import org.jbpt.petri.IPlace;
+import org.jbpt.petri.ITransition;
 
 /**
  * Implementation of a state of a net system.

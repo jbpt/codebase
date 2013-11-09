@@ -179,10 +179,10 @@ public abstract class AbstractNetSystem<F extends IFlow<N>, N extends INode, P e
 		
 		for (T t : this.getTransitions()) {
 			String fillColor = this.isEnabled(t) ? " fillcolor=\"#9ACD32\"" : "";
-			if (t.getName()=="")
-				result += String.format("\tn%s[width=\".3\""+fillColor+" height=\".1\"];\n", t.getId().replace("-", ""));
+			if (t.isSilent())
+				result += String.format("\tn%s[label=\"\" width=\".3\""+fillColor+" height=\".1\"];\n", t.getId().replace("-", ""));
 			else 
-				result += String.format("\tn%s[label=\"%s\" width=\".3\""+fillColor+" height=\".3\"];\n", t.getId().replace("-", ""), t.getName());
+				result += String.format("\tn%s[label=\"%s\" width=\".3\""+fillColor+" height=\".3\"];\n", t.getId().replace("-", ""), t.getLabel());
 		}
 		
 		result += "\n";

@@ -466,8 +466,8 @@ public abstract class AbstractPetriNet<F extends IFlow<N>, N extends INode, P ex
 		result += "node [shape=box];\n";
 		
 		for (T transition : this.getTransitions()) {
-			if (transition.getName().equals(""))
-				result += String.format("\tn%s[width=\".3\" height=\".1\"];\n", transition.getId().replace("-", ""));
+			if (transition.isSilent())
+				result += String.format("\tn%s[label=\"1\" width=\".3\" height=\".1\"];\n", transition.getId().replace("-", ""));
 			else 
 				result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".3\"];\n", transition.getId().replace("-", ""), transition.getName());
 		}
