@@ -4,12 +4,12 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
+import org.jbpt.automaton.Automaton;
 import org.jbpt.petri.Flow;
 import org.jbpt.petri.Marking;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Node;
 import org.jbpt.petri.Place;
-import org.jbpt.petri.StateSpace;
 import org.jbpt.petri.Transition;
 import org.jbpt.petri.behavior.SimpleStateSpace;
 import org.jbpt.petri.io.PNMLSerializer;
@@ -38,8 +38,8 @@ public class StateSpaceTest extends TestCase {
 		space.create();
 		assertEquals(121, space.getNumberOfMarkings());
 		
-		StateSpace stateSpace = new StateSpace(netSystem);
-		assertEquals(121, stateSpace.size());
+		Automaton stateSpace = new Automaton(netSystem);
+		assertEquals(121, stateSpace.getVertices().size());
 		
 		//IOUtils.invokeDOT("./", "ns1.png", netSystem.toDOT());
 		//IOUtils.invokeDOT("./", "ss1.png", stateSpace.toDOT());
@@ -61,8 +61,8 @@ public class StateSpaceTest extends TestCase {
 		space.create();
 		assertEquals(18, space.getNumberOfMarkings());
 		
-		StateSpace stateSpace = new StateSpace(netSystem);
-		assertEquals(18, stateSpace.size());
+		Automaton stateSpace = new Automaton(netSystem);
+		assertEquals(18, stateSpace.getVertices().size());
 		
 		//IOUtils.invokeDOT("./", "ns2.png", netSystem.toDOT());
 		//IOUtils.invokeDOT("./", "ss2.png", stateSpace.toDOT());

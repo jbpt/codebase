@@ -1,22 +1,20 @@
-package org.jbpt.petri;
+package org.jbpt.automaton;
 
-import org.jbpt.graph.abs.IDirectedEdge;
+import java.util.Set;
+
 import org.jbpt.graph.abs.IDirectedGraph;
+import org.jbpt.petri.IFlow;
+import org.jbpt.petri.IMarking;
+import org.jbpt.petri.INetSystem;
+import org.jbpt.petri.INode;
+import org.jbpt.petri.IPlace;
+import org.jbpt.petri.ITransition;
 
 /**
- * Interface to a state space of a net system.
- * 
  * @author Artem Polyvyanyy
  */
-public interface IStateSpace<E extends IDirectedEdge<V>, V extends IState<F,N,P,T,M>, F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition, M extends IMarking<F,N,P,T>> 
-		extends IDirectedGraph<E,V> {
-
-	/**
-	 * Get size of this state space.
-	 * 
-	 * @return Size of this state space.
-	 */
-	public int size();
+public interface IAutomaton<ST extends IStateTransition<S,F,N,P,T,M>, S extends IState<F,N,P,T,M>, F extends IFlow<N>, N extends INode, P extends IPlace, T extends ITransition, M extends IMarking<F,N,P,T>> 
+		extends IDirectedGraph<ST,S> {
 	
 	/**
 	 * Check if this state space complete.
@@ -47,6 +45,12 @@ public interface IStateSpace<E extends IDirectedEdge<V>, V extends IState<F,N,P,
 	 * 
 	 * @return Net system for which this state space is constructed.
 	 */
+	
 	public INetSystem<F,N,P,T,M> getNetSystem();
 	
+	public Set<S> getStates();
+	
+	public Set<ST> getStateTransitions();
+	
+	public void construct(INetSystem<F,N,P,T,M> sys, int maxSize);
 }
