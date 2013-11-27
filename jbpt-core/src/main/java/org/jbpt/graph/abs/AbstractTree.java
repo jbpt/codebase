@@ -80,6 +80,14 @@ public class AbstractTree<V extends IVertex> extends AbstractDirectedGraph<IDire
 	}
 
 	@Override
+	public Set<V> getChildrenRecursively(V v) {
+		Set<V> result = new HashSet<>();
+		for (V s : super.getDirectSuccessors(v))
+			result.addAll(getChildrenRecursively(s));
+		return result;
+	}
+
+	@Override
 	public V getParent(V v) {
 		return super.getFirstDirectPredecessor(v);
 	}
@@ -123,6 +131,34 @@ public class AbstractTree<V extends IVertex> extends AbstractDirectedGraph<IDire
 		
 		return result;
 	}
+	
+	@Override
+	public V getLCA(Collection<V> vertices) {
+		if (vertices.isEmpty()) return null;
+		if (!this.getVertices().containsAll(vertices)) return null;
+		
+		Set<List<V>> paths = new HashSet<>();
+		int shortest = Integer.MAX_VALUE;
+		for (V v : vertices) {
+			List<V> path = this.getDownwardPath(this.getRoot(),v);
+			paths.add(path);
+			shortest = Math.min(shortest, path.size());
+		}
+		
+		V result = this.getRoot();
+		for (int i=0; i<shortest; i++) {
+			Set<V> currentLevel = new HashSet<>();
+			for (List<V> path : paths) 
+				currentLevel.add(path.get(i));
+				
+			if (currentLevel.size() <= 1)
+				result = paths.iterator().next().get(i);
+			else
+				break;
+		}
+		return result;
+	}
+
 
 	@Override
 	public boolean isChild(V v1, V v2) {

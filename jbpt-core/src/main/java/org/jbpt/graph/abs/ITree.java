@@ -1,5 +1,6 @@
 package org.jbpt.graph.abs;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -47,7 +48,15 @@ public interface ITree <V extends IVertex> {
 	 * @return Children of the vertex.
 	 */
 	public Set<V> getChildren(V v);
-	
+
+	/**
+	 * Get all children of the vertex recursively.
+	 * 
+	 * @param v Vertex of this tree.
+	 * @return All direct and indirect children of the vertex.
+	 */
+	public Set<V> getChildrenRecursively(V v);
+
 	/**
 	 * Get parent of the vertex.
 	 * 
@@ -74,7 +83,15 @@ public interface ITree <V extends IVertex> {
 	 * @return The LCA of 'v1' and 'v2'.
 	 */
 	public V getLCA(V v1, V v2);
-	
+
+	/**
+	 * Get the lowest common ancestor (LCA) of a set of vertices of this tree. 
+	 *
+	 * @param vertices A set of vertices in this tree.
+	 * @return The LCA of the given vertices of this tree.
+	 */
+	public V getLCA(Collection<V> vertices);
+
 	/**
 	 * Check if one vertex is a child of the other vertex.
 	 * 
