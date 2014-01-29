@@ -7,6 +7,9 @@ import org.jbpt.petri.Node;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
 
+/**
+ * @author Artem Polyvyanyy
+ */
 public class Automaton extends AbstractAutomaton<StateTransition,State,Flow,Node,Place,Transition,Marking> {
 
 	public Automaton() {
