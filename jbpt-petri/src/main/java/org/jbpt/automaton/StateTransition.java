@@ -7,6 +7,9 @@ import org.jbpt.petri.Node;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
 
+/**
+ * @author Artem Polyvyanyy
+ */
 public class StateTransition extends AbstractStateTransition<State,Flow,Node,Place,Transition,Marking> {
 
 	@SuppressWarnings("rawtypes")

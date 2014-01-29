@@ -81,7 +81,7 @@ public class AbstractTree<V extends IVertex> extends AbstractDirectedGraph<IDire
 
 	@Override
 	public Set<V> getChildrenRecursively(V v) {
-		Set<V> result = new HashSet<>();
+		Set<V> result = new HashSet<V>();
 		for (V s : super.getDirectSuccessors(v))
 			result.addAll(getChildrenRecursively(s));
 		return result;
@@ -137,7 +137,7 @@ public class AbstractTree<V extends IVertex> extends AbstractDirectedGraph<IDire
 		if (vertices.isEmpty()) return null;
 		if (!this.getVertices().containsAll(vertices)) return null;
 		
-		Set<List<V>> paths = new HashSet<>();
+		Set<List<V>> paths = new HashSet<List<V>>();
 		int shortest = Integer.MAX_VALUE;
 		for (V v : vertices) {
 			List<V> path = this.getDownwardPath(this.getRoot(),v);
@@ -147,7 +147,7 @@ public class AbstractTree<V extends IVertex> extends AbstractDirectedGraph<IDire
 		
 		V result = this.getRoot();
 		for (int i=0; i<shortest; i++) {
-			Set<V> currentLevel = new HashSet<>();
+			Set<V> currentLevel = new HashSet<V>();
 			for (List<V> path : paths) 
 				currentLevel.add(path.get(i));
 				

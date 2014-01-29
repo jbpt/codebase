@@ -20,6 +20,16 @@ public class AbstractAutomaton<ST extends IStateTransition<S,F,N,P,T,M>, S exten
 		extends AbstractMultiDirectedGraph<ST,S>
 		implements IAutomaton<ST,S,F,N,P,T,M> {
 	
+	private DirectedGraphAlgorithms<ST,S> DGA = new DirectedGraphAlgorithms<ST,S>();
+	
+	private INetSystem<F,N,P,T,M> sys = null;
+	
+	private Map<M,S> m2s = null;
+	
+	private boolean isComplete = false;
+	
+	private S startState = null;
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public ST addEdge(S s, S t) {
@@ -29,14 +39,6 @@ public class AbstractAutomaton<ST extends IStateTransition<S,F,N,P,T,M>, S exten
 		
 		return st;
 	}
-
-	private DirectedGraphAlgorithms<ST,S> DGA = new DirectedGraphAlgorithms<ST,S>();
-	
-	private INetSystem<F,N,P,T,M> sys = null;
-	
-	private Map<M,S> m2s = null;
-	
-	private boolean isComplete = false;
 	
 	public AbstractAutomaton(INetSystem<F,N,P,T,M> sys) {
 		this.construct(sys, Integer.MAX_VALUE);
@@ -86,6 +88,8 @@ public class AbstractAutomaton<ST extends IStateTransition<S,F,N,P,T,M>, S exten
 		S ini = this.createState(this.sys.getMarking());
 		this.addVertex(ini);
 		
+		this.startState = ini;
+		
 		Queue<S> queue = new ConcurrentLinkedQueue<S>();
 		queue.add(ini);
 		
@@ -103,7 +107,7 @@ public class AbstractAutomaton<ST extends IStateTransition<S,F,N,P,T,M>, S exten
 				
 				if (m2s.containsKey(freshMarking)) {
 					ST edge = this.addEdge(v,m2s.get(freshMarking));
-					edge.setSymbol(t);
+					edge.setTransition(t);
 					continue;
 				}
 				
@@ -116,12 +120,11 @@ public class AbstractAutomaton<ST extends IStateTransition<S,F,N,P,T,M>, S exten
 				m2s.put(freshMarking,state);
 				queue.add(state);
 				ST edge = (ST) this.addEdge(v,state);
-				edge.setSymbol(t);
+				edge.setTransition(t);
 			}
 		}
 		
 		this.isComplete = true;
-		
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -157,7 +160,7 @@ public class AbstractAutomaton<ST extends IStateTransition<S,F,N,P,T,M>, S exten
 		}
 		
 		for (ST st: this.getStateTransitions()) {
-			result += String.format("\tstate%s->state%s [label=\"%s\" fontname=\"Helvetica\" fontsize=\"10\" arrowhead=\"normal\" arrowsize=\".75\" color=\"black\"];\n", st.getSource().getId().replace("-", ""), st.getTarget().getId().replace("-", ""), st.getSymbol().getLabel());
+			result += String.format("\tstate%s->state%s [label=\"%s\" fontname=\"Helvetica\" fontsize=\"10\" arrowhead=\"normal\" arrowsize=\".75\" color=\"black\"];\n", st.getSource().getId().replace("-", ""), st.getTarget().getId().replace("-", ""), st.getSymbol());
 		}
 		result += "}\n";
 		
@@ -173,6 +176,9 @@ public class AbstractAutomaton<ST extends IStateTransition<S,F,N,P,T,M>, S exten
 	public Set<ST> getStateTransitions() {
 		return new HashSet<ST>(this.getEdges());
 	}
-	
-	
+
+	@Override
+	public S getStartState() {
+		return this.startState;
+	}
 }

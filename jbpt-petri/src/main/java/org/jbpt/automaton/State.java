@@ -7,8 +7,6 @@ import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
 
 /**
- * State of a net system.
- * 
  * @author Artem Polyvyanyy
  */
 public class State extends AbstractState<Flow,Node,Place,Transition,Marking> {
