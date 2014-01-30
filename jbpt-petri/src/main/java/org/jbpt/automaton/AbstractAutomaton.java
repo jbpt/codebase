@@ -144,7 +144,7 @@ public class AbstractAutomaton<ST extends IStateTransition<S,F,N,P,T,M>, S exten
 	@Override
 	public String toDOT() {
 		String result = "digraph G {\n";
-		result += "graph [fontname=\"Helvetica\" fontsize=10 \"];\n";
+		result += "graph [fontname=\"Helvetica\" fontsize=\"10\"];\n";
 		result += "node [fontname=\"Helvetica\" fontsize=\"10\"];\n";
 		
 		for (S s : this.getStates()) { 
