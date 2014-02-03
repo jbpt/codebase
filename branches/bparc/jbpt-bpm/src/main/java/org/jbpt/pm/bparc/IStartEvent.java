@@ -9,4 +9,6 @@ package org.jbpt.pm.bparc;
  */
 public interface IStartEvent extends IReceivingEvent {
 
+	public boolean isInitialPlace();
+	
 }

@@ -155,6 +155,15 @@ public void setOrganisation(String organisation) {
 	this.organisation = organisation;
 }
 
+/* (non-Javadoc)
+ * @see org.jbpt.pm.bparc.IBparc#getAllEvents()
+ */
+@Override
+public Collection<Event> getAllEvents() {
+	// TODO Auto-generated method stub
+	return null;
+}
+
 
 }
 

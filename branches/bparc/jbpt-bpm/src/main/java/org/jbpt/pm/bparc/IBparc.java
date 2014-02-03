@@ -3,6 +3,8 @@
  */
 package org.jbpt.pm.bparc;
 
+import java.util.Collection;
+
 import org.jbpt.pm.ControlFlow;
 import org.jbpt.pm.FlowNode;
 import org.jbpt.pm.IProcessModel;
@@ -19,5 +21,8 @@ public interface IBparc extends IProcessModel<ControlFlow<FlowNode>, FlowNode, N
 	
 	public ControlFlow<FlowNode> addControlFlow(FlowNode from, FlowNode to, float probability);
 	
+	public Collection<BparcProcess> getAllProcesses();
+	
+	public Collection<Event> getAllEvents();
 
 }
