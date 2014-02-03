@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.jbpt</groupId>
+	<artifactId>jbpt</artifactId>
+	<version>0.2.393</version>
+	<packaging>pom</packaging>
+
+	<name>Business Process Technologies 4 Java</name>
+	<description>This open source project includes source code developed for research purposes in the domain of Business Process Management.</description>
+	<url>http://code.google.com/p/jbpt/</url>
+	<inceptionYear>2008</inceptionYear>
+
+	<licenses>
+		<license>
+			<name>GNU General Lesser Public License v3</name>			
+			<url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>
+		</license>
+	</licenses>
+
+	<scm>
+		<connection>scm:svn:http://jbpt.googlecode.com/svn/trunk/</connection>
+		<developerConnection>scm:svn:https://jbpt.googlecode.com/svn/trunk/</developerConnection>
+		<url>http://code.google.com/p/jbpt/source/browse//</url>
+	</scm>
+
+	<prerequisites>
+		<maven>2.2.1</maven>
+	</prerequisites>
+
+	<properties>
+		<project.build.sourceEncoding>Cp1252</project.build.sourceEncoding>
+	</properties>
+
+    <modules>
+		<module>jbpt-parent</module>
+		<module>jbpt-core</module>
+		<module>jbpt-deco</module>	
+		<module>jbpt-petri</module>
+		<module>jbpt-bpm</module>
+        <module>jbpt-bp</module>		
+		<module>jbpt-test</module>		
+    </modules>
+	
+	<!-- Plugins to execute on Build -->
+	<build>
+		<finalName>jbpt-${project.version}-${buildNumber}</finalName>
+		<plugins>
+			<!-- Compile Plugins -->
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<inherited>true</inherited>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+
+			<!-- Test Plugins -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.12</version>
+				<configuration>
+					<!-- For the moment just run the tests defined in AllTests -->
+					<includes>
+						<include>**/*AllTests.java</include>
+					</includes>
+				</configuration>
+			</plugin>
+
+			<!-- Build Plugins -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>buildnumber-maven-plugin</artifactId>
+				<version>1.1</version>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>create</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<format>{0,date,yyyy-MM-dd}</format>
+					<items>
+						<item>timestamp</item>
+					</items>
+				</configuration>
+			</plugin>		
+		</plugins>
+				
+	</build>
+
+</project>
