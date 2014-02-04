@@ -18,15 +18,15 @@ public abstract class ReceivingEvent extends Event implements IReceivingEvent {
 	 * @param label
 	 * @param mult
 	 */
-	public ReceivingEvent(String label, int[] mult) {
-		super(label, mult);
+	public ReceivingEvent(String label, BparcProcess enclosingProcess, int[] mult) {
+		super(label, enclosingProcess, mult);
 	}
 
 	/**
 	 * @param label
 	 */
-	public ReceivingEvent(String label) {
-		super(label);
+	public ReceivingEvent(String label, BparcProcess enclosingProcess) {
+		super(label, enclosingProcess);
 	}
 
 	public Collection<ISendingEvent> getPreset(){

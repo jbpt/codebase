@@ -14,14 +14,14 @@ public class IntermediateThrowingEvent extends SendingEvent implements IIntermed
 	 * @param label
 	 * @param mult
 	 */
-	public IntermediateThrowingEvent(String label, int[] mult) {
-		super(label, mult);
+	public IntermediateThrowingEvent(String label, BparcProcess enclosingProcess, int[] mult) {
+		super(label, enclosingProcess, mult);
 	}
 
 	/**
 	 * @param label
 	 */
-	public IntermediateThrowingEvent(String label) {
-		super(label);
+	public IntermediateThrowingEvent(String label, BparcProcess enclosingProcess) {
+		super(label, enclosingProcess);
 	}	
 }

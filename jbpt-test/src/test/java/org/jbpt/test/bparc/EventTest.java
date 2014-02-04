@@ -21,4 +21,14 @@ public class EventTest {
 	public void getPostsetTest() {
 		Assert.fail();
 	}
+	
+	@Test
+	public void getConflictSetTest() {
+		Assert.fail();
+	}
+	
+	@Test
+	public void getMultiplicityTest() {
+		Assert.fail();
+	}
 }

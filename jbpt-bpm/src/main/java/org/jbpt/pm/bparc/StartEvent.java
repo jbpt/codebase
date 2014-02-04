@@ -17,15 +17,15 @@ public class StartEvent extends ReceivingEvent implements IStartEvent {
 	 * @param label
 	 * @param mult
 	 */
-	public StartEvent(String label, int[] mult) {
-		super(label, mult);
+	public StartEvent(String label, BparcProcess enclosingProcess, int[] mult) {
+		super(label, enclosingProcess, mult);
 	}
 
 	/**
 	 * @param label
 	 */
-	public StartEvent(String label) {
-		super(label);
+	public StartEvent(String label, BparcProcess enclosingProcess) {
+		super(label, enclosingProcess);
 	}
 
 	/**

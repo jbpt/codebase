@@ -9,7 +9,7 @@ import org.jbpt.pm.IEvent;
 public abstract class Event extends org.jbpt.pm.Event implements IEvent {
 	
 private int[] multiplicity;
-private BparcProcess enclosingProcess;
+private final BparcProcess enclosingProcess;
 
 //protected static Map<Event, Integer> ids = new HashMap<Event, Integer>();
 //protected static Integer maxId = 0;
@@ -20,9 +20,9 @@ public Event clone() {
 	throw new UnsupportedOperationException();
 }
 
-public Event(String label, int[] mult){
+public Event(String label, BparcProcess enclosingProcess, int[] mult){
 	super(label);
-//	this.owner = bpid;
+	this.enclosingProcess = enclosingProcess;
 	this.multiplicity = mult;
 }
 
@@ -31,8 +31,8 @@ public Event(String label, int[] mult){
  * @param bpid
  * @param label
  */
-public Event (String label) {
-	this(label, new int[]{1});
+public Event (String label, BparcProcess enclosingProcess) {
+	this(label, enclosingProcess, new int[]{1});
 }
 
 // replaced by setName() in GObject, so far not called
@@ -60,10 +60,4 @@ public boolean hasTrivialMultiplicity() {
 public BparcProcess getEnclosingProcess() {
 	return enclosingProcess;
 }
-
-public void setEnclosingProcess(BparcProcess enclosingProcess) {
-	this.enclosingProcess = enclosingProcess;
-}
-
-
 }

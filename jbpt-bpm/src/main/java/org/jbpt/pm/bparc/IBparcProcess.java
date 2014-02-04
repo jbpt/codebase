@@ -3,7 +3,7 @@
  */
 package org.jbpt.pm.bparc;
 
-import java.util.Collection;
+import java.util.List;
 
 import org.jbpt.pm.INonFlowNode;
 
@@ -17,6 +17,6 @@ public interface IBparcProcess extends INonFlowNode {
 	 * Returns all events inside of this BParc Process
 	 * @return Collection of events
 	 */
-	public Collection<Event> getEvents();
+	public List<IEvent> getEvents();
 
 }
