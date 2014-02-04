@@ -18,7 +18,12 @@ public class BparcTest {
 	}
 	
 	@Test
-	public void getEventsTest() {
+	public void getAllEventsTest() {
+		Assert.fail();
+	}
+	
+	@Test
+	public void getAllProcesses() {
 		Assert.fail();
 	}
 

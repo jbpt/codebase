@@ -14,15 +14,15 @@ public class IntermediateCatchingEvent extends ReceivingEvent implements IReceiv
 	 * @param label
 	 * @param mult
 	 */
-	public IntermediateCatchingEvent(String label, int[] mult) {
-		super(label, mult);
+	public IntermediateCatchingEvent(String label, BparcProcess enclosingProcess, int[] mult) {
+		super(label, enclosingProcess, mult);
 	}
 
 	/**
 	 * @param label
 	 */
-	public IntermediateCatchingEvent(String label) {
-		super(label);
+	public IntermediateCatchingEvent(String label, BparcProcess enclosingProcess) {
+		super(label, enclosingProcess);
 	}
 
 }

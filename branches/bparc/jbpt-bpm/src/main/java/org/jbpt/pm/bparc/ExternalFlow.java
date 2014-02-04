@@ -5,13 +5,13 @@ package org.jbpt.pm.bparc;
 
 import org.jbpt.graph.abs.AbstractDirectedGraph;
 import org.jbpt.pm.ControlFlow;
-import org.jbpt.pm.IFlowNode;
+import org.jbpt.pm.FlowNode;
 
 /**
- * @author Robert Breske and Marcin Hewelt
+ * @author Dexter
  *
  */
-public class InternalFlow<V extends IFlowNode> extends ControlFlow<V> implements IInternalFlow<V> {
+public class ExternalFlow<V extends FlowNode> extends ControlFlow<V> implements IExternalFlow<V> {
 
 	/**
 	 * @param graph
@@ -19,9 +19,10 @@ public class InternalFlow<V extends IFlowNode> extends ControlFlow<V> implements
 	 * @param to
 	 * @param probability
 	 */
-	public InternalFlow(AbstractDirectedGraph<?, V> graph, V from, V to,
+	public ExternalFlow(AbstractDirectedGraph<?, V> graph, V from, V to,
 			float probability) {
 		super(graph, from, to, probability);
+		// TODO Auto-generated constructor stub
 	}
-	// TODO: implement validator
+
 }

@@ -20,26 +20,6 @@ public class BparcProcess extends NonFlowNode implements IBparcProcess {
 		this.shapeId = resourceId;
 	}
 
-	/**
-	 * @param name
-	 * @param description
-	 */
-	public BparcProcess(String name, String resourceId, List<IEvent> events) {
-		super(name);
-		this.shapeId = resourceId;
-		this.events = events;
-		
-		for (IEvent event : events) {
-			event.setEnclosingProcess(this);
-		}
-	}
-		
-//	public BparcProcess clone() {
-//		//implement
-//		throw new UnsupportedOperationException();
-//	}
-
-
 	public List<IEvent> getEvents() {
 		return events;
 	}
@@ -48,11 +28,10 @@ public class BparcProcess extends NonFlowNode implements IBparcProcess {
 		events.add(e);
 	}
 	
-	public void addEvents(List<Event> events) {
+	public void addEvents(List<IEvent> events) {
 		events.addAll(events);
 	}
-
-		
+	
 	public UUID getUid() {
 		//TODO: probably unnecessary
 		return UUID.fromString(super.getId());

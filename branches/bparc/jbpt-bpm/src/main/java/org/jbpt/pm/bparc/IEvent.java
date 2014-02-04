@@ -10,11 +10,6 @@ package org.jbpt.pm.bparc;
  */
 public interface IEvent extends org.jbpt.pm.IEvent {
 	
-	/**
-	 * @param bparcProcess
-	 */
-	public void setEnclosingProcess(BparcProcess bparcProcess);
-	
 	public BparcProcess getEnclosingProcess();
 
 }
