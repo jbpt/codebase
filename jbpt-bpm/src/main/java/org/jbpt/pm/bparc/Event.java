@@ -9,15 +9,24 @@ import org.jbpt.pm.IEvent;
 public abstract class Event extends org.jbpt.pm.Event implements IEvent {
 	
 private int[] multiplicity;
-private final BparcProcess enclosingProcess;
+private BparcProcess enclosingProcess;
 
 //protected static Map<Event, Integer> ids = new HashMap<Event, Integer>();
 //protected static Integer maxId = 0;
 
 
 public Event clone() {
-	//TODO: implement
-	throw new UnsupportedOperationException();
+	Event clone = (Event) super.clone();
+	clone.setMultiplicity(this.multiplicity);
+	clone.setEnclosingProcess((BparcProcess) this.enclosingProcess.clone());
+	return clone;
+}
+
+/**
+ * @param clone
+ */
+private void setEnclosingProcess(BparcProcess enclosingProcess) {
+	this.enclosingProcess = enclosingProcess;
 }
 
 public Event(String label, BparcProcess enclosingProcess, int[] mult){
