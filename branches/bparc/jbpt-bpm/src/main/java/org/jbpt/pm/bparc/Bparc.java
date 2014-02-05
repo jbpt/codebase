@@ -17,6 +17,20 @@ public class Bparc extends ProcessModel implements IBparc {
 	public Bparc() {
 
 	}
+	
+	@Override
+	public Bparc clone() {
+		Bparc clone = (Bparc) super.clone();
+		clone.setName(this.name);
+		clone.setOrganisation(this.organisation);
+		clone.setShapeId(this.shapeId);
+		
+		return clone;
+	}
+
+	private void setShapeId(String shapeId) {
+		this.shapeId = shapeId;
+	}
 
 	@Override
 	public ControlFlow<FlowNode> addControlFlow(FlowNode from, FlowNode to,

@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 import org.jbpt.pm.FlowNode;
+import org.jbpt.pm.XorGateway;
 
 /**
  * @author rami.eidsabbagh
@@ -50,7 +51,28 @@ public abstract class SendingEvent extends Event implements ISendingEvent {
 
 	@Override
 	public Collection<IReceivingEvent> getConflictSet() {
-		// TODO Auto-generated method stub
-		return null;
+		Collection<FlowNode> directSuccessors = getModel().getDirectSuccessors(getModel().getDirectSuccessors(this));
+		XorGateway xor = null;
+		for (FlowNode flowNode : directSuccessors) {
+			if (flowNode instanceof XorGateway) {
+				xor = (XorGateway) flowNode;
+				break;
+			}
+		}
+		
+		Collection<IReceivingEvent> conflictSet = new LinkedList<IReceivingEvent>();
+		
+		if (xor != null) {
+			for (FlowNode node : getModel().getDirectSuccessors(xor)) {
+				if (node instanceof ReceivingEvent) {
+					conflictSet.add((IReceivingEvent) node);
+				} else {
+					// next element can only be a receiving event according to bparc definition
+					conflictSet.add((IReceivingEvent) getModel().getDirectSuccessors(node).iterator().next());
+				}
+			}
+		}
+		
+		return conflictSet;
 	}
 }
