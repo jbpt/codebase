@@ -111,6 +111,61 @@ public class BparcFactory {
 		SendingEvent source = getObject(sourceId);
 		ReceivingEvent target = getObject(targetId);
 
+		addNewFlow(source, target);
+		
+		Collection<ControlFlow<FlowNode>> targetFlows = this.bparc.getEdgesWithTarget(target);
+
+		if (targetFlows.size() == 2) {
+			// target has now multiple predecessors
+			correctControlFlowOnReceivingSide(target, targetFlows);
+		} else if (targetFlows.size() == 0) {
+			// our newly added flow is not there at all
+			throw new BparcFactoryException(String.format("Cannot find flow from %s to %s", source, target));
+		}
+	}
+
+	/**
+	 * @param target
+	 * @param targetFlows
+	 * @throws BparcFactoryException
+	 */
+	private void correctControlFlowOnReceivingSide(ReceivingEvent target,
+			Collection<ControlFlow<FlowNode>> targetFlows)
+			throws BparcFactoryException {
+		XorGateway gateway = null;
+		ControlFlow<FlowNode> probablyNewFlow = null;
+		
+		for (ControlFlow<FlowNode> flow : targetFlows) {
+			if (flow.getSource() instanceof XorGateway &&
+					// collector net on the receiving side
+					(this.bparc.getDirectPredecessors(flow.getSource()).size() > 1))
+				gateway = (XorGateway) flow.getSource();
+			else 
+				// if the other flow is a collector net, this must be the flow we just added
+				// if the other flow is no collector net, this variable contains rubbish
+				probablyNewFlow = flow;
+		}
+		
+		if (gateway == null) {
+			// no collector net present
+			createCollectorNet(targetFlows, target);
+		} else {
+			// collector net present
+			FlowNode flowSource = probablyNewFlow.getSource();
+			if (this.bparc.removeControlFlow(probablyNewFlow) == null)
+				throw new BparcFactoryException(String.format("Cannot remove flow from %s to %s", flowSource, target));
+			if (this.bparc.addControlFlow(flowSource, gateway) == null)
+				throw new BparcFactoryException(String.format("Cannot add flow from %s to %s", flowSource, gateway));
+		}
+	}
+
+	/**
+	 * @param source
+	 * @param target
+	 * @throws BparcFactoryException
+	 */
+	private void addNewFlow(SendingEvent source, ReceivingEvent target)
+			throws BparcFactoryException {
 		Collection<ControlFlow<FlowNode>> outgoingEdges = this.bparc.getEdgesWithSource(source);
 		ControlFlow<FlowNode> externalFlow = getExternalFlow(outgoingEdges);
 		
@@ -120,18 +175,47 @@ public class BparcFactory {
 			if (flow == null)
 				throw new BparcFactoryException(String.format("Flow creation failed %s to %s", source, target));
 		} else {
-			if (externalFlow.getTarget() instanceof Event) {
-				createGateway(source, externalFlow, (Event) externalFlow.getTarget(), target);
+			FlowNode flowTarget = externalFlow.getTarget();
+			if (flowTarget instanceof Event || 
+					// a collector net on the receiving side
+					((flowTarget instanceof Gateway) && this.bparc.getDirectPredecessors(flowTarget).size() > 1)) {
+				createSplitterNet(source, externalFlow, (Event) externalFlow.getTarget(), target);
 			} else if (externalFlow.getTarget() instanceof Gateway) {
+				// already a gateway on my side
 				connectToGateway((Gateway) externalFlow.getTarget(), target, false);
 			} else {
-				throw new BparcFactoryException(String.format("unkown object encountered: %s", externalFlow.getTarget()));
+				throw new BparcFactoryException(String.format("Unexpected object encountered: %s", externalFlow.getTarget()));
 			}
 		}
-		
-		// TODO: create collector net (xor join) for target events which already have a preset
 	}
 	
+	/**
+	 * @param targetFlows
+	 * @param source
+	 * @param target
+	 * @throws BparcFactoryException 
+	 */
+	private void createCollectorNet(
+			Collection<ControlFlow<FlowNode>> targetFlows, ReceivingEvent target) throws BparcFactoryException {
+		XorGateway xorGateway = new XorGateway();
+		if (this.bparc.addFlowNode(xorGateway) == null) {
+			throw new BparcFactoryException(String.format("Cannot add gateway %s", xorGateway));
+		}
+		if (this.bparc.addControlFlow(xorGateway, target) == null) {
+			throw new BparcFactoryException(String.format("Cannot add control flow from  %s to %s", xorGateway, target));
+		}
+		
+		for (ControlFlow<FlowNode> flow : targetFlows) {
+			FlowNode source = flow.getSource();
+			if (this.bparc.addControlFlow(source, xorGateway) == null) {
+				throw new BparcFactoryException(String.format("Cannot add control flow from %s to %s", source, xorGateway));
+			}
+			if (this.bparc.removeControlFlow(flow) == null) {
+				throw new BparcFactoryException(String.format("Cannot remove flow from %s to %s", source, target));
+			}
+		}
+	}
+
 	/**
 	 * Connects an additional target event to an existing gateway
 	 * @param gateway
@@ -151,7 +235,7 @@ public class BparcFactory {
 	 * @param target2
 	 * @throws BparcFactoryException 
 	 */
-	private void createGateway(FlowNode source,
+	private void createSplitterNet(FlowNode source,
 			ControlFlow<FlowNode> externalFlow, Event oldTarget, FlowNode additionalTarget) throws BparcFactoryException {
 		AndGateway gateway = new AndGateway();
 		
