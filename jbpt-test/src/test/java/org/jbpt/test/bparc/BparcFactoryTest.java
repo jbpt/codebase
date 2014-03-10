@@ -79,6 +79,10 @@ public class BparcFactoryTest {
 		factory.createControlFlow(e5, e7);
 		
 		verify(factory.getBparc(), 3, 8, 2);
+		
+		factory.createControlFlow(e8, e3);
+		
+		verify(factory.getBparc(), 3, 8, 3);
 	}
 
 	private void verify(Bparc bparc, int processes, int events, int gateways) {

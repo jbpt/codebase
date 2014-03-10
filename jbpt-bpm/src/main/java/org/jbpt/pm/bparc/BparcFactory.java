@@ -115,8 +115,9 @@ public class BparcFactory {
 		
 		Collection<ControlFlow<FlowNode>> targetFlows = this.bparc.getEdgesWithTarget(target);
 
-		if (targetFlows.size() == 2) {
-			// target has now multiple predecessors
+		if ((target instanceof StartEvent && targetFlows.size() == 2) ||
+				(target instanceof IntermediateCatchingEvent && targetFlows.size() == 3)) {
+			// event has now multiple predecessors (start event 2 inputs; intermediate 1 internal and 2 external)
 			correctControlFlowOnReceivingSide(target, targetFlows);
 		} else if (targetFlows.size() == 0) {
 			// our newly added flow is not there at all
@@ -125,6 +126,8 @@ public class BparcFactory {
 	}
 
 	/**
+	 * Checks if a collector net on the target has to be added, or
+	 * if an edge has to be atached to an existing collector net
 	 * @param target
 	 * @param targetFlows
 	 * @throws BparcFactoryException
