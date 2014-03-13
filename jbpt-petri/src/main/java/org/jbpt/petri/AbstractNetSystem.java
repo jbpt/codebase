@@ -162,9 +162,9 @@ public abstract class AbstractNetSystem<F extends IFlow<N>, N extends INode, P e
 	@Override
 	public String toDOT() {
 		String result = "digraph G {\n";
-		result += "graph [fontname=\"Helvetica\" fontsize=10 nodesep=0.35 ranksep=\"0.25 equally\"];\n";
-		result += "node [fontname=\"Helvetica\" fontsize=10 fixedsize style=filled fillcolor=white penwidth=\"2\"];\n";
-		result += "edge [fontname=\"Helvetica\" fontsize=10 arrowhead=normal color=black];\n";
+		result += "graph [fontname=\"Helvetica\" fontsize=\"10\" nodesep=\"0.35\" ranksep=\"0.25 equally\"];\n";
+		result += "node [fontname=\"Helvetica\" fontsize=\"10\" fixedsize=\"true\" style=\"filled\" fillcolor=\"white\" penwidth=\"2\"];\n";
+		result += "edge [fontname=\"Helvetica\" fontsize=\"10\" arrowhead=\"normal\" color=\"black\"];\n";
 		result += "\n";
 		result += "node [shape=circle];\n";
 		

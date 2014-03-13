@@ -191,11 +191,13 @@ public abstract class AbstractOccurrenceNet<BPN extends IBPNode<N>, C extends IC
 		if (transitions == null) return "";
 		
 		String result = "digraph G { label=\"" + this.getName() + "\";\n";
-		result += "graph [fontname=\"Helvetica\" fontsize=10 nodesep=0.35 ranksep=\"0.25 equally\"];\n";
-		result += "node [fontname=\"Helvetica\" fontsize=10 fixedsize style=filled penwidth=\"2\"];\n";
-		result += "edge [fontname=\"Helvetica\" fontsize=10 arrowhead=normal color=black];\n";
+		result += "graph [fontname=\"Helvetica\" fontsize=\"10\" nodesep=\"0.35\" ranksep=\"0.25 equally\"];\n";
+		result += "node [fontname=\"Helvetica\" fontsize=\"10\" fixedsize=\"true\" style=\"filled\" penwidth=\"2\"];\n";
+		result += "edge [fontname=\"Helvetica\" fontsize=\"10\" arrowhead=\"normal\" color=\"black\"];\n";
+		
 		result += "\n";
-		result += "node [shape=circle];\n";
+		
+		result += "node [shape=\"circle\"];\n";
 		
 		for (P p : this.getPlaces()) {
 			if (places.contains(p))
@@ -206,7 +208,7 @@ public abstract class AbstractOccurrenceNet<BPN extends IBPNode<N>, C extends IC
 			
 		
 		result += "\n";
-		result += "node [shape=box];\n";
+		result += "node [shape=\"box\"];\n";
 		
 		for (T t : this.getTransitions()) {
 			if (this.isCutoffEvent(t)) {
@@ -228,9 +230,12 @@ public abstract class AbstractOccurrenceNet<BPN extends IBPNode<N>, C extends IC
 			result += String.format("\tn%s->n%s;\n", f.getSource().getId().replace("-", ""), f.getTarget().getId().replace("-", ""));
 		}
 		
-		result += "\tedge [fontname=\"Helvetica\" fontsize=8 arrowhead=normal color=orange];\n";
-		for (T t : this.getCutoffEvents()) {
-			result += String.format("\tn%s->n%s;\n", t.getId().replace("-", ""), this.getCorrespondingEvent(t).getId().replace("-", ""));
+		if (this.getCutoffEvents().size()>0) {
+			result += "\n";
+			result += "edge [fontname=\"Helvetica\" fontsize=\"8\" arrowhead=\"normal\" color=\"orange\"];\n";
+			for (T t : this.getCutoffEvents()) {
+				result += String.format("\tn%s->n%s;\n", t.getId().replace("-", ""), this.getCorrespondingEvent(t).getId().replace("-", ""));
+			}
 		}
 		
 		result += "}\n";

@@ -451,15 +451,14 @@ public abstract class AbstractPetriNet<F extends IFlow<N>, N extends INode, P ex
 	@Override
 	public String toDOT() {
 		String result = "digraph G {\n";
-		result += "graph [fontname=\"Helvetica\" fontsize=10 nodesep=0.35 ranksep=\"0.25 equally\"];\n";
-		result += "node [fontname=\"Helvetica\" fontsize=10 fixedsize style=filled fillcolor=white penwidth=\"2\"];\n";
-		result += "edge [fontname=\"Helvetica\" fontsize=10 arrowhead=normal color=black];\n";
+		result += "graph [fontname=\"Helvetica\" fontsize=\"10\" nodesep=\"0.35\" ranksep=\"0.25 equally\"];\n";
+		result += "node [fontname=\"Helvetica\" fontsize=\"10\" fixedsize=\"true\" style=\"filled\" fillcolor=\"white\" penwidth=\"2\"];\n";
+		result += "edge [fontname=\"Helvetica\" fontsize=\"10\" arrowhead=\"normal\" color=\"black\"];\n";
 		result += "\n";
 		result += "node [shape=circle];\n";
 		
 		for (P place : this.getPlaces()) {
-			String label = ""; 
-			result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".3\"];\n", place.getId().replace("-", ""), label);
+			result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".3\"];\n", place.getId().replace("-", ""), place.getLabel());
 		}
 		
 		result += "\n";
@@ -467,9 +466,9 @@ public abstract class AbstractPetriNet<F extends IFlow<N>, N extends INode, P ex
 		
 		for (T transition : this.getTransitions()) {
 			if (transition.isSilent())
-				result += String.format("\tn%s[label=\"1\" width=\".3\" height=\".1\"];\n", transition.getId().replace("-", ""));
+				result += String.format("\tn%s[label=\"\" width=\".3\" height=\".1\"];\n", transition.getId().replace("-", ""));
 			else 
-				result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".3\"];\n", transition.getId().replace("-", ""), transition.getName());
+				result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".3\"];\n", transition.getId().replace("-", ""), transition.getLabel());
 		}
 		
 		result += "\n";
