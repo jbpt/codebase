@@ -201,9 +201,9 @@ public abstract class AbstractOccurrenceNet<BPN extends IBPNode<N>, C extends IC
 		
 		for (P p : this.getPlaces()) {
 			if (places.contains(p))
-				result += String.format("\tn%s[label=\"%s\" width=\".5\" height=\".5\" fillcolor=red];\n", p.getId().replace("-", ""), p.getName());
+				result += String.format("\tn%s[label=\"%s\" width=\".5\" height=\".5\" fillcolor=red];\n", p.getId().replace("-", ""), p.getLabel());
 			else
-				result += String.format("\tn%s[label=\"%s\" width=\".5\" height=\".5\" fillcolor=white];\n", p.getId().replace("-", ""), p.getName());
+				result += String.format("\tn%s[label=\"%s\" width=\".5\" height=\".5\" fillcolor=white];\n", p.getId().replace("-", ""), p.getLabel());
 		}
 			
 		
@@ -212,16 +212,16 @@ public abstract class AbstractOccurrenceNet<BPN extends IBPNode<N>, C extends IC
 		
 		for (T t : this.getTransitions()) {
 			if (this.isCutoffEvent(t)) {
-				if (t.getName()=="") result += String.format("\tn%s[label=\"%s\" width=\".5\" height=\".1\" fillcolor=orange];\n", t.getId().replace("-", ""), t.getName());
-				else result += String.format("\tn%s[label=\"%s\" width=\".5\" height=\".5\" fillcolor=orange];\n", t.getId().replace("-", ""), t.getName());	
+				if (t.getLabel()=="") result += String.format("\tn%s[label=\"%s\" width=\".5\" height=\".1\" fillcolor=orange];\n", t.getId().replace("-", ""), t.getLabel());
+				else result += String.format("\tn%s[label=\"%s\" width=\".5\" height=\".5\" fillcolor=orange];\n", t.getId().replace("-", ""), t.getLabel());	
 			}
 			else if (transitions.contains(t)) {
-				if (t.getName()=="") result += String.format("\tn%s[label=\"%s\" width=\".5\" height=\".1\" fillcolor=\"#9ACD32\"];\n", t.getId().replace("-", ""), t.getName());
-				else result += String.format("\tn%s[label=\"%s\" width=\".5\" height=\".5\" fillcolor=green];\n", t.getId().replace("-", ""), t.getName());	
+				if (t.getLabel()=="") result += String.format("\tn%s[label=\"%s\" width=\".5\" height=\".1\" fillcolor=\"#9ACD32\"];\n", t.getId().replace("-", ""), t.getLabel());
+				else result += String.format("\tn%s[label=\"%s\" width=\".5\" height=\".5\" fillcolor=green];\n", t.getId().replace("-", ""), t.getLabel());	
 			}
 			else {
-				if (t.getName()=="") result += String.format("\tn%s[label=\"%s\" width=\".5\" height=\".1\" fillcolor=white];\n", t.getId().replace("-", ""), t.getName());
-				else result += String.format("\tn%s[label=\"%s\" width=\".5\" height=\".5\" fillcolor=white];\n", t.getId().replace("-", ""), t.getName());
+				if (t.getLabel()=="") result += String.format("\tn%s[label=\"%s\" width=\".5\" height=\".1\" fillcolor=white];\n", t.getId().replace("-", ""), t.getLabel());
+				else result += String.format("\tn%s[label=\"%s\" width=\".5\" height=\".5\" fillcolor=white];\n", t.getId().replace("-", ""), t.getLabel());
 			}
 		}
 		
