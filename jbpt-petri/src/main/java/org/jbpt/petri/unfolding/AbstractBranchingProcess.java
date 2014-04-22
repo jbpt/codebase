@@ -557,6 +557,21 @@ public abstract class AbstractBranchingProcess<BPN extends IBPNode<N>, C extends
 	}
 	
 	@Override
+	// TODO optimize
+	public boolean areMutuallyConcurrent(Collection<C> conditions) {
+		for (C c1 : conditions) {
+			for (C c2 : conditions) {
+				if (c1.equals(c2)) continue;
+				
+				boolean result = this.areConcurrent((BPN)c1,(BPN)c2);
+				if (!result) return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	@Override
 	public Set<ICut<BPN,C,E,F,N,P,T,M>> getCuts(Collection<P> places) {
 		Set<ICut<BPN,C,E,F,N,P,T,M>> result = new HashSet<ICut<BPN, C, E, F, N, P, T, M>>();
 		List<List<C>> conds = new ArrayList<List<C>>();

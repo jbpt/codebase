@@ -199,6 +199,8 @@ public interface IBranchingProcess<BPN extends IBPNode<N>, C extends ICondition<
 	 */
 	public boolean isCut(Collection<C> conditions);
 	
+	public boolean areMutuallyConcurrent(Collection<C> conditions);
+	
 	/**
 	 * Get cuts of this branching process that refer to the provided collection of places. 
 	 * @param places Collection of places of the originative net system.
