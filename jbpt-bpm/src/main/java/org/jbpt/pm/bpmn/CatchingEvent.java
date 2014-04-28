@@ -15,6 +15,7 @@ public class CatchingEvent extends BpmnEvent implements ICatchingEvent{
 	 */
 	public CatchingEvent() {
 		super();
+		setType(EventType.RECEIVING);
 	}
 
 	/**
@@ -22,6 +23,7 @@ public class CatchingEvent extends BpmnEvent implements ICatchingEvent{
 	 */
 	public CatchingEvent(String name) {
 		super(name);
+		setType(EventType.RECEIVING);
 	}
 
 }

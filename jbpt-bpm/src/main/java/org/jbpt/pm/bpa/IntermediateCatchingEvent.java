@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.jbpt.pm.bparc;
+package org.jbpt.pm.bpa;
 
 
 /**
@@ -14,14 +14,14 @@ public class IntermediateCatchingEvent extends ReceivingEvent implements IReceiv
 	 * @param label
 	 * @param mult
 	 */
-	public IntermediateCatchingEvent(String label, BparcProcess enclosingProcess, int[] mult) {
+	public IntermediateCatchingEvent(String label, BpaProcess enclosingProcess, int[] mult) {
 		super(label, enclosingProcess, mult);
 	}
 
 	/**
 	 * @param label
 	 */
-	public IntermediateCatchingEvent(String label, BparcProcess enclosingProcess) {
+	public IntermediateCatchingEvent(String label, BpaProcess enclosingProcess) {
 		super(label, enclosingProcess);
 	}
 

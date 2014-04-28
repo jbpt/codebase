@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.jbpt.pm.bparc;
+package org.jbpt.pm.bpa;
 
 
 /**
@@ -14,14 +14,14 @@ public class IntermediateThrowingEvent extends SendingEvent implements IIntermed
 	 * @param label
 	 * @param mult
 	 */
-	public IntermediateThrowingEvent(String label, BparcProcess enclosingProcess, int[] mult) {
+	public IntermediateThrowingEvent(String label, BpaProcess enclosingProcess, int[] mult) {
 		super(label, enclosingProcess, mult);
 	}
 
 	/**
 	 * @param label
 	 */
-	public IntermediateThrowingEvent(String label, BparcProcess enclosingProcess) {
+	public IntermediateThrowingEvent(String label, BpaProcess enclosingProcess) {
 		super(label, enclosingProcess);
 	}	
 }

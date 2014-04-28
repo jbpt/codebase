@@ -12,6 +12,7 @@ public class EndEvent extends BpmnEvent implements IEndEvent{
 	 */
 	public EndEvent() {
 		super();
+		setType(EventType.SENDING);
 	}
 
 	/**
@@ -20,5 +21,6 @@ public class EndEvent extends BpmnEvent implements IEndEvent{
 	 */
 	public EndEvent(String name) {
 		super(name);
+		setType(EventType.SENDING);
 	}
 }

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.jbpt.pm.bparc;
+package org.jbpt.pm.bpa;
 
 
 
@@ -16,14 +16,14 @@ public class EndEvent extends SendingEvent implements IEndEvent {
 	 * @param label
 	 * @param mult
 	 */
-	public EndEvent(String label, BparcProcess enclosingProcess, int[] mult) {
+	public EndEvent(String label, BpaProcess enclosingProcess, int[] mult) {
 		super(label, enclosingProcess, mult);
 	}
 
 	/**
 	 * @param label
 	 */
-	public EndEvent(String label, BparcProcess enclosingProcess) {
+	public EndEvent(String label, BpaProcess enclosingProcess) {
 		super(label, enclosingProcess);
 	}
 }

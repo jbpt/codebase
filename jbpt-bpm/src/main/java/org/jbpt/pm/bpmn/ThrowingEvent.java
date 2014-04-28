@@ -15,6 +15,7 @@ public class ThrowingEvent extends BpmnEvent implements IThrowingEvent {
 	 */
 	public ThrowingEvent() {
 		super();
+		setType(EventType.SENDING);
 	}
 
 	/**
@@ -22,6 +23,7 @@ public class ThrowingEvent extends BpmnEvent implements IThrowingEvent {
 	 */
 	public ThrowingEvent(String name) {
 		super(name);
+		setType(EventType.SENDING);
 	}
 
 }

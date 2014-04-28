@@ -1,4 +1,4 @@
-package org.jbpt.pm.bparc;
+package org.jbpt.pm.bpa;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -8,19 +8,19 @@ import org.jbpt.pm.ControlFlow;
 import org.jbpt.pm.FlowNode;
 import org.jbpt.pm.ProcessModel;
 
-public class Bparc extends ProcessModel implements IBparc {
+public class Bpa extends ProcessModel implements IBpa {
 
 	private String name;
 	private String organisation;
 	private String shapeId;
 
-	public Bparc() {
+	public Bpa() {
 
 	}
 	
 	@Override
-	public Bparc clone() {
-		Bparc clone = (Bparc) super.clone();
+	public Bpa clone() {
+		Bpa clone = (Bpa) super.clone();
 		clone.setName(this.name);
 		clone.setOrganisation(this.organisation);
 		clone.setShapeId(this.shapeId);
@@ -39,7 +39,7 @@ public class Bparc extends ProcessModel implements IBparc {
 		if (from instanceof IEvent &&
 				to instanceof IEvent &&
 				((IEvent)from).getEnclosingProcess().equals(((IEvent) to).getEnclosingProcess())) {
-			// both events are enclosed by the same bparc process -> internal flow
+			// both events are enclosed by the same BPA process -> internal flow
 			flow = new InternalFlow<>(this, from, to, probability);	
 		} else {
 			// all other cases -> external flow
@@ -58,8 +58,8 @@ public class Bparc extends ProcessModel implements IBparc {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Collection<BparcProcess> getAllProcesses() {
-		return (Collection<BparcProcess>) this.filter(BparcProcess.class);
+	public Collection<BpaProcess> getAllProcesses() {
+		return (Collection<BpaProcess>) this.filter(BpaProcess.class);
 	}
 
 	public String getCanvasId() {
@@ -87,7 +87,7 @@ public class Bparc extends ProcessModel implements IBparc {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.jbpt.pm.bparc.IBparc#getAllEvents()
+	 * @see org.jbpt.pm.bpa.IBpa#getAllEvents()
 	 */
 	@SuppressWarnings("unchecked")
 	@Override

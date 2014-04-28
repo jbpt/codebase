@@ -1,4 +1,4 @@
-package org.jbpt.pm.bparc;
+package org.jbpt.pm.bpa;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -18,14 +18,14 @@ public abstract class SendingEvent extends Event implements ISendingEvent {
 	 * @param label
 	 * @param mult
 	 */
-	public SendingEvent(String label, BparcProcess enclosingProcess, int[] mult) {
+	public SendingEvent(String label, BpaProcess enclosingProcess, int[] mult) {
 		super(label, enclosingProcess, mult);
 	}
 
 	/**
 	 * @param label
 	 */
-	public SendingEvent(String label, BparcProcess enclosingProcess) {
+	public SendingEvent(String label, BpaProcess enclosingProcess) {
 		super(label, enclosingProcess);
 	}
 	
@@ -67,7 +67,7 @@ public abstract class SendingEvent extends Event implements ISendingEvent {
 				if (node instanceof ReceivingEvent) {
 					conflictSet.add((IReceivingEvent) node);
 				} else {
-					// next element can only be a receiving event according to bparc definition
+					// next element can only be a receiving event according to BPA definition
 					conflictSet.add((IReceivingEvent) getModel().getDirectSuccessors(node).iterator().next());
 				}
 			}

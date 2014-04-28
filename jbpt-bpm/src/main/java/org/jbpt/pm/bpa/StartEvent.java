@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.jbpt.pm.bparc;
+package org.jbpt.pm.bpa;
 
 
 
@@ -17,14 +17,14 @@ public class StartEvent extends ReceivingEvent implements IStartEvent {
 	 * @param label
 	 * @param mult
 	 */
-	public StartEvent(String label, BparcProcess enclosingProcess, int[] mult) {
+	public StartEvent(String label, BpaProcess enclosingProcess, int[] mult) {
 		super(label, enclosingProcess, mult);
 	}
 
 	/**
 	 * @param label
 	 */
-	public StartEvent(String label, BparcProcess enclosingProcess) {
+	public StartEvent(String label, BpaProcess enclosingProcess) {
 		super(label, enclosingProcess);
 	}
 

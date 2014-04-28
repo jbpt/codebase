@@ -9,8 +9,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.jbpt.graph.abs.AbstractDirectedGraph;
-import org.jbpt.graph.abs.IDirectedEdge;
-import org.jbpt.hypergraph.abs.IVertex;
 import org.jbpt.pm.ControlFlow;
 import org.jbpt.pm.IDataNode;
 import org.jbpt.pm.IFlowNode;
@@ -46,7 +44,6 @@ public class BpmnControlFlow<V extends IFlowNode> extends ControlFlow<V> impleme
 		super(g, source, target);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void addReadDocument(IDataNode document) {
 		this.readDocuments.add(document);
@@ -65,7 +62,6 @@ public class BpmnControlFlow<V extends IFlowNode> extends ControlFlow<V> impleme
 		this.unspecifiedDocuments.add(document);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void addWriteDocument(IDataNode document) {
 		this.writeDocuments.add(document);
