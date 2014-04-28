@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.jbpt.pm.bparc;
+package org.jbpt.pm.bpa;
 
 import java.util.Collection;
 
@@ -11,17 +11,17 @@ import org.jbpt.pm.IProcessModel;
 import org.jbpt.pm.NonFlowNode;
 
 /**
- * Interface for BParc landscapes
+ * Interface for BPA
  * @author Robert Breske and Marcin Hewelt
  *
  */
-public interface IBparc extends IProcessModel<ControlFlow<FlowNode>, FlowNode, NonFlowNode> {
+public interface IBpa extends IProcessModel<ControlFlow<FlowNode>, FlowNode, NonFlowNode> {
 	
 	public ControlFlow<FlowNode> addControlFlow(FlowNode from, FlowNode to);
 	
 	public ControlFlow<FlowNode> addControlFlow(FlowNode from, FlowNode to, float probability);
 	
-	public Collection<BparcProcess> getAllProcesses();
+	public Collection<BpaProcess> getAllProcesses();
 	
 	public Collection<Event> getAllEvents();
 

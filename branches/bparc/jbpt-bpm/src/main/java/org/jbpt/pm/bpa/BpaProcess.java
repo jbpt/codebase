@@ -1,4 +1,4 @@
-package org.jbpt.pm.bparc;
+package org.jbpt.pm.bpa;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.UUID;
 
 import org.jbpt.pm.NonFlowNode;
 
-public class BparcProcess extends NonFlowNode implements IBparcProcess {
+public class BpaProcess extends NonFlowNode implements IBpaProcess {
 	
 	List<IEvent> events = new ArrayList<IEvent>();
 	private String shapeId;
@@ -15,7 +15,7 @@ public class BparcProcess extends NonFlowNode implements IBparcProcess {
 	 * @param name
 	 * @param description
 	 */
-	public BparcProcess(String name, String resourceId) {
+	public BpaProcess(String name, String resourceId) {
 		super(name);
 		this.shapeId = resourceId;
 	}

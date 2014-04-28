@@ -9,7 +9,7 @@ package org.jbpt.pm;
 public class Event extends FlowNode {
 	
 	public enum EventType {
-		REVEIVECING,SENDING
+		RECEIVING,SENDING
 	}
 	
 	private EventType type;

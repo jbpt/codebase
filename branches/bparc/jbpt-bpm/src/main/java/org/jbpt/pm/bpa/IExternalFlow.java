@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.jbpt.pm.bparc;
+package org.jbpt.pm.bpa;
 
 import org.jbpt.pm.IControlFlow;
 import org.jbpt.pm.IFlowNode;

@@ -3,6 +3,7 @@
  */
 package org.jbpt.pm.bpmn;
 
+
 /**
  * Class for BPMN Start Event.
  * 
@@ -16,6 +17,7 @@ public class StartEvent extends BpmnEvent implements IStartEvent{
 	 */
 	public StartEvent() {
 		super();
+		setType(EventType.RECEIVING);
 	}
 
 	/**
@@ -24,6 +26,7 @@ public class StartEvent extends BpmnEvent implements IStartEvent{
 	 */
 	public StartEvent(String name) {
 		super(name);
+		setType(EventType.RECEIVING);
 	}
 
 }

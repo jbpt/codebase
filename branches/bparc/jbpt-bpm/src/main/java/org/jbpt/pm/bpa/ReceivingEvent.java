@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.jbpt.pm.bparc;
+package org.jbpt.pm.bpa;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -18,14 +18,14 @@ public abstract class ReceivingEvent extends Event implements IReceivingEvent {
 	 * @param label
 	 * @param mult
 	 */
-	public ReceivingEvent(String label, BparcProcess enclosingProcess, int[] mult) {
+	public ReceivingEvent(String label, BpaProcess enclosingProcess, int[] mult) {
 		super(label, enclosingProcess, mult);
 	}
 
 	/**
 	 * @param label
 	 */
-	public ReceivingEvent(String label, BparcProcess enclosingProcess) {
+	public ReceivingEvent(String label, BpaProcess enclosingProcess) {
 		super(label, enclosingProcess);
 	}
 

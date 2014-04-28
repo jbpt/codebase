@@ -1,6 +1,7 @@
 package org.jbpt.pm;
 
 
+
 /**
  * Basic interface for process model events.
  * 
@@ -8,5 +9,4 @@ package org.jbpt.pm;
  *
  */
 public interface IEvent extends IFlowNode {
-
 }
