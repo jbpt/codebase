@@ -170,7 +170,7 @@ public abstract class AbstractNetSystem<F extends IFlow<N>, N extends INode, P e
 		
 		for (P p : this.getPlaces()) {
 			Integer n = this.marking.get(p);
-			String label = ((n == 0) || (n == null)) ? p.getLabel() : p.getLabel() + "[" + n.toString() + "]"; 
+			String label = ((n == 0) || (n == null)) ? p.getName() : p.getName() + "[" + n.toString() + "]"; 
 			result += String.format("\tn%s[label=\"%s\" width=\".3\" height=\".3\"];\n", p.getId().replace("-", ""), label);
 		}
 		
