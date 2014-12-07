@@ -166,7 +166,7 @@ public abstract class AbstractNetSystem<F extends IFlow<N>, N extends INode, P e
 		result += "node [fontname=\"Helvetica\" fontsize=\"10\" fixedsize=\"true\" style=\"filled\" fillcolor=\"white\" penwidth=\"2\"];\n";
 		result += "edge [fontname=\"Helvetica\" fontsize=\"10\" arrowhead=\"normal\" color=\"black\"];\n";
 		result += "\n";
-		result += "node [shape=circle];\n";
+		result += "node [shape=\"circle\"];\n";
 		
 		for (P p : this.getPlaces()) {
 			Integer n = this.marking.get(p);
@@ -175,7 +175,7 @@ public abstract class AbstractNetSystem<F extends IFlow<N>, N extends INode, P e
 		}
 		
 		result += "\n";
-		result += "node [shape=box];\n";
+		result += "node [shape=\"box\"];\n";
 		
 		for (T t : this.getTransitions()) {
 			String fillColor = this.isEnabled(t) ? " fillcolor=\"#9ACD32\"" : "";
