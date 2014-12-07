@@ -1,6 +1,6 @@
 #labels Featured
 = News Archive=
-
+  * 8 December 2014 - jBPT version 0.2.429 released. In this version: improved NetSystem Graphviz (dot) serialization, fixes to the PNML serializer implementation of Automaton, improvements of tree data structures, minor bug fixes.
   * 15 June 2013 - new experiments on net system [http://code.google.com/p/jbpt/downloads/detail?name=UntanglingsExperimentJun13.zip untangling] and [http://code.google.com/p/jbpt/downloads/detail?name=QueryingExperimentJun13.zip querying] published in the Downloads section.
   * 11 May 2013 - jBPT version 0.2.393 released. The new release includes more tests, minor fix of the RPST implementation, first version of GED (graph edit distance) algorithm, improvements of core Petri net classes, and initial implementation of the results of the theory of untanglings of net systems.
   * 5 April 2013 - A paper on the mission of the jBPT library will be published at [http://www.pros.upv.es/index.php/en/call-for-papers-caise2013/caise-forum CAiSE Forum]. The paper can be downloaded [http://eprints.qut.edu.au/59637/ here].
