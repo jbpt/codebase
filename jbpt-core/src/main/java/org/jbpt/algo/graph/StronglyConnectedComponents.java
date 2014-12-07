@@ -76,7 +76,7 @@ public class StronglyConnectedComponents<E extends IDirectedEdge<V>,V extends IV
 				this.lowlink.put(v, Math.min(this.lowlink.get(v), this.indices.get(vv)));
 		}
 	
-		if (this.lowlink.get(v) == this.indices.get(v)) {
+		if (this.lowlink.get(v).equals(this.indices.get(v))) {
 			Set<V> scc = new HashSet<V>(); 
 			V vv = null;
 			do {
