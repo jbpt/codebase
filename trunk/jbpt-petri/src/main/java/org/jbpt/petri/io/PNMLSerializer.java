@@ -208,13 +208,15 @@ public class PNMLSerializer extends DefaultHandler
 		super.characters(ch, start, length);
 
 		if (placeNameText) {
-			
+			char[] text = new char[length];
+			System.arraycopy(ch, start, text, 0, length);
+			String name = this.nodes.get(currentPlaceID).getName() + new String(text);
+			this.nodes.get(currentPlaceID).setName(name);
 		}
 		else if (placeMarkingText) {
 			char[] text = new char[length];
 			System.arraycopy(ch, start, text, 0, length);
 			this.pn.getMarking().put((Place) this.nodes.get(currentPlaceID),Integer.valueOf(new String(text)));
-			
 		}
 		else if (transitionNameText) {
 			char[] text = new char[length];
