@@ -40,7 +40,7 @@ public class AbstractLocalConfiguration<BPN extends IBPNode<N>, C extends ICondi
 	
 	@Override
 	public ICut<BPN,C,E,F,N,P,T,M> getCut() {
-		if (this.cut == null) {
+		if (this.cut==null) {
 			this.cut = (ICut<BPN,C,E,F,N,P,T,M>)this.CPU.createCut();
 			this.cut.addAll(this.CPU.getInitialCut());
 			for (E e : this) this.cut.addAll(e.getPostConditions());
