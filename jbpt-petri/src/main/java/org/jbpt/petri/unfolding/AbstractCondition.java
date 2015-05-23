@@ -48,7 +48,8 @@ public abstract class AbstractCondition<BPN extends IBPNode<N>, C extends ICondi
 	
 	@Override
 	public String getName() {
-		return String.format("%s-%s",this.s.getName(),this.ID);
+		//return String.format("%s-%s",this.ID,this.s.getName());
+		return "";
 	}
 	
 	@Override
