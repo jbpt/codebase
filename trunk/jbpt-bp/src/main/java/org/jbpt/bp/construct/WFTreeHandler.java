@@ -15,6 +15,7 @@ import org.jbpt.algo.tree.tctree.TCType;
 import org.jbpt.bp.BehaviouralProfile;
 import org.jbpt.bp.CausalBehaviouralProfile;
 import org.jbpt.bp.RelSetType;
+import org.jbpt.graph.abs.IFragment;
 import org.jbpt.graph.abs.IGraph;
 import org.jbpt.petri.Flow;
 import org.jbpt.petri.NetSystem;
@@ -206,6 +207,12 @@ public class WFTreeHandler {
 		if (alpha.equals(beta)) return true; // as easy as that
 		IRPSTNode<Flow, Node> gamma = this.wfTree.getLCA(alpha, beta);
 		
+		if (gamma == null || t1 == null || t2 == null) {
+			System.out.println(this.wfTree);
+			System.out.println(this.wfTree.toDOT());
+			System.exit(-1);
+		}
+		
 		if (gamma.getType()==TCType.RIGID) return areCooccurringUType(t1, t2, gamma); 
 		
 		// check path from gamma to beta
@@ -289,9 +296,9 @@ public class WFTreeHandler {
 	private BehaviouralProfile<NetSystem, Node> getBPForFragment(IRPSTNode<Flow, Node> treeNode) {
 
 		/*
-		 * The subnet we are interested in. It represents the fragment.
+		 * The edges defining the subnet we are interested in.
 		 */
-		IGraph<Flow, Node> subnet = treeNode.getFragment().getGraph();
+		IFragment<Flow, Node> fragment = treeNode.getFragment();
 		
 		/*
 		 * A new net, which will be a clone of the subnet. We do not use the
@@ -304,7 +311,15 @@ public class WFTreeHandler {
 		Map<Node,Node> nodeCopies = new HashMap<Node, Node>();
 
 		try {
-			for (Node n : subnet.getVertices()) {
+			Set<Node> fNodes = new HashSet<>();
+			
+			for (Flow f : fragment) {
+				fNodes.add(f.getSource());
+				fNodes.add(f.getTarget());
+			}
+			
+			
+			for (Node n : fNodes) {
 				if (n instanceof Place) {
 					Place c = (Place) ((Place) n).clone();
 					net.addNode(c);
@@ -317,16 +332,13 @@ public class WFTreeHandler {
 				}
 			}
 			
-			for(Flow f : subnet.getEdges()) {
-//				if (net.getNodes().contains(nodeCopies.get(f.getSource())) && net.getNodes().contains(nodeCopies.get(f.getTarget()))) {
-					net.addFlow(nodeCopies.get(f.getSource()), nodeCopies.get(f.getTarget()));
-//				}
-			}
+			for(Flow f : fragment) 
+				net.addFlow(nodeCopies.get(f.getSource()), nodeCopies.get(f.getTarget()));
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		
 		Node entryNode = treeNode.getEntry();
 		Node exitNode = treeNode.getExit();
 		
@@ -338,10 +350,10 @@ public class WFTreeHandler {
 				Transition initT = new Transition();
 				net.addNode(initT);
 				net.addFlow(init, initT);
-				net.addFlow(initT, entryNode);
+				net.addFlow(initT, nodeCopies.get(entryNode));
 			}
 			else
-				net.addFlow(init, entryNode);
+				net.addFlow(init, nodeCopies.get(entryNode));
 		}
 		
 		if (net.getDirectSuccessors(exitNode).size() != 0 || (exitNode instanceof Transition)) {
@@ -351,12 +363,14 @@ public class WFTreeHandler {
 			if (exitNode instanceof Place) {
 				Transition exitT = new Transition();
 				net.addNode(exitT);
-				net.addFlow(exitNode, exitT);
+				net.addFlow(nodeCopies.get(exitNode), exitT);
 				net.addFlow(exitT, exit);
 			}
 			else
-				net.addFlow(exitNode, exit);
+				net.addFlow(nodeCopies.get(exitNode), exit);
 		}
+		
+		net.getMarking().put(net.getSourcePlaces().iterator().next(), 1);
 		
 		BehaviouralProfile<NetSystem, Node> bp = BPCreatorNet.getInstance().deriveRelationSet(net);
 		bp2nodemapping.put(bp, nodeCopies);
@@ -439,8 +453,12 @@ public class WFTreeHandler {
 	 * @return true, if t1 >> t2
 	 */
 	private boolean areCooccurringUType(Node t1, Node t2, IRPSTNode<Flow, Node> fragment) {
-		if (!this.node2cbp.containsKey(fragment))
+		if (!this.node2cbp.containsKey(fragment)) {
+//			System.out.println("compute for " + fragment.getId() + " of size " + fragment.getFragment().size());
 			this.node2cbp.put(fragment, getCBPForFragment(fragment));
+		}
+		
+		
 		CausalBehaviouralProfile<NetSystem, Node> cbp = this.node2cbp.get(fragment);
 		return cbp.areCooccurring(this.bp2nodemapping.get(cbp).get(t1), this.bp2nodemapping.get(cbp).get(t2));
 	}
