@@ -311,7 +311,7 @@ public class WFTreeHandler {
 		Map<Node,Node> nodeCopies = new HashMap<Node, Node>();
 
 		try {
-			Set<Node> fNodes = new HashSet<>();
+			Set<Node> fNodes = new HashSet<Node>();
 			
 			for (Flow f : fragment) {
 				fNodes.add(f.getSource());
