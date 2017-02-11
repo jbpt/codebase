@@ -12,11 +12,10 @@
 
     <artifactId>jbpt-petri</artifactId>
     <packaging>jar</packaging>
-    <version>0.2.393</version>
+    <version>0.3.0</version>
 
-	<name>Business Process Technologies 4 Java - Petri Net Module</name>
-	<description>
-	</description>
+	<name>Business Process Technologies 4 Java (jBPT) - Petri Nets Module</name>
+	<description>The jBPT code library is a compendium of technologies that support research on design, execution, and evaluation of business processes.</description>
 
     <prerequisites>
         <maven>2.2.1</maven>
@@ -55,4 +54,6 @@
 		</dependency>		
     </dependencies>
 	
+    <groupId>org.jbpt</groupId>
+    <url>https://github.com/jbpt/codebase/tree/master/jbpt-petri</url>
 </project>
