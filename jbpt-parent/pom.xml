@@ -4,17 +4,18 @@
 
 	<groupId>org.jbpt</groupId>
 	<artifactId>jbpt-parent</artifactId>
-	<version>0.3.0</version>
+	<version>${global.version}</version>
 	<packaging>pom</packaging>
 
 	<name>Business Process Technologies 4 Java (jBPT) - Parent POM</name>
 	<description>The jBPT code library is a compendium of technologies that support research on design, execution, and evaluation of business processes.
 
 This project contains the common Maven properties for jBPT packages.</description>
-	<url>http://code.google.com/p/jbpt/</url>	
+	<url>http://code.google.com/p/jbpt/</url>
 
 	<properties>
 		<project.build.sourceEncoding>Cp1252</project.build.sourceEncoding>
+		<global.version>0.3-SNAPSHOT</global.version>
 	</properties>
 
 	<!-- Plugins to execute on Build -->
@@ -29,9 +30,9 @@ This project contains the common Maven properties for jBPT packages.</descriptio
 					<source>1.7</source>
 					<target>1.7</target>
 				</configuration>
-			</plugin>			
+			</plugin>
 		</plugins>
-		
+
 		<pluginManagement>
 			<plugins>
 				<!-- Include MANIFEST.MF -->
@@ -70,8 +71,9 @@ This project contains the common Maven properties for jBPT packages.</descriptio
 							<supportedProjectType>jar</supportedProjectType>
 						</supportedProjectTypes>
 					</configuration>
-				</plugin>		
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				</plugin>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
@@ -104,7 +106,7 @@ This project contains the common Maven properties for jBPT packages.</descriptio
 				</plugin>
 			</plugins>
 		</pluginManagement>
-		
+
 	</build>
 
 	<!-- Dependencies that are automatically included -->
@@ -116,5 +118,29 @@ This project contains the common Maven properties for jBPT packages.</descriptio
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+	
+	<distributionManagement>
+  		<snapshotRepository>
+    		<id>ossrh</id>
+    		<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+  		</snapshotRepository>
+  		<repository>
+    		<id>ossrh</id>
+    		<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+  		</repository>
+	</distributionManagement>
+	
+	<licenses>
+		<license>
+			<name>GNU LESSER GENERAL PUBLIC LICENSE</name>
+			<url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>
+		</license>
+	</licenses>
+
+	<scm>
+		<url>https://github.com/jbpt/codebase</url>
+		<developerConnection>scm:git:https://github.com/jbpt/codebase</developerConnection>
+		<connection>scm:git:https://github.com/jbpt/codebase</connection>
+	</scm>
 	
 </project>

@@ -1,43 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <groupId>org.jbpt</groupId>
-        <artifactId>jbpt-parent</artifactId>
-        <version>0.2</version>
-        <relativePath>../jbpt-parent</relativePath>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<parent>
+		<groupId>org.jbpt</groupId>
+		<artifactId>jbpt-parent</artifactId>
+		<version>${global.version}</version>
+		<relativePath>../jbpt-parent</relativePath>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
 
-    <artifactId>jbpt-core</artifactId>
-    <packaging>jar</packaging>
-    <version>0.3.0</version>
+	<artifactId>jbpt-core</artifactId>
+	<packaging>jar</packaging>
+	<version>${global.version}</version>
 
 	<name>Business Process Technologies 4 Java (jBPT) - Core Module</name>
 	<description>The jBPT code library is a compendium of technologies that support research on design, execution, and evaluation of business processes.</description>
 
-    <prerequisites>
-        <maven>2.2.1</maven>
-    </prerequisites>
-	
+	<prerequisites>
+		<maven>2.2.1</maven>
+	</prerequisites>
+
 	<build>
-        <finalName>jbpt-core</finalName>	
+		<finalName>jbpt-core</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 			</plugin>
-			<plugin>			
+			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
 			</plugin>
 		</plugins>
 	</build>
-
-    <dependencies>	
-    </dependencies>
 	
-    <groupId>org.jbpt</groupId>
-    <url>https://github.com/jbpt/codebase/tree/master/jbpt-core</url>
+	<properties>
+		<project.build.sourceEncoding>Cp1252</project.build.sourceEncoding>
+	</properties>
+
+	<dependencies>
+	</dependencies>
+
+	<groupId>org.jbpt</groupId>
+	<url>https://github.com/jbpt/codebase/tree/master/jbpt-core</url>
+	
+	<distributionManagement>
+  		<snapshotRepository>
+    		<id>ossrh</id>
+    		<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+  		</snapshotRepository>
+  		<repository>
+    		<id>ossrh</id>
+    		<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+  		</repository>
+	</distributionManagement>
+	
+	<licenses>
+		<license>
+			<name>GNU LESSER GENERAL PUBLIC LICENSE</name>
+			<url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>
+		</license>
+	</licenses>
+	
+	<scm>
+		<url>https://github.com/jbpt/codebase</url>
+		<developerConnection>scm:git:https://github.com/jbpt/codebase</developerConnection>
+		<connection>scm:git:https://github.com/jbpt/codebase</connection>
+	</scm>
+	
 </project>

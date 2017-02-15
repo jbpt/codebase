@@ -1,24 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
+	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.jbpt</groupId>
 	<artifactId>jbpt</artifactId>
-	<version>0.3.0</version>
+	<version>0.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>Business Process Technologies 4 Java (jBPT)</name>
 
 	<licenses>
 		<license>
-			<name>GNU General Lesser Public License v3</name>			
+			<name>GNU LESSER GENERAL PUBLIC LICENSE</name>
 			<url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>
 		</license>
 	</licenses>
-
 
 	<prerequisites>
 		<maven>2.2.1</maven>
@@ -28,16 +26,16 @@
 		<project.build.sourceEncoding>Cp1252</project.build.sourceEncoding>
 	</properties>
 
-    <modules>
+	<modules>
 		<module>jbpt-parent</module>
 		<module>jbpt-core</module>
-		<module>jbpt-deco</module>	
+		<module>jbpt-deco</module>
 		<module>jbpt-petri</module>
 		<module>jbpt-bpm</module>
-        <module>jbpt-bp</module>		
-		<module>jbpt-test</module>		
-    </modules>
-	
+		<module>jbpt-bp</module>
+		<module>jbpt-test</module>
+	</modules>
+
 	<!-- Plugins to execute on Build -->
 	<build>
 		<finalName>jbpt-${project.version}-${buildNumber}</finalName>
@@ -85,11 +83,29 @@
 						<item>timestamp</item>
 					</items>
 				</configuration>
-			</plugin>		
+			</plugin>
 		</plugins>
-				
+
 	</build>
 
 	<description>The jBPT code library is a compendium of technologies that support research on design, execution, and evaluation of business processes.</description>
 	<url>https://github.com/jbpt/codebase</url>
+	
+	<distributionManagement>
+  		<snapshotRepository>
+    		<id>ossrh</id>
+    		<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+  		</snapshotRepository>
+  		<repository>
+    		<id>ossrh</id>
+    		<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+  		</repository>
+	</distributionManagement>
+	
+	<scm>
+		<url>https://github.com/jbpt/codebase</url>
+		<developerConnection>scm:git:https://github.com/jbpt/codebase</developerConnection>
+		<connection>scm:git:https://github.com/jbpt/codebase</connection>
+	</scm>
+	
 </project>

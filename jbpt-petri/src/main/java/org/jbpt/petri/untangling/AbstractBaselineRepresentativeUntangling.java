@@ -79,12 +79,15 @@ public class AbstractBaselineRepresentativeUntangling<BPN extends IBPNode<N>, C 
 		this.significantRunCounter++;
 		
 		while (!queue.isEmpty()) {
+			if (queue.size() % 1000 == 0) 
+				System.out.println(queue.size());
+			
 			IRun<F,N,P,T,M> run = queue.poll();
 			
 			// safeness check (extra)
-			if (run.size()>0 && !run.get(run.size()-1).getOutputMarking().isSafe()) {
+			if (this.safe && run.size()>0 && !run.get(run.size()-1).getOutputMarking().isSafe()) {
 				this.safe = false;
-				return;
+				//return;
 			}
 			
 			// get possible extensions of the run
@@ -93,6 +96,8 @@ public class AbstractBaselineRepresentativeUntangling<BPN extends IBPNode<N>, C 
 			if (PE.isEmpty()) {
 				if (setup.REDUCE) this.prune(run);
 				this.runs.add(run);
+				
+				if (this.runs.size() % 1000 == 0) System.err.println(this.runs.size());
 			}
 			else {
 				boolean allExtensionsInsignificant = true;
@@ -110,11 +115,18 @@ public class AbstractBaselineRepresentativeUntangling<BPN extends IBPNode<N>, C 
 				if (allExtensionsInsignificant) {
 					if (setup.REDUCE) this.prune(run);
 					this.runs.add(run);
+
+					if (this.runs.size() % 1000 == 0) System.err.println(this.runs.size());
 				}
 			}
 		}
 		
+		System.out.println("FINISHED WHILE LOOP");
+		
+		System.out.println(this.runs.size());
+		
 		if (setup.REDUCE) {
+			System.err.println("REDUCING PROCESSES");
 			this.reduceSubruns();
 		}
 	}
