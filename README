@@ -25,14 +25,14 @@
 --------------
  - Artem Polyvyanyy
  - Matthias Weidlich
- - Luciano García-Bañuelos
+ - Luciano GarcÃ­a-BaÃ±uelos
  - Christian Wiggert
  - Martin Mader
  - Gero Decker
  - Kai Schlichting
  - Nicolas Peters
  - Matthias Kunze
- - Cindy Fähnrich
+ - Cindy FÃ¤hnrich
  - Andrina Mascher
  - Tobias Hoppe
  - Johannes Prescher
@@ -41,3 +41,12 @@
  - Felix Mannhardt
  - Thomas Baier
  - Remco Dijkman
+ 
+---------------
+ Users of jBPT
+---------------
+ - The PQL Tool: https://github.com/processquerying/PQL
+ - Apromore: http://apromore.org/
+ - ProM: http://www.promtools.org/doku.php
+ - WoPeD: http://woped.dhbw-karlsruhe.de/woped/
+ 
