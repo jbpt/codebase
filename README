@@ -13,6 +13,46 @@
 
 
 --------------
+ Developing
+--------------
+ - jBPT is distributed via Maven Central Repository: https://repo1.maven.org/maven2/org/jbpt/
+ - The jBPT Library is compiled to be Java 1.6 compliant
+ - Every commit must pass tests in:
+   https://github.com/jbpt/codebase/blob/master/jbpt-test/src/test/java/org/jbpt/test/AllTests.java
+ 
+--------------
+ Features (incomplete) 
+--------------
+Techniques to compute:
+ - Refined Process Structure Tree (RPST)
+ - Workflow Tree (WF-Tree)
+ - Behavioral Profile
+ - Causal Behavioral Profile
+ - Unfolding of a Petri net system
+   - Unfolding (maximal branching process)
+   - McMillan adequate order
+   - Esparza adequate order for arbitrary net systems
+   - Esparza total adequate order for safe net systems
+   - Proper complete prefix unfolding for structuring
+ - Untangling of a Petri net system
+ - The tree of biconnected components
+ - The tree of triconnected components (SPQR-tree)
+ - Modular Decomposition Tree (MDT)
+ 
+Object models:
+ - Directed, undirected, directed multi, undirected multi graphs
+ - Directed, undirected, directed multi, undirected multi hypergraphs
+ - Petri nets
+ - Workflow nets
+ - Event-driven Process Chains (EPC)
+ - Flexible Process Graphs (FPG)
+ 
+ Serialization formats:
+ - The DOT Language: http://www.graphviz.org/content/dot-language
+ - Petri Net Markup Language (PNML): http://www.pnml.org/
+ - EPC Markup Language (EPML)
+
+--------------
  Publications
 --------------
   Artem Polyvyanyy and Matthias Weidlich. Towards a Compendium of Process Technologies: The jBPT Library for 
@@ -43,7 +83,7 @@
  - Remco Dijkman
  
 ---------------
- Users of jBPT
+ Users
 ---------------
  - The PQL Tool: https://github.com/processquerying/PQL
  - Apromore: http://apromore.org/
