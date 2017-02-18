@@ -17,7 +17,7 @@
 --------------
  - jBPT is distributed via Maven Central Repository: https://repo1.maven.org/maven2/org/jbpt/
  - The jBPT Library is compiled to be Java 1.6 compliant
- - Every commit must pass tests in:
+ - Every commit to the jBPT Library must pass all the tests in:
    https://github.com/jbpt/codebase/blob/master/jbpt-test/src/test/java/org/jbpt/test/AllTests.java
  
 --------------
