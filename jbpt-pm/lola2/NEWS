@@ -1,0 +1,39 @@
+LoLA 2.0
+========
+
+LoLA checks by explicit state space verification whether a place/transition net
+satisfies a specified property. It offers a broad range of state space
+reduction methods and specialised procedures for simple properties such as
+reachability or deadlocks.
+
+Compared to LoLA 1.x, LoLA 2.0 is a complete re-implementation. The following
+major changes have been done:
+
+* Unlike LoLA 1.x, LoLA 2.0 has a single executable. So there is no need for
+  compile-time configuration any more.
+
+* All properties are specified in a uniform language: CTL*. LoLA analyses the
+  property and runs a suitable checker such as a CTL or LTL model checker, a
+  reachability checker, or a deadlock checker. General CTL* model checking is
+  not available, though.
+
+* LTL model checking has not been present in LoLA 1.x. In LoLA 2.0, both CTL
+  and LTL properties can be checked (currently without partial order reduction).
+
+* The symmetry method has been extended to arbitrary properties. We
+  automatically compute symmetries that preserve both net structure and formula.
+
+* Output and status messages have been reshaped to make integration of LoLA
+  into other tools even more easy.
+
+* Advanced Bloom filters are available for state space compaction.
+
+* Several sub-tasks can distribute their computations over multiple cores, if
+  available.
+
+* We up port additional atomic propositions like "DEADLOCK", "INITIAL",
+  "FIREABLE(t)", and comparisons that involve several places, such as
+  "p2 + 3 * p7 < 5 * p3". For coverabilty queries, the value "oo" has been
+  introduced. This way, unboundedness of a place can be specified be "p >= oo".
+
+On the other hand, high level net input is not (yet) supported.

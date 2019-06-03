@@ -6,7 +6,7 @@
 
 	<artifactId>jbpt-petri</artifactId>
 	<packaging>jar</packaging>
-	<version>0.3.1</version>
+	<version>0.3.2</version>
 
 	<name>Business Process Technologies 4 Java (jBPT) - Petri Nets Module</name>
 	<description>The jBPT code library is a compendium of technologies that support research on design, execution, and evaluation of business processes.</description>
@@ -64,6 +64,9 @@
 	      			<groupId>org.apache.maven.plugins</groupId>
 	      			<artifactId>maven-javadoc-plugin</artifactId>
 	      			<version>2.9.1</version>
+	      			<configuration>
+      					<additionalparam>-Xdoclint:none</additionalparam>
+    				</configuration>
 	      			<executions>
 	        			<execution>
 	          				<id>attach-javadocs</id>
@@ -79,6 +82,9 @@
 	      			<groupId>org.apache.maven.plugins</groupId>
 	      			<artifactId>maven-gpg-plugin</artifactId>
 	      			<version>1.5</version>
+	      			<configuration>
+        				<skip>true</skip>
+    				</configuration>
 	      			<executions>
 	        			<execution>
 	          				<id>sign-artifacts</id>
@@ -115,6 +121,11 @@
 	</developers>
 
 	<dependencies>
+		<dependency>
+			<groupId>org.jbpt</groupId>
+			<artifactId>jbpt-petri</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.jbpt</groupId>
 			<artifactId>jbpt-core</artifactId>

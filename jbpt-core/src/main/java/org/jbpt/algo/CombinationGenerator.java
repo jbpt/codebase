@@ -55,6 +55,8 @@ public class CombinationGenerator<X> {
 	
 	/**
 	 * Return number of combinations not yet generated.
+	 * 
+	 * @return Number of combinations not yet generated.
 	 */
 	public BigInteger getNumLeft () {
 		return this.numLeft;
@@ -62,6 +64,8 @@ public class CombinationGenerator<X> {
 	
 	/**
 	 * Are there more combinations?
+	 * 
+	 * @return true if there are not generated combinations; false otherwise.
 	 */
 	public boolean hasMore () {
 		return this.numLeft.compareTo(BigInteger.ZERO) == 1;
@@ -69,6 +73,8 @@ public class CombinationGenerator<X> {
 	
 	/**
 	 * Return total number of combinations.
+	 * 
+	 * @return Total number of combinations.
 	 */
 	public BigInteger getTotal () {
 		return this.total;
@@ -87,6 +93,8 @@ public class CombinationGenerator<X> {
 	
 	/**
 	 * Generate next combination (algorithm from Rosen p. 286).
+	 * 
+	 * @return Get next combination.
 	 */
 	public Collection<X> getNextCombination () {
 		if (this.numLeft.equals(total)) {
