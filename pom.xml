@@ -6,7 +6,7 @@
 
 	<groupId>org.jbpt</groupId>
 	<artifactId>jbpt</artifactId>
-	<version>0.3.1</version>
+	<version>0.3.2</version>
 	<packaging>pom</packaging>
 
 	<name>Business Process Technologies 4 Java (jBPT)</name>
@@ -33,6 +33,8 @@
 		<module>jbpt-bpm</module>
 		<module>jbpt-bp</module>
 		<module>jbpt-test</module>
+		
+		<module>jbpt-pm</module>
 	</modules>
 
 	<!-- Plugins to execute on Build -->
