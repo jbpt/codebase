@@ -10,6 +10,26 @@
   <build>
     <finalName>jbpt-pm</finalName>
     <plugins>
+	
+	<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-dependency-plugin</artifactId>
+    <executions>
+			<execution>
+				<id>copy-dependencies</id>
+				<phase>prepare-package</phase>
+				<goals>
+					<goal>copy-dependencies</goal>
+				</goals>
+					<configuration>
+						<outputDirectory>${project.build.directory}/lib</outputDirectory>
+						<overWriteReleases>false</overWriteReleases>
+						<overWriteSnapshots>false</overWriteSnapshots>
+						<overWriteIfNewer>true</overWriteIfNewer>
+					</configuration>
+			</execution>
+	</executions>
+	</plugin>
 	    
       	<plugin>
 			<groupId>org.apache.maven.plugins</groupId>
@@ -19,7 +39,7 @@
 				<archive>
 					<manifest>
 						<addClasspath>true</addClasspath>
-						<!-- <classpathPrefix>lib</classpathPrefix> -->
+						<classpathPrefix>lib</classpathPrefix>
 		              	<mainClass>org.jbpt.pm.tools.QualityMeasuresCLI</mainClass>
 		            </manifest>
 		            <!-- <manifestEntries>
@@ -57,8 +77,8 @@
 				<version>2.3.2</version>
 				<inherited>true</inherited>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>1.7</source>
+					<target>1.7</target>
 				</configuration>
 			</plugin>
 			
@@ -78,7 +98,7 @@
 	    		</plugin>
 	    
 	    		<!-- Javadoc Plugins -->
-	    		<plugin>
+	    		<!--plugin>
 	      			<groupId>org.apache.maven.plugins</groupId>
 	      			<artifactId>maven-javadoc-plugin</artifactId>
 	      			<version>2.9.1</version>
@@ -93,7 +113,7 @@
 	          				</goals>
 	        			</execution>
 	      			</executions>
-	    		</plugin>
+	    		</plugin-->
 				
 				<!--  Sign Plugins  -->
 				<plugin>
@@ -113,6 +133,55 @@
 	        			</execution>
 	      			</executions>
 	    		</plugin>
+				
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-antrun-plugin</artifactId>
+					<executions>
+						<execution>
+							<id>copy</id>
+							<phase>package</phase>
+							<configuration>
+								<tasks>
+									<echo>ANT TASK - copying files....</echo>
+									<copy todir="${project.build.directory}/lib" overwrite="true" flatten="true">
+										<fileset dir="${basedir}/lib" includes="*.jar" >
+											<include name="*.jar" />
+										</fileset>
+									</copy>
+									<copy todir="${project.build.directory}/lola2" overwrite="true" flatten="true">
+										<fileset dir="${basedir}/lola2">
+											<include name="*" />
+										</fileset>
+									</copy>
+									<copy todir="${project.build.directory}/lola2/mac" overwrite="true" flatten="true">
+										<fileset dir="${basedir}/lola2/mac">
+											<include name="**" />
+										</fileset>
+									</copy>
+									<copy todir="${project.build.directory}/lola2/win" overwrite="true" flatten="true">
+										<fileset dir="${basedir}/lola2/win">
+											<include name="**" />
+										</fileset>
+									</copy>
+									<copy todir="${project.build.directory}" overwrite="true" flatten="true">
+										<fileset dir="${basedir}" includes="*.bat" >
+											<include name="*.bat" />
+										</fileset>
+									</copy>
+									<copy todir="${project.build.directory}" overwrite="true" flatten="true">
+										<fileset dir="${basedir}" includes="*.pnml" >
+											<include name="*.pnml" />
+										</fileset>
+									</copy>
+								</tasks>
+							</configuration>
+							<goals>
+								<goal>run</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
 	    		
 	    		<!-- Staging Plugins -->
 	    		<plugin>
@@ -125,6 +194,29 @@
 	     				<nexusUrl>https://oss.sonatype.org/</nexusUrl>
 	     				<autoReleaseAfterClose>true</autoReleaseAfterClose>
 	  				</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-install-plugin</artifactId>
+					<version>2.5.2</version>
+					<executions>
+						<execution>
+							<id>install-external</id>
+							<phase>clean</phase>
+							<configuration>
+								<file>${project.basedir}/lib/eigen-measure.jar</file>
+								<repositoryLayout>default</repositoryLayout>
+								<groupId>org.processmining.eigenvalue</groupId>
+								<artifactId>eigenvalue</artifactId>
+								<version>0.1.1</version>
+								<packaging>jar</packaging>
+								<generatePom>true</generatePom>
+							</configuration>
+							<goals>
+								<goal>install-file</goal>
+							</goals>
+						</execution>
+					</executions>
 				</plugin>
     </plugins>
   </build>
@@ -159,6 +251,16 @@
 		<groupId>org.jbpt</groupId>
 		<artifactId>jbpt-petri</artifactId>
 		<version>${project.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.apache.commons</groupId>
+		<artifactId>commons-math3</artifactId>
+		<version>3.6.1</version>
+	</dependency>
+	<dependency>
+		<groupId>org.processmining.eigenvalue</groupId>
+		<artifactId>eigenvalue</artifactId>
+		<version>0.1.1</version>
 	</dependency>
   </dependencies>
   

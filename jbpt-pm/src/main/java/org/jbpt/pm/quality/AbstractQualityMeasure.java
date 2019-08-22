@@ -5,14 +5,19 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 
+import org.apache.commons.math3.util.Pair;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.mc.LoLA2ModelChecker;
+import org.jbpt.pm.utils.Utils;
+
+import dk.brics.automaton2.Automaton;
 
 /**
  * Abstract Quality Measure Class
  * 
  * @author Artem Polyvyanyy
  *
+ * @author Anna Kalenkova
  */
 public abstract class AbstractQualityMeasure {
 	
@@ -24,7 +29,7 @@ public abstract class AbstractQualityMeasure {
 	protected Object retrievedTraces = null;
 	
 	private Long	measureComputationTime = null;
-	private Double	measureValue = null;
+	private Pair<Double, Double> measureValue = null;
 	
 	private HashMap<QualityMeasureLimitation,Long>	  timesOfLimitationChecks = new HashMap<QualityMeasureLimitation,Long>();
 	private HashMap<QualityMeasureLimitation,Boolean> resultsOfLimitationChecks = new HashMap<QualityMeasureLimitation,Boolean>();
@@ -95,16 +100,25 @@ public abstract class AbstractQualityMeasure {
 	 * @return Value of this measure for the given models of relevant and retrieved traces. 
 	 * @throws Exception if limitations of this measure are not satisfied by the given models.
 	 */
-	public double computeMeasure() throws Exception {
+	public Pair<Double, Double> computeMeasure() throws Exception {
 		if (limitationsHold==null) this.checkLimitations();
-		if (limitationsHold==null || !limitationsHold.booleanValue()) ;
-			//throw new Exception(String.format("Limitations of %s measure are not fulfilled", this.getClass().getName()));
+		if (limitationsHold==null || !limitationsHold.booleanValue()) {
+			throw new Exception(String.format("Limitations of %s measure are not fulfilled", this.getClass().getName()));
+		}
+		
+		if (relevantTraces instanceof NetSystem) {
+			relevantTraces = Utils.constructAutomatonFromNetSystem((NetSystem) relevantTraces);
+		}
+		
+		if (retrievedTraces instanceof NetSystem) {
+			retrievedTraces = Utils.constructAutomatonFromNetSystem((NetSystem) retrievedTraces);
+		}
 		
 		long start = System.nanoTime();
 		this.measureValue = this.computeMeasureValue();
 		this.measureComputationTime = System.nanoTime()-start;
 
-		return this.measureValue.doubleValue();
+		return this.measureValue;
 	}
 
 	/**
@@ -129,10 +143,10 @@ public abstract class AbstractQualityMeasure {
 	 * 
 	 * @return Value of this measure; null if the measure was not computed.
 	 */
-	public Double getMeasureValue() {
+	public Pair<Double, Double> getMeasureValue() {
 		return measureValue;
 	}
 
 	// compute measure value
-	protected abstract double computeMeasureValue();
+	protected abstract Pair<Double, Double> computeMeasureValue();
 }

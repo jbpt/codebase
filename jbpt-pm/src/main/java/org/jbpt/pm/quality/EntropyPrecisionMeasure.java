@@ -1,5 +1,10 @@
 package org.jbpt.pm.quality;
 
+import org.apache.commons.math3.util.Pair;
+import org.processmining.eigenvalue.MetricsCalculator;
+
+import dk.brics.automaton2.Automaton;
+
 public class EntropyPrecisionMeasure extends AbstractQualityMeasure {
 
 	public EntropyPrecisionMeasure(Object relevantTraces, Object retrievedTraces) {
@@ -13,9 +18,12 @@ public class EntropyPrecisionMeasure extends AbstractQualityMeasure {
 	}
 
 	@Override
-	protected double computeMeasureValue() {
-		// TODO Auto-generated method stub
-		return 0;
+	protected Pair<Double, Double> computeMeasureValue() {
+		
+		if ((relevantTraces instanceof Automaton) && (retrievedTraces instanceof Automaton)) {
+			Pair<Double, Double> values = MetricsCalculator.calculate((Automaton)relevantTraces, "relevantBehavior", (Automaton)retrievedTraces, "retrievedBehavior", false, false);
+			return values;
+		}
+		return new Pair<Double, Double>(0.0, 0.0);
 	}
-
 }

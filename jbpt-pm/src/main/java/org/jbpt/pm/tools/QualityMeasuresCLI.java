@@ -17,7 +17,7 @@ import org.jbpt.pm.quality.QualityMeasureLimitation;
 
 //============================================================================
 // SAMPLE call:
-// java -jar jbpt-quality-measures-x.y.jar -rel=1.xes -ret=1.pnml --measure
+// java -jar jbpt-pm.jar -rel=1.xes -ret=1.pnml --measure
 // ============================================================================
 // supported measures:
 // --entropy-precision:						precision from TSE submission
@@ -33,7 +33,7 @@ import org.jbpt.pm.quality.QualityMeasureLimitation;
  * 
  * @version 1.0
  * 
- * @author Artem Polyvyanyy 
+ * @author Artem Polyvyanyy, Anna Kalenkova 
  */ 
 public final class QualityMeasuresCLI {
 	final private static String	version	= "1.0";
