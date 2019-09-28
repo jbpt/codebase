@@ -21,7 +21,7 @@
    https://github.com/jbpt/codebase/blob/master/jbpt-test/src/test/java/org/jbpt/test/AllTests.java
    
 --------------
- Packages
+ Modules
 --------------
  - jbpt-bp    - Computation and analysis of Behavioral Profiles
  - jbpt-bpm   - Techniques for Business Process Management
