@@ -9,7 +9,7 @@
                             --- contact us at jbpt.library (at) gmail.com ---
                             ---     follow us on twitter @jbptlibrary     ---
                             
-                        Copyright (c) 2008-2017. GNU LGPL v3. All rights reserved.
+                        Copyright (c) 2008-2019. GNU LGPL v3. All rights reserved.
 
 
 --------------
@@ -19,6 +19,16 @@
  - The jBPT Library is compiled to be Java 1.6 compliant
  - Every commit to the jBPT Library must pass all the tests in:
    https://github.com/jbpt/codebase/blob/master/jbpt-test/src/test/java/org/jbpt/test/AllTests.java
+   
+--------------
+ Packages
+--------------
+ - jbpt-bp    - Computation and analysis of Behavioral Profiles
+ - jbpt-bpm   - Techniques for Business Process Management
+ - jbpt-core  - Core classes and methods
+ - jbpt-deco  - Techniques for decomposing process graphs, including RPST and MDT
+ - jbpt-petri - Techniques to analyze Petri nets
+ - jbpt-pm    - Methods and techniques for Process Mining
  
 --------------
  Features (incomplete) 
@@ -81,6 +91,7 @@ Object models:
  - Felix Mannhardt
  - Thomas Baier
  - Remco Dijkman
+ - Anna Kalenkova
  
 ---------------
  Users
@@ -89,4 +100,9 @@ Object models:
  - Apromore: http://apromore.org/
  - ProM: http://www.promtools.org/doku.php
  - WoPeD: http://woped.dhbw-karlsruhe.de/woped/
+ - Let us know if you use jBPT and would like to be in this list
  
+---------------
+ Contacts
+---------------
+jbpt[dot]library[at]gmail[dot]com
