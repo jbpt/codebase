@@ -13,7 +13,7 @@ import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.mc.LoLA2ModelChecker;
 import org.jbpt.pm.utils.Utils;
 
-import dk.brics.automaton2.Automaton;
+import dk.brics.automaton.Automaton;
 import gnu.trove.map.TObjectShortMap;
 import gnu.trove.map.custom_hash.TObjectShortCustomHashMap;
 import gnu.trove.strategy.HashingStrategy;
@@ -30,7 +30,7 @@ public abstract class AbstractQualityMeasure {
 	protected Collection<QualityMeasureLimitation> limitations = new ArrayList<QualityMeasureLimitation>();
 	
 	private Boolean limitationsHold = null;
-	private Set<String> violetedLimitations = new HashSet<>();
+	private Set<String> violetedLimitations = new HashSet<String>();
 	
 	protected Object relevantTraces  = null;
 	protected Object retrievedTraces = null;

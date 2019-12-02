@@ -3,7 +3,7 @@ package org.jbpt.pm.quality;
 import org.apache.commons.math3.util.Pair;
 import org.processmining.eigenvalue.MetricsCalculator;
 
-import dk.brics.automaton2.Automaton;
+import dk.brics.automaton.Automaton;
 
 public class PartialEfficientEntropyPrecisionRecallMeasure extends AbstractQualityMeasure {
 

@@ -6,16 +6,20 @@ package org.jbpt.pm.quality;
  * RELEVANT_BOUNDED		- the model that described relevant traces must be bounded
  * RETRIEVED_BOUNDED	- the model that described retrieved traces must be bounded
  * 
- * @author Artem Polyvyanyy
+ * @author Artem Polyvyanyy, Anna Kalenkova
  */
 public enum QualityMeasureLimitation {
-	RELEVANT_BOUNDED(1),
-	RETRIEVED_BOUNDED(2);
+	
+	RETRIEVED_BOUNDED(1, "The boundness of the retrieved model"),
+	RELEVANT_BOUNDED(2, "The boundness of the relevant model ");
+	
 	
 	private final int limitation;
+	private final String description;
 	
-	QualityMeasureLimitation(int limitation) {
+	QualityMeasureLimitation(int limitation, String description) {
         this.limitation = limitation;
+        this.description = description;
     }
 	
 	/**
@@ -26,5 +30,8 @@ public enum QualityMeasureLimitation {
 	public int getQualityMeasureLimitationCode() {
 		return this.limitation;
 	}
-
+	
+	public String getDescription() {
+		return this.description;
+	}
 }

@@ -2,7 +2,7 @@ package org.jbpt.pm.quality;
 
 import org.processmining.eigenvalue.MetricsCalculator;
 
-import dk.brics.automaton2.Automaton;
+import dk.brics.automaton.Automaton;
 
 public class EntropyMeasure extends AbstractEntropyMeasure {
 
