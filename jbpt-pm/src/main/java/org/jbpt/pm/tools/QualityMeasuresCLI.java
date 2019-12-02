@@ -163,7 +163,6 @@ public final class QualityMeasuresCLI {
 		        		long finish = System.currentTimeMillis();
 		        		System.out.println(String.format("The retrieved model was loaded in                            %s ms.", (finish-start)));
 		        	}
-		        	else throw new ParseException("-ret option is requred, see --help for details");
 		        	
 		        	if (cmd.hasOption("rel")) {
 		        		String rel = cmd.getOptionValue("rel");
@@ -172,20 +171,22 @@ public final class QualityMeasuresCLI {
 		        		relevantTraces = parseModel(rel);
 		        		long finish = System.currentTimeMillis();
 		        		System.out.println(String.format("The relevant model was loaded in                             %s ms.", (finish-start)));
-		        	}
-		        	else {
-		        		// If retrieved traces is a log, the corresponding model will be discovered 
-		        		if(retrievedTraces instanceof XLog) {
-		        			String ret = cmd.getOptionValue("ret");
-			        		System.out.println(String.format("Discovering the relevant model from %s.", ret));
+		        	} 
+		        	else throw new ParseException("-ret option is requred, see --help for details");
+		        	
+		        	if(!cmd.hasOption("ret")) {
+		        		// If relevant traces is a log, the corresponding model will be discovered 
+		        		if(relevantTraces instanceof XLog) {
+		        			String rel = cmd.getOptionValue("rel");
+			        		System.out.println(String.format("Discovering the retrieved model from %s.", rel));
 			        		long start = System.currentTimeMillis();
-		        			ProcessTree model = TreeUtils.mineTree((XLog)retrievedTraces);
+		        			ProcessTree model = TreeUtils.mineTree((XLog)relevantTraces);
 		        			ProcessTree2Petrinet.PetrinetWithMarkings petrinetWithMarkings = ProcessTree2Petrinet.convert(model, true);
 		        		    AcceptingPetriNet net = new AcceptingPetriNetImpl(petrinetWithMarkings.petrinet, petrinetWithMarkings.initialMarking, petrinetWithMarkings.finalMarking);
 		        		    Petrinet petrinet = net.getNet();
-		        		    relevantTraces = Utils.constructNetSystemFromPetrinet(petrinet);
+		        		    retrievedTraces = Utils.constructNetSystemFromPetrinet(petrinet);
 		        		    long finish = System.currentTimeMillis();
-		        		    System.out.println(String.format("The relevant model was discovered in                         %s ms.", (finish-start)));
+		        		    System.out.println(String.format("The retrived model was discovered in                         %s ms.", (finish-start)));
 		        		    
 		        		} else {
 		        			throw new ParseException("-rel option is requred, see --help for details");

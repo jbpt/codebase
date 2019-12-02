@@ -1,2 +1,2 @@
-java -jar jbpt-pm.jar -pr -rel=ABCD.pnml -ret=ABCD.xes
+java -jar jbpt-pm.jar -pr -ret=ABCD.pnml -rel=ABCD.xes
 pause

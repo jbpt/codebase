@@ -1,2 +1,2 @@
-java -jar jbpt-pm.jar -ppr -rel=1.pnml -ret=2.pnml
+java -jar jbpt-pm.jar -ppr -ret=1.pnml -rel=2.pnml
 pause
