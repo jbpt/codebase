@@ -5,9 +5,9 @@ import org.processmining.eigenvalue.MetricsCalculator;
 
 import dk.brics.automaton2.Automaton;
 
-public class EntropyPrecisionMeasure extends AbstractQualityMeasure {
+public class PartialEntropyPrecisionRecallMeasure extends AbstractQualityMeasure {
 
-	public EntropyPrecisionMeasure(Object relevantTraces, Object retrievedTraces) {
+	public PartialEntropyPrecisionRecallMeasure(Object relevantTraces, Object retrievedTraces) {
 		super(relevantTraces, retrievedTraces);
 	}
 
@@ -21,7 +21,7 @@ public class EntropyPrecisionMeasure extends AbstractQualityMeasure {
 	protected Pair<Double, Double> computeMeasureValue() {
 		
 		if ((relevantTraces instanceof Automaton) && (retrievedTraces instanceof Automaton)) {
-			Pair<Double, Double> values = MetricsCalculator.calculate((Automaton)relevantTraces, "relevantBehavior", (Automaton)retrievedTraces, "retrievedBehavior", false, false);
+			Pair<Double, Double> values = MetricsCalculator.calculate((Automaton)relevantTraces, "relevantBehavior", (Automaton)retrievedTraces, "retrievedBehavior", true, false);
 			return values;
 		}
 		return new Pair<Double, Double>(0.0, 0.0);

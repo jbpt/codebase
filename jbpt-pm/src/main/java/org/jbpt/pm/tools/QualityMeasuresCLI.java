@@ -1,6 +1,7 @@
 package org.jbpt.pm.tools;
 
 import java.io.File;
+import java.util.List;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -11,21 +12,47 @@ import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.math3.util.Pair;
+import org.deckfour.xes.in.XesXmlParser;
+import org.deckfour.xes.info.impl.XLogInfoImpl;
+import org.deckfour.xes.model.XLog;
 import org.jbpt.petri.io.PNMLSerializer;
-import org.jbpt.pm.quality.EntropyPrecisionMeasure;
+import org.jbpt.pm.quality.EntropyMeasure;
+import org.jbpt.pm.quality.EntropyMeasureLimitation;
+import org.jbpt.pm.quality.EntropyPrecisionRecallMeasure;
+import org.jbpt.pm.quality.PartialEfficientEntropyMeasure;
+import org.jbpt.pm.quality.PartialEfficientEntropyPrecisionRecallMeasure;
+import org.jbpt.pm.quality.PartialEntropyMeasure;
+import org.jbpt.pm.quality.PartialEntropyPrecisionRecallMeasure;
 import org.jbpt.pm.quality.QualityMeasureLimitation;
+import org.jbpt.pm.utils.Utils;
+import org.processmining.acceptingpetrinet.models.AcceptingPetriNet;
+import org.processmining.acceptingpetrinet.models.impl.AcceptingPetriNetImpl;
+import org.processmining.eigenvalue.automata.PrecisionRecallComputer;
+import org.processmining.eigenvalue.data.EntropyPrecisionRecall;
+import org.processmining.eigenvalue.tree.TreeUtils;
+import org.processmining.framework.plugin.ProMCanceller;
+import org.processmining.models.graphbased.directed.petrinet.Petrinet;
+import org.processmining.processtree.ProcessTree;
+import org.processmining.ptconversions.pn.ProcessTree2Petrinet;
+import org.progressmining.xeslite.common.XesLiteXesXmlParser;
+
+
 
 //============================================================================
 // SAMPLE call:
-// java -jar jbpt-pm.jar -rel=1.xes -ret=1.pnml --measure
+// java -jar jbpt-pm.jar -pr  -rel=1.pnml -ret=1.xes
 // ============================================================================
+// To compare with discovered model:
+// java -jar jbpt-pm.jar -pr -ret=1.xes 
+//============================================================================
 // supported measures:
-// --entropy-precision:						precision from TSE submission
-// --entropy-recall:						recall from TSE submission
-// --partial-entropy-precision:				precision from ICSE'19 paper
-// --partial-entropy-recall:				recall from ICSE'19 paper
-// --partial-efficient-entropy-precision:	precision from ICSE'19 paper with smart log handling
-// --partial-efficient-entropy-recall:		recall from ICSE'19 paper with smart log handling
+// --precision-recall (-pr):						precision and recall from TOSEM'19 submission
+// --partial-precision-recall (-ppr):				partial precision and recall from ICPM'19 paper
+// --partial-efficient-precision-recall (-pepr):	precision and recall from IS Journal'19 paper with smart log handling
+// --entropy (-ent)									compute entropy for a given model
+// --partial-entropy (-pent)						compute partial (after "dilution") entropy
+// --partial-efficient-entropy (-peent)			    compute partial (after "dilution") entropy  efficiently
 //============================================================================
 
 /**
@@ -56,8 +83,13 @@ public final class QualityMeasuresCLI {
 	    	Option versionOption	= Option.builder("v").longOpt("version").numberOfArgs(0).required(false).desc("get version of this tool").hasArg(false).build();
 	    	
 	    	// measures
-	    	Option epMeasure		= Option.builder("ep").longOpt("entropy-precision").numberOfArgs(0).required(false).desc("compute entropy-based precision measure").hasArg(false).build();
-	    	Option erMeasure		= Option.builder("er").longOpt("entropy-recall").numberOfArgs(0).required(false).desc("compute entropy-based recall measure").hasArg(false).build();
+	    	Option prMeasure		= Option.builder("pr").longOpt("precision-recall").numberOfArgs(0).required(false).desc("compute entropy-based precision/recall measure").hasArg(false).build();
+	    	Option pprMeasure		= Option.builder("ppr").longOpt("partial-precision-recall").numberOfArgs(0).required(false).desc("compute entropy-based partial precision/recall measure").hasArg(false).build();
+	    	Option peprMeasure		= Option.builder("pepr").longOpt("partial-efficient-precision-recall").numberOfArgs(0).required(false).desc("compute efficiently entropy-based partial precision/recall measure").hasArg(false).build();
+	    	Option entMeasure		= Option.builder("ent").longOpt("entropy").numberOfArgs(0).required(false).desc("compute entropy measure").hasArg(false).build();
+	    	Option pentMeasure		= Option.builder("pent").longOpt("partial-entropy").numberOfArgs(0).required(false).desc("compute partial entropy measure").hasArg(false).build();
+	    	Option peentMeasure		= Option.builder("peent").longOpt("partial-efficient-entropy").numberOfArgs(0).required(false).desc("compute partial entropy measure efficiently").hasArg(false).build();
+	    	
 	    	
 	    	// models of relevant and retrieved traces
 	    	Option relModel			= Option.builder("rel").longOpt("relevant").hasArg(true).optionalArg(false).valueSeparator('=').argName("file path").required(false).desc("model of relevant traces").build();
@@ -67,8 +99,12 @@ public final class QualityMeasuresCLI {
 	    	OptionGroup cmdGroup = new OptionGroup();
 	    	cmdGroup.addOption(helpOption);
 	    	cmdGroup.addOption(versionOption);
-	    	cmdGroup.addOption(epMeasure);
-	    	cmdGroup.addOption(erMeasure);
+	    	cmdGroup.addOption(prMeasure);
+	    	cmdGroup.addOption(pprMeasure);
+	    	cmdGroup.addOption(peprMeasure);
+	    	cmdGroup.addOption(entMeasure);
+	    	cmdGroup.addOption(pentMeasure);
+	    	cmdGroup.addOption(peentMeasure);
 	    	cmdGroup.setRequired(true);
 	    	
 	    	options.addOptionGroup(cmdGroup);
@@ -87,40 +123,105 @@ public final class QualityMeasuresCLI {
 	        	return;
 	        } else {
 	        	showHeader();
-	        	// parse models of traces
-	        	if (cmd.hasOption("rel")) {
-	        		System.out.println("Started parsing the model of relevant traces.");
-	        		String rel = cmd.getOptionValue("rel");
-	        		long start = System.nanoTime();
-	        		relevantTraces = parseModel(rel);
-	        		long finish = System.nanoTime();
-	        		System.out.println(String.format("Parsing of the model of relevant traces has finished in %s nanoseconds.", (finish-start)));
-	        	}
-	        	else throw new ParseException("-rel option is requred, see --help for details");
 	        	
-	        	if (cmd.hasOption("ret")) {
-	        		System.out.println("Started parsing the model of retrieved traces.");
-	        		String ret = cmd.getOptionValue("ret");
-	        		long start = System.nanoTime();
-	        		retrievedTraces = parseModel(ret);
-	        		long finish = System.nanoTime();
-	        		System.out.println(String.format("Parsing of the model of retrieved traces has finished in %s nanoseconds.", (finish-start)));
+	        	if (cmd.hasOption("ent") || cmd.hasOption("pent") || cmd.hasOption("peent")) {
 	        		
-	        	}
-	        	else throw new ParseException("-ret option is requred, see --help for details");
-	        	
-	        	// compute measures
-	        	if (cmd.hasOption("ep")) {
-	        		EntropyPrecisionMeasure epm = new EntropyPrecisionMeasure(relevantTraces, retrievedTraces);
-	        		epm.checkLimitations();
-	        		for (QualityMeasureLimitation limitation : epm.getLimitations()) {
-	        			System.out.println(String.format("Limitation %s was checked in %s nanoseconds and returned %s.", limitation, epm.getLimitationCheckTime(limitation),epm.getLimitationCheckResult(limitation)));
+	        		List<String> argList = cmd.getArgList();
+	        		if ((argList == null) || (argList.size() == 0)) {
+	        			throw new ParseException("argument is requred, see --help for details");
 	        		}
-	        		epm.computeMeasure();
-	        		System.out.println(String.format("The measure was computed in %s nanoseconds and returned %s.", epm.getMeasureComputationTime().longValue(), epm.getMeasureValue()));
-	        	} else if (cmd.hasOption("er")) {
-	        		System.out.println("TODO");
-	        	}
+	        		if (cmd.hasOption("ent")) {
+		        		for (String arg : argList) {
+		        			Object model = parseModel(arg);
+		        			EntropyMeasure em = new EntropyMeasure(model);
+		        			double result = em.computeMeasure();
+		        			System.out.println(String.format("Entropy value for %s id %s.", arg, result));
+		        		}
+	        		}
+	        		if (cmd.hasOption("pent")) {
+		        		for (String arg : argList) {
+		        			Object model = parseModel(arg);
+		        			PartialEntropyMeasure pem = new PartialEntropyMeasure(model);
+		        			double result = pem.computeMeasure();
+		        			System.out.println(String.format("Partial entropy value for %s id %s.", arg, result));
+		        		}
+	        		}
+	        		if (cmd.hasOption("peent")) {
+		        		for (String arg : argList) {
+		        			Object model = parseModel(arg);
+		        			PartialEfficientEntropyMeasure peem = new PartialEfficientEntropyMeasure(model);
+		        			double result = peem.computeMeasure();
+		        			System.out.println(String.format("Partial entropy value for %s id %s.", arg, result));
+		        		}
+	        		}	        		
+	        	} else {
+		        	if (cmd.hasOption("ret")) {
+		        		String ret = cmd.getOptionValue("ret");
+		        		System.out.println(String.format("Loading the retrieved model from %s.", new File(ret).getCanonicalPath()));
+		        		long start = System.currentTimeMillis();
+		        		retrievedTraces = parseModel(ret);
+		        		long finish = System.currentTimeMillis();
+		        		System.out.println(String.format("The retrieved model was loaded in                            %s ms.", (finish-start)));
+		        	}
+		        	else throw new ParseException("-ret option is requred, see --help for details");
+		        	
+		        	if (cmd.hasOption("rel")) {
+		        		String rel = cmd.getOptionValue("rel");
+		        		System.out.println(String.format("Loading the relevant model from %s.",  new File(rel).getCanonicalPath()));
+		        		long start = System.currentTimeMillis();
+		        		relevantTraces = parseModel(rel);
+		        		long finish = System.currentTimeMillis();
+		        		System.out.println(String.format("The relevant model was loaded in                             %s ms.", (finish-start)));
+		        	}
+		        	else {
+		        		// If retrieved traces is a log, the corresponding model will be discovered 
+		        		if(retrievedTraces instanceof XLog) {
+		        			String ret = cmd.getOptionValue("ret");
+			        		System.out.println(String.format("Discovering the relevant model from %s.", ret));
+			        		long start = System.currentTimeMillis();
+		        			ProcessTree model = TreeUtils.mineTree((XLog)retrievedTraces);
+		        			ProcessTree2Petrinet.PetrinetWithMarkings petrinetWithMarkings = ProcessTree2Petrinet.convert(model, true);
+		        		    AcceptingPetriNet net = new AcceptingPetriNetImpl(petrinetWithMarkings.petrinet, petrinetWithMarkings.initialMarking, petrinetWithMarkings.finalMarking);
+		        		    Petrinet petrinet = net.getNet();
+		        		    relevantTraces = Utils.constructNetSystemFromPetrinet(petrinet);
+		        		    long finish = System.currentTimeMillis();
+		        		    System.out.println(String.format("The relevant model was discovered in                         %s ms.", (finish-start)));
+		        		    
+		        		} else {
+		        			throw new ParseException("-rel option is requred, see --help for details");
+		        		}
+		        	}
+		        	
+		        	Pair<Double, Double> result = new Pair<Double,Double>(0.0,0.0);
+		        	// compute measures
+		        	if (cmd.hasOption("pr")) {
+		        		EntropyPrecisionRecallMeasure epr = new EntropyPrecisionRecallMeasure(relevantTraces, retrievedTraces);
+		        		epr.checkLimitations();
+		        		for (QualityMeasureLimitation limitation : epr.getLimitations()) {
+		        			System.out.println(String.format("%s was checked in          %s ms.", limitation.getDescription(), epr.getLimitationCheckTime(limitation),epr.getLimitationCheckResult(limitation)));
+		        		}
+		        		result = epr.computeMeasure();
+		        		//System.out.println(String.format("The measure was computed in %s nanoseconds and returned %s.", epr.getMeasureComputationTime().longValue(), epr.getMeasureValue()));
+		        	} else if (cmd.hasOption("ppr")) {
+		        		PartialEntropyPrecisionRecallMeasure epr = new PartialEntropyPrecisionRecallMeasure(relevantTraces, retrievedTraces);
+		        		epr.checkLimitations();
+		        		for (QualityMeasureLimitation limitation : epr.getLimitations()) {
+		        			System.out.println(String.format("%s was checked in          %s ms.", limitation.getDescription(), epr.getLimitationCheckTime(limitation),epr.getLimitationCheckResult(limitation)));
+		        		}
+		        		result = epr.computeMeasure();
+		        		//System.out.println(String.format("The partial measure was computed in %s nanoseconds and returned %s.", epr.getMeasureComputationTime().longValue(), epr.getMeasureValue()));
+		        	} else if (cmd.hasOption("pepr")) {
+		        		PartialEfficientEntropyPrecisionRecallMeasure epr = new PartialEfficientEntropyPrecisionRecallMeasure(relevantTraces, retrievedTraces);
+		        		epr.checkLimitations();
+		        		for (QualityMeasureLimitation limitation : epr.getLimitations()) {
+		        			System.out.println(String.format("%s was checked in          %s ms.", limitation.getDescription(), epr.getLimitationCheckTime(limitation),epr.getLimitationCheckResult(limitation)));
+		        		}
+		        		result = epr.computeMeasure();
+		        		//System.out.println(String.format("The partial measure was computed in %s nanoseconds and returned %s.", epr.getMeasureComputationTime().longValue(), epr.getMeasureValue()));
+			        }
+		        	System.out.println(String.format("Precision: %s", result.getSecond()));
+	        		System.out.println(String.format("Recall: %s", result.getFirst()));
+		        }
 	        }
 	    }
 	    catch (ParseException exp) {
@@ -131,7 +232,7 @@ public final class QualityMeasuresCLI {
 	    }
 	}
 	
-	private static Object parseModel(String path) {
+	public static Object parseModel(String path) {
 		File file = new File(path);
 		if (file.isDirectory() || !file.canRead() || !file.isFile())
 			return null;
@@ -154,7 +255,17 @@ public final class QualityMeasuresCLI {
 	}
 
 	private static Object parseXES(File file) {
-		// TODO
+		
+		XesXmlParser xesParser = new XesLiteXesXmlParser();
+		try {
+			Utils.hidePrinting();
+			List<XLog> logs = xesParser.parse(file);
+			Utils.restorePrinting();
+			return logs.get(0);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 
@@ -162,7 +273,7 @@ public final class QualityMeasuresCLI {
 		HelpFormatter formatter = new HelpFormatter();
 		
 		showHeader();
-    	formatter.printHelp(80, String.format("java -jar jbpt-quality-measures-%s.jar <options>", QualityMeasuresCLI.version), 
+    	formatter.printHelp(80, String.format("java -jar jbpt-pm.jar <options>", QualityMeasuresCLI.version), 
     							String.format("", QualityMeasuresCLI.version), options, 
     							"================================================================================\n");
 	}

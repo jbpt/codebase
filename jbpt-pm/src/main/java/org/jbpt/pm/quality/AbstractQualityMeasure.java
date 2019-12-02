@@ -4,13 +4,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.math3.util.Pair;
+import org.deckfour.xes.model.XLog;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.mc.LoLA2ModelChecker;
 import org.jbpt.pm.utils.Utils;
 
 import dk.brics.automaton2.Automaton;
+import gnu.trove.map.TObjectShortMap;
+import gnu.trove.map.custom_hash.TObjectShortCustomHashMap;
+import gnu.trove.strategy.HashingStrategy;
 
 /**
  * Abstract Quality Measure Class
@@ -24,6 +30,7 @@ public abstract class AbstractQualityMeasure {
 	protected Collection<QualityMeasureLimitation> limitations = new ArrayList<QualityMeasureLimitation>();
 	
 	private Boolean limitationsHold = null;
+	private Set<String> violetedLimitations = new HashSet<>();
 	
 	protected Object relevantTraces  = null;
 	protected Object retrievedTraces = null;
@@ -55,18 +62,30 @@ public abstract class AbstractQualityMeasure {
 	 */
 	public boolean checkLimitations() {
 		long start = 0;
-		for (QualityMeasureLimitation limitation: this.limitations) {
+		for (QualityMeasureLimitation limitation : this.limitations) {
 			switch (limitation) {
-				case RELEVANT_BOUNDED:
-					start = System.nanoTime();
-					this.resultsOfLimitationChecks.put(QualityMeasureLimitation.RELEVANT_BOUNDED, new Boolean(this.checkBounded(this.relevantTraces)));
-					this.timesOfLimitationChecks.put(QualityMeasureLimitation.RELEVANT_BOUNDED, new Long(System.nanoTime()-start));
-					break;
-				case RETRIEVED_BOUNDED:
-					start = System.nanoTime();
-					this.resultsOfLimitationChecks.put(QualityMeasureLimitation.RETRIEVED_BOUNDED, new Boolean(this.checkBounded(this.retrievedTraces)));
-					this.timesOfLimitationChecks.put(QualityMeasureLimitation.RETRIEVED_BOUNDED, new Long(System.nanoTime()-start));
-					break;
+			case RETRIEVED_BOUNDED:
+				start = System.currentTimeMillis();
+				boolean limitationHolds = this.checkBounded(this.retrievedTraces);
+				if (!limitationHolds) {
+					violetedLimitations.add(limitation.getDescription());
+				}
+				this.resultsOfLimitationChecks.put(QualityMeasureLimitation.RETRIEVED_BOUNDED,
+						new Boolean(limitationHolds));
+				this.timesOfLimitationChecks.put(QualityMeasureLimitation.RETRIEVED_BOUNDED,
+						new Long(System.currentTimeMillis() - start));
+				break;
+			case RELEVANT_BOUNDED:
+				start = System.currentTimeMillis();
+				limitationHolds = this.checkBounded(this.relevantTraces);
+				if (!limitationHolds) {
+					violetedLimitations.add(limitation.getDescription());
+				}
+				this.resultsOfLimitationChecks.put(QualityMeasureLimitation.RELEVANT_BOUNDED,
+						new Boolean(limitationHolds));
+				this.timesOfLimitationChecks.put(QualityMeasureLimitation.RELEVANT_BOUNDED,
+						new Long(System.currentTimeMillis() - start));
+				break;
 			}
 		}
 		
@@ -91,7 +110,7 @@ public abstract class AbstractQualityMeasure {
 			boolean result = lola.isBounded(sys);
 			return result;
 		}
-		return false;
+		return true;
 	}
 
 	/**
@@ -101,20 +120,49 @@ public abstract class AbstractQualityMeasure {
 	 * @throws Exception if limitations of this measure are not satisfied by the given models.
 	 */
 	public Pair<Double, Double> computeMeasure() throws Exception {
+	        
 		if (limitationsHold==null) this.checkLimitations();
 		if (limitationsHold==null || !limitationsHold.booleanValue()) {
-			throw new Exception(String.format("Limitations of %s measure are not fulfilled", this.getClass().getName()));
+			throw new Exception(String.format("Limitation(s): %s of %s measure are not fulfilled", violetedLimitations, this.getClass().getName()));
 		}
-		
-		if (relevantTraces instanceof NetSystem) {
-			relevantTraces = Utils.constructAutomatonFromNetSystem((NetSystem) relevantTraces);
-		}
-		
+	
+		HashingStrategy<String> strategy = new HashingStrategy<String>() {
+
+			public int computeHashCode(String object) {
+				return object.hashCode();
+			}
+
+			public boolean equals(String o1, String o2) {
+				return o1.equals(o2);
+			}
+		};
+		TObjectShortMap<String> activity2short = new TObjectShortCustomHashMap<String>(strategy, 10, 0.5f, (short) -1);
+	    
+		System.out.println(String.format("Constructing automaton for retrieved model"));
+		long start = System.currentTimeMillis();
 		if (retrievedTraces instanceof NetSystem) {
-			retrievedTraces = Utils.constructAutomatonFromNetSystem((NetSystem) retrievedTraces);
+			retrievedTraces = Utils.constructAutomatonFromNetSystem((NetSystem) retrievedTraces, activity2short);
+		} else if (retrievedTraces instanceof XLog){
+			retrievedTraces = Utils.constructAutomatonFromLog((XLog) retrievedTraces, activity2short);
 		}
-		
-		long start = System.nanoTime();
+	    long finish = System.currentTimeMillis();
+	    System.out.println(String.format("The automaton for retrieved model was constructed in         %s ms.", (finish-start)));
+	    System.out.println(String.format("The number of states:                                        %s", ((Automaton)retrievedTraces).getNumberOfStates()));
+	    System.out.println(String.format("The number of transitions:                                   %s", Utils.numberOfTransitions((Automaton)retrievedTraces)));
+	    
+		System.out.println(String.format("Constructing automaton for relevant model"));
+		start = System.currentTimeMillis();
+		if (relevantTraces instanceof NetSystem) {
+			relevantTraces = Utils.constructAutomatonFromNetSystem((NetSystem) relevantTraces, activity2short);
+		} else if (relevantTraces instanceof XLog){
+			relevantTraces = Utils.constructAutomatonFromLog((XLog) relevantTraces, activity2short);
+		}
+	    finish = System.currentTimeMillis();
+	    System.out.println(String.format("The automaton for relevant model was constructed in          %s ms.", (finish-start)));
+	    System.out.println(String.format("The number of states:                                        %s", ((Automaton)relevantTraces).getNumberOfStates()));
+	    System.out.println(String.format("The number of transitions:                                   %s", Utils.numberOfTransitions((Automaton)relevantTraces)));
+	    
+	    start = System.nanoTime();
 		this.measureValue = this.computeMeasureValue();
 		this.measureComputationTime = System.nanoTime()-start;
 
@@ -149,4 +197,5 @@ public abstract class AbstractQualityMeasure {
 
 	// compute measure value
 	protected abstract Pair<Double, Double> computeMeasureValue();
+
 }

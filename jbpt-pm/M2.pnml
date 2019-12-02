@@ -1,0 +1,137 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<pnml>
+  <net type="http://www.yasper.org/specs/epnml-1.1" id="do1">
+    <toolspecific tool="Yasper" version="1.2.4020.34351">
+      <roles xmlns="http://www.yasper.org/specs/epnml-1.1/toolspec" />
+    </toolspecific>
+    <place id="pl1">
+      <graphics>
+        <position x="126" y="144" />
+        <dimension x="20" y="20" />
+      </graphics>
+      <toolspecific tool="Yasper" version="1.2.4020.34351">
+        <tokenCaseSensitive xmlns="http://www.yasper.org/specs/epnml-1.1/toolspec">
+          <text>true</text>
+        </tokenCaseSensitive>
+      </toolspecific>
+    </place>
+    <place id="pl2">
+      <graphics>
+        <position x="284" y="51" />
+        <dimension x="20" y="20" />
+      </graphics>
+      <toolspecific tool="Yasper" version="1.2.4020.34351">
+        <tokenCaseSensitive xmlns="http://www.yasper.org/specs/epnml-1.1/toolspec">
+          <text>true</text>
+        </tokenCaseSensitive>
+      </toolspecific>
+    </place>
+    <transition id="tr1">
+      <name>
+        <text>b</text>
+      </name>
+      <graphics>
+        <position x="186" y="52" />
+        <dimension x="32" y="32" />
+      </graphics>
+    </transition>
+    <place id="pl4">
+      <graphics>
+        <position x="283" y="212" />
+        <dimension x="20" y="20" />
+      </graphics>
+      <toolspecific tool="Yasper" version="1.2.4020.34351">
+        <tokenCaseSensitive xmlns="http://www.yasper.org/specs/epnml-1.1/toolspec">
+          <text>true</text>
+        </tokenCaseSensitive>
+      </toolspecific>
+    </place>
+    <transition id="tr2">
+      <name>
+        <text>a</text>
+      </name>
+      <graphics>
+        <position x="186" y="213" />
+        <dimension x="32" y="32" />
+      </graphics>
+    </transition>
+    <place id="pl6">
+      <graphics>
+        <position x="484" y="147" />
+        <dimension x="20" y="20" />
+      </graphics>
+      <toolspecific tool="Yasper" version="1.2.4020.34351">
+        <tokenCaseSensitive xmlns="http://www.yasper.org/specs/epnml-1.1/toolspec">
+          <text>true</text>
+        </tokenCaseSensitive>
+      </toolspecific>
+    </place>
+    <transition id="tr3">
+      <name>
+        <text>a</text>
+      </name>
+      <graphics>
+        <position x="390" y="52" />
+        <dimension x="32" y="32" />
+      </graphics>
+    </transition>
+    <transition id="tr4">
+      <name>
+        <text>d</text>
+      </name>
+      <graphics>
+        <position x="370" y="149" />
+        <dimension x="32" y="32" />
+      </graphics>
+    </transition>
+    <transition id="tr5">
+      <name>
+        <text>b</text>
+      </name>
+      <graphics>
+        <position x="369" y="212" />
+        <dimension x="32" y="32" />
+      </graphics>
+    </transition>
+    <transition id="tr6">
+      <name>
+        <text>c</text>
+      </name>
+      <graphics>
+        <position x="373" y="280" />
+        <dimension x="32" y="32" />
+      </graphics>
+    </transition>
+    <place id="pl14">
+      <graphics>
+        <position x="633" y="147" />
+        <dimension x="20" y="20" />
+      </graphics>
+      <toolspecific tool="Yasper" version="1.2.4020.34351">
+        <tokenCaseSensitive xmlns="http://www.yasper.org/specs/epnml-1.1/toolspec">
+          <text>true</text>
+        </tokenCaseSensitive>
+      </toolspecific>
+    </place>
+    <transition id="tr7">
+      <graphics>
+        <position x="548" y="145" />
+        <dimension x="32" y="32" />
+      </graphics>
+    </transition>
+    <arc id="a1" source="pl1" target="tr1" />
+    <arc id="a2" source="tr1" target="pl2" />
+    <arc id="a3" source="tr2" target="pl4" />
+    <arc id="a4" source="pl1" target="tr2" />
+    <arc id="a5" source="tr3" target="pl6" />
+    <arc id="a6" source="pl2" target="tr3" />
+    <arc id="a7" source="pl6" target="tr4" />
+    <arc id="a8" source="tr4" target="pl2" />
+    <arc id="a9" source="pl4" target="tr5" />
+    <arc id="a10" source="tr5" target="pl6" />
+    <arc id="a11" source="pl4" target="tr6" />
+    <arc id="a12" source="tr6" target="pl6" />
+    <arc id="a13" source="tr7" target="pl14" />
+    <arc id="a14" source="pl6" target="tr7" />
+  </net>
+</pnml>
