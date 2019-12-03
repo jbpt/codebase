@@ -144,11 +144,11 @@
 							<configuration>
 								<tasks>
 									<echo>ANT TASK - copying files....</echo>
-									<copy todir="${project.build.directory}/lib" overwrite="true" flatten="true">
+									<!--copy todir="${project.build.directory}/lib" overwrite="true" flatten="true">
 										<fileset dir="${basedir}/lib" includes="*.jar" >
 											<include name="*.jar" />
 										</fileset>
-									</copy>
+									</copy-->
 									<copy todir="${project.build.directory}/lola2" overwrite="true" flatten="true">
 										<fileset dir="${basedir}/lola2">
 											<include name="*" />
