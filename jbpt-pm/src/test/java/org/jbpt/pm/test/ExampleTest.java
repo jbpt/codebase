@@ -46,26 +46,26 @@ public class ExampleTest {
 			long start = System.currentTimeMillis();
 			Object relevantTraces = QualityMeasuresCLI.parseModel(rel);
 			long finish = System.currentTimeMillis();
-			System.out.println(String.format("The relevant model was loaded in                             %s ms.",
+			System.out.println(String.format("The relevant model was loaded in                            %s ms.",
 					(finish - start)));
 
 			System.out.println(String.format("Loading the retrieved model from %s.", ret));
 			start = System.currentTimeMillis();
 			Object retrievedTraces = QualityMeasuresCLI.parseModel(ret);
 			finish = System.currentTimeMillis();
-			System.out.println(String.format("The retrieved model was loaded in                            %s ms.",
+			System.out.println(String.format("The retrieved model was loaded in                           %s ms.",
 					(finish - start)));
 
 			EntropyPrecisionRecallMeasure epr = new EntropyPrecisionRecallMeasure(relevantTraces, retrievedTraces);
 			Pair<Double, Double> result = epr.computeMeasure();
-			System.out.println(String.format("Precision: %s", result.getSecond()));
-			System.out.println(String.format("Recall: %s", result.getFirst()));
+//			System.out.println(String.format("Precision: %s", result.getSecond()));
+//			System.out.println(String.format("Recall: %s", result.getFirst()));
 
 			PartialEntropyPrecisionRecallMeasure pepr = new PartialEntropyPrecisionRecallMeasure(relevantTraces,
 					retrievedTraces);
 			result = pepr.computeMeasure();
-			System.out.println(String.format("Precision: %s", result.getSecond()));
-			System.out.println(String.format("Recall: %s", result.getFirst()));
+//			System.out.println(String.format("Precision: %s", result.getSecond()));
+//			System.out.println(String.format("Recall: %s", result.getFirst()));
 
 		} catch (Exception e) {
 			e.printStackTrace();

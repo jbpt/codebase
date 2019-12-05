@@ -10,8 +10,8 @@ package org.jbpt.pm.quality;
  */
 public enum QualityMeasureLimitation {
 	
-	RETRIEVED_BOUNDED(1, "The boundness of the retrieved model"),
-	RELEVANT_BOUNDED(2, "The boundness of the relevant model ");
+	RETRIEVED_BOUNDED(1, "The boundedness of the retrieved model"),
+	RELEVANT_BOUNDED(2, "The boundedness of the relevant model ");
 	
 	
 	private final int limitation;

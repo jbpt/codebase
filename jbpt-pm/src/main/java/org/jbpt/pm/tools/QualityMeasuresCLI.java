@@ -63,7 +63,7 @@ import org.progressmining.xeslite.common.XesLiteXesXmlParser;
  * @author Artem Polyvyanyy, Anna Kalenkova 
  */ 
 public final class QualityMeasuresCLI {
-	final private static String	version	= "1.0";
+	final private static String	version	= "1.4";
 	
 	private static Object relevantTraces	= null;
 	private static Object retrievedTraces	= null;
@@ -124,6 +124,14 @@ public final class QualityMeasuresCLI {
 	        } else {
 	        	showHeader();
 	        	
+	        	if (cmd.hasOption("pr")) {
+	        		System.out.println("Computing eigenvalue-based precision and recall based on exact matching of traces.");
+	        	} else if (cmd.hasOption("ppr")) {
+	        		System.out.println("Computing eigenvalue-based precision and recall based on partial matching of traces.");
+	        	} else if (cmd.hasOption("pepr")) {
+	        		System.out.println("Computing eigenvalue-based precision and recall (with optimization) based on partial matching of traces.");
+	    		}
+	        	
 	        	if (cmd.hasOption("ent") || cmd.hasOption("pent") || cmd.hasOption("peent")) {
 	        		
 	        		List<String> argList = cmd.getArgList();
@@ -161,7 +169,7 @@ public final class QualityMeasuresCLI {
 		        		long start = System.currentTimeMillis();
 		        		retrievedTraces = parseModel(ret);
 		        		long finish = System.currentTimeMillis();
-		        		System.out.println(String.format("The retrieved model was loaded in                            %s ms.", (finish-start)));
+		        		System.out.println(String.format("The retrieved model was loaded in                           %s ms.", (finish-start)));
 		        	}
 		        	
 		        	if (cmd.hasOption("rel")) {
@@ -170,7 +178,7 @@ public final class QualityMeasuresCLI {
 		        		long start = System.currentTimeMillis();
 		        		relevantTraces = parseModel(rel);
 		        		long finish = System.currentTimeMillis();
-		        		System.out.println(String.format("The relevant model was loaded in                             %s ms.", (finish-start)));
+		        		System.out.println(String.format("The relevant model was loaded in                            %s ms.", (finish-start)));
 		        	} 
 		        	else throw new ParseException("-ret option is requred, see --help for details");
 		        	
@@ -178,7 +186,7 @@ public final class QualityMeasuresCLI {
 		        		// If relevant traces is a log, the corresponding model will be discovered 
 		        		if(relevantTraces instanceof XLog) {
 		        			String rel = cmd.getOptionValue("rel");
-			        		System.out.println(String.format("Discovering the retrieved model from %s.", rel));
+			        		System.out.println("Discovering the retrieved model using Inductive Miner with noise threshold set to 0.0");
 			        		long start = System.currentTimeMillis();
 		        			ProcessTree model = TreeUtils.mineTree((XLog)relevantTraces);
 		        			ProcessTree2Petrinet.PetrinetWithMarkings petrinetWithMarkings = ProcessTree2Petrinet.convert(model, true);
@@ -186,7 +194,7 @@ public final class QualityMeasuresCLI {
 		        		    Petrinet petrinet = net.getNet();
 		        		    retrievedTraces = Utils.constructNetSystemFromPetrinet(petrinet);
 		        		    long finish = System.currentTimeMillis();
-		        		    System.out.println(String.format("The retrived model was discovered in                         %s ms.", (finish-start)));
+		        		    System.out.println(String.format("The retrived model was discovered in                        %s ms.", (finish-start)));
 		        		    
 		        		} else {
 		        			throw new ParseException("-rel option is requred, see --help for details");
@@ -199,7 +207,7 @@ public final class QualityMeasuresCLI {
 		        		EntropyPrecisionRecallMeasure epr = new EntropyPrecisionRecallMeasure(relevantTraces, retrievedTraces);
 		        		epr.checkLimitations();
 		        		for (QualityMeasureLimitation limitation : epr.getLimitations()) {
-		        			System.out.println(String.format("%s was checked in          %s ms.", limitation.getDescription(), epr.getLimitationCheckTime(limitation),epr.getLimitationCheckResult(limitation)));
+		        			System.out.println(String.format("%s was checked in       %s ms.", limitation.getDescription(), epr.getLimitationCheckTime(limitation),epr.getLimitationCheckResult(limitation)));
 		        		}
 		        		result = epr.computeMeasure();
 		        		//System.out.println(String.format("The measure was computed in %s nanoseconds and returned %s.", epr.getMeasureComputationTime().longValue(), epr.getMeasureValue()));
@@ -207,7 +215,7 @@ public final class QualityMeasuresCLI {
 		        		PartialEntropyPrecisionRecallMeasure epr = new PartialEntropyPrecisionRecallMeasure(relevantTraces, retrievedTraces);
 		        		epr.checkLimitations();
 		        		for (QualityMeasureLimitation limitation : epr.getLimitations()) {
-		        			System.out.println(String.format("%s was checked in          %s ms.", limitation.getDescription(), epr.getLimitationCheckTime(limitation),epr.getLimitationCheckResult(limitation)));
+		        			System.out.println(String.format("%s was checked in       %s ms.", limitation.getDescription(), epr.getLimitationCheckTime(limitation),epr.getLimitationCheckResult(limitation)));
 		        		}
 		        		result = epr.computeMeasure();
 		        		//System.out.println(String.format("The partial measure was computed in %s nanoseconds and returned %s.", epr.getMeasureComputationTime().longValue(), epr.getMeasureValue()));
@@ -215,13 +223,12 @@ public final class QualityMeasuresCLI {
 		        		PartialEfficientEntropyPrecisionRecallMeasure epr = new PartialEfficientEntropyPrecisionRecallMeasure(relevantTraces, retrievedTraces);
 		        		epr.checkLimitations();
 		        		for (QualityMeasureLimitation limitation : epr.getLimitations()) {
-		        			System.out.println(String.format("%s was checked in          %s ms.", limitation.getDescription(), epr.getLimitationCheckTime(limitation),epr.getLimitationCheckResult(limitation)));
+		        			System.out.println(String.format("%s was checked in       %s ms.", limitation.getDescription(), epr.getLimitationCheckTime(limitation),epr.getLimitationCheckResult(limitation)));
 		        		}
 		        		result = epr.computeMeasure();
 		        		//System.out.println(String.format("The partial measure was computed in %s nanoseconds and returned %s.", epr.getMeasureComputationTime().longValue(), epr.getMeasureValue()));
 			        }
-		        	System.out.println(String.format("Precision: %s", result.getSecond()));
-	        		System.out.println(String.format("Recall: %s", result.getFirst()));
+
 		        }
 	        }
 	    }
@@ -283,6 +290,8 @@ public final class QualityMeasuresCLI {
 		System.out.println(
 				String.format("================================================================================\n"+
 		    	"Tool to compute quality measures for Proces Mining and Process Querying ver. %s\n"+
-				"================================================================================",QualityMeasuresCLI.version)); 
+				"For support, please contact us at jbpt.library@gmail.com.\n" +
+				"================================================================================",QualityMeasuresCLI.version));
+		
 	}
 }

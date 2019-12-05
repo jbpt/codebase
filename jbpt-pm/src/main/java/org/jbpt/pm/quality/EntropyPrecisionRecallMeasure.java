@@ -24,7 +24,7 @@ public class EntropyPrecisionRecallMeasure extends AbstractQualityMeasure {
 		System.out.println();
 		
 		if ((relevantTraces instanceof Automaton) && (retrievedTraces instanceof Automaton)) {
-			Pair<Double, Double> values = MetricsCalculator.calculate((Automaton)relevantTraces, "relevantBehavior", (Automaton)retrievedTraces, "retrievedBehavior", false, false);
+			Pair<Double, Double> values = MetricsCalculator.calculate((Automaton)relevantTraces, "REL", (Automaton)retrievedTraces, "RET", false, false);
 			return values;
 		}
 		return new Pair<Double, Double>(0.0, 0.0);

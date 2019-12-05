@@ -21,7 +21,7 @@ public class PartialEntropyPrecisionRecallMeasure extends AbstractQualityMeasure
 	protected Pair<Double, Double> computeMeasureValue() {
 		
 		if ((relevantTraces instanceof Automaton) && (retrievedTraces instanceof Automaton)) {
-			Pair<Double, Double> values = MetricsCalculator.calculate((Automaton)relevantTraces, "relevantBehavior", (Automaton)retrievedTraces, "retrievedBehavior", true, false);
+			Pair<Double, Double> values = MetricsCalculator.calculate((Automaton)relevantTraces, "REL", (Automaton)retrievedTraces, "RET", true, false);
 			return values;
 		}
 		return new Pair<Double, Double>(0.0, 0.0);

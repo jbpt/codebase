@@ -138,7 +138,7 @@ public abstract class AbstractQualityMeasure {
 		};
 		TObjectShortMap<String> activity2short = new TObjectShortCustomHashMap<String>(strategy, 10, 0.5f, (short) -1);
 	    
-		System.out.println(String.format("Constructing automaton for retrieved model"));
+		System.out.println(String.format("Constructing automaton RET that encodes the retrieved model."));
 		long start = System.currentTimeMillis();
 		if (retrievedTraces instanceof NetSystem) {
 			retrievedTraces = Utils.constructAutomatonFromNetSystem((NetSystem) retrievedTraces, activity2short);
@@ -146,11 +146,10 @@ public abstract class AbstractQualityMeasure {
 			retrievedTraces = Utils.constructAutomatonFromLog((XLog) retrievedTraces, activity2short);
 		}
 	    long finish = System.currentTimeMillis();
-	    System.out.println(String.format("The automaton for retrieved model was constructed in         %s ms.", (finish-start)));
-	    System.out.println(String.format("The number of states:                                        %s", ((Automaton)retrievedTraces).getNumberOfStates()));
-	    System.out.println(String.format("The number of transitions:                                   %s", Utils.numberOfTransitions((Automaton)retrievedTraces)));
+	    System.out.println(String.format("Automaton RET was constructed in                            %s ms.", (finish-start)));
+	    System.out.println(String.format("Automaton RET has %s states and %s transitions.", ((Automaton)retrievedTraces).getNumberOfStates(), Utils.numberOfTransitions((Automaton)retrievedTraces)));
 	    
-		System.out.println(String.format("Constructing automaton for relevant model"));
+		System.out.println(String.format("Constructing automaton REL that encodes the relevant model."));
 		start = System.currentTimeMillis();
 		if (relevantTraces instanceof NetSystem) {
 			relevantTraces = Utils.constructAutomatonFromNetSystem((NetSystem) relevantTraces, activity2short);
@@ -158,9 +157,8 @@ public abstract class AbstractQualityMeasure {
 			relevantTraces = Utils.constructAutomatonFromLog((XLog) relevantTraces, activity2short);
 		}
 	    finish = System.currentTimeMillis();
-	    System.out.println(String.format("The automaton for relevant model was constructed in          %s ms.", (finish-start)));
-	    System.out.println(String.format("The number of states:                                        %s", ((Automaton)relevantTraces).getNumberOfStates()));
-	    System.out.println(String.format("The number of transitions:                                   %s", Utils.numberOfTransitions((Automaton)relevantTraces)));
+	    System.out.println(String.format("Automaton REL was constructed in                            %s ms.", (finish-start)));
+	    System.out.println(String.format("Automaton REL has %s states and %s transitions.", ((Automaton)relevantTraces).getNumberOfStates(), Utils.numberOfTransitions((Automaton)relevantTraces)));
 	    
 	    start = System.nanoTime();
 		this.measureValue = this.computeMeasureValue();
