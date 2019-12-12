@@ -1,0 +1,25 @@
+                           _          _        _    
+                          | |    ___ | |      / \   
+                          | |   / _ \| |     / _ \  
+                          | |__| (_) | |___ / ___ \ 
+                          |_____\___/|_____/_/   \_\
+                             a low-level analyzer
+                      http://service-technology.org/lola
+
+
+LoLA was written by Karsten Wolf and Niels Lohmann.
+
+Further committers (ordered by committed lines of code):
+
+- Gregor Behnke
+- Christian Koch
+- Harro Wimmel
+- Markus Valentin
+- Andreas Lehmann
+- Andre Moelle
+- Erik Friese
+- Max Görner
+- Christian Sura
+- Sascha Lamp
+
+http://jenkins.service-technology.org/job/lola2/doclinks/3/

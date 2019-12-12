@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Built-By: akalenkova
+Build-Jdk: 12.0.2
+Class-Path: lib/commons-cli-1.4.jar lib/commons-io-2.5.jar lib/jbpt-core
+ -0.3.2.jar lib/jbpt-deco-0.3.2.jar lib/json-20090211.jar lib/jbpt-petri
+ -0.3.2.jar lib/commons-math3-3.6.1.jar lib/eigenvalue-0.1.1.jar
+Main-Class: org.jbpt.pm.tools.QualityMeasuresCLI
+Created-By: Maven Integration for Eclipse
+

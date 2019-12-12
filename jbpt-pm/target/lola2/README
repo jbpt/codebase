@@ -1,0 +1,75 @@
+                           _          _        _    
+                          | |    ___ | |      / \   
+                          | |   / _ \| |     / _ \  
+                          | |__| (_) | |___ / ___ \ 
+                          |_____\___/|_____/_/   \_\
+                             a low-level analyzer
+                      http://service-technology.org/lola
+
+
+Setup and installation
+----------------------
+
+You need to configure LoLA by executing
+
+     $ cd lola-2.0-RC1
+     $ ./configure
+
+The configuration should finish with a message like
+
+     ============================================================
+       Successfully configured 2.0-RC1.
+       -> compile LoLA with `make'.
+     ============================================================
+
+Then, execute
+
+     $ make
+
+to compile LoLA. You may ignore potential compiler warnings. If
+everything is OK, you should see a message like
+
+     ============================================================
+       Successfully compiled 2.0-RC1.
+       -> check out LoLA's help with `src/lola --help'
+       -> install LoLA to /usr/local/bin with `make install'
+     ============================================================
+
+This indicates that the LoLA binary `lola' has been successfully built
+in the `src' directory.
+
+To install LoLA, you may optionally execute
+
+     $ sudo make install
+
+to copy all required files to `/usr/local/bin'. An installed LoLA has
+the advantage that LoLA can be called from anywhere and that you will
+not need the `lola-2.0-RC1' directory any more. In the following, we
+assume that LoLA has been installed and can be called by simply
+executing `lola'.
+
+You can change the installation directory by calling `./configure
+--prefix=DIRECTORY'. Then, the required files will be installed to
+`DIRECTORY/bin'.
+
+
+Repository version
+------------------
+
+The following tools are necessary to compile LoLA from scratch:
+
+- Autoconf
+- Automake
+- Flex
+- GNU Bison
+- GNU Gengetopt
+- GNU Make
+- GNU help2man
+- GNU sed
+- Kimwitu++
+
+With these tools, execute
+
+     $ autoreconf -i
+
+and continue with the instructions in "Setup and installation".
