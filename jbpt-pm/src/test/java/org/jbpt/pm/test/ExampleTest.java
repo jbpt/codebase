@@ -46,14 +46,14 @@ public class ExampleTest {
 			long start = System.currentTimeMillis();
 			Object relevantTraces = QualityMeasuresCLI.parseModel(rel);
 			long finish = System.currentTimeMillis();
-			System.out.println(String.format("The relevant model was loaded in                            %s ms.",
+			System.out.println(String.format("The relevant model loaded in                                %s ms.",
 					(finish - start)));
 
 			System.out.println(String.format("Loading the retrieved model from %s.", ret));
 			start = System.currentTimeMillis();
 			Object retrievedTraces = QualityMeasuresCLI.parseModel(ret);
 			finish = System.currentTimeMillis();
-			System.out.println(String.format("The retrieved model was loaded in                           %s ms.",
+			System.out.println(String.format("The retrieved model loaded in                               %s ms.",
 					(finish - start)));
 
 			EntropyPrecisionRecallMeasure epr = new EntropyPrecisionRecallMeasure(relevantTraces, retrievedTraces);

@@ -131,7 +131,7 @@ public abstract class AbstractEntropyMeasure {
 			model = Utils.constructAutomatonFromLog((XLog) model, activity2short);
 		}
 	    long finish = System.currentTimeMillis();
-	    System.out.println(String.format("The automaton for model was constructed in                   %s ms.", (finish-start)));
+	    System.out.println(String.format("The automaton for model constructed in                       %s ms.", (finish-start)));
 	    System.out.println(String.format("The number of states:                                        %s", ((Automaton)model).getNumberOfStates()));
 	    System.out.println(String.format("The number of transitions:                                   %s", Utils.numberOfTransitions((Automaton)model)));
 	    	    

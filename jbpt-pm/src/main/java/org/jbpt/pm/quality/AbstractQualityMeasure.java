@@ -146,7 +146,7 @@ public abstract class AbstractQualityMeasure {
 			retrievedTraces = Utils.constructAutomatonFromLog((XLog) retrievedTraces, activity2short);
 		}
 	    long finish = System.currentTimeMillis();
-	    System.out.println(String.format("Automaton RET was constructed in                            %s ms.", (finish-start)));
+	    System.out.println(String.format("Automaton RET constructed in                                %s ms.", (finish-start)));
 	    System.out.println(String.format("Automaton RET has %s states and %s transitions.", ((Automaton)retrievedTraces).getNumberOfStates(), Utils.numberOfTransitions((Automaton)retrievedTraces)));
 	    
 		System.out.println(String.format("Constructing automaton REL that encodes the relevant model."));
@@ -157,7 +157,7 @@ public abstract class AbstractQualityMeasure {
 			relevantTraces = Utils.constructAutomatonFromLog((XLog) relevantTraces, activity2short);
 		}
 	    finish = System.currentTimeMillis();
-	    System.out.println(String.format("Automaton REL was constructed in                            %s ms.", (finish-start)));
+	    System.out.println(String.format("Automaton REL constructed in                                %s ms.", (finish-start)));
 	    System.out.println(String.format("Automaton REL has %s states and %s transitions.", ((Automaton)relevantTraces).getNumberOfStates(), Utils.numberOfTransitions((Automaton)relevantTraces)));
 	    
 	    start = System.nanoTime();
