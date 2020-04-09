@@ -54,13 +54,19 @@ public class Utils {
 		
 		// Construct initial state
 		Collection<Place> initialMarking = ns.getMarking().toMultiSet();
+//		System.out.println("Initial marking = " + initialMarking);
 		
 		// Derive final marking
 		Collection<Place> finalMarking = deriveFinalMarking(ns);
+		
+//		Collection<Place> finalMarking = initialMarking;
 
 		State initialState = new State();
 		markingToState.put(initialMarking, initialState);
 		a.setInitialState(initialState);
+		if (initialMarking.containsAll(finalMarking) && finalMarking.containsAll(initialMarking)) {
+			initialState.setAccept(true);
+		}
 		unprocessedMarkings.add(initialMarking);
 		
 		// Pair of states connected by tau
@@ -71,6 +77,7 @@ public class Utils {
 			Collection<Place> curMarking = unprocessedMarkings.iterator().next();
 			Set<Transition> enabledTransitions = retrieveEnabledTransitions(curMarking, ns);
 
+//			System.out.println(enabledTransitions);
 			for (Transition enabeledTransition : enabledTransitions) {
 
 				Marking marking = new Marking(ns);
@@ -94,6 +101,9 @@ public class Utils {
 				}
 				
 				char c = (char) Integer.valueOf(enabeledTransition.getLabel().hashCode()).shortValue();
+//				System.out.println(c);
+//				System.out.println(newMarking);
+//				System.out.println(newState);
 				// If string is empty (silent)
 				if (c == '\u0000') {
 					tauPairs.add(new StatePair(curState, newState));
@@ -104,8 +114,8 @@ public class Utils {
 					activity2short.putIfAbsent(enabeledTransition.getLabel(), (short) activity2short.size());
 					dk.brics.automaton.Transition t = new dk.brics.automaton.Transition((char)activity2short.get(enabeledTransition.getLabel()), newState);
 					curState.addTransition(t);
+//					System.out.println(a);
 				}
-
 			}
 			unprocessedMarkings.remove(curMarking);
 		}
@@ -117,6 +127,7 @@ public class Utils {
 		
 		a.addEpsilons(tauPairs);
 		a.determinize();
+//		System.out.println(a);
 		a.minimize();
 		return a;
 	}
@@ -164,6 +175,7 @@ public class Utils {
 			}
 			curState.setAccept(true);
 		}
+		a.minimize();
 		return a;
 	}
 	

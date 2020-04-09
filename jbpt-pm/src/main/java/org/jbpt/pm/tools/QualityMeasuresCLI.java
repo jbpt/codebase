@@ -128,9 +128,9 @@ public final class QualityMeasuresCLI {
 	        		System.out.println("Computing eigenvalue-based precision and recall based on exact matching of traces.");
 	        		System.out.println("The technique is described in:");
 	        		System.out.println("Artem Polyvyanyy, Andreas Solti, Matthias Weidlich, Claudio Di Ciccio,");
-	        		System.out.println("Jan Mendling. Monotone Precision and Recall Measures for Comparing Executions");
-	        		System.out.println("and Specifications of Dynamic Systems. CoRR abs/1812.07334 (2018).");
-	        		System.out.println("http://arxiv.org/abs/1812.07334\n");
+	        		System.out.println("Jan Mendling. Monotone Precision and Recall for Comparing Executions and ");
+	        		System.out.println("Specifications of Dynamic Systems.");
+	        		System.out.println("ACM Transactions on Software Engineering and Methodology (TOSEM) (2020)\n");
 	        	} else if (cmd.hasOption("ppr")) {
 	        		System.out.println("Computing eigenvalue-based precision and recall based on partial matching of traces.");
 	        		System.out.println("The technique is described in:");
@@ -144,7 +144,6 @@ public final class QualityMeasuresCLI {
 	        		System.out.println("Artem Polyvyanyy, Anna Kalenkova. Monotone Conformance Checking for Partially");
 	        		System.out.println("Matching Designed and Observed Processes. ICPM 2019: 81-88.");
 	        		System.out.println("https://doi.org/10.1109/ICPM.2019.00022\n");
-	        		
 	    		}
 	        	
 	        	if (cmd.hasOption("ent") || cmd.hasOption("dent") || cmd.hasOption("doent")) {
