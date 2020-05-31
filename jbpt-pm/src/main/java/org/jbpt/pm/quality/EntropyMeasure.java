@@ -6,8 +6,12 @@ import dk.brics.automaton.Automaton;
 
 public class EntropyMeasure extends AbstractEntropyMeasure {
 
-	public EntropyMeasure(Object model) {
+	int numberOfSkips = 0;
+	
+	public EntropyMeasure(Object model, int numberOfSkips) {
+		
 		super(model);
+		this.numberOfSkips = numberOfSkips;
 	}
 
 	@Override
@@ -22,7 +26,7 @@ public class EntropyMeasure extends AbstractEntropyMeasure {
 		System.out.println();
 		
 		if (model instanceof Automaton) {
-			double value = MetricsCalculator.calculateEntropy((Automaton)model, "model", false, false);
+			double value = MetricsCalculator.calculateEntropy((Automaton)model, "model", false, false, numberOfSkips);
 			return value;
 		}
 		return 0.0;

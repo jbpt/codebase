@@ -41,29 +41,32 @@ import org.progressmining.xeslite.common.XesLiteXesXmlParser;
 
 //============================================================================
 // SAMPLE call:
-// java -jar jbpt-pm.jar -pr  -rel=1.pnml -ret=1.xes
+// java -jar jbpt-pm.jar -pr  -ret=1.pnml -rel=1.xes
 // ============================================================================
 // To compare with discovered model:
-// java -jar jbpt-pm.jar -pr -ret=1.xes 
+// java -jar jbpt-pm.jar -pr -rel=1.xes 
 //============================================================================
 // supported measures:
 // --precision-recall (-pr):						precision and recall from TOSEM'19 submission
 // --partial-precision-recall (-ppr):				partial precision and recall from ICPM'19 paper
 // --partial-optimized-precision-recall (-popr):	precision and recall from IS Journal'19 paper with smart log handling
-// --entropy (-ent)									compute entropy measure (for exact traces)
-// --diluted-entropy (-dent)						compute entropy measure (for “diluted” traces)
-// --partial-efficient-entropy (-doent)			    compute entropy measure (for “diluted” traces with optimization)
+// --entropy (-ent):								compute entropy measure (for exact traces)
+// --diluted-entropy (-dent):						compute entropy measure (for “diluted” traces)
+// --partial-efficient-entropy (-doent):			compute entropy measure (for “diluted” traces with optimization)
+// --skips (-skips):			                    number of allowed skips for the model
+// --skips-relevant (-skrel):			        	number of allowed skips for rel model
+// --skips-retrieved (-skret):			        	number of allowed skips for ret model
 //============================================================================
 
 /**
  * Command line interface to quality measures for Process Mining and Process Querying.
  * 
- * @version 1.0
+ * @version 1.5
  * 
  * @author Artem Polyvyanyy, Anna Kalenkova 
  */ 
 public final class QualityMeasuresCLI {
-	final private static String	version	= "1.4";
+	final private static String	version	= "1.5";
 	
 	private static Object relevantTraces	= null;
 	private static Object retrievedTraces	= null;
@@ -89,11 +92,17 @@ public final class QualityMeasuresCLI {
 	    	Option entMeasure		= Option.builder("ent").longOpt("entropy").numberOfArgs(0).required(false).desc("compute entropy measure (for exact traces)").hasArg(false).build();
 	    	Option dentMeasure		= Option.builder("dent").longOpt("diluted-entropy").numberOfArgs(0).required(false).desc("compute entropy measure (for \"diluted\" traces)").hasArg(false).build();
 	    	Option doentMeasure		= Option.builder("doent").longOpt("diluted-optimized-entropy").numberOfArgs(0).required(false).desc("compute entropy measure (for \"diluted\" traces with optimization)").hasArg(false).build();
-	    	
+	     	
+	    	// allow up to certain number of skips in models
+	    	Option skipsMeasure		= Option.builder("sk").longOpt("skips").numberOfArgs(0).required(false).desc("add specified amount of skips to traces").hasArg(false).build();
+	    	Option skipsRelMeasure	= Option.builder("skrel").longOpt("skrelevant").hasArg(true).optionalArg(false).required(false).valueSeparator('=').argName("number of skips").desc("add specified amount of skips to relevant traces").build();
+	    	Option skipsRetMeasure	= Option.builder("skret").longOpt("skretrieved").hasArg(true).optionalArg(false).required(false).valueSeparator('=').argName("number of skips").desc("add specified amount of skips to retrieved traces").build();
 	    	
 	    	// models of relevant and retrieved traces
 	    	Option relModel			= Option.builder("rel").longOpt("relevant").hasArg(true).optionalArg(false).valueSeparator('=').argName("file path").required(false).desc("model that describes relevant traces (XES or PNML)").build();
 	    	Option retModel			= Option.builder("ret").longOpt("retrieved").hasArg(true).optionalArg(false).valueSeparator('=').argName("file path").required(false).desc("model that describes retrieved traces (XES or PNML)").build();
+	    	
+	    	
 	    	
 	    	// create groups
 	    	OptionGroup cmdGroup = new OptionGroup();
@@ -108,6 +117,10 @@ public final class QualityMeasuresCLI {
 	    	cmdGroup.setRequired(true);
 	    	
 	    	options.addOptionGroup(cmdGroup);
+	    	
+	    	options.addOption(skipsMeasure);
+	    	options.addOption(skipsRelMeasure);
+	    	options.addOption(skipsRetMeasure);
 	    	
 	    	options.addOption(relModel);
 	    	options.addOption(retModel);
@@ -155,8 +168,13 @@ public final class QualityMeasuresCLI {
 	        		if (cmd.hasOption("ent")) {
 		        		for (String arg : argList) {
 		        			Object model = parseModel(arg);
-		        			EntropyMeasure em = new EntropyMeasure(model);
+		        			int skips  = 0;
+		        			if (cmd.hasOption("sk")) {
+		        				skips = Integer.parseInt(cmd.getOptionValue("sk"));
+		        			}
+		        			EntropyMeasure em = new EntropyMeasure(model, skips);
 		        			double result = em.computeMeasure();
+		        			
 		        			System.out.println(String.format("Entropy value for %s id %s.", arg, result));
 		        		}
 	        		}
@@ -218,7 +236,15 @@ public final class QualityMeasuresCLI {
 		        	Pair<Double, Double> result = new Pair<Double,Double>(0.0,0.0);
 		        	// compute measures
 		        	if (cmd.hasOption("pr")) {
-		        		EntropyPrecisionRecallMeasure epr = new EntropyPrecisionRecallMeasure(relevantTraces, retrievedTraces);
+		        		int skipsrel = 0;
+		        		int skipsret = 0;
+		        		if(cmd.hasOption("skrel")) {
+		        			skipsrel = Integer.parseInt(cmd.getOptionValue("skrel"));
+		        		}
+		        		if(cmd.hasOption("skret")) {
+		        			skipsret = Integer.parseInt(cmd.getOptionValue("skret"));
+		        		}
+		        		EntropyPrecisionRecallMeasure epr = new EntropyPrecisionRecallMeasure(relevantTraces, retrievedTraces, skipsrel, skipsret);
 		        		epr.checkLimitations();
 		        		for (QualityMeasureLimitation limitation : epr.getLimitations()) {
 		        			int limitDescriptionLength = limitation.getDescription().length();
@@ -248,7 +274,8 @@ public final class QualityMeasuresCLI {
 	        }
 	    }
 	    catch (ParseException exp) {
-	        // oops, something went wrong
+	        exp.printStackTrace();
+	    	// oops, something went wrong
 	        System.err.println("CLI parsing failed. Reason: " + exp.getMessage() + "\n");
 	        showHelp(options);
 	        return;

@@ -56,7 +56,7 @@ public class ExampleTest {
 			System.out.println(String.format("The retrieved model loaded in                               %s ms.",
 					(finish - start)));
 
-			EntropyPrecisionRecallMeasure epr = new EntropyPrecisionRecallMeasure(relevantTraces, retrievedTraces);
+			EntropyPrecisionRecallMeasure epr = new EntropyPrecisionRecallMeasure(relevantTraces, retrievedTraces, 0, 0);
 			Pair<Double, Double> result = epr.computeMeasure();
 //			System.out.println(String.format("Precision: %s", result.getSecond()));
 //			System.out.println(String.format("Recall: %s", result.getFirst()));

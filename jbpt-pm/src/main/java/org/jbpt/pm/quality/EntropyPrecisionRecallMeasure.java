@@ -7,8 +7,14 @@ import dk.brics.automaton.Automaton;
 
 public class EntropyPrecisionRecallMeasure extends AbstractQualityMeasure {
 
-	public EntropyPrecisionRecallMeasure(Object relevantTraces, Object retrievedTraces) {
+	int skipsRel = 0; // max allowed number of skips in relevant traces
+	int skipsRet = 0; // max allowed number of skips in retrieved traces
+	
+	public EntropyPrecisionRecallMeasure(Object relevantTraces, Object retrievedTraces, int skipsRel, int skipsRet) {
 		super(relevantTraces, retrievedTraces);
+		
+		this.skipsRel = skipsRel;
+		this.skipsRet = skipsRet;
 	}
 
 	@Override
@@ -24,7 +30,7 @@ public class EntropyPrecisionRecallMeasure extends AbstractQualityMeasure {
 		System.out.println();
 		
 		if ((relevantTraces instanceof Automaton) && (retrievedTraces instanceof Automaton)) {
-			Pair<Double, Double> values = MetricsCalculator.calculate((Automaton)relevantTraces, "REL", (Automaton)retrievedTraces, "RET", false, false);
+			Pair<Double, Double> values = MetricsCalculator.calculate((Automaton)relevantTraces, "REL", (Automaton)retrievedTraces, "RET", false, false, skipsRel, skipsRet);
 			return values;
 		}
 		return new Pair<Double, Double>(0.0, 0.0);

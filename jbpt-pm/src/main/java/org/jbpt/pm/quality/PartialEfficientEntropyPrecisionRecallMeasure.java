@@ -21,7 +21,7 @@ public class PartialEfficientEntropyPrecisionRecallMeasure extends AbstractQuali
 	protected Pair<Double, Double> computeMeasureValue() {
 		
 		if ((relevantTraces instanceof Automaton) && (retrievedTraces instanceof Automaton)) {
-			Pair<Double, Double> values = MetricsCalculator.calculate((Automaton)relevantTraces, "REL", (Automaton)retrievedTraces, "RET", true, true);
+			Pair<Double, Double> values = MetricsCalculator.calculate((Automaton)relevantTraces, "REL", (Automaton)retrievedTraces, "RET", true, true, 0, 0);
 			return values;
 		}
 		return new Pair<Double, Double>(0.0, 0.0);

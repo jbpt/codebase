@@ -22,7 +22,7 @@ public class PartialEfficientEntropyMeasure extends AbstractEntropyMeasure {
 		System.out.println();
 		
 		if (model instanceof Automaton) {
-			double value = MetricsCalculator.calculateEntropy((Automaton)model, "model", true, true);
+			double value = MetricsCalculator.calculateEntropy((Automaton)model, "model", true, true, 0);
 			return value;
 		}
 		return 0.0;
