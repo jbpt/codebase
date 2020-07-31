@@ -1,7 +1,13 @@
 package org.jbpt.pm.tools;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -56,6 +62,8 @@ import org.progressmining.xeslite.common.XesLiteXesXmlParser;
 // --skips (-skips):			                    number of allowed skips for the model
 // --skips-relevant (-skrel):			        	number of allowed skips for rel model
 // --skips-retrieved (-skret):			        	number of allowed skips for ret model
+
+// --silent (-s):			        	            print the results only
 //============================================================================
 
 /**
@@ -72,6 +80,11 @@ public final class QualityMeasuresCLI {
 	private static Object retrievedTraces	= null;
 		
 	public static void main(String[] args) throws Exception {
+		
+		// stop libraries from printing out "INFO" and "WARNING" logs to console
+		Logger logger = Logger.getLogger("");
+		logger.setLevel(Level.SEVERE);
+		
 		// read parameters from the CLI
 		CommandLineParser parser = new DefaultParser();
 		
@@ -102,6 +115,9 @@ public final class QualityMeasuresCLI {
 	    	Option relModel			= Option.builder("rel").longOpt("relevant").hasArg(true).optionalArg(false).valueSeparator('=').argName("file path").required(false).desc("model that describes relevant traces (XES or PNML)").build();
 	    	Option retModel			= Option.builder("ret").longOpt("retrieved").hasArg(true).optionalArg(false).valueSeparator('=').argName("file path").required(false).desc("model that describes retrieved traces (XES or PNML)").build();
 	    	
+	    	// silent option
+	    	Option silent			= Option.builder("s").longOpt("silent").numberOfArgs(0).required(false).desc("print the results only").hasArg(false).build();
+	    	
 	    	
 	    	
 	    	// create groups
@@ -125,8 +141,16 @@ public final class QualityMeasuresCLI {
 	    	options.addOption(relModel);
 	    	options.addOption(retModel);
 	    	
+	    	options.addOption(silent);
+	    	
 	        // parse the command line arguments
 	        CommandLine cmd = parser.parse(options, args);
+	        
+	        // redirecting standard output in silent mode
+	        if (cmd.hasOption("s")) {
+	        	ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	        	System.setOut(new PrintStream(baos));
+	        }
 	        
 	        if (cmd.hasOption("h") || cmd.getOptions().length==0) { // handle help
 	        	showHelp(options);
@@ -175,6 +199,9 @@ public final class QualityMeasuresCLI {
 		        			EntropyMeasure em = new EntropyMeasure(model, skips);
 		        			double result = em.computeMeasure();
 		        			
+		        			// redirecting standard output back
+		        	        System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
+
 		        			System.out.println(String.format("Entropy value for %s id %s.", arg, result));
 		        		}
 	        		}
@@ -183,6 +210,10 @@ public final class QualityMeasuresCLI {
 		        			Object model = parseModel(arg);
 		        			PartialEntropyMeasure pem = new PartialEntropyMeasure(model);
 		        			double result = pem.computeMeasure();
+		        			
+		        			// redirecting standard output back
+		        	        System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
+
 		        			System.out.println(String.format("Partial entropy value for %s id %s.", arg, result));
 		        		}
 	        		}
@@ -191,6 +222,10 @@ public final class QualityMeasuresCLI {
 		        			Object model = parseModel(arg);
 		        			PartialEfficientEntropyMeasure peem = new PartialEfficientEntropyMeasure(model);
 		        			double result = peem.computeMeasure();
+		        			
+		        			// redirecting standard output back
+		        	        System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
+
 		        			System.out.println(String.format("Partial entropy value for %s id %s.", arg, result));
 		        		}
 	        		}	        		
@@ -274,7 +309,10 @@ public final class QualityMeasuresCLI {
 	        }
 	    }
 	    catch (ParseException exp) {
-	        exp.printStackTrace();
+	        // redirecting standard output back
+	        System.setOut(System.out);
+	        
+	    	exp.printStackTrace();
 	    	// oops, something went wrong
 	        System.err.println("CLI parsing failed. Reason: " + exp.getMessage() + "\n");
 	        showHelp(options);
