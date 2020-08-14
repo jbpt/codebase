@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<pnml xmlns="http://www.pnml.org/version-2009/grammar/pnml">
+<net id="2def6871-e972-4e80-8ede-0b821caf895f" type="http://www.pnml.org/version-2009/grammar/ptnet">
+<name><text>model</text></name>
+<page id="page0">
+<place id="p06223fd"><name><text>p0</text></name><initialMarking><text>1</text></initialMarking></place>
+<place id="p18cb2f5"><name><text>p1</text></name></place>
+<place id="p29ce508"><name><text>p2</text></name></place>
+<place id="p3c3a17b"><name><text>p3</text></name></place>
+<place id="p4e7f586"><name><text>p4</text></name></place>
+<place id="p5d162b6"><name><text>p5</text></name></place>
+<transition id="a1ae6405"><name><text>a</text></name></transition>
+<transition id="b08723dd"><name><text>b</text></name></transition>
+<transition id="c02f2d83"><name><text>c</text></name></transition>
+<transition id="d56854d6"><name><text>d</text></name></transition>
+<transition id="e6aacf2f"><name><text>e</text></name></transition>
+<arc id="d34088db" source="p06223fd" target="a1ae6405"/>
+<arc id="567c4b43" source="a1ae6405" target="p18cb2f5"/>
+<arc id="db5ae8a5" source="a1ae6405" target="p29ce508"/>
+<arc id="36389fa8" source="728cb2f5" target="508723dd"/>
+<arc id="03cb1423" source="p18cb2f5" target="b08723dd"/>
+<arc id="974ec135" source="p29ce508" target="c02f2d83"/>
+<arc id="f2e2f40f" source="b08723dd" target="p3c3a17b"/>
+<arc id="24f908c5" source="c02f2d83" target="p4e7f586"/>
+<arc id="c3d44077" source="p3c3a17b" target="d56854d6"/>
+<arc id="c415202e" source="p3c3a17b" target="e6aacf2f"/>
+<arc id="e3d82b05" source="p4e7f586" target="d56854d6"/>
+<arc id="5dcce31d" source="p4e7f586" target="e6aacf2f"/>
+<arc id="34e95c2c" source="d56854d6" target="p18cb2f5"/>
+<arc id="34e95c2c" source="d56854d6" target="p29ce508"/>
+<arc id="abf75fe1" source="e6aacf2f" target="p5d162b6"/>
+</page>
+</net>
+</pnml>
