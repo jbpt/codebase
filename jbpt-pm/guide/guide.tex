@@ -18,7 +18,6 @@
 \setlength\parindent{0pt}
 \usepackage{authblk}
 \renewcommand\thesubsection{\alph{subsection})}
-\def\Version#1{\def\version{#1}}
 \geometry{a4paper,}
 
 \definecolor{darkcandyapplered}{rgb}{0.64, 0.0, 0.0}
@@ -130,7 +129,7 @@ Use the option (\textcolor{darkcandyapplered}{\footnotesize\ttfamily-h}) to disp
 >java -jar !jbpt-pm-entropia-1.5.jar! @-h@
 \end{lstlisting}
 \textbf{Output Screen:}%chnage
-\lstinputlisting[style=DOS]{Screens/Screen_(-h).txt}
+\lstinputlisting[style=DOS]{screens/screen_(-h).txt}
 
 \section*{Models and Event Log}
 The tutorial will use example files that are provided with the tool, which are the event log coded in XES format (log.xes), process model modelled as a Petri Net (model.pnml) and stochastic process model as an SDFA coded in JSON format (automaton.json). Table 1, Figure 1 and Figure 2 represent the three files, respectively. 
@@ -207,7 +206,7 @@ The tutorial will use example files that are provided with the tool, which are t
 \begin{center}
 \vspace{5mm}
 \begin{minipage}{0.45\textwidth}
-\centering
+ \centering
 \includegraphics[width=0.40\textwidth]{fig/eventLog.pdf} 
 \caption*{ Table 1: Event Log}
 \label{fig:Log}
@@ -216,7 +215,7 @@ The tutorial will use example files that are provided with the tool, which are t
 \vspace{-4mm}
 \end{figure}
 
-All files are located in the folder \textbf{jbpt-pm\slash guide\slash}. If the folder does not contain the files, you can download them from \url{https://github.com/jbpt/codebase/tree/master/jbpt-pm/entropia/guide/}. It is recommended to use the event log and models provided to understand how to run the Entropia commands. Then, try it with your own data. Refer to Table III in the demo paper for more details about file types and formats supported by the tool.
+All files are located in the folder \textbf{jbpt-pm\slash guide\slash examples}. If the folder does not contain the files, you can download them from \url{https://github.com/jbpt/codebase/tree/master/jbpt-pm/entropia/guide/}. It is recommended to use the event log and models provided to understand how to run the Entropia commands. Then, try it with your own data. Refer to Table III in the demo paper for more details about file types and formats supported by the tool.
 
 \section*{Classical Non-Deterministic Conformance Checking Measures}
 \setcounter{subsection}{0}
@@ -228,7 +227,7 @@ To compute the exact matching precision value between the event log (log.xes) an
 Note that in the command the paths to the event log and process model files are assigned to the relevant (\textcolor{ao}{\footnotesize\ttfamily-rel=}\textcolor{gray}{\footnotesize\ttfamily<path>}) and retrieved (\textcolor{ao}{\footnotesize\ttfamily-ret=}\textcolor{gray}{\footnotesize\ttfamily<path>}) models respectively.\\
 
 \textbf{Output Screen:}%chnage
-\lstinputlisting[style=DOS]{Screens/Screen_(-emp).txt}
+\lstinputlisting[style=DOS]{screens/screen_(-emp).txt}
 
 When the option (\textcolor{orange}{\footnotesize\ttfamily-s}) is added to commands, the tool runs in the silent mode. The following command is an example of using the (\textcolor{orange}{\footnotesize\ttfamily-s}) option:
 \begin{lstlisting}[style=CL]
@@ -237,7 +236,7 @@ When the option (\textcolor{orange}{\footnotesize\ttfamily-s}) is added to comma
 The tool, in the silent mode, only prints the result, in this case the exact matching precision, omitting the debug information and execution data. The expected output of the command will be as the following. \\
 %will be placed on the output screen
 \textbf{Output Screen:}%chnage
-\lstinputlisting[style=DOS]{Screens/Screen_(-emp-s).txt}
+\lstinputlisting[style=DOS]{screens/screen_(-emp-s).txt}
 
 By replacing the option (\textcolor{darkcandyapplered}{\footnotesize\ttfamily-emr}) with (\textcolor{darkcandyapplered}{\footnotesize\ttfamily-emp}), the tool computes the exact matching recall value between the event log and process model. 
 
@@ -245,7 +244,7 @@ By replacing the option (\textcolor{darkcandyapplered}{\footnotesize\ttfamily-em
 >java -jar !jbpt-pm-entropia-1.5.jar! @-emr@ &-rel=&log.xes &-ret=&model.pnml
 \end{lstlisting}
 \textbf{Output Screen:}%chnage
-\lstinputlisting[style=DOS]{Screens/Screen_(-emr).txt}
+\lstinputlisting[style=DOS]{screens/screen_(-emr).txt}
 
 \subsection{Partial Matching Precision and Recall Measures}
 To measure the partial matching precision value between the event log and model, use the option (\textcolor{darkcandyapplered}{\footnotesize\ttfamily-pmp}) on the command line followed by the paths to log (\textcolor{ao}{\footnotesize\ttfamily-rel=}\textcolor{gray}{\footnotesize\ttfamily<path>}) and model files (\textcolor{ao}{\footnotesize\ttfamily-ret=}\textcolor{gray}{\footnotesize\ttfamily<path>}), as follows: 
@@ -254,14 +253,14 @@ To measure the partial matching precision value between the event log and model,
 \end{lstlisting}
 \textbf{Output Screen:}(in the silent mode).
 %chnage
-\lstinputlisting[style=DOS]{Screens/Screen_(-pmp-s).txt}
+\lstinputlisting[style=DOS]{screens/screen_(-pmp-s).txt}
 When you replace the option (\textcolor{darkcandyapplered}{\footnotesize\ttfamily-pmp}) with (\textcolor{darkcandyapplered}{\footnotesize\ttfamily-pmr}), the tool measures the partial matching recall value.
 \begin{lstlisting}[style=CL]
 >java -jar !jbpt-pm-entropia-1.5.jar! @-pmr@ &-rel=&log.xes &-ret=&model.pnml
 \end{lstlisting}
 Note that the option (\textcolor{orange}{\footnotesize\ttfamily-s}) is removed as the debug information and execution data are placed on the output screen. \\
 \textbf{Output Screen:}
-\lstinputlisting[style=DOS]{Screens/Screen_(-pmr).txt}
+\lstinputlisting[style=DOS]{screens/screen_(-pmr).txt}
 
 \subsection{Controlled Partial Matching Precision and Recall Measures}
 In order to measure controlled partial matching precision and recall values, the options (\textcolor{darkcandyapplered}{\footnotesize\ttfamily-cpmp}) and (\textcolor{darkcandyapplered}{\footnotesize\ttfamily-cpmr}) are used, respectively. Both options should be followed by the paths to log (\textcolor{ao}{\footnotesize\ttfamily-rel}\textcolor{gray}{\footnotesize\ttfamily<path>}) and model files (\textcolor{ao}{\footnotesize\ttfamily-ret}\textcolor{gray}{\footnotesize\ttfamily<path>}); and (\textcolor{ao}{\footnotesize\ttfamily-srel=}\textcolor{gray}{\footnotesize\ttfamily<num>}) and (\textcolor{ao}{\footnotesize\ttfamily-sret=}\textcolor{gray}{\footnotesize\ttfamily<num>}) options to specify the number of allowed skips in relevant and retrieved traces. 
@@ -271,14 +270,14 @@ The following command computes the controlled partial matching precision value b
 >java -jar !jbpt-pm-entropia-1.5.jar! @-cpmp@ &-srel=&3 &-sret=&3 &-rel=&log.xes &-ret=&model.pnml
 \end{lstlisting}
 \textbf{Output Screen:}%chnage
-\lstinputlisting[style=DOS]{Screens/Screen_(-cpmp).txt}
+\lstinputlisting[style=DOS]{screens/screen_(-cpmp).txt}
 
 Similarly, in the following command, (\textcolor{darkcandyapplered}{\footnotesize\ttfamily-cpmr}) is used to measure the  controlled partial matching recall value, where the maximal number of allowed skipped actions in traces in the event log (\textcolor{ao}{\footnotesize\ttfamily-srel}) and model (\textcolor{ao}{\footnotesize\ttfamily-sret=<num>}) are 2 and 3, respectively.
 \begin{lstlisting}[style=CL]
 >java -jar !jbpt-pm-entropia-1.5.jar! @-cpmr@ &-srel=&2 -sret=&3 &-rel=&log.xes& &-ret=&model.pnml
 \end{lstlisting}
 \textbf{Output Screen:}%chnage. 
-\lstinputlisting[style=DOS]{Screens/Screen_(-cpmr).txt}
+\lstinputlisting[style=DOS]{screens/screen_(-cpmr).txt}
 
 \section*{Stochastic Conformance Checking Measures}
 \setcounter{subsection}{0}
@@ -288,14 +287,14 @@ To compute the stochastic precision value between the event log and the process 
 >java -jar !jbpt-pm-entropia-1.5.jar! @-sp@ & -rel=log.xes& &-ret=automaton.json&
 \end{lstlisting}
 \textbf{Output Screen:}%chnage
-\lstinputlisting[style=DOS]{Screens/Screen_(-sp).txt}
+\lstinputlisting[style=DOS]{screens/screen_(-sp).txt}
 
 Use the option (\textcolor{darkcandyapplered}{\footnotesize\ttfamily-sr}) instead of (\textcolor{darkcandyapplered}{\footnotesize\ttfamily-sp}) in order to get the stochastic recall value between the event log and process model. 
 \begin{lstlisting}[style=CL]
 >java -jar !jbpt-pm-entropia-1.5.jar! @-sr@ & -rel=log.xes& &-ret=automaton.json&
 \end{lstlisting}
 \textbf{Output Screen:}%chnage
-\lstinputlisting[style=DOS]{Screens/Screen_(-sr).txt}
+\lstinputlisting[style=DOS]{screens/screen_(-sr).txt}
 \subsection{Entropic Relevance Measure}
 You can measure relevance of a stochastic process model to an event log using the option (\textcolor{darkcandyapplered}{\footnotesize\ttfamily-r}), as the following command shows. Note that the retrieved model is specified to the stochastic process model, i.e. the stochastic deterministic finite automaton (SDFA), in JSON format.
 
@@ -303,7 +302,7 @@ You can measure relevance of a stochastic process model to an event log using th
 >java -jar !jbpt-pm-entropia-1.5.jar! @-r@ &-rel=&log.xes &-ret=&automaton.json
 \end{lstlisting}
 \textbf{Output Screen:}%chnage
-\lstinputlisting[style=DOS]{Screens/Screen_(-r).txt}
+\lstinputlisting[style=DOS]{screens/screen_(-r).txt}
 
 
 \newpage
