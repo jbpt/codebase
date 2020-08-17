@@ -1,4 +1,4 @@
- >java -jar jbpt-pm-entropia-1.5.jar -cpmp -srel=3 -sret=3 -rel=log.xes -ret=model.pnml
+>java -jar jbpt-pm-entropia-1.5.jar -cpmr -srel=2 -sret=3 -rel=log.xes -ret=model.pnml
 ================================================================================
 Tool to compute quality measures for Process Mining and Process Querying ver. 1.5.
 For support, please contact us at jbpt.project@gmail.com.
@@ -45,5 +45,5 @@ A largest eigenvalue of the adjacency matrix of RET computed in     9352 ms.
 A largest eigenvalue of the adjacency matrix of INT is 2.895675670596543.
 A largest eigenvalue of the adjacency matrix of INT computed in     16 ms.
 
-Precision computed in                                               9368 ms.
-Precision: 0.9373771848573396.
+Recall computed in                                                  84 ms.
+Recall: 0.9851977981870396.

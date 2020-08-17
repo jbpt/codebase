@@ -1,0 +1,29 @@
+>java -jar jbpt-pm-entropia-1.5.jar -h
+================================================================================
+Tool to compute quality measures for Process Mining and Process Querying ver. 1.5.
+For support, please contact us at jbpt.project@gmail.com.
+================================================================================
+PNML format:    http://www.pnml.org/
+XES format:     https://xes-standard.org/
+================================================================================
+
+usage: java -jar jbpt-pm.jar <options>
+ -dent,--diluted-entropy                      compute entropy measure (for "diluted" traces)
+ -doent,--diluted-optimized-entropy           compute entropy measure (for "diluted" traces 
+ 					      with optimization)
+ -ent,--entropy                               compute entropy measure (for exact traces)
+ -h,--help                                    print help message
+ -popr,--partial-optimized-precision-recall   compute entropy-based precision and recall (partial 
+                                              trace matching with optimization)
+ -ppr,--partial-precision-recall              compute entropy-based precision and recall (partial 
+ 					      trace matching)
+ -pr,--precision-recall                       compute entropy-based precision and recall (exact 
+  					      trace matching)
+ -rel,--relevant <file path>                  model that describes relevant traces (XES or PNML)
+ -ret,--retrieved <file path>                 model that describes retrieved traces (XES or PNML)
+ -s,--silent                                  print the results only
+ -sk,--skips                                  add specified amount of skips to traces
+ -skrel,--skrelevant <number of skips>        add specified amount of skips to relevant traces
+ -skret,--skretrieved <number of skips>       add specified amount of skips to retrieved traces
+ -v,--version                                 get version of this tool
+================================================================================

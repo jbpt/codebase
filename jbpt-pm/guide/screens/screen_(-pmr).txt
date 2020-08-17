@@ -1,0 +1,61 @@
+>java -jar jbpt-pm-entropia-1.5.jar -pmr -rel=log.xes -ret=model.pnml
+================================================================================
+Tool to compute quality measures for Process Mining and Process Querying ver. 1.5.
+For support, please contact us at jbpt.project@gmail.com.
+================================================================================
+PNML format:    http://www.pnml.org/
+XES format:     https://xes-standard.org/
+================================================================================
+
+Computing eigenvalue-based precision and recall based on partial matching of traces.
+The technique is described in:
+Artem Polyvyanyy, Anna Kalenkova. Monotone Conformance Checking for Partially
+Matching Designed and Observed Processes. ICPM 2019: 81-88.
+https://doi.org/10.1109/ICPM.2019.00022
+
+Loading the retrieved model from C:\Users\halkhammash\git\codebase-master\jbpt-pm\model.pnml.
+The retrieved modeln loaded in                              78 ms.
+Loading the relevant model from C:\Users\halkhammash\git\codebase-master\jbpt-pm\log.xes.
+The relevant model loaded in                                40 ms.
+The boundedness of the relevant model checked in            0 ms.
+
+The boundedness of the retrieved model checked in           228 ms.
+
+Constructing automaton RET that encodes the retrieved model.
+Automaton RET constructed in                                6 ms.
+Automaton RET has 6 states and 7 transitions.
+Constructing automaton REL that encodes the relevant model.
+Automaton REL constructed in                                1 ms.
+Automaton REL has 10 states and 14 transitions.
+Minimizing automaton REL.
+Automaton REL was minimized in                              0 ms.
+The minimized version of REL has 10 states and 14 transitions.
+Determinizing the minimized version of REL.
+The minimized version of REL was determinized in            0 ms.
+The determinized version of the minimized version of REL has 11 states and 36 transitions.
+Minimizing deterministic version of automaton REL.
+The deterministic version of REL was minimized in           1 ms.
+The minimized deterministic version of automaton REL has 9 states and 28 transitions.
+Minimizing automaton RET.
+Automaton RET was minimized in                              1 ms.
+The minimized version of RET has 6 states and 7 transitions.
+Determinizing the minimized version of RET.
+The minimized version of RET was determinized in            0 ms.
+The determinized version of the minimized version of RET has 5 states and 17 transitions.
+Minimizing deterministic version of automaton RET.
+The deterministic version of RET was minimized in           0 ms.
+The minimized deterministic version of automaton RET has 3 states and 9 transitions.
+The intersection INT of RET and REL constructed in          3 ms.
+Automaton INT has 8 states and 23 transitions.
+
+A largest eigenvalue of the adjacency matrix of REL is 3.9664313615514613.
+A largest eigenvalue of the adjacency matrix of REL computed in     95 ms.
+
+A largest eigenvalue of the adjacency matrix of RET is 4.4944928370554145.
+A largest eigenvalue of the adjacency matrix of RET computed in     15 ms.
+
+A largest eigenvalue of the adjacency matrix of INT is 3.899365208677344.
+A largest eigenvalue of the adjacency matrix of INT computed in     7 ms.
+
+Recall computed in                                                  102 ms.
+Recall: 0.983091563483432.

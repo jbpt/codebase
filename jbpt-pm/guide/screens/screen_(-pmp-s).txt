@@ -1,0 +1,2 @@
+>java -jar jbpt-pm-entropia-1.5.jar -pmp -s -rel=log.xes -ret=model.pnml
+0.8675873674841651.
