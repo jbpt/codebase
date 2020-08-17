@@ -1,4 +1,4 @@
->java -jar jbpt-pm-entropia-1.5.jar -emp -rel=log.xes -ret=model.pnml
+ >java -jar jbpt-pm-entropia-1.5.jar -cpmp -srel=3 -sret=3 -rel=log.xes -ret=model.pnml
 ================================================================================
 Tool to compute quality measures for Process Mining and Process Querying ver. 1.5.
 For support, please contact us at jbpt.project@gmail.com.
@@ -15,10 +15,10 @@ Specifications of Dynamic Systems.
 ACM Transactions on Software Engineering and Methodology (TOSEM) (2020)
 
 Loading the retrieved model from C:\Users\halkhammash\git\codebase-master\jbpt-pm\model.pnml.
-The retrieved modeln loaded in                              80 ms.
+The retrieved modeln loaded in                              78 ms.
 Loading the relevant model from C:\Users\halkhammash\git\codebase-master\jbpt-pm\log.xes.
 The relevant model loaded in                                40 ms.
-The boundedness of the retrieved model checked in           222 ms.
+The boundedness of the retrieved model checked in           223 ms.
 The boundedness of the relevant model checked in            0 ms.
 Constructing automaton RET that encodes the retrieved model.
 Automaton RET constructed in                                6 ms.
@@ -29,17 +29,21 @@ Automaton REL has 10 states and 14 transitions.
 
 ===================Calculating precision and recall=============================
 
-The intersection INT of RET and REL constructed in          3 ms.
-Automaton INT has 8 states and 8 transitions.
+Number of states in : REL is 17
+Construction time of : REL is 4 ms.
+Number of states in : RET is 18
+Construction time of : RET is 1 ms.
+The intersection INT of RET and REL constructed in          4 ms.
+Automaton INT has 18 states and 48 transitions.
 
-A largest eigenvalue of the adjacency matrix of REL is 1.3899267936242778.
-A largest eigenvalue of the adjacency matrix of REL computed in     85 ms.
+A largest eigenvalue of the adjacency matrix of REL is 3.4859606099099087.
+A largest eigenvalue of the adjacency matrix of REL computed in     77 ms.
 
-A largest eigenvalue of the adjacency matrix of RET is 1.4371560431001367.
-A largest eigenvalue of the adjacency matrix of RET computed in     2 ms.
+A largest eigenvalue of the adjacency matrix of RET is 3.089125399438049.
+A largest eigenvalue of the adjacency matrix of RET computed in     9352 ms.
 
-A largest eigenvalue of the adjacency matrix of INT is 1.1147977972610885.
-A largest eigenvalue of the adjacency matrix of INT computed in     2 ms.
+A largest eigenvalue of the adjacency matrix of INT is 2.895675670596543.
+A largest eigenvalue of the adjacency matrix of INT computed in     16 ms.
 
-Precision computed in                                               4 ms.
-Precision: 0.7756971155730045.
+Precision computed in                                               9368 ms.
+Precision: 0.9373771848573396.
