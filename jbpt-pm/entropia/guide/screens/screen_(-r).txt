@@ -1,3 +1,4 @@
+>java -jar jbpt-pm-entropia-1.5.jar -r -rel=log.xes -ret=automaton.json
 {coverage=0.2857142857142857, numberOfTransitions=7, numberOfNonFittingTraces=5, numberOfTraces=7, 
 relevance=11.653256727657693, numberOfStates=6, costOfBackgroundModel=67.20902501875005}
 
