@@ -1,7 +1,0 @@
-[{"from":1,"to":2,"label":"a","prob":1.0},
-{"from":2,"to":3,"label":"b","prob":0.5},
-{"from":2,"to":4,"label":"c","prob":0.5},
-{"from":3,"to":5,"label":"c","prob":1.0},
-{"from":4,"to":5,"label":"b","prob":0.8},
-{"from":5,"to":2,"label":"d","prob":0.5},
-{"from":5,"to":6,"label":"e","prob":0.5}]
