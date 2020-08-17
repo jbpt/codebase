@@ -1,0 +1,29 @@
+\section*{Getting Started with Entropia}
+\label{sec:start}
+This section will quickly get you started in using the Entropia tool.
+
+\subsection{Checking for prerequisite}
+Prior to running the Entropia commands, you will need to ensure that the \textbf{JDK} (Java Development Kit) is in place.
+\subsection{Downloading and Running Entropia}
+
+\begin{enumerate}
+\itemsep0em 
+\item Clone or download the JPBT library to your local machine: \url{https://github.com/jbpt/codebase}.
+\item Navigate to the jbpt-pm folder in your terminal.
+\item Issue the following command to verify that the Entropia tool is properly downloaded and display its version number as shown in the output screen:
+\end{enumerate}
+\begin{lstlisting}[style=CL]
+>java -jar !jbpt-pm-entropia-1.5.jar! @-v@
+\end{lstlisting}
+\textbf{Output Screen:}
+\begin{lstlisting}[style=DOS]
+>java -jar jbpt-pm-entropia-1.5.jar -v
+1.5
+\end{lstlisting}
+\smallbreak
+Use the option (\textcolor{darkcandyapplered}{\footnotesize\ttfamily-h}) to display the help message that shows information of the core and specific options of the Entropia tool.
+\begin{lstlisting}[style=CL]
+>java -jar !jbpt-pm-entropia-1.5.jar! @-h@
+\end{lstlisting}
+\textbf{Output Screen:}%chnage
+\lstinputlisting[style=DOS]{screens/screen_(-h).txt}

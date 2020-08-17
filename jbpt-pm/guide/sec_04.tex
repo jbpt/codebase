@@ -1,0 +1,24 @@
+\section*{Stochastic Conformance Checking Measures}
+\setcounter{subsection}{0}
+\subsection{Stochastic Precision and Recall Measures}
+To compute the stochastic precision value between the event log and the process model, use the option (\textcolor{darkcandyapplered}{\footnotesize\ttfamily-sp}) as follows.
+\begin{lstlisting}[style=CL]
+>java -jar !jbpt-pm-entropia-1.5.jar! @-sp@ & -rel=log.xes& &-ret=automaton.json&
+\end{lstlisting}
+\textbf{Output Screen:}%chnage
+\lstinputlisting[style=DOS]{screens/screen_(-sp).txt}
+
+Use the option (\textcolor{darkcandyapplered}{\footnotesize\ttfamily-sr}) instead of (\textcolor{darkcandyapplered}{\footnotesize\ttfamily-sp}) in order to get the stochastic recall value between the event log and process model. 
+\begin{lstlisting}[style=CL]
+>java -jar !jbpt-pm-entropia-1.5.jar! @-sr@ & -rel=log.xes& &-ret=automaton.json&
+\end{lstlisting}
+\textbf{Output Screen:}%chnage
+\lstinputlisting[style=DOS]{screens/screen_(-sr).txt}
+\subsection{Entropic Relevance Measure}
+You can measure relevance of a stochastic process model to an event log using the option (\textcolor{darkcandyapplered}{\footnotesize\ttfamily-r}), as the following command shows. Note that the retrieved model is specified to the stochastic process model, i.e. the stochastic deterministic finite automaton (SDFA), in JSON format.
+
+\begin{lstlisting}[style=CL]
+>java -jar !jbpt-pm-entropia-1.5.jar! @-r@ &-rel=&log.xes &-ret=&automaton.json
+\end{lstlisting}
+\textbf{Output Screen:}%chnage
+\lstinputlisting[style=DOS]{screens/screen_(-r).txt}

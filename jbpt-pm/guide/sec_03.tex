@@ -1,0 +1,61 @@
+\section*{Classical Non-Deterministic Conformance Checking Measures}
+\setcounter{subsection}{0}
+\subsection{Matching Precision and Recall Measures}
+To compute the exact matching precision value between the event log (log.xes) and process model  (model.pnml), use the option (\textcolor{darkcandyapplered}{\footnotesize\ttfamily-emp}) as follows.
+\begin{lstlisting}[style=CL]
+>java -jar !jbpt-pm-entropia-1.5.jar! @-emp@ &-rel=&log.xes &-ret&=model.pnml
+\end{lstlisting}
+Note that in the command the paths to the event log and process model files are assigned to the relevant (\textcolor{ao}{\footnotesize\ttfamily-rel=}\textcolor{gray}{\footnotesize\ttfamily<path>}) and retrieved (\textcolor{ao}{\footnotesize\ttfamily-ret=}\textcolor{gray}{\footnotesize\ttfamily<path>}) models respectively.\\
+
+\textbf{Output Screen:}%chnage
+\lstinputlisting[style=DOS]{screens/screen_(-emp).txt}
+
+When the option (\textcolor{orange}{\footnotesize\ttfamily-s}) is added to commands, the tool runs in the silent mode. The following command is an example of using the (\textcolor{orange}{\footnotesize\ttfamily-s}) option:
+\begin{lstlisting}[style=CL]
+>java -jar !jbpt-pm-entropia-1.5.jar! @-emp@ ~-s~ &-rel=&log.xes &-ret=&model.pnml
+\end{lstlisting}
+The tool, in the silent mode, only prints the result, in this case the exact matching precision, omitting the debug information and execution data. The expected output of the command will be as the following. \\
+%will be placed on the output screen
+\textbf{Output Screen:}%chnage
+\lstinputlisting[style=DOS]{screens/screen_(-emp-s).txt}
+
+By replacing the option (\textcolor{darkcandyapplered}{\footnotesize\ttfamily-emr}) with (\textcolor{darkcandyapplered}{\footnotesize\ttfamily-emp}), the tool computes the exact matching recall value between the event log and process model. 
+
+\begin{lstlisting}[style=CL]
+>java -jar !jbpt-pm-entropia-1.5.jar! @-emr@ &-rel=&log.xes &-ret=&model.pnml
+\end{lstlisting}
+\textbf{Output Screen:}%chnage
+\lstinputlisting[style=DOS]{screens/screen_(-emr).txt}
+
+\subsection{Partial Matching Precision and Recall Measures}
+To measure the partial matching precision value between the event log and model, use the option (\textcolor{darkcandyapplered}{\footnotesize\ttfamily-pmp}) on the command line followed by the paths to log (\textcolor{ao}{\footnotesize\ttfamily-rel=}\textcolor{gray}{\footnotesize\ttfamily<path>}) and model files (\textcolor{ao}{\footnotesize\ttfamily-ret=}\textcolor{gray}{\footnotesize\ttfamily<path>}), as follows: 
+\begin{lstlisting}[style=CL]
+>java -jar !jbpt-pm-entropia-1.5.jar! @-pmp@ ~-s~ &-rel=&log.xes &-ret=&model.pnml
+\end{lstlisting}
+\textbf{Output Screen:}(in the silent mode).
+%chnage
+\lstinputlisting[style=DOS]{screens/screen_(-pmp-s).txt}
+When you replace the option (\textcolor{darkcandyapplered}{\footnotesize\ttfamily-pmp}) with (\textcolor{darkcandyapplered}{\footnotesize\ttfamily-pmr}), the tool measures the partial matching recall value.
+\begin{lstlisting}[style=CL]
+>java -jar !jbpt-pm-entropia-1.5.jar! @-pmr@ &-rel=&log.xes &-ret=&model.pnml
+\end{lstlisting}
+Note that the option (\textcolor{orange}{\footnotesize\ttfamily-s}) is removed as the debug information and execution data are placed on the output screen. \\
+\textbf{Output Screen:}
+\lstinputlisting[style=DOS]{screens/screen_(-pmr).txt}
+
+\subsection{Controlled Partial Matching Precision and Recall Measures}
+In order to measure controlled partial matching precision and recall values, the options (\textcolor{darkcandyapplered}{\footnotesize\ttfamily-cpmp}) and (\textcolor{darkcandyapplered}{\footnotesize\ttfamily-cpmr}) are used, respectively. Both options should be followed by the paths to log (\textcolor{ao}{\footnotesize\ttfamily-rel}\textcolor{gray}{\footnotesize\ttfamily<path>}) and model files (\textcolor{ao}{\footnotesize\ttfamily-ret}\textcolor{gray}{\footnotesize\ttfamily<path>}); and (\textcolor{ao}{\footnotesize\ttfamily-srel=}\textcolor{gray}{\footnotesize\ttfamily<num>}) and (\textcolor{ao}{\footnotesize\ttfamily-sret=}\textcolor{gray}{\footnotesize\ttfamily<num>}) options to specify the number of allowed skips in relevant and retrieved traces. 
+
+The following command computes the controlled partial matching precision value between the event log and model, where (\textcolor{darkcandyapplered}{\footnotesize\ttfamily-cpmp}) is applied with a maximum of 3 allowed skipped actions in a trace described by each of the event log and model.
+\begin{lstlisting}[style=CL]
+>java -jar !jbpt-pm-entropia-1.5.jar! @-cpmp@ &-srel=&3 &-sret=&3 &-rel=&log.xes &-ret=&model.pnml
+\end{lstlisting}
+\textbf{Output Screen:}%chnage
+\lstinputlisting[style=DOS]{screens/screen_(-cpmp).txt}
+
+Similarly, in the following command, (\textcolor{darkcandyapplered}{\footnotesize\ttfamily-cpmr}) is used to measure the  controlled partial matching recall value, where the maximal number of allowed skipped actions in traces in the event log (\textcolor{ao}{\footnotesize\ttfamily-srel}) and model (\textcolor{ao}{\footnotesize\ttfamily-sret=<num>}) are 2 and 3, respectively.
+\begin{lstlisting}[style=CL]
+>java -jar !jbpt-pm-entropia-1.5.jar! @-cpmr@ &-srel=&2 -sret=&3 &-rel=&log.xes& &-ret=&model.pnml
+\end{lstlisting}
+\textbf{Output Screen:}%chnage. 
+\lstinputlisting[style=DOS]{screens/screen_(-cpmr).txt}
