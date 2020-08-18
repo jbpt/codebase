@@ -7,8 +7,8 @@ import dk.brics.automaton.Automaton;
 
 public class PartialEntropyPrecisionRecallMeasure extends AbstractQualityMeasure {
 
-	public PartialEntropyPrecisionRecallMeasure(Object relevantTraces, Object retrievedTraces) {
-		super(relevantTraces, retrievedTraces);
+	public PartialEntropyPrecisionRecallMeasure(Object relevantTraces, Object retrievedTraces, boolean bPrecision, boolean bRecall, boolean bSilent) {
+		super(relevantTraces, retrievedTraces, bPrecision, bRecall, bSilent);
 	}
 
 	@Override
@@ -21,7 +21,7 @@ public class PartialEntropyPrecisionRecallMeasure extends AbstractQualityMeasure
 	protected Pair<Double, Double> computeMeasureValue() {
 		
 		if ((relevantTraces instanceof Automaton) && (retrievedTraces instanceof Automaton)) {
-			Pair<Double, Double> values = MetricsCalculator.calculate((Automaton)relevantTraces, "REL", (Automaton)retrievedTraces, "RET", true, false, 0, 0);
+			Pair<Double, Double> values = MetricsCalculator.calculate((Automaton)relevantTraces, "REL", (Automaton)retrievedTraces, "RET", true, false, 0, 0, bPrecision, bRecall, bSilent);
 			return values;
 		}
 		return new Pair<Double, Double>(0.0, 0.0);

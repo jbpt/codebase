@@ -35,15 +35,22 @@ public abstract class AbstractQualityMeasure {
 	protected Object relevantTraces  = null;
 	protected Object retrievedTraces = null;
 	
+	protected boolean bPrecision = true;
+	protected boolean bRecall = true;
+	protected boolean bSilent = false;
+	
 	private Long	measureComputationTime = null;
 	private Pair<Double, Double> measureValue = null;
 	
 	private HashMap<QualityMeasureLimitation,Long>	  timesOfLimitationChecks = new HashMap<QualityMeasureLimitation,Long>();
 	private HashMap<QualityMeasureLimitation,Boolean> resultsOfLimitationChecks = new HashMap<QualityMeasureLimitation,Boolean>();
 
-	public AbstractQualityMeasure(Object relevantTraces, Object retrievedTraces) {
+	public AbstractQualityMeasure(Object relevantTraces, Object retrievedTraces, boolean bPrecision, boolean bRecall, boolean bSilent) {
 		this.relevantTraces = relevantTraces;
 		this.retrievedTraces = retrievedTraces;
+		this.bPrecision = bPrecision;
+		this.bRecall = bRecall;
+		this.bSilent = bSilent;
 		
 		this.initializeLimitations();
 	}

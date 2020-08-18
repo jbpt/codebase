@@ -10,8 +10,9 @@ public class EntropyPrecisionRecallMeasure extends AbstractQualityMeasure {
 	int skipsRel = 0; // max allowed number of skips in relevant traces
 	int skipsRet = 0; // max allowed number of skips in retrieved traces
 	
-	public EntropyPrecisionRecallMeasure(Object relevantTraces, Object retrievedTraces, int skipsRel, int skipsRet) {
-		super(relevantTraces, retrievedTraces);
+	public EntropyPrecisionRecallMeasure(Object relevantTraces, Object retrievedTraces, int skipsRel, int skipsRet,
+			boolean bPrecision, boolean bRecall, boolean bSilent) {
+		super(relevantTraces, retrievedTraces, bPrecision, bRecall, bSilent);
 		
 		this.skipsRel = skipsRel;
 		this.skipsRet = skipsRet;
@@ -30,7 +31,8 @@ public class EntropyPrecisionRecallMeasure extends AbstractQualityMeasure {
 		System.out.println();
 		
 		if ((relevantTraces instanceof Automaton) && (retrievedTraces instanceof Automaton)) {
-			Pair<Double, Double> values = MetricsCalculator.calculate((Automaton)relevantTraces, "REL", (Automaton)retrievedTraces, "RET", false, false, skipsRel, skipsRet);
+			Pair<Double, Double> values = MetricsCalculator.calculate((Automaton)relevantTraces, "REL", (Automaton)retrievedTraces, "RET", false, false, 
+					skipsRel, skipsRet, bPrecision, bRecall, bSilent);
 			return values;
 		}
 		return new Pair<Double, Double>(0.0, 0.0);
