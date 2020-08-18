@@ -12,7 +12,7 @@
     <finalName>jbpt-pm</finalName>
     <plugins>
 
-	<plugin>
+	<!--plugin>
 		<groupId>org.apache.maven.plugins</groupId>
 		<artifactId>maven-install-plugin</artifactId>
 		<version>2.5.2</version>
@@ -50,7 +50,7 @@
 				</goals>
 			</execution>
 		</executions>
-	</plugin>
+	</plugin-->
 				
 	<plugin>
     <groupId>org.apache.maven.plugins</groupId>
