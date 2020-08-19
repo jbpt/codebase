@@ -24,6 +24,7 @@ import org.deckfour.xes.model.XLog;
 import org.jbpt.petri.io.PNMLSerializer;
 import org.jbpt.pm.models.FDAGraph;
 import org.jbpt.pm.models.SAutomaton;
+import org.jbpt.pm.quality.AbstractQualityMeasure;
 import org.jbpt.pm.quality.EntropyMeasure;
 import org.jbpt.pm.quality.EntropyPrecisionRecallMeasure;
 import org.jbpt.pm.quality.PartialEntropyMeasure;
@@ -75,6 +76,8 @@ import org.progressmining.xeslite.common.XesLiteXesXmlParser;
 
 // --entropic-relevance (-r):						entropic relevance from ICPM'2020 paper
 
+// --boundedness (-b):								check boundness 
+
 //--entropy (-ent):								    compute entropy measure (for exact traces)
 //--diluted-entropy (-dent):						compute entropy measure (for “diluted” traces)
 //--partial-efficient-entropy (-doent):			    compute entropy measure (for “diluted” traces with optimization)
@@ -95,7 +98,8 @@ public final class QualityMeasuresCLI {
 	
 	private static Object relevantTraces	= null;
 	private static Object retrievedTraces	= null;
-	private static boolean bSilent           = false;
+	private static boolean bSilent          = false;
+	private static boolean bTrust          = false;
 		
 	public static void main(String[] args) throws Exception {
 		
@@ -146,12 +150,17 @@ public final class QualityMeasuresCLI {
 	    	Option dentMeasure		= Option.builder("dent").longOpt("diluted-entropy").numberOfArgs(0).required(false).desc("compute entropy measure (for \"diluted\" traces)").hasArg(false).build();
 //	    	Option doentMeasure		= Option.builder("doent").longOpt("diluted-optimized-entropy").numberOfArgs(0).required(false).desc("compute entropy measure (for \"diluted\" traces with optimization)").hasArg(false).build();
 	     	
+	    	Option boundCheck 		= Option.builder("b").longOpt("boundedness").hasArg(true).optionalArg(false).valueSeparator('=').argName("file path").required(false).desc("check the boundedness of the model").build();
+	    	
 	    	// models of relevant and retrieved traces
 	    	Option relModel			= Option.builder("rel").longOpt("relevant").hasArg(true).optionalArg(false).valueSeparator('=').argName("file path").required(false).desc("model that describes relevant traces").build();
 	    	Option retModel			= Option.builder("ret").longOpt("retrieved").hasArg(true).optionalArg(false).valueSeparator('=').argName("file path").required(false).desc("model that describes retrieved traces").build();
 	    	
 	    	// silent option
 	    	Option silent			= Option.builder("s").longOpt("silent").numberOfArgs(0).required(false).desc("print the results only").hasArg(false).build();
+	    	
+	    	// trust option, e.i., do not check for boundedness
+	    	Option trust			= Option.builder("t").longOpt("trust").numberOfArgs(0).required(false).desc("do not check for boundedness").hasArg(false).build();
 	    		    	
 	    	
 	    	// create groups
@@ -173,6 +182,7 @@ public final class QualityMeasuresCLI {
 	    	cmdGroup.addOption(entropicRelevance);
 	    	cmdGroup.addOption(entMeasure);
 	    	cmdGroup.addOption(dentMeasure);
+	    	cmdGroup.addOption(boundCheck);
 //	    	cmdGroup.addOption(doentMeasure);
 	    	cmdGroup.setRequired(true);
 	    	
@@ -187,6 +197,7 @@ public final class QualityMeasuresCLI {
 	    	options.addOption(retModel);
 	    	
 	    	options.addOption(silent);
+	    	options.addOption(trust);
 	    	
 	        // parse the command line arguments
 	        CommandLine cmd = parser.parse(options, args);
@@ -197,13 +208,31 @@ public final class QualityMeasuresCLI {
 	        	ByteArrayOutputStream baos = new ByteArrayOutputStream();
 	        	System.setOut(new PrintStream(baos));
 	        }
+	        if (cmd.hasOption("t")) {
+	        	bTrust = true;
+	        }
 	        if (cmd.hasOption("h") || cmd.getOptions().length==0) { // handle help
 	        	showHelp(options);
 	        	return;
 	        } else if (cmd.hasOption("v")) { // handle version
 	        	System.out.println(QualityMeasuresCLI.version);
 	        	return;
-	        } else {
+	        } else if (cmd.hasOption("b")) {
+        		String smodel = cmd.getOptionValue("b");
+        		System.out.println(String.format("Loading the model from %s.",  new File(smodel).getCanonicalPath()));
+        		long start = System.currentTimeMillis();
+        		Object model = parseModel(smodel);
+        		long finish = System.currentTimeMillis();
+        		System.out.println(String.format("The model is loaded in                                 %s ms.", (finish-start)));
+        		start = System.currentTimeMillis();
+        		boolean bounded = AbstractQualityMeasure.checkBounded(model);
+        		finish = System.currentTimeMillis();
+        		System.out.println(String.format("The model is checked in                                %s ms.", (finish-start)));
+        		System.out.print("Bounded: ");
+        		// redirecting standard output back
+                System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
+                System.out.print("" + bounded);
+        	} else {
 	        	showHeader();
 	        	
 	        	if (cmd.hasOption("empr") || cmd.hasOption("emp") || cmd.hasOption("emr")) {
@@ -343,10 +372,12 @@ public final class QualityMeasuresCLI {
 		        			bRecall = true;
 		        		}
 		        		EntropyPrecisionRecallMeasure epr = new EntropyPrecisionRecallMeasure(relevantTraces, retrievedTraces, 0, 0, bPrecision, bRecall, bSilent);
-		        		epr.checkLimitations();
-		        		for (QualityMeasureLimitation limitation : epr.getLimitations()) {
-		        			int limitDescriptionLength = limitation.getDescription().length();
-		        			System.out.printf(String.format("%-59s %s ms.\n", limitation.getDescription() + " checked in", epr.getLimitationCheckTime(limitation),epr.getLimitationCheckResult(limitation)));
+		        		if(!bTrust) {
+		        			epr.checkLimitations();
+			        		for (QualityMeasureLimitation limitation : epr.getLimitations()) {
+			        			int limitDescriptionLength = limitation.getDescription().length();
+			        			System.out.printf(String.format("%-59s %s ms.\n", limitation.getDescription() + " checked in", epr.getLimitationCheckTime(limitation),epr.getLimitationCheckResult(limitation)));
+			        		}
 		        		}
 		        		result = epr.computeMeasure();
 		        		//System.out.println(String.format("The measure was computed in %s nanoseconds and returned %s.", epr.getMeasureComputationTime().longValue(), epr.getMeasureValue()));
@@ -362,9 +393,11 @@ public final class QualityMeasuresCLI {
 		        			bRecall = true;
 		        		}
 		        		PartialEntropyPrecisionRecallMeasure epr = new PartialEntropyPrecisionRecallMeasure(relevantTraces, retrievedTraces, bPrecision, bRecall, bSilent);
-		        		epr.checkLimitations();
-		        		for (QualityMeasureLimitation limitation : epr.getLimitations()) {
-		        			System.out.println(String.format("%-59s %s ms.\n", limitation.getDescription() + " checked in", epr.getLimitationCheckTime(limitation),epr.getLimitationCheckResult(limitation)));
+		        		if(!bTrust) {
+			        		epr.checkLimitations();
+			        		for (QualityMeasureLimitation limitation : epr.getLimitations()) {
+			        			System.out.println(String.format("%-59s %s ms.\n", limitation.getDescription() + " checked in", epr.getLimitationCheckTime(limitation),epr.getLimitationCheckResult(limitation)));
+			        		}
 		        		}
 		        		result = epr.computeMeasure();
 		        		//System.out.println(String.format("The partial measure was computed in %s nanoseconds and returned %s.", epr.getMeasureComputationTime().longValue(), epr.getMeasureValue()));
@@ -396,9 +429,11 @@ public final class QualityMeasuresCLI {
 		        			bRecall = true;
 		        		}
 		        		EntropyPrecisionRecallMeasure epr = new EntropyPrecisionRecallMeasure(relevantTraces, retrievedTraces, skipsrel, skipsret, bPrecision, bRecall, bSilent);
-		        		epr.checkLimitations();
-		        		for (QualityMeasureLimitation limitation : epr.getLimitations()) {
-		        			System.out.println(String.format("%-59s %s ms.\n", limitation.getDescription() + " checked in", epr.getLimitationCheckTime(limitation),epr.getLimitationCheckResult(limitation)));
+		        		if(!bTrust) {
+			        		epr.checkLimitations();
+			        		for (QualityMeasureLimitation limitation : epr.getLimitations()) {
+			        			System.out.println(String.format("%-59s %s ms.\n", limitation.getDescription() + " checked in", epr.getLimitationCheckTime(limitation),epr.getLimitationCheckResult(limitation)));
+			        		}
 		        		}
 		        		result = epr.computeMeasure();
 			        } else if (cmd.hasOption("spr") || cmd.hasOption("sp") || cmd.hasOption("sr")) {
@@ -442,7 +477,7 @@ public final class QualityMeasuresCLI {
 			        		SAutomaton sa = SAutomaton.readJSON(cmd.getOptionValue("ret"));
 			        		relevance = Relevance.compute(log, sa, false).toString();
 			        	}
-			        	relevance = relevance.substring(relevance.indexOf('=') + 1, relevance.indexOf('}'));
+			        	relevance = relevance.substring(relevance.indexOf('=') + 1, relevance.indexOf(','));
 			        	System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
 			    
 			        	System.out.println(String.format(bSilent ? "%s": "Relevance: %s.", relevance));

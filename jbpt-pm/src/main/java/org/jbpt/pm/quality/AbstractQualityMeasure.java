@@ -109,7 +109,7 @@ public abstract class AbstractQualityMeasure {
 		return hold;
 	}
 	
-	private boolean checkBounded(Object model) {
+	public static boolean checkBounded(Object model) {
 		if (model instanceof NetSystem) {
 			NetSystem sys = (NetSystem) model;
 			sys.loadNaturalMarking();
