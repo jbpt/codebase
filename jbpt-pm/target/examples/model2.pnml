@@ -1,0 +1,268 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<pnml>
+  <net type="http://www.yasper.org/specs/epnml-1.1" id="do1">
+    <toolspecific tool="Yasper" version="1.2.4020.34351">
+      <roles xmlns="http://www.yasper.org/specs/epnml-1.1/toolspec" />
+    </toolspecific>
+    <place id="pl1">
+      <graphics>
+        <position x="41" y="233" />
+        <dimension x="20" y="20" />
+      </graphics>
+      <toolspecific tool="Yasper" version="1.2.4020.34351">
+        <tokenCaseSensitive xmlns="http://www.yasper.org/specs/epnml-1.1/toolspec">
+          <text>true</text>
+        </tokenCaseSensitive>
+      </toolspecific>
+    </place>
+    <place id="pl2">
+      <graphics>
+        <position x="167" y="235" />
+        <dimension x="20" y="20" />
+      </graphics>
+      <toolspecific tool="Yasper" version="1.2.4020.34351">
+        <tokenCaseSensitive xmlns="http://www.yasper.org/specs/epnml-1.1/toolspec">
+          <text>true</text>
+        </tokenCaseSensitive>
+      </toolspecific>
+    </place>
+    <place id="pl5">
+      <graphics>
+        <position x="303" y="140" />
+        <dimension x="20" y="20" />
+      </graphics>
+      <toolspecific tool="Yasper" version="1.2.4020.34351">
+        <tokenCaseSensitive xmlns="http://www.yasper.org/specs/epnml-1.1/toolspec">
+          <text>true</text>
+        </tokenCaseSensitive>
+      </toolspecific>
+    </place>
+    <place id="pl6">
+      <graphics>
+        <position x="309" y="221" />
+        <dimension x="20" y="20" />
+      </graphics>
+      <toolspecific tool="Yasper" version="1.2.4020.34351">
+        <tokenCaseSensitive xmlns="http://www.yasper.org/specs/epnml-1.1/toolspec">
+          <text>true</text>
+        </tokenCaseSensitive>
+      </toolspecific>
+    </place>
+    <place id="pl8">
+      <graphics>
+        <position x="437" y="140" />
+        <dimension x="20" y="20" />
+      </graphics>
+      <toolspecific tool="Yasper" version="1.2.4020.34351">
+        <tokenCaseSensitive xmlns="http://www.yasper.org/specs/epnml-1.1/toolspec">
+          <text>true</text>
+        </tokenCaseSensitive>
+      </toolspecific>
+    </place>
+    <place id="pl9">
+      <graphics>
+        <position x="436" y="221" />
+        <dimension x="20" y="20" />
+      </graphics>
+      <toolspecific tool="Yasper" version="1.2.4020.34351">
+        <tokenCaseSensitive xmlns="http://www.yasper.org/specs/epnml-1.1/toolspec">
+          <text>true</text>
+        </tokenCaseSensitive>
+      </toolspecific>
+    </place>
+    <place id="pl11">
+      <graphics>
+        <position x="581" y="206" />
+        <dimension x="20" y="20" />
+      </graphics>
+      <toolspecific tool="Yasper" version="1.2.4020.34351">
+        <tokenCaseSensitive xmlns="http://www.yasper.org/specs/epnml-1.1/toolspec">
+          <text>true</text>
+        </tokenCaseSensitive>
+      </toolspecific>
+    </place>
+    <place id="pl12">
+      <graphics>
+        <position x="306" y="298" />
+        <dimension x="20" y="20" />
+      </graphics>
+      <toolspecific tool="Yasper" version="1.2.4020.34351">
+        <tokenCaseSensitive xmlns="http://www.yasper.org/specs/epnml-1.1/toolspec">
+          <text>true</text>
+        </tokenCaseSensitive>
+      </toolspecific>
+    </place>
+    <place id="pl13">
+      <graphics>
+        <position x="465" y="296" />
+        <dimension x="20" y="20" />
+      </graphics>
+      <toolspecific tool="Yasper" version="1.2.4020.34351">
+        <tokenCaseSensitive xmlns="http://www.yasper.org/specs/epnml-1.1/toolspec">
+          <text>true</text>
+        </tokenCaseSensitive>
+      </toolspecific>
+    </place>
+    <transition id="tr1">
+      <name>
+        <text>a</text>
+      </name>
+      <graphics>
+        <position x="104" y="233" />
+        <dimension x="32" y="32" />
+      </graphics>
+	   <toolspecific tool="StochasticPetriNet" version="0.2">
+               <property key="distributionType">UNIFORM</property>
+               <property key="trainingData"></property>
+               <property key="weight">1.00</property>
+               <property key="invisible">false</property>
+               <property key="distributionParameters">0.0;200.0</property>
+               <property key="priority">0</property>
+            </toolspecific>
+    </transition>
+    <transition id="tr3">
+	 <toolspecific tool="StochasticPetriNet" version="0.2">
+               <property key="distributionType">UNIFORM</property>
+               <property key="trainingData"></property>
+               <property key="weight">0.75</property>
+               <property key="invisible">true</property>
+               <property key="distributionParameters">0.0;200.0</property>
+               <property key="priority">0</property>
+            </toolspecific>
+      <graphics>
+        <position x="237" y="281" />
+        <dimension x="32" y="32" />
+      </graphics>
+    </transition>
+    <transition id="tr4">
+      <graphics>
+        <position x="241" y="169" />
+        <dimension x="32" y="32" />
+      </graphics>
+	   <toolspecific tool="StochasticPetriNet" version="0.2">
+               <property key="distributionType">UNIFORM</property>
+               <property key="trainingData"></property>
+               <property key="weight">0.25</property>
+               <property key="invisible">true</property>
+               <property key="distributionParameters">0.0;200.0</property>
+               <property key="priority">0</property>
+            </toolspecific>
+    </transition>
+    <transition id="tr6">
+      <name>
+        <text>b</text>
+      </name>
+      <graphics>
+        <position x="370" y="220" />
+        <dimension x="32" y="32" />
+      </graphics>
+	  <toolspecific tool="StochasticPetriNet" version="0.2">
+               <property key="distributionType">UNIFORM</property>
+               <property key="trainingData"></property>
+               <property key="weight">0.10</property>
+               <property key="invisible">false</property>
+               <property key="distributionParameters">0.0;200.0</property>
+               <property key="priority">0</property>
+            </toolspecific>
+    </transition>
+    <transition id="tr7">
+      <name>
+        <text>c</text>
+      </name>
+      <graphics>
+        <position x="367" y="139" />
+        <dimension x="32" y="32" />
+      </graphics>
+	  <toolspecific tool="StochasticPetriNet" version="0.2">
+               <property key="distributionType">UNIFORM</property>
+               <property key="trainingData"></property>
+               <property key="weight">0.15</property>
+               <property key="invisible">false</property>
+               <property key="distributionParameters">0.0;200.0</property>
+               <property key="priority">0</property>
+            </toolspecific>
+    </transition>
+    <transition id="tr9">
+      <graphics>
+        <position x="503" y="182" />
+        <dimension x="32" y="32" />
+      </graphics>
+	  <toolspecific tool="StochasticPetriNet" version="0.2">
+               <property key="distributionType">UNIFORM</property>
+               <property key="trainingData"></property>
+               <property key="weight">1.00</property>
+               <property key="invisible">true</property>
+               <property key="distributionParameters">0.0;200.0</property>
+               <property key="priority">0</property>
+            </toolspecific>
+    </transition>
+    <transition id="tr12">
+      <name>
+        <text>d</text>
+      </name>
+      <graphics>
+        <position x="377" y="275" />
+        <dimension x="32" y="32" />
+      </graphics>
+	  <toolspecific tool="StochasticPetriNet" version="0.2">
+               <property key="distributionType">UNIFORM</property>
+               <property key="trainingData"></property>
+               <property key="weight">1.00</property>
+               <property key="invisible">false</property>
+               <property key="distributionParameters">0.0;200.0</property>
+               <property key="priority">0</property>
+            </toolspecific>
+    </transition>
+    <transition id="tr14">
+      <graphics>
+        <position x="515" y="270" />
+        <dimension x="32" y="32" />
+      </graphics>
+	   <toolspecific tool="StochasticPetriNet" version="0.2">
+               <property key="distributionType">UNIFORM</property>
+               <property key="trainingData"></property>
+               <property key="weight">0.48</property>
+               <property key="invisible">true</property>
+               <property key="distributionParameters">0.0;200.0</property>
+               <property key="priority">0</property>
+            </toolspecific>
+    </transition>
+    <transition id="tr17">
+      <name>
+        <text>e</text>
+      </name>
+      <graphics>
+        <position x="379" y="346" />
+        <dimension x="32" y="32" />
+      </graphics>
+	  <toolspecific tool="StochasticPetriNet" version="0.2">
+               <property key="distributionType">UNIFORM</property>
+               <property key="trainingData"></property>
+               <property key="weight">0.52</property>
+               <property key="invisible">false</property>
+               <property key="distributionParameters">0.0;200.0</property>
+               <property key="priority">0</property>
+            </toolspecific>
+    </transition>
+    <arc id="a22" source="pl1" target="tr1" />
+    <arc id="a23" source="tr1" target="pl2" />
+    <arc id="a24" source="tr4" target="pl5" />
+    <arc id="a25" source="pl2" target="tr4" />
+    <arc id="a26" source="pl6" target="tr6" />
+    <arc id="a27" source="tr4" target="pl6" />
+    <arc id="a28" source="tr7" target="pl8" />
+    <arc id="a29" source="pl5" target="tr7" />
+    <arc id="a30" source="pl9" target="tr9" />
+    <arc id="a31" source="tr6" target="pl9" />
+    <arc id="a32" source="tr9" target="pl11" />
+    <arc id="a33" source="pl8" target="tr9" />
+    <arc id="a34" source="pl12" target="tr12" />
+    <arc id="a35" source="tr3" target="pl12" />
+    <arc id="a36" source="pl13" target="tr14" />
+    <arc id="a37" source="tr12" target="pl13" />
+    <arc id="a38" source="tr14" target="pl11" />
+    <arc id="a39" source="pl13" target="tr17" />
+    <arc id="a40" source="tr17" target="pl12" />
+    <arc id="a41" source="pl2" target="tr3" />
+  </net>
+</pnml>

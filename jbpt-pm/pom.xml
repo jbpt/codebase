@@ -214,7 +214,7 @@
 											<include name="*.bat" />
 										</fileset>
 									</copy>
-									<copy todir="${project.build.directory}" overwrite="true" flatten="true">
+									<!--copy todir="${project.build.directory}" overwrite="true" flatten="true">
 										<fileset dir="${basedir}" includes="*.pnml" >
 											<include name="*.pnml" />
 										</fileset>
@@ -233,17 +233,16 @@
 										<fileset dir="${basedir}" includes="*.json" >
 											<include name="*.json" />
 										</fileset>
-									</copy>
-									<copy todir="${project.build.directory}/logs" overwrite="true" flatten="true">
-										<fileset dir="${basedir}/logs" includes="*.xes" >
-											<include name="*.xes" />
+									</copy-->
+									<copy todir="${project.build.directory}/examples" overwrite="true" flatten="true">
+										<fileset dir="${basedir}/examples" includes="*.*" >
 										</fileset>
 									</copy>
-									<copy todir="${project.build.directory}/logs" overwrite="true" flatten="true">
+									<!--copy todir="${project.build.directory}/logs" overwrite="true" flatten="true">
 										<fileset dir="${basedir}/logs" includes="*.gz" >
 											<include name="*.gz" />
 										</fileset>
-									</copy>
+									</copy-->
 								</tasks>
 							</configuration>
 							<goals>

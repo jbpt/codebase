@@ -10,32 +10,32 @@ public class ExampleTest {
 
 	@Test
 	public void testSimpleExampleFromPaperModel1L1() {
-		measure("M1.pnml", "l1.xes");
+		measure("models/M1.pnml", "logs/l1.xes");
 	}
 	
 	@Test
 	public void testSimpleExampleFromPaperModel1L2() {
-		measure("M1.pnml", "l2.xes");
+		measure("models/M1.pnml", "logs/l2.xes");
 	}
 	
 	@Test
 	public void testSimpleExampleFromPaperModel1L3() {
-		measure("M1.pnml", "l3.xes");
+		measure("models/M1.pnml", "logs/l3.xes");
 	}
 	
 	@Test
 	public void testSimpleExampleFromPaperModel2L1() {
-		measure("M2.pnml", "l1.xes");
+		measure("models/M2.pnml", "logs/l1.xes");
 	}
 	
 	@Test
 	public void testSimpleExampleFromPaperModel2L2() {
-		measure("M2.pnml", "l2.xes");
+		measure("models/M2.pnml", "logs/l2.xes");
 	}
 	
 	@Test
 	public void testSimpleExampleFromPaperModel2L3() {
-		measure("M2.pnml", "l3.xes");
+		measure("models/M2.pnml", "logs/l3.xes");
 	}
 	
 	
