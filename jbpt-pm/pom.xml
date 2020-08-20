@@ -318,7 +318,7 @@
 	<dependency>
     	<groupId>org.jbpt</groupId>
     	<artifactId>jbpt-pm-relevance</artifactId>
-    	<version>1.0-SNAPSHOT</version>
+    	<version>1.0-SNAPSHOT-jdk1.8</version>
     </dependency>
   </dependencies>
   
