@@ -143,7 +143,7 @@ public final class QualityMeasuresCLI {
 	    	Option stochasticRecallMeasure		    = Option.builder("sr").longOpt("stochastic-recall").numberOfArgs(0).required(false).desc("compute stochastic recall for the given relevant (XES) and retrieved (sPNML) traces").hasArg(false).build();
 	    	
 	    	// entropic relevance
-	    	Option entropicRelevance = Option.builder("r").longOpt("entropic-relevance").numberOfArgs(0).required(false).desc("compute entropic relevance for the given relevant (XES, CSV) and retrieved (DFG, SDFA) traces").hasArg(false).build();
+	    	Option entropicRelevance = Option.builder("r").longOpt("entropic-relevance").numberOfArgs(0).required(false).desc("compute entropic relevance for the given relevant (XES) and retrieved (DFG, SDFA) traces").hasArg(false).build();
 	    	
 	    	
 	    	Option entMeasure		= Option.builder("ent").longOpt("entropy").numberOfArgs(0).required(false).desc("compute entropy measure (for exact traces)").hasArg(false).build();
@@ -255,7 +255,7 @@ public final class QualityMeasuresCLI {
 	        		System.out.println("Anna Kalenkova, Artem Polyvyanyy. A Spectrum of Entropy-Based Precision and ");
 	        		System.out.println("Recall Measurements Between Partially Matching Designed and Observed Processes");
 	        		System.out.println("International Conference on Service Oriented Computing (ICSOC) (2020)\n");
-	    		} else if (cmd.hasOption("spr") || cmd.hasOption("sp") || cmd.hasOption("sp")) {
+	    		} else if (cmd.hasOption("spr") || cmd.hasOption("sp") || cmd.hasOption("sr")) {
 	        		System.out.println("Computing precision based on stochastic approach.");
 	        		System.out.println("The technique is described in:");
 	        		System.out.println("Sander Leemans, Artem Polyvyanyy. Stochastic-aware conformance checking:");
