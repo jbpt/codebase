@@ -1,0 +1,731 @@
+{
+  "initialState": 0,
+  "transitions": [
+    {
+      "from": 0,
+      "to": 1,
+      "label": "ER Registration",
+      "prob": 0.9476190476190476
+    },
+    {
+      "from": 0,
+      "to": 2,
+      "label": "Leucocytes",
+      "prob": 0.017142857142857144
+    },
+    {
+      "from": 0,
+      "to": 3,
+      "label": "CRP",
+      "prob": 0.009523809523809525
+    },
+    {
+      "from": 0,
+      "to": 5,
+      "label": "ER Triage",
+      "prob": 0.005714285714285714
+    },
+    {
+      "from": 0,
+      "to": 6,
+      "label": "ER Sepsis Triage",
+      "prob": 0.006666666666666667
+    },
+    {
+      "from": 0,
+      "to": 7,
+      "label": "IV Liquid",
+      "prob": 0.013333333333333334
+    },
+    {
+      "from": 1,
+      "to": 2,
+      "label": "Leucocytes",
+      "prob": 0.02
+    },
+    {
+      "from": 1,
+      "to": 3,
+      "label": "CRP",
+      "prob": 0.013333333333333334
+    },
+    {
+      "from": 1,
+      "to": 4,
+      "label": "LacticAcid",
+      "prob": 0.009523809523809525
+    },
+    {
+      "from": 1,
+      "to": 5,
+      "label": "ER Triage",
+      "prob": 0.9247619047619048
+    },
+    {
+      "from": 1,
+      "to": 6,
+      "label": "ER Sepsis Triage",
+      "prob": 0.010476190476190476
+    },
+    {
+      "from": 1,
+      "to": 7,
+      "label": "IV Liquid",
+      "prob": 0.02095238095238095
+    },
+    {
+      "from": 1,
+      "to": 13,
+      "label": "Admission IC",
+      "prob": 9.523809523809524E-4
+    },
+    {
+      "from": 2,
+      "to": 1,
+      "label": "ER Registration",
+      "prob": 0.004138338752586462
+    },
+    {
+      "from": 2,
+      "to": 2,
+      "label": "Leucocytes",
+      "prob": 0.13538279633461425
+    },
+    {
+      "from": 2,
+      "to": 3,
+      "label": "CRP",
+      "prob": 0.5255690215784806
+    },
+    {
+      "from": 2,
+      "to": 4,
+      "label": "LacticAcid",
+      "prob": 0.12858409695536507
+    },
+    {
+      "from": 2,
+      "to": 5,
+      "label": "ER Triage",
+      "prob": 0.00325155187703222
+    },
+    {
+      "from": 2,
+      "to": 6,
+      "label": "ER Sepsis Triage",
+      "prob": 0.010641442506650901
+    },
+    {
+      "from": 2,
+      "to": 7,
+      "label": "IV Liquid",
+      "prob": 0.03015075376884422
+    },
+    {
+      "from": 2,
+      "to": 8,
+      "label": "IV Antibiotics",
+      "prob": 0.02157848063848655
+    },
+    {
+      "from": 2,
+      "to": 9,
+      "label": "Admission NC",
+      "prob": 0.04522613065326633
+    },
+    {
+      "from": 2,
+      "to": 10,
+      "label": "Release A",
+      "prob": 0.06650901566656814
+    },
+    {
+      "from": 2,
+      "to": 12,
+      "label": "Return ER",
+      "prob": 2.955956251847473E-4
+    },
+    {
+      "from": 2,
+      "to": 13,
+      "label": "Admission IC",
+      "prob": 0.0053207212533254505
+    },
+    {
+      "from": 2,
+      "to": 14,
+      "label": "Release B",
+      "prob": 0.004138338752586462
+    },
+    {
+      "from": 2,
+      "to": 15,
+      "label": "Release C",
+      "prob": 0.0023647650014779783
+    },
+    {
+      "from": 2,
+      "to": 16,
+      "label": "Release D",
+      "prob": 0.00325155187703222
+    },
+    {
+      "from": 2,
+      "to": 17,
+      "label": "Release E",
+      "prob": 5.911912503694946E-4
+    },
+    {
+      "from": 3,
+      "to": 1,
+      "label": "ER Registration",
+      "prob": 0.004291845493562232
+    },
+    {
+      "from": 3,
+      "to": 2,
+      "label": "Leucocytes",
+      "prob": 0.4429797670141018
+    },
+    {
+      "from": 3,
+      "to": 3,
+      "label": "CRP",
+      "prob": 0.09717964438994482
+    },
+    {
+      "from": 3,
+      "to": 4,
+      "label": "LacticAcid",
+      "prob": 0.19282648681790313
+    },
+    {
+      "from": 3,
+      "to": 5,
+      "label": "ER Triage",
+      "prob": 0.004904966278356836
+    },
+    {
+      "from": 3,
+      "to": 6,
+      "label": "ER Sepsis Triage",
+      "prob": 0.01072961373390558
+    },
+    {
+      "from": 3,
+      "to": 7,
+      "label": "IV Liquid",
+      "prob": 0.034028203556100554
+    },
+    {
+      "from": 3,
+      "to": 8,
+      "label": "IV Antibiotics",
+      "prob": 0.024831391784181485
+    },
+    {
+      "from": 3,
+      "to": 9,
+      "label": "Admission NC",
+      "prob": 0.05732679337829552
+    },
+    {
+      "from": 3,
+      "to": 10,
+      "label": "Release A",
+      "prob": 0.09871244635193133
+    },
+    {
+      "from": 3,
+      "to": 13,
+      "label": "Admission IC",
+      "prob": 0.005211526670754138
+    },
+    {
+      "from": 3,
+      "to": 14,
+      "label": "Release B",
+      "prob": 0.005824647455548743
+    },
+    {
+      "from": 3,
+      "to": 15,
+      "label": "Release C",
+      "prob": 0.00398528510116493
+    },
+    {
+      "from": 3,
+      "to": 16,
+      "label": "Release D",
+      "prob": 0.003678724708767627
+    },
+    {
+      "from": 3,
+      "to": 17,
+      "label": "Release E",
+      "prob": 9.196811771919068E-4
+    },
+    {
+      "from": 4,
+      "to": 1,
+      "label": "ER Registration",
+      "prob": 6.821282401091405E-4
+    },
+    {
+      "from": 4,
+      "to": 2,
+      "label": "Leucocytes",
+      "prob": 0.38540245566166437
+    },
+    {
+      "from": 4,
+      "to": 3,
+      "label": "CRP",
+      "prob": 0.2755798090040928
+    },
+    {
+      "from": 4,
+      "to": 4,
+      "label": "LacticAcid",
+      "prob": 0.056616643929058665
+    },
+    {
+      "from": 4,
+      "to": 5,
+      "label": "ER Triage",
+      "prob": 0.009549795361527967
+    },
+    {
+      "from": 4,
+      "to": 6,
+      "label": "ER Sepsis Triage",
+      "prob": 0.0286493860845839
+    },
+    {
+      "from": 4,
+      "to": 7,
+      "label": "IV Liquid",
+      "prob": 0.08458390177353342
+    },
+    {
+      "from": 4,
+      "to": 8,
+      "label": "IV Antibiotics",
+      "prob": 0.06070941336971351
+    },
+    {
+      "from": 4,
+      "to": 9,
+      "label": "Admission NC",
+      "prob": 0.06957708049113233
+    },
+    {
+      "from": 4,
+      "to": 10,
+      "label": "Release A",
+      "prob": 0.0020463847203274215
+    },
+    {
+      "from": 4,
+      "to": 13,
+      "label": "Admission IC",
+      "prob": 0.0068212824010914054
+    },
+    {
+      "from": 4,
+      "to": 14,
+      "label": "Release B",
+      "prob": 0.002728512960436562
+    },
+    {
+      "from": 4,
+      "to": 17,
+      "label": "Release E",
+      "prob": 6.821282401091405E-4
+    },
+    {
+      "from": 5,
+      "to": 1,
+      "label": "ER Registration",
+      "prob": 0.004748338081671415
+    },
+    {
+      "from": 5,
+      "to": 2,
+      "label": "Leucocytes",
+      "prob": 0.04938271604938271
+    },
+    {
+      "from": 5,
+      "to": 3,
+      "label": "CRP",
+      "prob": 0.045584045584045586
+    },
+    {
+      "from": 5,
+      "to": 4,
+      "label": "LacticAcid",
+      "prob": 0.027540360873694207
+    },
+    {
+      "from": 5,
+      "to": 6,
+      "label": "ER Sepsis Triage",
+      "prob": 0.8594491927825261
+    },
+    {
+      "from": 5,
+      "to": 7,
+      "label": "IV Liquid",
+      "prob": 0.010446343779677113
+    },
+    {
+      "from": 5,
+      "to": 8,
+      "label": "IV Antibiotics",
+      "prob": 9.49667616334283E-4
+    },
+    {
+      "from": 6,
+      "to": 1,
+      "label": "ER Registration",
+      "prob": 0.004766444232602479
+    },
+    {
+      "from": 6,
+      "to": 2,
+      "label": "Leucocytes",
+      "prob": 0.25643469971401334
+    },
+    {
+      "from": 6,
+      "to": 3,
+      "label": "CRP",
+      "prob": 0.18303145853193517
+    },
+    {
+      "from": 6,
+      "to": 4,
+      "label": "LacticAcid",
+      "prob": 0.14108674928503337
+    },
+    {
+      "from": 6,
+      "to": 5,
+      "label": "ER Triage",
+      "prob": 0.004766444232602479
+    },
+    {
+      "from": 6,
+      "to": 7,
+      "label": "IV Liquid",
+      "prob": 0.2716873212583413
+    },
+    {
+      "from": 6,
+      "to": 8,
+      "label": "IV Antibiotics",
+      "prob": 0.07244995233555768
+    },
+    {
+      "from": 6,
+      "to": 9,
+      "label": "Admission NC",
+      "prob": 0.01811248808388942
+    },
+    {
+      "from": 6,
+      "to": 13,
+      "label": "Admission IC",
+      "prob": 9.532888465204957E-4
+    },
+    {
+      "from": 7,
+      "to": 1,
+      "label": "ER Registration",
+      "prob": 0.0199203187250996
+    },
+    {
+      "from": 7,
+      "to": 2,
+      "label": "Leucocytes",
+      "prob": 0.07304116865869854
+    },
+    {
+      "from": 7,
+      "to": 3,
+      "label": "CRP",
+      "prob": 0.06108897742363878
+    },
+    {
+      "from": 7,
+      "to": 4,
+      "label": "LacticAcid",
+      "prob": 0.04780876494023904
+    },
+    {
+      "from": 7,
+      "to": 5,
+      "label": "ER Triage",
+      "prob": 0.03054448871181939
+    },
+    {
+      "from": 7,
+      "to": 6,
+      "label": "ER Sepsis Triage",
+      "prob": 0.009296148738379814
+    },
+    {
+      "from": 7,
+      "to": 8,
+      "label": "IV Antibiotics",
+      "prob": 0.6653386454183267
+    },
+    {
+      "from": 7,
+      "to": 9,
+      "label": "Admission NC",
+      "prob": 0.06905710491367861
+    },
+    {
+      "from": 7,
+      "to": 10,
+      "label": "Release A",
+      "prob": 0.0026560424966799467
+    },
+    {
+      "from": 7,
+      "to": 13,
+      "label": "Admission IC",
+      "prob": 0.00398406374501992
+    },
+    {
+      "from": 7,
+      "to": 14,
+      "label": "Release B",
+      "prob": 0.0013280212483399733
+    },
+    {
+      "from": 8,
+      "to": 1,
+      "label": "ER Registration",
+      "prob": 0.001215066828675577
+    },
+    {
+      "from": 8,
+      "to": 2,
+      "label": "Leucocytes",
+      "prob": 0.06439854191980558
+    },
+    {
+      "from": 8,
+      "to": 3,
+      "label": "CRP",
+      "prob": 0.0583232077764277
+    },
+    {
+      "from": 8,
+      "to": 4,
+      "label": "LacticAcid",
+      "prob": 0.03402187120291616
+    },
+    {
+      "from": 8,
+      "to": 5,
+      "label": "ER Triage",
+      "prob": 0.007290400972053463
+    },
+    {
+      "from": 8,
+      "to": 7,
+      "label": "IV Liquid",
+      "prob": 0.07533414337788578
+    },
+    {
+      "from": 8,
+      "to": 9,
+      "label": "Admission NC",
+      "prob": 0.5941676792223572
+    },
+    {
+      "from": 8,
+      "to": 10,
+      "label": "Release A",
+      "prob": 0.002430133657351154
+    },
+    {
+      "from": 8,
+      "to": 13,
+      "label": "Admission IC",
+      "prob": 0.05589307411907655
+    },
+    {
+      "from": 8,
+      "to": 14,
+      "label": "Release B",
+      "prob": 0.001215066828675577
+    },
+    {
+      "from": 9,
+      "to": 2,
+      "label": "Leucocytes",
+      "prob": 0.34517766497461927
+    },
+    {
+      "from": 9,
+      "to": 3,
+      "label": "CRP",
+      "prob": 0.31218274111675126
+    },
+    {
+      "from": 9,
+      "to": 4,
+      "label": "LacticAcid",
+      "prob": 0.02284263959390863
+    },
+    {
+      "from": 9,
+      "to": 5,
+      "label": "ER Triage",
+      "prob": 8.460236886632825E-4
+    },
+    {
+      "from": 9,
+      "to": 6,
+      "label": "ER Sepsis Triage",
+      "prob": 0.004230118443316413
+    },
+    {
+      "from": 9,
+      "to": 7,
+      "label": "IV Liquid",
+      "prob": 0.018612521150592216
+    },
+    {
+      "from": 9,
+      "to": 8,
+      "label": "IV Antibiotics",
+      "prob": 0.001692047377326565
+    },
+    {
+      "from": 9,
+      "to": 9,
+      "label": "Admission NC",
+      "prob": 0.14805414551607446
+    },
+    {
+      "from": 9,
+      "to": 10,
+      "label": "Release A",
+      "prob": 0.09898477157360407
+    },
+    {
+      "from": 9,
+      "to": 13,
+      "label": "Admission IC",
+      "prob": 0.01692047377326565
+    },
+    {
+      "from": 9,
+      "to": 14,
+      "label": "Release B",
+      "prob": 0.014382402707275803
+    },
+    {
+      "from": 9,
+      "to": 15,
+      "label": "Release C",
+      "prob": 0.00338409475465313
+    },
+    {
+      "from": 9,
+      "to": 16,
+      "label": "Release D",
+      "prob": 8.460236886632825E-4
+    },
+    {
+      "from": 10,
+      "to": 2,
+      "label": "Leucocytes",
+      "prob": 0.0014903129657228018
+    },
+    {
+      "from": 10,
+      "to": 3,
+      "label": "CRP",
+      "prob": 0.0014903129657228018
+    },
+    {
+      "from": 10,
+      "to": 12,
+      "label": "Return ER",
+      "prob": 0.4113263785394933
+    },
+    {
+      "from": 12,
+      "to": 3,
+      "label": "CRP",
+      "prob": 0.01020408163265306
+    },
+    {
+      "from": 13,
+      "to": 2,
+      "label": "Leucocytes",
+      "prob": 0.3247863247863248
+    },
+    {
+      "from": 13,
+      "to": 3,
+      "label": "CRP",
+      "prob": 0.27350427350427353
+    },
+    {
+      "from": 13,
+      "to": 4,
+      "label": "LacticAcid",
+      "prob": 0.3504273504273504
+    },
+    {
+      "from": 13,
+      "to": 6,
+      "label": "ER Sepsis Triage",
+      "prob": 0.008547008547008548
+    },
+    {
+      "from": 13,
+      "to": 9,
+      "label": "Admission NC",
+      "prob": 0.03418803418803419
+    },
+    {
+      "from": 13,
+      "to": 13,
+      "label": "Admission IC",
+      "prob": 0.008547008547008548
+    },
+    {
+      "from": 14,
+      "to": 9,
+      "label": "Admission NC",
+      "prob": 0.017857142857142856
+    },
+    {
+      "from": 15,
+      "to": 12,
+      "label": "Return ER",
+      "prob": 0.24
+    },
+    {
+      "from": 16,
+      "to": 12,
+      "label": "Return ER",
+      "prob": 0.4166666666666667
+    },
+    {
+      "from": 17,
+      "to": 12,
+      "label": "Return ER",
+      "prob": 0.16666666666666666
+    }
+  ]
+}
