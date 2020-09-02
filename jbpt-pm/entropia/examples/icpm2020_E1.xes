@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<log xes.version="1.0" xes.features="nested-attributes" openxes.version="1.0RC7">
+<extension name="Lifecycle" prefix="lifecycle" uri="http://www.xes-standard.org/lifecycle.xesext"/>	
+<extension name="Organizational" prefix="org" uri="http://www.xes-standard.org/org.xesext"/>	
+<extension name="Time" prefix="time" uri="http://www.xes-standard.org/time.xesext"/>	
+<extension name="Concept" prefix="concept" uri="http://www.xes-standard.org/concept.xesext"/>	
+<extension name="Semantic" prefix="semantic" uri="http://www.xes-standard.org/semantic.xesext"/>	
+<global scope="trace">		
+<string key="concept:name" value="UNKNOWN"/>	
+</global>
+<global scope="event">		
+<string key="concept:name" value="UNKNOWN"/>	
+</global>	
+<classifier name="Activity classifier" keys="concept:name"/>	
+<string key="concept:name" value="log"/>
+	<trace>
+		<string key="concept:name" value="1"/>
+	</trace>
+    <trace>
+		<string key="concept:name" value="2"/>
+	</trace>
+    <trace>
+		<string key="concept:name" value="3"/>
+	</trace>
+    <trace>
+		<string key="concept:name" value="4"/>
+	</trace>
+    <trace>
+		<string key="concept:name" value="5"/>
+	</trace>
+    <trace>
+		<string key="concept:name" value="6"/>
+	</trace>
+    <trace>
+		<string key="concept:name" value="7"/>
+	</trace>
+    <trace>
+		<string key="concept:name" value="8"/>
+	</trace>
+    <trace>
+		<string key="concept:name" value="9"/>
+	</trace>
+    <trace>
+		<string key="concept:name" value="10"/>
+	</trace>
+    <trace>
+		<string key="concept:name" value="11"/>
+	</trace>
+    <trace>
+		<string key="concept:name" value="12"/>
+	</trace>
+    <trace>
+		<string key="concept:name" value="13"/>
+	</trace>
+    <trace>
+		<string key="concept:name" value="14"/>
+	</trace>
+    <trace>
+		<string key="concept:name" value="15"/>
+	</trace>
+    <trace>
+		<string key="concept:name" value="16"/>
+	</trace>
+    <trace>
+		<string key="concept:name" value="17"/>
+	</trace>
+    <trace>
+		<string key="concept:name" value="18"/>
+	</trace>
+    <trace>
+		<string key="concept:name" value="19"/>
+	</trace>
+    <trace>
+		<string key="concept:name" value="20"/>
+	</trace>
+    <trace>
+		<string key="concept:name" value="21"/>
+	</trace>
+    <trace>
+		<string key="concept:name" value="22"/>
+	</trace>
+    <trace>
+		<string key="concept:name" value="23"/>
+	</trace>
+    <trace>
+		<string key="concept:name" value="24"/>
+	</trace>
+    <trace>
+		<string key="concept:name" value="25"/>
+	</trace>
+    <trace>
+		<string key="concept:name" value="26"/>
+	</trace>
+    <trace>
+		<string key="concept:name" value="27"/>
+	</trace>
+    <trace>
+		<string key="concept:name" value="28"/>
+	</trace>
+    <trace>
+		<string key="concept:name" value="29"/>
+	</trace>
+    <trace>
+		<string key="concept:name" value="30"/>
+	</trace>
+    <trace>
+		<string key="concept:name" value="31"/>
+	</trace>
+    <trace>
+		<string key="concept:name" value="32"/>
+	</trace>
+
+	<trace>
+		<string key="concept:name" value="33"/>
+		<event>
+			<string key="concept:name" value="a"/>
+		</event>
+	</trace>
+    <trace>
+		<string key="concept:name" value="34"/>
+		<event>
+			<string key="concept:name" value="a"/>
+		</event>
+	</trace>
+    <trace>
+		<string key="concept:name" value="35"/>
+		<event>
+			<string key="concept:name" value="a"/>
+		</event>
+	</trace>
+    <trace>
+		<string key="concept:name" value="36"/>
+		<event>
+			<string key="concept:name" value="a"/>
+		</event>
+	</trace>
+    <trace>
+		<string key="concept:name" value="37"/>
+		<event>
+			<string key="concept:name" value="a"/>
+		</event>
+	</trace>
+    <trace>
+		<string key="concept:name" value="38"/>
+		<event>
+			<string key="concept:name" value="a"/>
+		</event>
+	</trace>
+    <trace>
+		<string key="concept:name" value="39"/>
+		<event>
+			<string key="concept:name" value="a"/>
+		</event>
+	</trace>
+    <trace>
+		<string key="concept:name" value="40"/>
+		<event>
+			<string key="concept:name" value="a"/>
+		</event>
+	</trace>
+    <trace>
+		<string key="concept:name" value="41"/>
+		<event>
+			<string key="concept:name" value="a"/>
+		</event>
+	</trace>
+    <trace>
+		<string key="concept:name" value="42"/>
+		<event>
+			<string key="concept:name" value="a"/>
+		</event>
+	</trace>
+    <trace>
+		<string key="concept:name" value="43"/>
+		<event>
+			<string key="concept:name" value="a"/>
+		</event>
+	</trace>
+    <trace>
+		<string key="concept:name" value="44"/>
+		<event>
+			<string key="concept:name" value="a"/>
+		</event>
+	</trace>
+    <trace>
+		<string key="concept:name" value="45"/>
+		<event>
+			<string key="concept:name" value="a"/>
+		</event>
+	</trace>
+    <trace>
+		<string key="concept:name" value="46"/>
+		<event>
+			<string key="concept:name" value="a"/>
+		</event>
+	</trace>
+    <trace>
+		<string key="concept:name" value="47"/>
+		<event>
+			<string key="concept:name" value="a"/>
+		</event>
+	</trace>
+    <trace>
+		<string key="concept:name" value="48"/>
+		<event>
+			<string key="concept:name" value="a"/>
+		</event>
+	</trace>
+    
+    <trace>
+		<string key="concept:name" value="49"/>
+		<event>
+			<string key="concept:name" value="a"/>
+		</event>
+        <event>
+			<string key="concept:name" value="b"/>
+		</event>
+	</trace>
+    <trace>
+		<string key="concept:name" value="50"/>
+		<event>
+			<string key="concept:name" value="a"/>
+		</event>
+        <event>
+			<string key="concept:name" value="b"/>
+		</event>
+	</trace>
+    <trace>
+		<string key="concept:name" value="51"/>
+		<event>
+			<string key="concept:name" value="a"/>
+		</event>
+        <event>
+			<string key="concept:name" value="b"/>
+		</event>
+	</trace>
+    <trace>
+		<string key="concept:name" value="52"/>
+		<event>
+			<string key="concept:name" value="a"/>
+		</event>
+        <event>
+			<string key="concept:name" value="b"/>
+		</event>
+	</trace>
+    <trace>
+		<string key="concept:name" value="53"/>
+		<event>
+			<string key="concept:name" value="a"/>
+		</event>
+        <event>
+			<string key="concept:name" value="b"/>
+		</event>
+	</trace>
+    <trace>
+		<string key="concept:name" value="54"/>
+		<event>
+			<string key="concept:name" value="a"/>
+		</event>
+        <event>
+			<string key="concept:name" value="b"/>
+		</event>
+	</trace>
+    <trace>
+		<string key="concept:name" value="55"/>
+		<event>
+			<string key="concept:name" value="a"/>
+		</event>
+        <event>
+			<string key="concept:name" value="b"/>
+		</event>
+	</trace>
+    <trace>
+		<string key="concept:name" value="56"/>
+		<event>
+			<string key="concept:name" value="a"/>
+		</event>
+        <event>
+			<string key="concept:name" value="b"/>
+		</event>
+	</trace>
+    
+    <trace>
+		<string key="concept:name" value="57"/>
+		<event>
+			<string key="concept:name" value="a"/>
+		</event>
+        <event>
+			<string key="concept:name" value="b"/>
+		</event>
+        <event>
+			<string key="concept:name" value="c"/>
+		</event>
+	</trace>
+    <trace>
+		<string key="concept:name" value="58"/>
+		<event>
+			<string key="concept:name" value="a"/>
+		</event>
+        <event>
+			<string key="concept:name" value="b"/>
+		</event>
+        <event>
+			<string key="concept:name" value="c"/>
+		</event>
+	</trace>
+    <trace>
+		<string key="concept:name" value="59"/>
+		<event>
+			<string key="concept:name" value="a"/>
+		</event>
+        <event>
+			<string key="concept:name" value="b"/>
+		</event>
+        <event>
+			<string key="concept:name" value="c"/>
+		</event>
+	</trace>
+    <trace>
+		<string key="concept:name" value="60"/>
+		<event>
+			<string key="concept:name" value="a"/>
+		</event>
+        <event>
+			<string key="concept:name" value="b"/>
+		</event>
+        <event>
+			<string key="concept:name" value="c"/>
+		</event>
+	</trace>
+    
+	<trace>
+		<string key="concept:name" value="61"/>
+		<event>
+			<string key="concept:name" value="a"/>
+		</event>
+        <event>
+			<string key="concept:name" value="b"/>
+		</event>
+        <event>
+			<string key="concept:name" value="c"/>
+		</event>
+        <event>
+			<string key="concept:name" value="d"/>
+		</event>
+	</trace>
+    <trace>
+		<string key="concept:name" value="62"/>
+		<event>
+			<string key="concept:name" value="a"/>
+		</event>
+        <event>
+			<string key="concept:name" value="b"/>
+		</event>
+        <event>
+			<string key="concept:name" value="c"/>
+		</event>
+        <event>
+			<string key="concept:name" value="d"/>
+		</event>
+	</trace>
+    
+    <trace>
+		<string key="concept:name" value="63"/>
+		<event>
+			<string key="concept:name" value="a"/>
+		</event>
+        <event>
+			<string key="concept:name" value="b"/>
+		</event>
+        <event>
+			<string key="concept:name" value="c"/>
+		</event>
+        <event>
+			<string key="concept:name" value="d"/>
+		</event>
+        <event>
+			<string key="concept:name" value="d"/>
+		</event>
+	</trace>
+    
+    <trace>
+		<string key="concept:name" value="64"/>
+		<event>
+			<string key="concept:name" value="a"/>
+		</event>
+        <event>
+			<string key="concept:name" value="b"/>
+		</event>
+        <event>
+			<string key="concept:name" value="c"/>
+		</event>
+        <event>
+			<string key="concept:name" value="d"/>
+		</event>
+        <event>
+			<string key="concept:name" value="e"/>
+		</event>
+	</trace>
+    
+	</log>
