@@ -66,6 +66,8 @@ public class ExampleTest {
 			result = pepr.computeMeasure();
 //			System.out.println(String.format("Precision: %s", result.getSecond()));
 //			System.out.println(String.format("Recall: %s", result.getFirst()));
+			
+			System.out.println();
 
 		} catch (Exception e) {
 			e.printStackTrace();

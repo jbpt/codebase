@@ -43,7 +43,6 @@ import org.processmining.stochasticawareconformancechecking.cli.CLI;
 import org.progressmining.xeslite.common.XesLiteXesXmlParser;
 
 
-
 //============================================================================
 // SAMPLE call:
 // java -jar jbpt-pm.jar -empr  -ret=1.pnml -rel=1.xes
@@ -470,14 +469,18 @@ public final class QualityMeasuresCLI {
 			        	}
 			        	XLog log = XLogReader.openLog(cmd.getOptionValue("rel"));
 			        	String relevance = "";
-			        	try {
+			        	if(retrieveExtension(cmd.getOptionValue("ret")).equals("json")) {
 			        		FDAGraph fda = FDAGraph.readJSON(cmd.getOptionValue("ret"));
 			        		relevance = Relevance.compute(log, fda, false).toString();
-			        	} catch (Exception e) {
+			        	} else if (retrieveExtension(cmd.getOptionValue("ret")).equals("sdfa")) {
 			        		SAutomaton sa = SAutomaton.readJSON(cmd.getOptionValue("ret"));
 			        		relevance = Relevance.compute(log, sa, false).toString();
+			        		System.out.println(relevance);
+			        	} else {
+			        		throw new Exception("Wrong ret input format");
 			        	}
-			        	relevance = relevance.substring(relevance.indexOf('=') + 1, relevance.indexOf(','));
+			        			        	
+			        	relevance = relevance.substring(relevance.indexOf('=') + 1, relevance.indexOf('}'));
 			        	System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
 			    
 			        	System.out.println(String.format(bSilent ? "%s": "Relevance: %s.", relevance));
@@ -495,6 +498,16 @@ public final class QualityMeasuresCLI {
 	        showHelp(options);
 	        return;
 	    }
+	}
+	
+	public static String retrieveExtension(String path) {
+		File file = new File(path);
+		if (file.isDirectory() || !file.canRead() || !file.isFile())
+			return null;
+		
+		String extension = FilenameUtils.getExtension(file.getAbsolutePath());
+	
+		return extension;
 	}
 	
 	public static Object parseModel(String path) {
