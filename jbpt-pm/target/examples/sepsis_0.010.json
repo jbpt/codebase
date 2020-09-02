@@ -1,0 +1,53 @@
+{
+  "initialState": 0,
+  "transitions": [
+    {
+      "from": 0,
+      "to": 1,
+      "label": "ER Registration",
+      "prob": 1.0
+    },
+    {
+      "from": 1,
+      "to": 5,
+      "label": "ER Triage",
+      "prob": 1.0
+    },
+    {
+      "from": 2,
+      "to": 7,
+      "label": "IV Liquid",
+      "prob": 1.0
+    },
+    {
+      "from": 3,
+      "to": 4,
+      "label": "LacticAcid",
+      "prob": 1.0
+    },
+    {
+      "from": 4,
+      "to": 2,
+      "label": "Leucocytes",
+      "prob": 1.0
+    },
+    {
+      "from": 5,
+      "to": 6,
+      "label": "ER Sepsis Triage",
+      "prob": 1.0
+    },
+    {
+      "from": 6,
+      "to": 3,
+      "label": "CRP",
+      "prob": 1.0
+    },
+    {
+      "from": 7,
+      "to": 8,
+      "label": "IV Antibiotics",
+      "prob": 1.0
+    }
+  ]
+}

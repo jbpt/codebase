@@ -10,117 +10,149 @@
 		<string key="concept:name" value="Case1.0"/>
 		<event>
 			<string key="concept:name" value="a"/>
+			<string key="lifecycle:transition" value="complete"/>
 		</event>
 		<event>
 			<string key="concept:name" value="b"/>
+			<string key="lifecycle:transition" value="complete"/>
 		</event>
 		<event>
 			<string key="concept:name" value="c"/>
+			<string key="lifecycle:transition" value="complete"/>
 		</event>
 		<event>
 			<string key="concept:name" value="e"/>
+			<string key="lifecycle:transition" value="complete"/>
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Case2.0"/>
 		<event>
 			<string key="concept:name" value="a"/>
+			<string key="lifecycle:transition" value="complete"/>
 		</event>
 		<event>
 			<string key="concept:name" value="c"/>
+			<string key="lifecycle:transition" value="complete"/>
 		</event>
 		<event>
 			<string key="concept:name" value="e"/>
+			<string key="lifecycle:transition" value="complete"/>
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Case3.0"/>
 		<event>
 			<string key="concept:name" value="b"/>
+			<string key="lifecycle:transition" value="complete"/>
 		</event>
 		<event>
 			<string key="concept:name" value="c"/>
+			<string key="lifecycle:transition" value="complete"/>
 		</event>
 		<event>
 			<string key="concept:name" value="e"/>
+			<string key="lifecycle:transition" value="complete"/>
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Case4.0"/>
 		<event>
 			<string key="concept:name" value="b"/>
+			<string key="lifecycle:transition" value="complete"/>
 		</event>
 		<event>
 			<string key="concept:name" value="c"/>
+			<string key="lifecycle:transition" value="complete"/>
 		</event>
 		<event>
 			<string key="concept:name" value="e"/>
+			<string key="lifecycle:transition" value="complete"/>
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Case5.0"/>
 		<event>
 			<string key="concept:name" value="a"/>
+			<string key="lifecycle:transition" value="complete"/>
 		</event>
 		<event>
 			<string key="concept:name" value="b"/>
+			<string key="lifecycle:transition" value="complete"/>
 		</event>
 		<event>
 			<string key="concept:name" value="c"/>
+			<string key="lifecycle:transition" value="complete"/>
 		</event>
 		<event>
 			<string key="concept:name" value="d"/>
+			<string key="lifecycle:transition" value="complete"/>
 		</event>
 		<event>
 			<string key="concept:name" value="c"/>
+			<string key="lifecycle:transition" value="complete"/>
 		</event>
 		<event>
 			<string key="concept:name" value="b"/>
+			<string key="lifecycle:transition" value="complete"/>
 		</event>
 		<event>
 			<string key="concept:name" value="e"/>
+			<string key="lifecycle:transition" value="complete"/>
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Case6.0"/>
 		<event>
 			<string key="concept:name" value="a"/>
+			<string key="lifecycle:transition" value="complete"/>
 		</event>
 		<event>
 			<string key="concept:name" value="b"/>
+			<string key="lifecycle:transition" value="complete"/>
 		</event>
 		<event>
 			<string key="concept:name" value="d"/>
+			<string key="lifecycle:transition" value="complete"/>
 		</event>
 		<event>
 			<string key="concept:name" value="c"/>
+			<string key="lifecycle:transition" value="complete"/>
 		</event>
 		<event>
 			<string key="concept:name" value="b"/>
+			<string key="lifecycle:transition" value="complete"/>
 		</event>
 		<event>
 			<string key="concept:name" value="e"/>
+			<string key="lifecycle:transition" value="complete"/>
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Case7.0"/>
 		<event>
 			<string key="concept:name" value="a"/>
+			<string key="lifecycle:transition" value="complete"/>
 		</event>
 		<event>
 			<string key="concept:name" value="a"/>
+			<string key="lifecycle:transition" value="complete"/>
 		</event>
 		<event>
 			<string key="concept:name" value="a"/>
+			<string key="lifecycle:transition" value="complete"/>
 		</event>
 		<event>
 			<string key="concept:name" value="c"/>
+			<string key="lifecycle:transition" value="complete"/>
 		</event>
 		<event>
 			<string key="concept:name" value="b"/>
+			<string key="lifecycle:transition" value="complete"/>
 		</event>
 		<event>
 			<string key="concept:name" value="e"/>
+			<string key="lifecycle:transition" value="complete"/>
 		</event>
 	</trace>
 </log>

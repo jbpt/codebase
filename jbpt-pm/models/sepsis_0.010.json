@@ -1,0 +1,25 @@
+{
+  "nodes": [
+    {"label": "__INITIAL__", "freq": 13, "id": 0},
+    {"label": "ER Registration", "freq": 13, "id": 1},
+    {"label": "Leucocytes", "freq": 13, "id": 2},
+    {"label": "CRP", "freq": 13, "id": 3},
+    {"label": "LacticAcid", "freq": 13, "id": 4},
+    {"label": "ER Triage", "freq": 13, "id": 5},
+    {"label": "ER Sepsis Triage", "freq": 13, "id": 6},
+    {"label": "IV Liquid", "freq": 13, "id": 7},
+    {"label": "IV Antibiotics", "freq": 13, "id": 8},
+    {"label": "__FINAL__", "freq": 13, "id": 11},
+  ],
+  "arcs": [
+    {"from": 0, "to": 1, "freq": 13},
+    {"from": 1, "to": 5, "freq": 13},
+    {"from": 2, "to": 7, "freq": 13},
+    {"from": 3, "to": 4, "freq": 13},
+    {"from": 4, "to": 2, "freq": 13},
+    {"from": 5, "to": 6, "freq": 13},
+    {"from": 6, "to": 3, "freq": 13},
+    {"from": 7, "to": 8, "freq": 13},
+    {"from": 8, "to": 11, "freq": 13}
+  ]
+}
