@@ -1,0 +1,1 @@
+java -jar jbpt-pm-entropia-1.5.jar -cpmp -srel=1 -sret=1 -rel=examples\icsoc2020_log_running_example.xes -ret=examples\icsoc2020_model_running_example.pnml
