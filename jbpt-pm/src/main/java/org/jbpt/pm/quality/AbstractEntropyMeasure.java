@@ -9,7 +9,7 @@ import java.util.Set;
 
 import org.deckfour.xes.model.XLog;
 import org.jbpt.petri.NetSystem;
-import org.jbpt.petri.mc.LoLA2ModelChecker;
+import org.jbpt.petri.mc.PetriNetChecker;
 import org.jbpt.pm.utils.Utils;
 
 import dk.brics.automaton.Automaton;
@@ -90,10 +90,12 @@ public abstract class AbstractEntropyMeasure {
 	private boolean checkBounded(Object model) {
 		if (model instanceof NetSystem) {
 			NetSystem sys = (NetSystem) model;
-			sys.loadNaturalMarking();
-			LoLA2ModelChecker lola = new LoLA2ModelChecker("./lola2/win/lola");
-			boolean result = lola.isBounded(sys);
-			return result;
+			PetriNetChecker netChecker = new PetriNetChecker(sys);
+			return netChecker.isBounded();
+//			sys.loadNaturalMarking();
+//			LoLA2ModelChecker lola = new LoLA2ModelChecker("./lola2/win/lola");
+//			boolean result = lola.isBounded(sys);
+//			return result;
 		}
 		return true;
 	}
@@ -106,8 +108,7 @@ public abstract class AbstractEntropyMeasure {
 	 */
 	public double computeMeasure() throws Exception {
 	        
-		if (limitationsHold==null) this.checkLimitations();
-		if (limitationsHold==null || !limitationsHold.booleanValue()) {
+		if (limitationsHold!=null && !limitationsHold.booleanValue()) {
 			throw new Exception(String.format("Limitation(s): %s of %s measure are not fulfilled", violetedLimitations, this.getClass().getName()));
 		}
 	

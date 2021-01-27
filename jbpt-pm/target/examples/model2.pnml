@@ -14,6 +14,7 @@
           <text>true</text>
         </tokenCaseSensitive>
       </toolspecific>
+      <initialMarking><text>1</text></initialMarking>
     </place>
     <place id="pl2">
       <graphics>

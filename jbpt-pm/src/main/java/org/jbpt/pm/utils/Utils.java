@@ -54,7 +54,6 @@ public class Utils {
 		
 		// Construct initial state
 		Collection<Place> initialMarking = ns.getMarking().toMultiSet();
-//		System.out.println("Initial marking = " + initialMarking);
 		
 		// Derive final marking
 		Collection<Place> finalMarking = deriveFinalMarking(ns);

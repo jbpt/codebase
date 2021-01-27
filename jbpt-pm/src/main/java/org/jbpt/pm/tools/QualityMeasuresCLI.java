@@ -21,6 +21,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.math3.util.Pair;
 import org.deckfour.xes.in.XesXmlParser;
 import org.deckfour.xes.model.XLog;
+import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.io.PNMLSerializer;
 import org.jbpt.pm.models.FDAGraph;
 import org.jbpt.pm.models.SAutomaton;
