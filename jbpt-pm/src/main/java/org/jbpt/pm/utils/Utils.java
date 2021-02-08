@@ -55,6 +55,10 @@ public class Utils {
 		// Construct initial state
 		Collection<Place> initialMarking = ns.getMarking().toMultiSet();
 		
+		if ((initialMarking == null) || (initialMarking.size() == 0)) {
+			initialMarking = deriveInitialMarking(ns);
+		}
+		
 		// Derive final marking
 		Collection<Place> finalMarking = deriveFinalMarking(ns);
 		
@@ -292,6 +296,27 @@ public class Utils {
 			}
 		}
 		return finalMarking;
+	}
+	
+	/**
+	 * Derive final marking from the structure of a given net system
+	 * (should work for workflow nets, for other types of nets results are to be checked)
+	 * 
+	 * @param ns
+	 * @return
+	 */
+	private static Collection<Place> deriveInitialMarking(NetSystem ns) {
+
+		Collection<Place> initialMarking = new HashSet<Place>();
+		if (ns != null) {
+			for (Place place : ns.getPlaces()) {
+				Collection<Node> predecessors = ns.getDirectPredecessors(place);
+				if ((predecessors == null) || (predecessors.size() == 0)) {
+					initialMarking.add(place);
+				} 
+			}
+		}
+		return initialMarking;
 	}
 	
 	private static PrintStream originalStream = System.out;
