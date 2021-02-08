@@ -6,7 +6,7 @@
   <artifactId>jbpt-pm</artifactId>
   <version>0.3.2</version>
   <packaging>jar</packaging>
-  <name>Business Process Technologies 5 Java (jBPT) - Process Mining Module</name>
+  <name>Business Process Technologies 6 Java (jBPT) - Process Mining Module</name>
  
   <build>
     <finalName>jbpt-pm</finalName>
@@ -77,7 +77,7 @@
 			<artifactId>maven-jar-plugin</artifactId>
 			<version>3.0.2</version>
 			<configuration>
-				<finalName>jbpt-pm-entropia-1.5</finalName> 
+				<finalName>jbpt-pm-entropia-1.6</finalName> 
 				<archive>
 					<manifest>
 						<addClasspath>true</addClasspath>

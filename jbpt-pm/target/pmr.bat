@@ -1,1 +1,1 @@
-java -jar jbpt-pm-entropia-1.5.jar -pmr -rel=examples\log1.xes -ret=examples\model1.pnml
+java -jar jbpt-pm-entropia-1.6.jar -pmr -rel=examples\log1.xes -ret=examples\model1.pnml

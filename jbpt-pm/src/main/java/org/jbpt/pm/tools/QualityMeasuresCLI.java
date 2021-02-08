@@ -89,12 +89,12 @@ import org.progressmining.xeslite.common.XesLiteXesXmlParser;
 /**
  * Command line interface to quality measures for Process Mining and Process Querying.
  * 
- * @version 1.5
+ * @version 1.6
  * 
  * @author Artem Polyvyanyy, Anna Kalenkova 
  */ 
 public final class QualityMeasuresCLI {
-	final private static String	version	= "1.5";
+	final private static String	version	= "1.6";
 	
 	private static Object relevantTraces	= null;
 	private static Object retrievedTraces	= null;
