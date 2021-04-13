@@ -18,6 +18,7 @@ import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math3.util.Pair;
 import org.deckfour.xes.in.XesXmlParser;
 import org.deckfour.xes.model.XLog;
@@ -470,12 +471,17 @@ public final class QualityMeasuresCLI {
 			        	}
 			        	XLog log = XLogReader.openLog(cmd.getOptionValue("rel"));
 			        	String relevance = "";
+			        	long start, finish;
 			        	if(retrieveExtension(cmd.getOptionValue("ret")).equals("json")) {
 			        		FDAGraph fda = FDAGraph.readJSON(cmd.getOptionValue("ret"));
+			        		start = System.currentTimeMillis();
 			        		relevance = Relevance.compute(log, fda, false).toString();
+			        		finish = System.currentTimeMillis();
 			        	} else if (retrieveExtension(cmd.getOptionValue("ret")).equals("sdfa")) {
 			        		SAutomaton sa = SAutomaton.readJSON(cmd.getOptionValue("ret"));
+			        		start = System.currentTimeMillis();
 			        		relevance = Relevance.compute(log, sa, false).toString();
+			        		finish = System.currentTimeMillis();
 			        		System.out.println(relevance);
 			        	} else {
 			        		throw new Exception("Wrong ret input format");
@@ -484,7 +490,9 @@ public final class QualityMeasuresCLI {
 			        	relevance = relevance.substring(relevance.indexOf('=') + 1, relevance.indexOf('}'));
 			        	System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
 			    
-			        	System.out.println(String.format(bSilent ? "%s": "Relevance: %s.", relevance));
+			        	System.out.println(String.format(bSilent ? "%s": "Relevance:                 %s.", relevance));
+			        	String spaces = StringUtils.repeat(" ", relevance.length());
+			        	System.out.println(String.format("Relevance calculated in"+ spaces + "%s ms.", (finish-start)));
 			        }
 		        }
 	        }
