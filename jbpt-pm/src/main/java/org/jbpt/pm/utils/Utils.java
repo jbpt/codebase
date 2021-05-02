@@ -38,6 +38,17 @@ public class Utils {
 
 	private final static String TAU = "tau";
 	
+	public static void addTau(Automaton a) {
+
+		Set<StatePair> pairs = new HashSet<StatePair>();
+    	for (dk.brics.automaton.State s : a.getStates()) {
+        	for (dk.brics.automaton.Transition t : s.getTransitions()) {
+        		pairs.add(new StatePair(s, t.getDest()));
+        	}
+        	
+        }
+        a.addEpsilons(pairs);
+    }
 	/**
 	 * Construct reachability graph of a given net system
 	 * Note that we assume that we have checked that the net system is bounded
@@ -59,6 +70,7 @@ public class Utils {
 			initialMarking = deriveInitialMarking(ns);
 		}
 		
+//		System.out.println(initialMarking);
 		// Derive final marking
 		Collection<Place> finalMarking = deriveFinalMarking(ns);
 		
@@ -77,6 +89,8 @@ public class Utils {
 		
 		// Construct other states
 		while (!unprocessedMarkings.isEmpty()) {
+//			System.out.println(unprocessedMarkings.size());
+//			System.out.println(markingToState.size());
 			Collection<Place> curMarking = unprocessedMarkings.iterator().next();
 			Set<Transition> enabledTransitions = retrieveEnabledTransitions(curMarking, ns);
 
@@ -129,6 +143,9 @@ public class Utils {
 		}
 		
 		a.addEpsilons(tauPairs);
+//		System.out.println(a.getNumberOfStates());
+//		System.out.println(a.getNumberOfTransitions());
+		
 		a.determinize();
 //		System.out.println(a);
 		a.minimize();

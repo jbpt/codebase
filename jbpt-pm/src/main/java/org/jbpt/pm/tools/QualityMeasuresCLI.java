@@ -27,6 +27,7 @@ import org.jbpt.petri.io.PNMLSerializer;
 import org.jbpt.pm.models.FDAGraph;
 import org.jbpt.pm.models.SAutomaton;
 import org.jbpt.pm.quality.AbstractQualityMeasure;
+import org.jbpt.pm.quality.DistanceMeasure;
 import org.jbpt.pm.quality.EntropyMeasure;
 import org.jbpt.pm.quality.EntropyPrecisionRecallMeasure;
 import org.jbpt.pm.quality.PartialEntropyMeasure;
@@ -82,6 +83,9 @@ import org.progressmining.xeslite.common.XesLiteXesXmlParser;
 //--entropy (-ent):								    compute entropy measure (for exact traces)
 //--diluted-entropy (-dent):						compute entropy measure (for “diluted” traces)
 //--partial-efficient-entropy (-doent):			    compute entropy measure (for “diluted” traces with optimization)
+
+//--distance (-dist):							    compute entropy distance
+//--partial-distance (-pdist):					    compute partial entropy distance
 
 
 // --silent (-s):			        	            print the results only
@@ -157,12 +161,18 @@ public final class QualityMeasuresCLI {
 	    	Option relModel			= Option.builder("rel").longOpt("relevant").hasArg(true).optionalArg(false).valueSeparator('=').argName("file path").required(false).desc("model that describes relevant traces").build();
 	    	Option retModel			= Option.builder("ret").longOpt("retrieved").hasArg(true).optionalArg(false).valueSeparator('=').argName("file path").required(false).desc("model that describes retrieved traces").build();
 	    	
+	    	// compute distance 
+	    	Option distance			= Option.builder("dist").longOpt("distance").numberOfArgs(0).required(false).desc("compute distance").hasArg(false).build();
+	    	// compute partial distance 
+	    	Option pdistance	    = Option.builder("pdist").longOpt("partial-distance").numberOfArgs(0).required(false).desc("compute partial distance").hasArg(false).build();
+	    	
 	    	// silent option
 	    	Option silent			= Option.builder("s").longOpt("silent").numberOfArgs(0).required(false).desc("print the results only").hasArg(false).build();
 	    	
 	    	// trust option, e.i., do not check for boundedness
 	    	Option trust			= Option.builder("t").longOpt("trust").numberOfArgs(0).required(false).desc("do not check for boundedness").hasArg(false).build();
-	    		    	
+	    		   
+	    	
 	    	
 	    	// create groups
 	    	OptionGroup cmdGroup = new OptionGroup();
@@ -184,6 +194,8 @@ public final class QualityMeasuresCLI {
 	    	cmdGroup.addOption(entMeasure);
 	    	cmdGroup.addOption(dentMeasure);
 	    	cmdGroup.addOption(boundCheck);
+	    	cmdGroup.addOption(distance);
+	    	cmdGroup.addOption(pdistance);
 //	    	cmdGroup.addOption(doentMeasure);
 	    	cmdGroup.setRequired(true);
 	    	
@@ -199,6 +211,7 @@ public final class QualityMeasuresCLI {
 	    	
 	    	options.addOption(silent);
 	    	options.addOption(trust);
+	    	
 	    	
 	        // parse the command line arguments
 	        CommandLine cmd = parser.parse(options, args);
@@ -317,7 +330,7 @@ public final class QualityMeasuresCLI {
 	        	} else {
 		        	if(cmd.hasOption("empr") || cmd.hasOption("emp") || cmd.hasOption("emr") 
 		        			|| cmd.hasOption("pmpr") || cmd.hasOption("pmp") || cmd.hasOption("pmr")
-		        			|| cmd.hasOption("cpmpr") || cmd.hasOption("cpmp") || cmd.hasOption("cpmr")) {
+		        			|| cmd.hasOption("cpmpr") || cmd.hasOption("cpmp") || cmd.hasOption("cpmr") || cmd.hasOption("dist") || cmd.hasOption("pdist")) {
 		        		if (cmd.hasOption("ret")) {
 			        		String ret = cmd.getOptionValue("ret");
 			        		System.out.println(String.format("Loading the retrieved model from %s.", new File(ret).getCanonicalPath()));
@@ -356,8 +369,7 @@ public final class QualityMeasuresCLI {
 			        		}
 			        	}
 			        }
-			        	
-		        	
+			        	        	
 		        	boolean bPrecision = false, bRecall = false;
 		        	Pair<Double, Double> result = new Pair<Double,Double>(0.0,0.0);
 		        	// compute measures
@@ -437,6 +449,14 @@ public final class QualityMeasuresCLI {
 			        		}
 		        		}
 		        		result = epr.computeMeasure();
+		        	} else if (cmd.hasOption("dist")) {
+			        	DistanceMeasure dist = new DistanceMeasure(relevantTraces, retrievedTraces, false);
+			        	double distanceBetween = dist.computeMeasure();
+			        	System.out.println("Distance: " + distanceBetween);       		
+			        } else if (cmd.hasOption("pdist")) {
+			        	DistanceMeasure dist = new DistanceMeasure(relevantTraces, retrievedTraces, true);
+		        		double distanceBetween = dist.computeMeasure();
+		        		System.out.println("Partial distance: " + distanceBetween);       		
 			        } else if (cmd.hasOption("spr") || cmd.hasOption("sp") || cmd.hasOption("sr")) {
 			        	
 			        	ByteArrayOutputStream baos = new ByteArrayOutputStream();

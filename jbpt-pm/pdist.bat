@@ -1,0 +1,1 @@
+java -jar jbpt-pm-entropia-1.6.jar -pdist -rel=examples\L1.xes -ret=examples\L2.xes
