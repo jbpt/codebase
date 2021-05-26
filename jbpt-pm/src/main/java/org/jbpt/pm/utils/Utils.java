@@ -14,6 +14,7 @@ import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 import org.jbpt.petri.Flow;
+import org.jbpt.petri.IMarking;
 import org.jbpt.petri.IPetriNet;
 import org.jbpt.petri.Marking;
 import org.jbpt.petri.NetSystem;
@@ -89,12 +90,9 @@ public class Utils {
 		
 		// Construct other states
 		while (!unprocessedMarkings.isEmpty()) {
-//			System.out.println(unprocessedMarkings.size());
-//			System.out.println(markingToState.size());
 			Collection<Place> curMarking = unprocessedMarkings.iterator().next();
 			Set<Transition> enabledTransitions = retrieveEnabledTransitions(curMarking, ns);
 
-//			System.out.println(enabledTransitions);
 			for (Transition enabeledTransition : enabledTransitions) {
 
 				Marking marking = new Marking(ns);
@@ -150,6 +148,88 @@ public class Utils {
 //		System.out.println(a);
 		a.minimize();
 		return a;
+	}
+	
+	/**
+	 * Check boundedness of Petri net
+	 * 
+	 * @param ns
+	 * @return
+	 */
+	public static boolean checkBoundedness(NetSystem ns) {
+		Map<Collection<Place>, State> markingToState = new HashMap<Collection<Place>, State>();
+		Map<State, Collection<State>> parentStates = new HashMap<State, Collection<State>>();
+		Set<Collection<Place>> unprocessedMarkings = new HashSet<Collection<Place>>();
+		
+		Automaton a = new Automaton();
+		
+		// Construct initial state
+		Collection<Place> initialMarking = ns.getMarking().toMultiSet();
+		
+		
+		if ((initialMarking == null) || (initialMarking.size() == 0)) {
+			initialMarking = deriveInitialMarking(ns);
+		}	
+		Collection<Place> finalMarking = deriveFinalMarking(ns);
+
+		State initialState = new State();
+		markingToState.put(initialMarking, initialState);
+		parentStates.put(initialState, new HashSet<State>());
+		a.setInitialState(initialState);
+
+		unprocessedMarkings.add(initialMarking);
+		
+		// Construct other states
+		while (!unprocessedMarkings.isEmpty()) {
+			Collection<Place> curMarking = unprocessedMarkings.iterator().next();
+			Set<Transition> enabledTransitions = retrieveEnabledTransitions(curMarking, ns);
+
+			for (Transition enabeledTransition : enabledTransitions) {
+
+				Marking marking = new Marking(ns);
+				marking.fromMultiSet(curMarking);
+				ns.loadMarking(marking);
+
+				ns.fire(enabeledTransition);
+
+				Collection<Place> newMarking = ns.getMarking().toMultiSet();
+				State curState = markingToState.get(curMarking);
+				State newState = markingToState.get(newMarking);
+
+				if (newState == null) {
+					newState = new State();
+					parentStates.put(newState, new HashSet<State>());
+					markingToState.put(newMarking, newState);
+					unprocessedMarkings.add(newMarking);
+				}
+				
+				dk.brics.automaton.Transition t = new dk.brics.automaton.Transition(' ', newState);
+				curState.addTransition(t);
+				Collection<State> parents = parentStates.get(newState);
+				parents.add(curState);
+				parents.addAll(parentStates.get(curState));
+				parentStates.put(newState, parents);
+			}
+			unprocessedMarkings.remove(curMarking);
+			for(State parent : parentStates.get(markingToState.get(curMarking))) {
+				Collection<Place> parentMarking = null;
+				for(Collection<Place> marking : markingToState.keySet()) {
+					if(markingToState.get(marking).equals(parent)) {
+						parentMarking = marking;
+					}
+				}
+				if(parentMarking != null) {
+					if ((curMarking.containsAll(parentMarking)) && !(parentMarking.containsAll(curMarking))) {
+						return false;
+					}
+				}
+			}
+		}
+		// Restore the initial marking
+		Marking marking =  new Marking(ns);
+		marking.fromMultiSet(initialMarking);
+		ns.loadMarking(marking);
+		return true;
 	}
 	
 	/**

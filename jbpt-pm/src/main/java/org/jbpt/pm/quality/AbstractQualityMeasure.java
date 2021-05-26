@@ -112,8 +112,9 @@ public abstract class AbstractQualityMeasure {
 	public static boolean checkBounded(Object model) {
 		if (model instanceof NetSystem) {
 			NetSystem sys = (NetSystem) model;
-			PetriNetChecker netChecker = new PetriNetChecker(sys);
-			return netChecker.isBounded();
+			return Utils.checkBoundedness(sys);
+//			PetriNetChecker netChecker = new PetriNetChecker(sys);
+//			return netChecker.isBounded();
 //			sys.loadNaturalMarking();
 //			LoLA2ModelChecker lola = new LoLA2ModelChecker("./lola2/win/lola");
 //			boolean result = lola.isBounded(sys);
