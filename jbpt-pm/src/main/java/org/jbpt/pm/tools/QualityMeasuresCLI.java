@@ -43,7 +43,6 @@ import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.processtree.ProcessTree;
 import org.processmining.ptconversions.pn.ProcessTree2Petrinet;
 import org.processmining.stochasticawareconformancechecking.cli.CLI;
-import org.progressmining.xeslite.common.XesLiteXesXmlParser;
 
 
 //============================================================================
@@ -563,7 +562,7 @@ public final class QualityMeasuresCLI {
 
 	private static Object parseXES(File file) {
 		
-		XesXmlParser xesParser = new XesLiteXesXmlParser();
+		XesXmlParser xesParser = new XesXmlParser();
 		try {
 			Utils.hidePrinting();
 			List<XLog> logs = xesParser.parse(file);
