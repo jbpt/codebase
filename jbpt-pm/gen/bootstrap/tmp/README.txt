@@ -1,0 +1,1 @@
+This folder stores temporary event logs generated during the experiment.
