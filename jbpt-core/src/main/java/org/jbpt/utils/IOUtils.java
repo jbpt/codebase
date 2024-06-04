@@ -154,7 +154,6 @@ public class IOUtils {
 	 * @param rows a set of string arrays, the lines to write 
 	 */
 	public static void writeResultsToFile(String fileName, String[] captions, Collection<String[]> rows) {
-		
 		try {
 			FileOutputStream stream = new FileOutputStream(new File(fileName));
 			PrintWriter out = new PrintWriter(stream);
@@ -167,7 +166,8 @@ public class IOUtils {
 			
 			out.flush();
 			stream.close();
-			System.out.println("Saved results to " + fileName);} catch (Exception e) {
+			System.out.println("Saved results to " + fileName);
+		} catch (Exception e) {
 			System.out.println("Failed to write the results to " + fileName);
 			e.printStackTrace();
 		}

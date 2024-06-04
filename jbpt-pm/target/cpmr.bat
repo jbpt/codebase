@@ -1,1 +1,0 @@
-java -jar jbpt-pm-entropia-1.6.jar -cpmr -srel=2 -sret=3 -rel=examples\log1.xes -ret=examples\model1.pnml
