@@ -1,0 +1,101 @@
+{
+    "nodes": [
+        {
+            "id": 1,
+            "label": "INPUT",
+            "freq": 10
+        },
+        {
+            "id": 2,
+            "label": "a",
+            "freq": 20
+        },
+        {
+            "id": 3,
+            "label": "b",
+            "freq": 30
+        },
+        {
+            "id": 4,
+            "label": "c",
+            "freq": 25
+        },
+        {
+            "id": 5,
+            "label": "d",
+            "freq": 15
+        },
+        {
+            "id": 6,
+            "label": "e",
+            "freq": 18
+        },
+        {
+            "id": 7,
+            "label": "OUTPUT",
+            "freq": 5
+        }
+    ],
+    "arcs": [
+        {
+            "from": 1,
+            "to": 2,
+            "freq": 50
+        },
+        {
+            "from": 2,
+            "to": 3,
+            "freq": 40
+        },
+        {
+            "from": 2,
+            "to": 4,
+            "freq": 35
+        },
+        {
+            "from": 3,
+            "to": 4,
+            "freq": 45
+        },
+        {
+            "from": 4,
+            "to": 3,
+            "freq": 42
+        },
+        {
+            "from": 3,
+            "to": 5,
+            "freq": 38
+        },
+        {
+            "from": 5,
+            "to": 3,
+            "freq": 36
+        },
+        {
+            "from": 3,
+            "to": 6,
+            "freq": 32
+        },
+        {
+            "from": 4,
+            "to": 5,
+            "freq": 28
+        },
+        {
+            "from": 5,
+            "to": 4,
+            "freq": 26
+        },
+        {
+            "from": 4,
+            "to": 6,
+            "freq": 24
+        },
+        {
+            "from": 6,
+            "to": 7,
+            "freq": 22
+        }
+    ]
+}

@@ -1,5 +1,7 @@
 package org.jbpt.pm.utils;
 
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Collection;
@@ -430,6 +432,10 @@ public class Utils {
 	
 	public static void restorePrinting() {
 		System.setOut(originalStream);
+	}
+
+	public static void forcePrinting() {
+		System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
 	}
 	
 	

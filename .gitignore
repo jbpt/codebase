@@ -54,3 +54,6 @@ jbpt-pm/gen/bootstrap/bin/org/jbpt/pm/gen/bootstrap/InputGenerator2.class
 jbpt-pm/gen/bootstrap/bin/org/jbpt/pm/gen/bootstrap/LogModelGenerator.class
 jbpt-pm/gen/bootstrap/bin/org/jbpt/pm/gen/bootstrap/ProcessDiscovery.class
 jbpt-pm/gen/bootstrap/bin/org/jbpt/pm/gen/bootstrap/RandomizeLines.class
+jbpt-test/*
+jbpt-pm/target/*
+.idea/*

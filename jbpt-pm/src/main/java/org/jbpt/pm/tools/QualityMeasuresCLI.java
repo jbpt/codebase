@@ -1,10 +1,6 @@
 package org.jbpt.pm.tools;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,8 +18,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math3.util.Pair;
 import org.deckfour.xes.in.XesXmlParser;
 import org.deckfour.xes.model.XLog;
-import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.io.PNMLSerializer;
+import org.jbpt.pm.gen.bootstrap.BootstrapGeneralization;
+import org.jbpt.pm.gen.bootstrap.EventLog;
+import org.jbpt.pm.gen.bootstrap.Generalization;
 import org.jbpt.pm.models.FDAGraph;
 import org.jbpt.pm.models.SAutomaton;
 import org.jbpt.pm.quality.AbstractQualityMeasure;
@@ -170,6 +168,14 @@ public final class QualityMeasuresCLI {
 	    	
 	    	// trust option, e.i., do not check for boundedness
 	    	Option trust			= Option.builder("t").longOpt("trust").numberOfArgs(0).required(false).desc("do not check for boundedness").hasArg(false).build();
+
+			Option bootstrapGen		= Option.builder("bgen").longOpt("bootstrap-gen").numberOfArgs(0).required(false).desc("compute bootstrap generalization").hasArg(false).build();
+			Option sampleSize		= Option.builder("n").longOpt("sample-size").hasArg(true).optionalArg(false).valueSeparator('=').argName("sample size").required(false).desc("sample size for bootstrapping").build();
+			Option numOfSamples		= Option.builder("m").longOpt("num-of-samples").hasArg(true).optionalArg(false).valueSeparator('=').argName("num of samples").required(false).desc("number of samples for bootstrapping").build();
+			Option numOfGenerations	= Option.builder("g").longOpt("num-of-generations").hasArg(true).optionalArg(false).valueSeparator('=').argName("num of generations").required(false).desc("number of generations for bootstrapping").build();
+			Option subtraceLength	= Option.builder("k").longOpt("subtrace-length").hasArg(true).optionalArg(false).valueSeparator('=').argName("subtrace length").required(false).desc("common subtrace length for crossover").build();
+			Option breedProbability = Option.builder("p").longOpt("breeding-probability").hasArg(true).optionalArg(false).valueSeparator('=').argName("breeding probability").required(false).desc("breeding probability").build();
+			Option epsilon 			= Option.builder("ep").longOpt("epsilon").hasArg(true).optionalArg(false).valueSeparator('=').argName("threshold value").required(false).desc("threshold for confidence interval of bootstrap samples").build();
 	    		   
 	    	
 	    	
@@ -195,6 +201,7 @@ public final class QualityMeasuresCLI {
 	    	cmdGroup.addOption(boundCheck);
 	    	cmdGroup.addOption(distance);
 	    	cmdGroup.addOption(pdistance);
+			cmdGroup.addOption(bootstrapGen);
 //	    	cmdGroup.addOption(doentMeasure);
 	    	cmdGroup.setRequired(true);
 	    	
@@ -203,8 +210,14 @@ public final class QualityMeasuresCLI {
 //	    	options.addOption(skipsMeasure);
 	    	options.addOption(skipsRelMeasure);
 	    	options.addOption(skipsRetMeasure);
-	    	
-	    	
+
+			options.addOption(sampleSize);
+			options.addOption(numOfSamples);
+			options.addOption(numOfGenerations);
+			options.addOption(subtraceLength);
+			options.addOption(breedProbability);
+			options.addOption(epsilon);
+
 	    	options.addOption(relModel);
 	    	options.addOption(retModel);
 	    	
@@ -279,12 +292,18 @@ public final class QualityMeasuresCLI {
 	        		System.out.println("The technique is described in:");
 	        		System.out.println("Artem Polyvyanyy, Alistair Moffat, Luciano Garcia-Bonuelos. An Entropic Relevance Measure for ");
 	        		System.out.println("Stochastic Conformance Checking in Process Mining. ICPM 2020.");
-	    		}
+	    		} else if (cmd.hasOption("-bgen")) {
+					System.out.println("Computing bootstrap generalization.");
+					System.out.println("The technique is described in:");
+					System.out.println("Artem Polyvyanyy, Alistair Moffat, Luciano Garcia-Bonuelos. Bootstrapping" +
+							"\nGeneralization of Process Models Discovered from Event Data. CAiSE 2022 ");
+//					System.out.println("Stochastic Conformance Checking in Process Mining. ICPM 2020.");
+				}
 	        	if (cmd.hasOption("ent") || cmd.hasOption("dent")) {
 	        		
 	        		List<String> argList = cmd.getArgList();
 	        		if ((argList == null) || (argList.size() == 0)) {
-	        			throw new ParseException("argument is requred, see --help for details");
+	        			throw new ParseException("argument is required, see --help for details");
 	        		}
 	        		if (cmd.hasOption("ent")) {
 		        		for (String arg : argList) {
@@ -336,7 +355,7 @@ public final class QualityMeasuresCLI {
 			        		long start = System.currentTimeMillis();
 			        		retrievedTraces = parseModel(ret);
 			        		long finish = System.currentTimeMillis();
-			        		System.out.println(String.format("The retrieved modeln loaded in                              %s ms.", (finish-start)));
+			        		System.out.println(String.format("The retrieved model loaded in                              %s ms.", (finish-start)));
 			        	}
 			        	
 			        	if (cmd.hasOption("rel")) {
@@ -347,7 +366,7 @@ public final class QualityMeasuresCLI {
 			        		long finish = System.currentTimeMillis();
 			        		System.out.println(String.format("The relevant model loaded in                                %s ms.", (finish-start)));
 			        	} 
-			        	else throw new ParseException("-ret option is requred, see --help for details");
+			        	else throw new ParseException("-ret option is required, see --help for details");
 			        	
 			        	if(!cmd.hasOption("ret")) {
 			        		// If relevant traces is a log, the corresponding model will be discovered 
@@ -364,7 +383,7 @@ public final class QualityMeasuresCLI {
 			        		    System.out.println(String.format("The retrieved model was discovered in                       %s ms.", (finish-start)));
 			        		    
 			        		} else {
-			        			throw new ParseException("-rel option is requred, see --help for details");
+			        			throw new ParseException("-rel option is required, see --help for details");
 			        		}
 			        	}
 			        }
@@ -512,8 +531,75 @@ public final class QualityMeasuresCLI {
 			        	System.out.println(String.format(bSilent ? "%s": "Relevance:                 %s.", relevance));
 			        	String spaces = StringUtils.repeat(" ", relevance.length());
 			        	System.out.println(String.format("Relevance calculated in"+ spaces + "%s ms.", (finish-start)));
-			        }
-		        }
+			        } else if (cmd.hasOption("bgen")) { // bootstrap gen
+						if(!cmd.hasOption("rel") || !cmd.hasOption("ret")) { // rel ret should be provided
+							throw new ParseException("Provide both -rel and -ret parameters");
+						}
+						// model should be a DFG
+						if(!retrieveExtension(cmd.getOptionValue("ret")).equals("json") || !retrieveExtension(cmd.getOptionValue("rel")).equals("xes")) {
+							throw new ParseException("Wrong -rel or -ret input formats");
+						}
+						EventLog log = new EventLog().parseEventLogFromXES(cmd.getOptionValue("rel"));
+
+						// get inputs
+						int n;
+						int g;
+						int k;
+						double p;
+						try {
+							n = cmd.hasOption("n") ? Integer.parseInt(cmd.getOptionValue("n")) : 8 * log.size();
+							g = cmd.hasOption("g") ? Integer.parseInt(cmd.getOptionValue("g")) : log.size() / 2;
+							k = cmd.hasOption("k") ? Integer.parseInt(cmd.getOptionValue("k")) : 2;
+							p = cmd.hasOption("p") ? Double.parseDouble(cmd.getOptionValue("p")) : 1.0;
+						} catch(NumberFormatException e) {
+							throw new ParseException("Wrong input formats");
+						}
+
+						Generalization generalization;
+						if (cmd.hasOption("m")) { // bootstrap until the fixed number of samples is reached.
+							int m;
+							try {
+								m = Integer.parseInt(cmd.getOptionValue("m"));
+
+								if (cmd.hasOption("ep")) {
+									double ep = Double.parseDouble(cmd.getOptionValue("ep"));
+									generalization = BootstrapGeneralization.getBootstrapGeneralization(
+											cmd.getOptionValue("ret"),
+											log,
+											n, m, g, k, p, bSilent, ep);
+								} else {
+									generalization = BootstrapGeneralization.getBootstrapGeneralization(
+											cmd.getOptionValue("ret"),
+											log,
+											n, m, g, k, p, bSilent);
+								}
+							} catch (NumberFormatException e) {
+								throw new ParseException("Wrong input formats");
+							}
+						} else { // bootstrap until confidence interval is below the threshold value.
+							double ep;
+							try {
+								ep = cmd.hasOption("ep") ? Double.parseDouble(cmd.getOptionValue("ep")) : 0.01;
+								generalization = BootstrapGeneralization.getBootstrapGeneralization(
+										cmd.getOptionValue("ret"),
+										log,
+										n, g, k, p, bSilent, ep);
+							} catch (NumberFormatException e) {
+								throw new ParseException("Wrong input formats");
+							}
+						}
+
+						if (!bSilent) {
+							System.out.println("Model-system precision: " +
+									generalization.pre + " +/- " + generalization.preConfInt);
+							System.out.println("Model-system recall: " +
+									generalization.rec + " +/- " + generalization.recConfInt);
+						} else {
+							Utils.forcePrinting();
+							System.out.println(generalization);
+						}
+					}
+				}
 	        }
 	    }
 	    catch (ParseException exp) {

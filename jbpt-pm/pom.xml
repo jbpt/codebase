@@ -192,7 +192,7 @@
 							<id>copy</id>
 							<phase>package</phase>
 							<configuration>
-								<tasks>
+								<target>
 									<echo>ANT TASK - copying files....</echo>
 									<copy todir="${project.build.directory}/lola2" overwrite="true" flatten="true">
 										<fileset dir="${basedir}/lola2">
@@ -243,7 +243,7 @@
 											<include name="*.gz" />
 										</fileset>
 									</copy-->
-								</tasks>
+								</target>
 							</configuration>
 							<goals>
 								<goal>run</goal>
