@@ -1,4 +1,4 @@
-package org.jbpt.pm.gen.bootstrap;
+package org.jbpt.pm.log;
 
 import java.util.Collection;
 

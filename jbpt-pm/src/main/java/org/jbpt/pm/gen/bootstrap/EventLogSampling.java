@@ -7,6 +7,9 @@ import java.util.Random;
 
 import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Transition;
+import org.jbpt.pm.log.EventLog;
+import org.jbpt.pm.log.EventLogUtils;
+import org.jbpt.pm.log.Trace;
 
 public class EventLogSampling extends EventLogUtils {
 	

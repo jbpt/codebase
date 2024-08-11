@@ -1,4 +1,4 @@
-package org.jbpt.pm.gen.bootstrap;
+package org.jbpt.pm.log;
 
 import org.deckfour.xes.in.XParser;
 import org.deckfour.xes.in.XesXmlParser;

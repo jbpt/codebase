@@ -2,6 +2,7 @@ package org.jbpt.pm.tools;
 
 import java.io.*;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,8 +21,9 @@ import org.deckfour.xes.in.XesXmlParser;
 import org.deckfour.xes.model.XLog;
 import org.jbpt.petri.io.PNMLSerializer;
 import org.jbpt.pm.gen.bootstrap.BootstrapGeneralization;
-import org.jbpt.pm.gen.bootstrap.EventLog;
+import org.jbpt.pm.log.EventLog;
 import org.jbpt.pm.gen.bootstrap.Generalization;
+import org.jbpt.pm.log.EventLogCLI;
 import org.jbpt.pm.models.FDAGraph;
 import org.jbpt.pm.models.SAutomaton;
 import org.jbpt.pm.quality.AbstractQualityMeasure;
@@ -169,6 +171,7 @@ public final class QualityMeasuresCLI {
 	    	// trust option, e.i., do not check for boundedness
 	    	Option trust			= Option.builder("t").longOpt("trust").numberOfArgs(0).required(false).desc("do not check for boundedness").hasArg(false).build();
 
+			// bootstrap gen
 			Option bootstrapGen		= Option.builder("bgen").longOpt("bootstrap-gen").numberOfArgs(0).required(false).desc("compute bootstrap generalization").hasArg(false).build();
 			Option sampleSize		= Option.builder("n").longOpt("sample-size").hasArg(true).optionalArg(false).valueSeparator('=').argName("sample size").required(false).desc("sample size for bootstrapping").build();
 			Option numOfSamples		= Option.builder("m").longOpt("num-of-samples").hasArg(true).optionalArg(false).valueSeparator('=').argName("num of samples").required(false).desc("number of samples for bootstrapping").build();
@@ -176,8 +179,15 @@ public final class QualityMeasuresCLI {
 			Option subtraceLength	= Option.builder("k").longOpt("subtrace-length").hasArg(true).optionalArg(false).valueSeparator('=').argName("subtrace length").required(false).desc("common subtrace length for crossover").build();
 			Option breedProbability = Option.builder("p").longOpt("breeding-probability").hasArg(true).optionalArg(false).valueSeparator('=').argName("breeding probability").required(false).desc("breeding probability").build();
 			Option epsilon 			= Option.builder("ep").longOpt("epsilon").hasArg(true).optionalArg(false).valueSeparator('=').argName("threshold value").required(false).desc("threshold for confidence interval of bootstrap samples").build();
-	    		   
-	    	
+
+			// event log
+			Option log				= Option.builder("l").longOpt("log").hasArg(true).optionalArg(false).valueSeparator('=').argName("file path").required(false).desc("log file path").build();
+			Option completeness		= Option.builder("com").longOpt("completeness").numberOfArgs(0).required(false).desc("compute completeness of the event log").hasArg(false).build();
+			Option coverage			= Option.builder("cov").longOpt("coverage").numberOfArgs(0).required(false).desc("compute coverage of the event log").hasArg(false).build();
+			Option lra				= Option.builder("lra").longOpt("representativeness-approx").numberOfArgs(0).required(false).desc("compute log representativeness approximation").hasArg(false).build();
+			Option act				= Option.builder("act").longOpt("activity").numberOfArgs(0).required(false).desc("activity-based log analysis").hasArg(false).build();
+			Option dfRelation		= Option.builder("dfr").longOpt("df-relation").numberOfArgs(0).required(false).desc("directly-follows-relation-based log analysis").hasArg(false).build();
+			Option trace			= Option.builder("tr").longOpt("trace").numberOfArgs(0).required(false).desc("trace-based log analysis").hasArg(false).build();
 	    	
 	    	// create groups
 	    	OptionGroup cmdGroup = new OptionGroup();
@@ -202,6 +212,7 @@ public final class QualityMeasuresCLI {
 	    	cmdGroup.addOption(distance);
 	    	cmdGroup.addOption(pdistance);
 			cmdGroup.addOption(bootstrapGen);
+			cmdGroup.addOption(log);
 //	    	cmdGroup.addOption(doentMeasure);
 	    	cmdGroup.setRequired(true);
 	    	
@@ -217,6 +228,13 @@ public final class QualityMeasuresCLI {
 			options.addOption(subtraceLength);
 			options.addOption(breedProbability);
 			options.addOption(epsilon);
+
+			options.addOption(completeness);
+			options.addOption(coverage);
+			options.addOption(lra);
+			options.addOption(act);
+			options.addOption(dfRelation);
+			options.addOption(trace);
 
 	    	options.addOption(relModel);
 	    	options.addOption(retModel);
@@ -292,12 +310,16 @@ public final class QualityMeasuresCLI {
 	        		System.out.println("The technique is described in:");
 	        		System.out.println("Artem Polyvyanyy, Alistair Moffat, Luciano Garcia-Bonuelos. An Entropic Relevance Measure for ");
 	        		System.out.println("Stochastic Conformance Checking in Process Mining. ICPM 2020.");
-	    		} else if (cmd.hasOption("-bgen")) {
+	    		} else if (cmd.hasOption("bgen")) {
 					System.out.println("Computing bootstrap generalization.");
 					System.out.println("The technique is described in:");
 					System.out.println("Artem Polyvyanyy, Alistair Moffat, Luciano Garcia-Bonuelos. Bootstrapping" +
 							"\nGeneralization of Process Models Discovered from Event Data. CAiSE 2022 ");
-//					System.out.println("Stochastic Conformance Checking in Process Mining. ICPM 2020.");
+				} else if (cmd.hasOption("l")) {
+					System.out.println("Computing event log statistics");
+					System.out.println("Completeness and Coverage are described in:");
+					System.out.println("M. Kabierski, M. Richter, and M. Weidlich, “Addressing the\n" +
+							"log representativeness problem using species discovery,” in ICPM 2023");
 				}
 	        	if (cmd.hasOption("ent") || cmd.hasOption("dent")) {
 	        		
@@ -507,18 +529,18 @@ public final class QualityMeasuresCLI {
 			        	if(!cmd.hasOption("rel") || !cmd.hasOption("ret")) {
 			        		throw new ParseException("-rel or -ret parameters");
 			        	}
-			        	XLog log = XLogReader.openLog(cmd.getOptionValue("rel"));
+			        	XLog xLog = XLogReader.openLog(cmd.getOptionValue("rel"));
 			        	String relevance = "";
 			        	long start, finish;
 			        	if(retrieveExtension(cmd.getOptionValue("ret")).equals("json")) {
 			        		FDAGraph fda = FDAGraph.readJSON(cmd.getOptionValue("ret"));
 			        		start = System.currentTimeMillis();
-			        		relevance = Relevance.compute(log, fda, false).toString();
+			        		relevance = Relevance.compute(xLog, fda, false).toString();
 			        		finish = System.currentTimeMillis();
 			        	} else if (retrieveExtension(cmd.getOptionValue("ret")).equals("sdfa")) {
 			        		SAutomaton sa = SAutomaton.readJSON(cmd.getOptionValue("ret"));
 			        		start = System.currentTimeMillis();
-			        		relevance = Relevance.compute(log, sa, false).toString();
+			        		relevance = Relevance.compute(xLog, sa, false).toString();
 			        		finish = System.currentTimeMillis();
 			        		System.out.println(relevance);
 			        	} else {
@@ -539,7 +561,7 @@ public final class QualityMeasuresCLI {
 						if(!retrieveExtension(cmd.getOptionValue("ret")).equals("json") || !retrieveExtension(cmd.getOptionValue("rel")).equals("xes")) {
 							throw new ParseException("Wrong -rel or -ret input formats");
 						}
-						EventLog log = new EventLog().parseEventLogFromXES(cmd.getOptionValue("rel"));
+						EventLog eventLog = new EventLog().parseEventLogFromXES(cmd.getOptionValue("rel"));
 
 						// get inputs
 						int n;
@@ -547,8 +569,8 @@ public final class QualityMeasuresCLI {
 						int k;
 						double p;
 						try {
-							n = cmd.hasOption("n") ? Integer.parseInt(cmd.getOptionValue("n")) : 8 * log.size();
-							g = cmd.hasOption("g") ? Integer.parseInt(cmd.getOptionValue("g")) : log.size() / 2;
+							n = cmd.hasOption("n") ? Integer.parseInt(cmd.getOptionValue("n")) : 8 * eventLog.size();
+							g = cmd.hasOption("g") ? Integer.parseInt(cmd.getOptionValue("g")) : eventLog.size() / 2;
 							k = cmd.hasOption("k") ? Integer.parseInt(cmd.getOptionValue("k")) : 2;
 							p = cmd.hasOption("p") ? Double.parseDouble(cmd.getOptionValue("p")) : 1.0;
 						} catch(NumberFormatException e) {
@@ -565,12 +587,12 @@ public final class QualityMeasuresCLI {
 									double ep = Double.parseDouble(cmd.getOptionValue("ep"));
 									generalization = BootstrapGeneralization.getBootstrapGeneralization(
 											cmd.getOptionValue("ret"),
-											log,
+											eventLog,
 											n, m, g, k, p, bSilent, ep);
 								} else {
 									generalization = BootstrapGeneralization.getBootstrapGeneralization(
 											cmd.getOptionValue("ret"),
-											log,
+											eventLog,
 											n, m, g, k, p, bSilent);
 								}
 							} catch (NumberFormatException e) {
@@ -582,7 +604,7 @@ public final class QualityMeasuresCLI {
 								ep = cmd.hasOption("ep") ? Double.parseDouble(cmd.getOptionValue("ep")) : 0.01;
 								generalization = BootstrapGeneralization.getBootstrapGeneralization(
 										cmd.getOptionValue("ret"),
-										log,
+										eventLog,
 										n, g, k, p, bSilent, ep);
 							} catch (NumberFormatException e) {
 								throw new ParseException("Wrong input formats");
@@ -598,6 +620,32 @@ public final class QualityMeasuresCLI {
 							Utils.forcePrinting();
 							System.out.println(generalization);
 						}
+					} else if (cmd.hasOption("l")) {
+						if (!Objects.equals(retrieveExtension(cmd.getOptionValue("l")), "xes")) {
+							throw new ParseException("Wrong -l input format");
+						}
+						EventLog eventLog = new EventLog().parseEventLogFromXES(cmd.getOptionValue("l"));
+
+						boolean bCom = cmd.hasOption("com");
+						boolean bCov = cmd.hasOption("cov");
+						boolean bLRA = cmd.hasOption("lra");
+						boolean bAct = cmd.hasOption("act");
+						boolean bDFR = cmd.hasOption("dfr");
+						boolean bTra = cmd.hasOption("tr");
+
+						System.out.println("\n============================= Event Log Statistics =============================\n");
+
+						if (!bCom && !bCov && !bLRA) {
+							bCom = true;
+							bCov = true;
+							bLRA = true;
+						}
+						if (!bAct && !bDFR && !bTra) {
+							bAct = true;
+							bDFR = true;
+							bTra = true;
+						}
+						new EventLogCLI(eventLog).printEventLogStats(bCom, bCov, bLRA, bAct, bDFR, bTra, bSilent);
 					}
 				}
 	        }
@@ -618,10 +666,8 @@ public final class QualityMeasuresCLI {
 		File file = new File(path);
 		if (file.isDirectory() || !file.canRead() || !file.isFile())
 			return null;
-		
-		String extension = FilenameUtils.getExtension(file.getAbsolutePath());
-	
-		return extension;
+
+        return FilenameUtils.getExtension(file.getAbsolutePath());
 	}
 	
 	public static Object parseModel(String path) {

@@ -1,4 +1,6 @@
-package org.jbpt.pm.gen.bootstrap;
+package org.jbpt.pm.log;
+
+import org.jbpt.pm.gen.bootstrap.BSite;
 
 import java.util.ArrayList;
 import java.util.Collection;
