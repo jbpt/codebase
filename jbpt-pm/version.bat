@@ -1,2 +1,2 @@
-java -jar jbpt-pm-entropia-1.6.jar --version
+java -jar jbpt-pm-entropia-1.7.jar --version
 pause

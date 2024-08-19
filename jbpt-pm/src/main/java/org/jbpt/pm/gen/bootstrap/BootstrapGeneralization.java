@@ -236,11 +236,11 @@ public class BootstrapGeneralization {
 	}
 		
 	public static String getModelLogRecall(String model, String log) throws IOException {
-		return BootstrapGeneralization.execCmd("java -Xmx64g -jar jbpt-pm-entropia-1.6.jar -emr -rel="+log+" -ret="+model+" -s -t");
+		return BootstrapGeneralization.execCmd("java -Xmx64g -jar jbpt-pm-entropia-1.7.jar -emr -rel="+log+" -ret="+model+" -s -t");
 	}
 		
 	public static String getModelLogPrecision(String model, String log) throws IOException {
-		return BootstrapGeneralization.execCmd("java -Xmx64g -jar jbpt-pm-entropia-1.6.jar -emp -rel="+log+" -ret="+model+" -s -t");
+		return BootstrapGeneralization.execCmd("java -Xmx64g -jar jbpt-pm-entropia-1.7.jar -emp -rel="+log+" -ret="+model+" -s -t");
 	}
 	
 	public static String execCmd(String cmd) throws IOException {

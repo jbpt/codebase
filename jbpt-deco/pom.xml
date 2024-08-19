@@ -8,7 +8,7 @@
 	<packaging>jar</packaging>
 	<version>0.3.2</version>
 
-	<name>Business Process Technologies 6 Java (jBPT) - Decompositions Module</name>
+	<name>Business Process Technologies 7 Java (jBPT) - Decompositions Module</name>
 	<description>The jBPT code library is a compendium of technologies that support research on design, execution, and evaluation of business processes.</description>
 
 	<prerequisites>

@@ -93,12 +93,12 @@ import org.processmining.stochasticawareconformancechecking.cli.CLI;
 /**
  * Command line interface to quality measures for Process Mining and Process Querying.
  * 
- * @version 1.6
+ * @version 1.7
  * 
  * @author Artem Polyvyanyy, Anna Kalenkova 
  */ 
 public final class QualityMeasuresCLI {
-	final private static String	version	= "1.6";
+	final private static String	version	= "1.7";
 	
 	private static Object relevantTraces	= null;
 	private static Object retrievedTraces	= null;
@@ -184,7 +184,7 @@ public final class QualityMeasuresCLI {
 			Option log				= Option.builder("l").longOpt("log").hasArg(true).optionalArg(false).valueSeparator('=').argName("file path").required(false).desc("log file path").build();
 			Option completeness		= Option.builder("com").longOpt("completeness").numberOfArgs(0).required(false).desc("compute completeness of the event log").hasArg(false).build();
 			Option coverage			= Option.builder("cov").longOpt("coverage").numberOfArgs(0).required(false).desc("compute coverage of the event log").hasArg(false).build();
-			Option lra				= Option.builder("lra").longOpt("representativeness-approx").numberOfArgs(0).required(false).desc("compute log representativeness approximation").hasArg(false).build();
+			Option lra				= Option.builder("lra").longOpt("log-rep-approx").numberOfArgs(0).required(false).desc("compute log representativeness approximation").hasArg(false).build();
 			Option act				= Option.builder("act").longOpt("activity").numberOfArgs(0).required(false).desc("activity-based log analysis").hasArg(false).build();
 			Option dfRelation		= Option.builder("dfr").longOpt("df-relation").numberOfArgs(0).required(false).desc("directly-follows-relation-based log analysis").hasArg(false).build();
 			Option trace			= Option.builder("tr").longOpt("trace").numberOfArgs(0).required(false).desc("trace-based log analysis").hasArg(false).build();
