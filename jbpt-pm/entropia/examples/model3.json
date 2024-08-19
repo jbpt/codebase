@@ -1,0 +1,56 @@
+{
+  "arcs": [
+    {
+      "from": 1,
+      "to": 2,
+      "freq": 30
+    },
+    {
+      "from": 2,
+      "to": 3,
+      "freq": 30
+    },
+    {
+      "from": 3,
+      "to": 3,
+      "freq": 18
+    },
+    {
+      "from": 3,
+      "to": 4,
+      "freq": 30
+    },
+    {
+      "from": 4,
+      "to": 5,
+      "freq": 30
+    }
+  ],
+  "nodes": [
+    {
+      "id": 1,
+      "label": "INPUT",
+      "freq": 30
+    },
+    {
+      "id": 2,
+      "label": "A",
+      "freq": 30
+    },
+    {
+      "id": 3,
+      "label": "B",
+      "freq": 44
+    },
+    {
+      "id": 4,
+      "label": "C",
+      "freq": 31
+    },
+    {
+      "id": 5,
+      "label": "OUTPUT",
+      "freq": 30
+    }
+  ]
+}
