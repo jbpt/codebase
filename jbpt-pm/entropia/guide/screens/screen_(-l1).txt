@@ -1,0 +1,22 @@
+Computing event log statistics
+Completeness and Coverage are described in:
+M. Kabierski, M. Richter, and M. Weidlich, "Addressing the
+log representativeness problem using species discovery," in ICPM 2023
+
+============================= Event Log Statistics =============================
+
+--------------------------- Activity-based Analysis ----------------------------
+Activities: [A, B, C]
+Number of distinct activities: 3
+Number of total activities: 121
+Completeness: 1.0
+
+------------------- Directly-follows-relation-based Analysis -------------------
+Number of distinct DF-relations: 5
+Number of total DF-relations: 88
+Completeness: 1.0
+
+----------------------------- Trace-based Analysis -----------------------------
+Number of distinct traces: 5
+Number of total traces: 33
+Completeness: 1.0

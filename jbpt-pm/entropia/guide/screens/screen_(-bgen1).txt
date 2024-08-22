@@ -1,0 +1,30 @@
+Computing bootstrap generalization.
+The technique is described in:
+Artem Polyvyanyy, Alistair Moffat, Luciano Garcia-Bonuelos. Bootstrapping
+Generalization of Process Models Discovered from Event Data. CAiSE 2022
+
+===========================Calculating generalization===========================
+
+Sample Size = 264
+Number of Log Generations = 16
+Crossover Subtrace Length = 2
+Breeding Probability = 1.0
+Threshold for confidence interval of bootstrap samples = 0.01
+
+Model-log precision and recall calculated for bootstrap sample 1: 0.8640223021976667, 0.9481225021326511
+Model-log precision and recall calculated for bootstrap sample 2: 0.846835226895293, 0.9298562086663995
+Model-log precision and recall calculated for bootstrap sample 3: 0.8789360974064723, 0.9703714487638393
+Model-log precision and recall calculated for bootstrap sample 4: 0.8640223021901551, 0.9481512297480506
+Model-log precision and recall calculated for bootstrap sample 5: 0.8399359447535413, 0.9273141266860363
+Model-log precision and recall calculated for bootstrap sample 6: 0.8468352269011715, 0.9418416732973515
+Model-log precision and recall calculated for bootstrap sample 7: 0.8789360974064715, 0.9377155545915118
+Model-log precision and recall calculated for bootstrap sample 8: 0.8789360974064718, 0.9426623519201563
+Model-log precision and recall calculated for bootstrap sample 9: 0.8789360974064719, 0.9377155545915125
+Model-log precision and recall calculated for bootstrap sample 10: 0.8640223021081593, 0.9368237287963496
+Model-log precision and recall calculated for bootstrap sample 11: 0.8789360974064686, 0.9528753340039785
+
+===========================Calculated generalization============================
+
+Generalization calculated in 6296 ms with 11 samples.
+Model-system precision: 0.8654867083707584 +/- 0.009628352340204586
+Model-system recall: 0.9430408830179853 +/- 0.007616113385628391

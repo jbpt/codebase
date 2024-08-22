@@ -1,0 +1,2 @@
+> java -jar jbpt-pm-entropia-1.7.jar -l=examples/log3.xes -lra -tr -s
+0.8484848484848485

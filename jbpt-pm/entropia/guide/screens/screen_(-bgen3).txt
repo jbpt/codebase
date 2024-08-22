@@ -1,0 +1,39 @@
+Computing bootstrap generalization.
+The technique is described in:
+Artem Polyvyanyy, Alistair Moffat, Luciano Garcia-Bonuelos. Bootstrapping
+Generalization of Process Models Discovered from Event Data. CAiSE 2022
+
+===========================Calculating generalization===========================
+
+Sample Size = 1000
+Number of Samples = 20
+Number of Log Generations = 16
+Crossover Subtrace Length = 2
+Breeding Probability = 0.5
+
+Model-log precision and recall calculated for bootstrap sample 1: 0.8640223023960756, 0.9316078514432434
+Model-log precision and recall calculated for bootstrap sample 2: 0.8882953280705439, 0.9416055428031388
+Model-log precision and recall calculated for bootstrap sample 3: 0.8640223022539603, 0.921805445155556
+Model-log precision and recall calculated for bootstrap sample 4: 0.8640223022681677, 0.9481512298336585
+Model-log precision and recall calculated for bootstrap sample 5: 0.8640223022654226, 0.9368237289668605
+Model-log precision and recall calculated for bootstrap sample 6: 0.864022302362209, 0.9481512299368573
+Model-log precision and recall calculated for bootstrap sample 7: 0.8640223022423997, 0.9667939526581532
+Model-log precision and recall calculated for bootstrap sample 8: 0.864022302265727, 0.9481512298309965
+Model-log precision and recall calculated for bootstrap sample 9: 0.8640223022506948, 0.9316078512864893
+Model-log precision and recall calculated for bootstrap sample 10: 0.86402230226115, 0.9481512298259573
+Model-log precision and recall calculated for bootstrap sample 11: 0.8789360974064712, 0.9703714487638323
+Model-log precision and recall calculated for bootstrap sample 12: 0.8640223022574599, 0.9481512298219085
+Model-log precision and recall calculated for bootstrap sample 13: 0.8789360974064726, 0.9376442101432018
+Model-log precision and recall calculated for bootstrap sample 14: 0.8789360974064709, 0.942662351920154
+Model-log precision and recall calculated for bootstrap sample 15: 0.8640223022271509, 0.9539061777646949
+Model-log precision and recall calculated for bootstrap sample 16: 0.864022302276446, 0.9218042849623546
+Model-log precision and recall calculated for bootstrap sample 17: 0.878936097406473, 0.9528750949556504
+Model-log precision and recall calculated for bootstrap sample 18: 0.8640223022513908, 0.9481512298152467
+Model-log precision and recall calculated for bootstrap sample 19: 0.8789360974064728, 0.9377155545497414
+Model-log precision and recall calculated for bootstrap sample 20: 0.8640223022648623, 0.9539061778063306
+
+===========================Calculated generalization============================
+
+Generalization calculated in 12226 ms with 20 samples.
+Model-system precision: 0.8689644023473011 +/- 0.0036445059613284285
+Model-system recall: 0.9445018526122011 +/- 0.005750771071582731

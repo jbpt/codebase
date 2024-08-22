@@ -1,0 +1,81 @@
+\section*{Bootstrap Generalization Measure}
+\setcounter{subsection}{0}
+
+To compute the generalization of a process model with bootstrap generalization approach~\cite{Polyvyanyy2022Bootstrapping}, use the option (\textcolor{darkcandyapplered}{\footnotesize\ttfamily-bgen}) as follows.
+\begin{lstlisting}[style=CL]
+>java -jar !jbpt-pm-entropia-1.5.jar! @-bgen@ &-rel&=log3.xes &-ret&=model3.json
+\end{lstlisting}
+
+\textbf{Output Screen:}%chnage
+\lstinputlisting[style=DOS]{screens/screen_(-bgen1).txt}
+
+Note that the model you want to analyze should be provided in JSON format.
+Each DFG node has a string label for the activity name, a numerical frequency for activity execution, and a unique identifier.
+Arcs connect nodes by their source and target numbers, along with their occurrence frequency.
+The start and end nodes should be labeled \texttt{INPUT} and \texttt{OUTPUT} to indicate process boundaries.
+Refer to Listing~\ref{lst:dfg} for a sample representation.
+%\begin{wrapfigure}{R}{0.35\textwidth}
+%  \vspace{-5mm}
+
+\begin{minipage}[t]{\textwidth}
+        \vspace{0pt}
+        \begin{lstlisting}[caption={Sample JSON representation.}, label={lst:dfg}]
+{ "nodes": [
+    { "id": 1, "label": "INPUT",  "freq": 30 },
+    { "id": 2, "label": "A",      "freq": 30 },
+    { "id": 3, "label": "B",      "freq": 30 },
+    { "id": 4, "label": "OUTPUT", "freq": 30 }
+  ],
+  "arcs": [
+    { "from": 1, "to": 2, "freq": 30 },
+    { "from": 2, "to": 3, "freq": 30 },
+    { "from": 3, "to": 4, "freq": 18 }
+  ]
+}
+        \end{lstlisting}
+    \end{minipage}
+%    \vspace{-5mm}
+%\end{wrapfigure}
+
+You can adjust the underlying bootstrapping process with several parameters for bootstrap generalization estimation, including sample size (\texttt{n}), number of samples (\texttt{m}), number of log generations (\texttt{g}), crossover subtrace length (\texttt{k}), breeding probability (\texttt{p}), and threshold for confidence interval of bootstrap samples (\texttt{ep}).
+These parameters, detailed in~\cite{Polyvyanyy2022Bootstrapping}, are optional for tool usage.
+
+\begin{lstlisting}[style=CL]
+>java -jar !jbpt-pm-entropia-1.5.jar! @-bgen@ &-rel&=log3.xes &-ret&=model3.json -s &-m&=1000
+&-ep&=0.005
+\end{lstlisting}
+
+\textbf{Output Screen:}%chnage
+\lstinputlisting[style=DOS]{screens/screen_(-bgen2).txt}
+
+Here, bootstrapping continues until 1,000 samples
+are reached, unless the confidence interval for both
+precision and recall of the bootstrap samples falls
+below 0.005, triggering early termination.
+And this calculation will  be done in silent mode,
+showing only the final result.
+
+%Model-system precision: 0.922949821721433 +/- 0.00469559925550323
+%Model-system recall: 0.923083213341255 +/- 0.004965976603082337
+
+Another configuration might be as follows:
+
+\begin{lstlisting}[style=CL]
+>java -jar !jbpt-pm-entropia-1.5.jar! @-bgen@ &-rel&=log3.xes &-ret&=model3.json &-n&=1000 &-m&=20
+&-p&=0.5
+\end{lstlisting}
+
+\textbf{Output Screen:}%chnage
+\lstinputlisting[style=DOS]{screens/screen_(-bgen3).txt}
+
+This configuration generates 20 bootstrap samples, each
+containing 1,000 traces, with new traces being generated
+50\% of the time, and existing traces used the remaining 50\%.
+
+
+
+
+
+
+
+

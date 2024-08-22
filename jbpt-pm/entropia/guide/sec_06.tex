@@ -1,0 +1,40 @@
+\section*{Log Representativeness Measures}
+\setcounter{subsection}{0}
+
+Entropia allows users to evaluate an event log with respect to
+its generative system based on completeness, coverage,~\cite{Kabierski2023Addressing}
+and log representativeness approximation (LRA)~\cite{Karunaratne2024Role}.
+This analysis can be done for specific event data aspects: activities, directly-follows relations, or traces.
+
+\subsection{Completeness}
+
+You can calculate the log completeness~\cite{Kabierski2023Addressing} with the following command.
+\begin{lstlisting}[style=CL]
+>java -jar !jbpt-pm-entropia-1.5.jar! @-l@=log3.xes &-com&
+\end{lstlisting}
+
+\textbf{Output Screen:}%chnage
+\lstinputlisting[style=DOS]{screens/screen_(-l1).txt}
+
+\subsection{Coverage}
+
+To calculate the log coverage for activities and directly-follows relations only, use the following command.
+\begin{lstlisting}[style=CL]
+>java -jar !jbpt-pm-entropia-1.5.jar! @-l@=log3.xes &-cov& &-act& &-dfr&
+\end{lstlisting}
+
+\textbf{Output Screen:}%chnage
+\lstinputlisting[style=DOS]{screens/screen_(-l2).txt}
+
+\subsection{LRA}
+
+To analyze the trace-based log representativeness approximation in silent mode, execute this command.
+
+\begin{lstlisting}[style=CL]
+>java -jar !jbpt-pm-entropia-1.5.jar! @-l@=log3.xes &-lra& &-tr& &-s&
+\end{lstlisting}
+
+\textbf{Output Screen:}%chnage
+\lstinputlisting[style=DOS]{screens/screen_(-l3).txt}
+
+
