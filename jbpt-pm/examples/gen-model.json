@@ -1,0 +1,96 @@
+{
+  "arcs": [
+    {
+      "from": 1,
+      "to": 2,
+      "freq": 30
+    },
+    {
+      "from": 2,
+      "to": 3,
+      "freq": 30
+    },
+    {
+      "from": 3,
+      "to": 4,
+      "freq": 30
+    },
+    {
+      "from": 4,
+      "to": 6,
+      "freq": 30
+    },
+    {
+      "from": 6,
+      "to": 5,
+      "freq": 30
+    },
+    {
+      "from": 2,
+      "to": 7,
+      "freq": 30
+    },
+    {
+      "from": 7,
+      "to": 8,
+      "freq": 30
+    },
+    {
+      "from": 8,
+      "to": 6,
+      "freq": 30
+    },
+    {
+      "from": 6,
+      "to": 2,
+      "freq": 30
+    },
+    {
+      "from": 8,
+      "to": 8,
+      "freq": 18
+    }
+  ],
+  "nodes": [
+    {
+      "id": 1,
+      "label": "INPUT",
+      "freq": 30
+    },
+    {
+      "id": 2,
+      "label": "a",
+      "freq": 30
+    },
+    {
+      "id": 3,
+      "label": "b",
+      "freq": 44
+    },
+    {
+      "id": 4,
+      "label": "c",
+      "freq": 30
+    },
+    {
+      "id": 6,
+      "label": "f",
+      "freq": 30
+    },
+    {
+      "id": 5,
+      "label": "OUTPUT",
+      "freq": 30
+    },
+    {
+      "id": 7,
+      "label": "d",
+      "freq": 30
+    },
+    {
+      "id": 8,
+      "label": "e",
+      "freq": 30
+    }
+  ]
+}

@@ -572,4 +572,61 @@
       <date key="time:timestamp" value="2024-08-15T03:00:00.000+00:00"/>
     </event>
   </trace>
+  <trace>
+      <string key="concept:name" value="Case 31"/>
+      <event>
+        <string key="concept:name" value="A"/>
+        <date key="time:timestamp" value="2024-08-15T00:00:00.000+00:00"/>
+      </event>
+      <event>
+        <string key="concept:name" value="B"/>
+        <date key="time:timestamp" value="2024-08-15T01:00:00.000+00:00"/>
+      </event>
+      <event>
+        <string key="concept:name" value="C"/>
+        <date key="time:timestamp" value="2024-08-15T02:00:00.000+00:00"/>
+      </event>
+      <event>
+        <string key="concept:name" value="C"/>
+        <date key="time:timestamp" value="2024-08-15T03:00:00.000+00:00"/>
+      </event>
+    </trace>
+    <trace>
+        <string key="concept:name" value="Case 32"/>
+        <event>
+          <string key="concept:name" value="A"/>
+          <date key="time:timestamp" value="2024-08-15T00:00:00.000+00:00"/>
+        </event>
+        <event>
+          <string key="concept:name" value="B"/>
+          <date key="time:timestamp" value="2024-08-15T01:00:00.000+00:00"/>
+        </event>
+        <event>
+          <string key="concept:name" value="C"/>
+          <date key="time:timestamp" value="2024-08-15T02:00:00.000+00:00"/>
+        </event>
+        <event>
+          <string key="concept:name" value="C"/>
+          <date key="time:timestamp" value="2024-08-15T03:00:00.000+00:00"/>
+        </event>
+      </trace>
+      <trace>
+          <string key="concept:name" value="Case 33"/>
+          <event>
+            <string key="concept:name" value="A"/>
+            <date key="time:timestamp" value="2024-08-15T00:00:00.000+00:00"/>
+          </event>
+          <event>
+            <string key="concept:name" value="A"/>
+            <date key="time:timestamp" value="2024-08-15T01:00:00.000+00:00"/>
+          </event>
+          <event>
+            <string key="concept:name" value="B"/>
+            <date key="time:timestamp" value="2024-08-15T02:00:00.000+00:00"/>
+          </event>
+          <event>
+            <string key="concept:name" value="C"/>
+            <date key="time:timestamp" value="2024-08-15T03:00:00.000+00:00"/>
+          </event>
+        </trace>
 </log>

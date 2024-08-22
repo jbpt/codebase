@@ -1,0 +1,1612 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<log xes.version="2.0" xes.features="nested-attributes" xmlns="http://www.xes-standard.org/">
+
+  <!-- Trace: abbcf (repeated 5 times) -->
+  <trace>
+    <string key="concept:name" value="Trace_abbcf_1"/>
+    <event>
+      <string key="concept:name" value="a"/>
+    </event>
+    <event>
+      <string key="concept:name" value="b"/>
+    </event>
+    <event>
+      <string key="concept:name" value="b"/>
+    </event>
+    <event>
+          <string key="concept:name" value="b"/>
+        </event>
+    <event>
+      <string key="concept:name" value="c"/>
+    </event>
+    <event>
+      <string key="concept:name" value="f"/>
+    </event>
+  </trace>
+
+  <trace>
+    <string key="concept:name" value="Trace_abbcf_2"/>
+    <event>
+      <string key="concept:name" value="a"/>
+    </event>
+    <event>
+      <string key="concept:name" value="b"/>
+    </event>
+    <event>
+      <string key="concept:name" value="b"/>
+    </event>
+    <event>
+          <string key="concept:name" value="b"/>
+        </event>
+    <event>
+      <string key="concept:name" value="c"/>
+    </event>
+    <event>
+      <string key="concept:name" value="f"/>
+    </event>
+  </trace>
+
+  <trace>
+    <string key="concept:name" value="Trace_abbcf_3"/>
+    <event>
+      <string key="concept:name" value="a"/>
+    </event>
+    <event>
+      <string key="concept:name" value="b"/>
+    </event>
+    <event>
+          <string key="concept:name" value="b"/>
+        </event>
+    <event>
+      <string key="concept:name" value="b"/>
+    </event>
+    <event>
+      <string key="concept:name" value="c"/>
+    </event>
+    <event>
+      <string key="concept:name" value="f"/>
+    </event>
+  </trace>
+
+  <trace>
+    <string key="concept:name" value="Trace_abbcf_4"/>
+    <event>
+      <string key="concept:name" value="a"/>
+    </event>
+    <event>
+      <string key="concept:name" value="b"/>
+    </event>
+    <event>
+      <string key="concept:name" value="b"/>
+    </event>
+    <event>
+          <string key="concept:name" value="b"/>
+        </event>
+    <event>
+      <string key="concept:name" value="c"/>
+    </event>
+    <event>
+      <string key="concept:name" value="f"/>
+    </event>
+  </trace>
+
+  <trace>
+    <string key="concept:name" value="Trace_abbcf_5"/>
+    <event>
+      <string key="concept:name" value="a"/>
+    </event>
+    <event>
+      <string key="concept:name" value="b"/>
+    </event>
+    <event>
+      <string key="concept:name" value="b"/>
+    </event>
+    <event>
+          <string key="concept:name" value="b"/>
+        </event>
+    <event>
+      <string key="concept:name" value="c"/>
+    </event>
+    <event>
+      <string key="concept:name" value="f"/>
+    </event>
+  </trace>
+
+  <!-- Trace: abcf (repeated 20 times) -->
+  <trace>
+      <string key="concept:name" value="Trace_abcf_1"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="b"/>
+      </event>
+      <event>
+        <string key="concept:name" value="c"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_abcf_2"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="b"/>
+      </event>
+      <event>
+        <string key="concept:name" value="c"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_abcf_3"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="b"/>
+      </event>
+      <event>
+        <string key="concept:name" value="c"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_abcf_4"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="b"/>
+      </event>
+      <event>
+        <string key="concept:name" value="c"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_abcf_5"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="b"/>
+      </event>
+      <event>
+        <string key="concept:name" value="c"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_abcf_6"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="b"/>
+      </event>
+      <event>
+        <string key="concept:name" value="c"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_abcf_7"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="b"/>
+      </event>
+      <event>
+        <string key="concept:name" value="c"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_abcf_8"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="b"/>
+      </event>
+      <event>
+        <string key="concept:name" value="c"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_abcf_9"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="b"/>
+      </event>
+      <event>
+        <string key="concept:name" value="c"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_abcf_10"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="b"/>
+      </event>
+      <event>
+        <string key="concept:name" value="c"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_abcf_11"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="b"/>
+      </event>
+      <event>
+        <string key="concept:name" value="c"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_abcf_12"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="b"/>
+      </event>
+      <event>
+        <string key="concept:name" value="c"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_abcf_13"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="b"/>
+      </event>
+      <event>
+        <string key="concept:name" value="c"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_abcf_14"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="b"/>
+      </event>
+      <event>
+        <string key="concept:name" value="c"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_abcf_15"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="b"/>
+      </event>
+      <event>
+        <string key="concept:name" value="c"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_abcf_16"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="b"/>
+      </event>
+      <event>
+        <string key="concept:name" value="c"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_abcf_17"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="b"/>
+      </event>
+      <event>
+        <string key="concept:name" value="c"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_abcf_18"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="b"/>
+      </event>
+      <event>
+        <string key="concept:name" value="c"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_abcf_19"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="b"/>
+      </event>
+      <event>
+        <string key="concept:name" value="c"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_abcf_20"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="b"/>
+      </event>
+      <event>
+        <string key="concept:name" value="c"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+
+  <!-- Trace: addef (repeated 1 time) -->
+  <trace>
+    <string key="concept:name" value="Trace_addef_1"/>
+    <event>
+      <string key="concept:name" value="a"/>
+    </event>
+    <event>
+      <string key="concept:name" value="d"/>
+    </event>
+    <event>
+      <string key="concept:name" value="d"/>
+    </event>
+    <event>
+      <string key="concept:name" value="e"/>
+    </event>
+    <event>
+      <string key="concept:name" value="f"/>
+    </event>
+  </trace>
+
+  <!-- Trace: adeef (repeated 10 times) -->
+  <trace>
+      <string key="concept:name" value="Trace_adeef_1"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_adeef_2"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_adeef_3"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_adeef_4"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_adeef_5"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_adeef_6"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_adeef_7"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_adeef_8"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_adeef_9"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_adeef_10"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <!-- Trace: adefabcfadef (repeated 20 times) -->
+  <trace>
+      <string key="concept:name" value="Trace_adefabcfadef_1"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="b"/>
+      </event>
+      <event>
+        <string key="concept:name" value="c"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_adefabcfadef_2"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="b"/>
+      </event>
+      <event>
+        <string key="concept:name" value="c"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_adefabcfadef_3"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="b"/>
+      </event>
+      <event>
+        <string key="concept:name" value="c"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_adefabcfadef_4"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="b"/>
+      </event>
+      <event>
+        <string key="concept:name" value="c"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_adefabcfadef_5"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="b"/>
+      </event>
+      <event>
+        <string key="concept:name" value="c"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_adefabcfadef_6"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="b"/>
+      </event>
+      <event>
+        <string key="concept:name" value="c"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_adefabcfadef_7"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="b"/>
+      </event>
+      <event>
+        <string key="concept:name" value="c"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_adefabcfadef_8"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="b"/>
+      </event>
+      <event>
+        <string key="concept:name" value="c"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_adefabcfadef_9"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="b"/>
+      </event>
+      <event>
+        <string key="concept:name" value="c"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_adefabcfadef_10"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="b"/>
+      </event>
+      <event>
+        <string key="concept:name" value="c"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_adefabcfadef_11"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="b"/>
+      </event>
+      <event>
+        <string key="concept:name" value="c"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_adefabcfadef_12"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="b"/>
+      </event>
+      <event>
+        <string key="concept:name" value="c"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_adefabcfadef_13"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="b"/>
+      </event>
+      <event>
+        <string key="concept:name" value="c"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_adefabcfadef_14"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="b"/>
+      </event>
+      <event>
+        <string key="concept:name" value="c"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_adefabcfadef_15"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="b"/>
+      </event>
+      <event>
+        <string key="concept:name" value="c"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_adefabcfadef_16"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="b"/>
+      </event>
+      <event>
+        <string key="concept:name" value="c"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_adefabcfadef_17"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="b"/>
+      </event>
+      <event>
+        <string key="concept:name" value="c"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_adefabcfadef_18"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="b"/>
+      </event>
+      <event>
+        <string key="concept:name" value="c"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_adefabcfadef_19"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="b"/>
+      </event>
+      <event>
+        <string key="concept:name" value="c"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_adefabcfadef_20"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="b"/>
+      </event>
+      <event>
+        <string key="concept:name" value="c"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+
+  <!-- Trace: adef (repeated 10 times) -->
+  <trace>
+      <string key="concept:name" value="Trace_adef_1"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_adef_2"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_adef_3"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_adef_4"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_adef_5"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_adef_6"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_adef_7"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_adef_8"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_adef_9"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+  <trace>
+      <string key="concept:name" value="Trace_adef_10"/>
+      <event>
+        <string key="concept:name" value="a"/>
+      </event>
+      <event>
+        <string key="concept:name" value="d"/>
+      </event>
+      <event>
+        <string key="concept:name" value="e"/>
+      </event>
+      <event>
+        <string key="concept:name" value="f"/>
+      </event>
+    </trace>
+
+
+</log>
