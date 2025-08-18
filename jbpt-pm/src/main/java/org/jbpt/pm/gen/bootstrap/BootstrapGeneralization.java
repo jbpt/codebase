@@ -1,5 +1,11 @@
 package org.jbpt.pm.gen.bootstrap;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.math3.distribution.TDistribution;
 import org.apache.commons.math3.util.Pair;
 import org.jbpt.pm.gen.bootstrap.dfg.DfgUtils;
@@ -8,11 +14,6 @@ import org.jbpt.pm.models.FDAGraph;
 import org.jbpt.pm.quality.EntropyPrecisionRecallMeasure;
 import org.jbpt.pm.tools.QualityMeasuresCLI;
 import org.jbpt.pm.utils.Utils;
-
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.*;
 
 public class BootstrapGeneralization {
 

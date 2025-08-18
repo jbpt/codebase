@@ -26,6 +26,7 @@ import org.jbpt.pm.gen.bootstrap.Generalization;
 import org.jbpt.pm.log.EventLogCLI;
 import org.jbpt.pm.models.FDAGraph;
 import org.jbpt.pm.models.SAutomaton;
+import org.jbpt.pm.mspd.utilities.MetaheuristicStochasticProcessDiscovery;
 import org.jbpt.pm.quality.AbstractQualityMeasure;
 import org.jbpt.pm.quality.DistanceMeasure;
 import org.jbpt.pm.quality.EntropyMeasure;
@@ -93,12 +94,12 @@ import org.processmining.stochasticawareconformancechecking.cli.CLI;
 /**
  * Command line interface to quality measures for Process Mining and Process Querying.
  * 
- * @version 1.7
+ * @version 1.8
  * 
  * @author Artem Polyvyanyy, Anna Kalenkova 
  */ 
 public final class QualityMeasuresCLI {
-	final private static String	version	= "1.7";
+	final private static String	version	= "1.8";
 	
 	private static Object relevantTraces	= null;
 	private static Object retrievedTraces	= null;
@@ -123,7 +124,14 @@ public final class QualityMeasuresCLI {
 	    	// auxiliary
 	    	Option helpOption		= Option.builder("h").longOpt("help").numberOfArgs(0).required(false).desc("print help message").hasArg(false).build();
 	    	Option versionOption	= Option.builder("v").longOpt("version").numberOfArgs(0).required(false).desc("get version of this tool").hasArg(false).build();
+	    
 	    	
+	    	Option erbm			    = Option.builder("erbm").longOpt("entropic relevance background model").numberOfArgs(0).required(false).desc("type of the background model").hasArg(false).build();
+	    	Option optm			    = Option.builder("optm").longOpt("optimized model").numberOfArgs(0).required(false).desc("optimized model").hasArg(false).build();
+	    	Option el               = Option.builder("el").longOpt("event log").numberOfArgs(0).required(false).desc("event log ").hasArg(false).build();
+	    	Option maxItr           = Option.builder("maxItr").longOpt("Maximum Iteration").numberOfArgs(0).required(false).desc("number of Iterations").hasArg(false).build();
+	    	Option filthreshold           = Option.builder("ft").longOpt("filtering threshold").numberOfArgs(0).required(false).desc("lower and upper bound of filtering").hasArg(false).build();
+
 	    	// exact matching measures
 	    	Option emprMeasure		= Option.builder("empr").longOpt("precision-recall").numberOfArgs(0).required(false).desc("compute entropy-based precision and recall (exact trace matching)").hasArg(false).build();
 	    	Option empMeasure		= Option.builder("emp").longOpt("precision").numberOfArgs(0).required(false).desc("compute entropy-based precision (exact trace matching)").hasArg(false).build();
@@ -164,7 +172,7 @@ public final class QualityMeasuresCLI {
 	    	Option distance			= Option.builder("dist").longOpt("distance").numberOfArgs(0).required(false).desc("compute distance").hasArg(false).build();
 	    	// compute partial distance 
 	    	Option pdistance	    = Option.builder("pdist").longOpt("partial-distance").numberOfArgs(0).required(false).desc("compute partial distance").hasArg(false).build();
-	    	
+
 	    	// silent option
 	    	Option silent			= Option.builder("s").longOpt("silent").numberOfArgs(0).required(false).desc("print the results only").hasArg(false).build();
 	    	
@@ -173,6 +181,9 @@ public final class QualityMeasuresCLI {
 
 			// bootstrap gen
 			Option bootstrapGen		= Option.builder("bgen").longOpt("bootstrap-gen").numberOfArgs(0).required(false).desc("compute bootstrap generalization").hasArg(false).build();
+			//
+			Option metaStoProcDis	= Option.builder("mspd").longOpt("metaheuristic-stochastic-process-discovery").numberOfArgs(0).required(false).desc("discover model via metaheuristics").hasArg(false).build();
+
 			Option sampleSize		= Option.builder("n").longOpt("sample-size").hasArg(true).optionalArg(false).valueSeparator('=').argName("sample size").required(false).desc("sample size for bootstrapping").build();
 			Option numOfSamples		= Option.builder("m").longOpt("num-of-samples").hasArg(true).optionalArg(false).valueSeparator('=').argName("num of samples").required(false).desc("number of samples for bootstrapping").build();
 			Option numOfGenerations	= Option.builder("g").longOpt("num-of-generations").hasArg(true).optionalArg(false).valueSeparator('=').argName("num of generations").required(false).desc("number of generations for bootstrapping").build();
@@ -212,6 +223,7 @@ public final class QualityMeasuresCLI {
 	    	cmdGroup.addOption(distance);
 	    	cmdGroup.addOption(pdistance);
 			cmdGroup.addOption(bootstrapGen);
+			cmdGroup.addOption(metaStoProcDis);
 			cmdGroup.addOption(log);
 //	    	cmdGroup.addOption(doentMeasure);
 	    	cmdGroup.setRequired(true);
@@ -242,10 +254,19 @@ public final class QualityMeasuresCLI {
 	    	options.addOption(silent);
 	    	options.addOption(trust);
 	    	
+	    	options.addOption(erbm);
+	    	options.addOption(optm);
+	    	options.addOption(el);
+	    	options.addOption(maxItr);
+	    	options.addOption(filthreshold);
 	    	
 	        // parse the command line arguments
 	        CommandLine cmd = parser.parse(options, args);
-	        
+	        if(cmd.hasOption("mspd"))
+	        {
+	        	MetaheuristicStochasticProcessDiscovery.executeMetaheuristicProcessDiscovery(args);
+	        	return;
+	        }
 	        // redirecting standard output in silent mode
 	        if (cmd.hasOption("s")) {
 	        	bSilent = true;
