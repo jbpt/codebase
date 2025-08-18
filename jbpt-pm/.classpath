@@ -39,6 +39,5 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/openxes-2.16.jar"/>
 	<classpathentry kind="lib" path="lib/commons-math3-3.6.1.jar"/>
-	<classpathentry kind="lib" path="lib/jgraphx-1.4.0.2.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
