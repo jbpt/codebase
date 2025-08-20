@@ -119,7 +119,6 @@ public class PSO  extends Optimization{
                 }
             }
         }
-        System.out.println(executionTime+" "+System.nanoTime());
         executionTime = (System.nanoTime() - executionTime)/ (currentIter * 1_000_000_000.0);
         executor.shutdown(); // Shutdown the executor service
     }

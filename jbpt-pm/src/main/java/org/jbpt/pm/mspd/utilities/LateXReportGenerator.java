@@ -374,6 +374,7 @@ public class LateXReportGenerator {
 			myWriter.write("\\usepackage{booktabs}\n");
 			myWriter.write("\\usepackage{caption}\n");
 			myWriter.write("\\usepackage{subcaption}\n");
+			myWriter.write("\\usepackage{ragged2e}\n");
 			myWriter.write("\\begin{document}\n");
 			myWriter.write("\\date{Compiled at {\\ampmtime} on {\\today}}\n");
 			myWriter.write("\\title{Entropia: Process Discovery Experiment Report}\n");
@@ -382,7 +383,8 @@ public class LateXReportGenerator {
 			myWriter.write("\\section{Introduction}\n");
 
 			myWriter.write("This report summarizes the setup and results of a process discovery experiment conducted using the \\textsl{Entropia}\n");
-			myWriter.write("tool~\\cite{CITE-TOOL-PAPER}.\n");
+			//myWriter.write("tool~\\cite{CITE-TOOL-PAPER}.\n");
+			myWriter.write("tool.\n");
 			myWriter.write("The following section outlines the discovery techniques used and their configurations in the experiment.\n");
 			myWriter.write("\\Cref{sec:quality} specifies the evaluation criteria used to assess the quality of the discovered models and to compare the performance of the discovery techniques.\n");
 			myWriter.write("Finally, \\cref{sec:results} presents the experimental results.\n");
@@ -390,9 +392,22 @@ public class LateXReportGenerator {
 
 			myWriter.write("The command line used to execute the experiment is listed below:\n");
 
-			myWriter.write("\\begin{verbatim}\n");
-			myWriter.write("TODO: command line\n");
-			myWriter.write("\\end{verbatim}\n");
+			//myWriter.write("\\begin{verbatim}\n");
+			String command="\\begin{justify}\n -mspd -el \""+parms.get("LOG_DIRECTORY").replaceAll("\\_", "\\\\_")+"\" ";
+			int i=1;
+			for(String s:algorithms.keySet())
+				command+=" m"+(i++)+" ";
+			command+="-p "+parms.get("POPULATION")+" ";
+			command+="-mxItr "+parms.get("MAX_GENERATION")+" ";
+			command+="-t "+ parms.get("TIME_LIMITATION")+" ";
+			command+="-mms "+ parms.get("Maximum Model Size")+" ";
+			command+="-pfs "+parms.get("PARETO_LIST_SIZE")+" ";
+			command+="-ebrm "+parms.get("Entropic Relevance Background Model")+" ";
+			command+="- optm "+parms.get("Optimal Model")+" \n\\end{justify}";
+			
+			myWriter.write(command);
+			//myWriter.write("TODO: command line\n");
+			//myWriter.write("\\end{verbatim}\n");
 			myWriter.write("\\noindent\n");
 			myWriter.write("\\Cref{tbl:experiment} summarizes the key characteristics of the experimental setup used for performance comparison.\n");
 

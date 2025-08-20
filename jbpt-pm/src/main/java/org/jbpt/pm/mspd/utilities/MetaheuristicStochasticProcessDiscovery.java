@@ -224,7 +224,7 @@ public class MetaheuristicStochasticProcessDiscovery {
 		
 		MetaheuristicStochasticProcessDiscovery fspd = new MetaheuristicStochasticProcessDiscovery(1,1,"DFvM",fileDirectory,true,true,0.01,0.99,pareto_size,"d", LocalDateTime.now(),time_limit,bkgt,parms.get("Optimal Model"),sizeLimit);
 		List<Frontier> DFGList = new ArrayList<Frontier>();
-		System.out.println("DFvM Algorithm started "+sdf.format(new Date()));
+		System.out.println("DFvM algorithm started "+sdf.format(new Date()));
 
 		for(Frontier frontier:fspd.ExtractParetoList())
 		{
