@@ -1,5 +1,5 @@
-GASPD: GENETIC ALGORITHM FOR STOCHASTIC PROCESS DISCOVERY
-=========================================================
+<h1 align="center">GASPD</h1>
+<h3 align="center">Genetic Algorithm for Stochastic Process Discovery</h3>
 
 ## About
 GASPD is a new approach for discovering sound Stochastic Directed Action Graphs (SDAGs) from event logs.
