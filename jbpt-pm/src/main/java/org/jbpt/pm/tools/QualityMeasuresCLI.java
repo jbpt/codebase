@@ -23,7 +23,8 @@ import org.jbpt.petri.io.PNMLSerializer;
 import org.jbpt.pm.gen.bootstrap.BootstrapGeneralization;
 import org.jbpt.pm.log.EventLog;
 import org.jbpt.pm.gen.bootstrap.Generalization;
-import org.jbpt.pm.log.EventLogCLI;
+import org.jbpt.pm.log.rep.EventLogCLI;
+import org.jbpt.pm.log.sampling.EventLogSampleGenerator;
 import org.jbpt.pm.models.FDAGraph;
 import org.jbpt.pm.models.SAutomaton;
 import org.jbpt.pm.mspd.utilities.MetaheuristicStochasticProcessDiscovery;
@@ -191,7 +192,12 @@ public final class QualityMeasuresCLI {
 			Option breedProbability = Option.builder("p").longOpt("breeding-probability").hasArg(true).optionalArg(false).valueSeparator('=').argName("breeding probability").required(false).desc("breeding probability").build();
 			Option epsilon 			= Option.builder("ep").longOpt("epsilon").hasArg(true).optionalArg(false).valueSeparator('=').argName("threshold value").required(false).desc("threshold for confidence interval of bootstrap samples").build();
 
-			// event log
+			// event log sampling - n,g,k,p used from bootstrap options
+			Option breedingSample 	= Option.builder("brd").longOpt("breed").numberOfArgs(0).required(false).desc("generate a bred event log").hasArg(false).build();
+			Option inputLogFile	= Option.builder("i").longOpt("input-file").hasArg(true).optionalArg(false).valueSeparator('=').argName("input file path").required(false).desc("input log file path").build();
+			Option outputLogFile	= Option.builder("o").longOpt("output-file").hasArg(true).optionalArg(false).valueSeparator('=').argName("output file path").required(false).desc("output log file path").build();
+
+			// event log rep
 			Option log				= Option.builder("l").longOpt("log").hasArg(true).optionalArg(false).valueSeparator('=').argName("file path").required(false).desc("log file path").build();
 			Option completeness		= Option.builder("com").longOpt("completeness").numberOfArgs(0).required(false).desc("compute completeness of the event log").hasArg(false).build();
 			Option coverage			= Option.builder("cov").longOpt("coverage").numberOfArgs(0).required(false).desc("compute coverage of the event log").hasArg(false).build();
@@ -225,6 +231,7 @@ public final class QualityMeasuresCLI {
 			cmdGroup.addOption(bootstrapGen);
 			cmdGroup.addOption(metaStoProcDis);
 			cmdGroup.addOption(log);
+			cmdGroup.addOption(breedingSample);
 //	    	cmdGroup.addOption(doentMeasure);
 	    	cmdGroup.setRequired(true);
 	    	
@@ -240,6 +247,9 @@ public final class QualityMeasuresCLI {
 			options.addOption(subtraceLength);
 			options.addOption(breedProbability);
 			options.addOption(epsilon);
+
+			options.addOption(inputLogFile);
+			options.addOption(outputLogFile);
 
 			options.addOption(completeness);
 			options.addOption(coverage);
@@ -336,11 +346,16 @@ public final class QualityMeasuresCLI {
 					System.out.println("The technique is described in:");
 					System.out.println("Artem Polyvyanyy, Alistair Moffat, Luciano Garcia-Bonuelos. Bootstrapping" +
 							"\nGeneralization of Process Models Discovered from Event Data. CAiSE 2022 ");
+				} else if (cmd.hasOption("brd")) {
+					System.out.println("Generating breeding sample");
+					System.out.println("The technique is described in:");
+					System.out.println("Artem Polyvyanyy, Alistair Moffat, Luciano Garcia-Bonuelos. Bootstrapping" +
+							"\nGeneralization of Process Models Discovered from Event Data. CAiSE 2022 ");
 				} else if (cmd.hasOption("l")) {
 					System.out.println("Computing event log statistics");
-					System.out.println("Completeness and Coverage are described in:");
-					System.out.println("M. Kabierski, M. Richter, and M. Weidlich, “Addressing the\n" +
-							"log representativeness problem using species discovery,” in ICPM 2023");
+					System.out.println("The techniques are described in:");
+					System.out.println("A. Karunaratne, A. Polyvyanyy, A. Moffat, \"Generalization estimation in process mining: The impact of event data quality,\" in Process Science 2025; and\n" +
+							"M. Kabierski, M. Richter, and M. Weidlich, \"Addressing the log representativeness problem using species discovery,\" in ICPM 2023");
 				}
 	        	if (cmd.hasOption("ent") || cmd.hasOption("dent")) {
 	        		
@@ -575,11 +590,11 @@ public final class QualityMeasuresCLI {
 			        	String spaces = StringUtils.repeat(" ", relevance.length());
 			        	System.out.println(String.format("Relevance calculated in"+ spaces + "%s ms.", (finish-start)));
 			        } else if (cmd.hasOption("bgen")) { // bootstrap gen
-						if(!cmd.hasOption("rel") || !cmd.hasOption("ret")) { // rel ret should be provided
+						if (!cmd.hasOption("rel") || !cmd.hasOption("ret")) { // rel ret should be provided
 							throw new ParseException("Provide both -rel and -ret parameters");
 						}
 						// model should be a DFG
-						if(!retrieveExtension(cmd.getOptionValue("ret")).equals("json") || !retrieveExtension(cmd.getOptionValue("rel")).equals("xes")) {
+						if (!retrieveExtension(cmd.getOptionValue("ret")).equals("json") || !retrieveExtension(cmd.getOptionValue("rel")).equals("xes")) {
 							throw new ParseException("Wrong -rel or -ret input formats");
 						}
 						EventLog eventLog = new EventLog().parseEventLogFromXES(cmd.getOptionValue("rel"));
@@ -594,7 +609,7 @@ public final class QualityMeasuresCLI {
 							g = cmd.hasOption("g") ? Integer.parseInt(cmd.getOptionValue("g")) : eventLog.size() / 2;
 							k = cmd.hasOption("k") ? Integer.parseInt(cmd.getOptionValue("k")) : 2;
 							p = cmd.hasOption("p") ? Double.parseDouble(cmd.getOptionValue("p")) : 1.0;
-						} catch(NumberFormatException e) {
+						} catch (NumberFormatException e) {
 							throw new ParseException("Wrong input formats");
 						}
 
@@ -641,6 +656,32 @@ public final class QualityMeasuresCLI {
 							Utils.forcePrinting();
 							System.out.println(generalization);
 						}
+					} else if (cmd.hasOption("brd")) {
+						if (!Objects.equals(retrieveExtension(cmd.getOptionValue("i")), "xes")) {
+							throw new ParseException("Wrong -i input format");
+						}
+						EventLog eventLog = new EventLog().parseEventLogFromXES(cmd.getOptionValue("i"));
+
+						String outputFile = cmd.getOptionValue("o");
+						String outExt = outputFile.substring(outputFile.lastIndexOf('.') + 1);
+						if (!Objects.equals(outExt, "xes")) {
+							throw new ParseException("Wrong -o output format");
+						}
+
+						// get inputs
+						int n;
+						int g;
+						int k;
+						double p;
+						try {
+							n = cmd.hasOption("n") ? Integer.parseInt(cmd.getOptionValue("n")) : 8 * eventLog.size();
+							g = cmd.hasOption("g") ? Integer.parseInt(cmd.getOptionValue("g")) : eventLog.size() / 2;
+							k = cmd.hasOption("k") ? Integer.parseInt(cmd.getOptionValue("k")) : 2;
+							p = cmd.hasOption("p") ? Double.parseDouble(cmd.getOptionValue("p")) : 1.0;
+						} catch (NumberFormatException e) {
+							throw new ParseException("Wrong input formats");
+						}
+						new EventLogSampleGenerator().generateBreedingSampleLog(eventLog, n, g, k, p, outputFile);
 					} else if (cmd.hasOption("l")) {
 						if (!Objects.equals(retrieveExtension(cmd.getOptionValue("l")), "xes")) {
 							throw new ParseException("Wrong -l input format");

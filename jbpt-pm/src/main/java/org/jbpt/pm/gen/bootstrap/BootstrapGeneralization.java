@@ -10,6 +10,7 @@ import org.apache.commons.math3.distribution.TDistribution;
 import org.apache.commons.math3.util.Pair;
 import org.jbpt.pm.gen.bootstrap.dfg.DfgUtils;
 import org.jbpt.pm.log.EventLog;
+import org.jbpt.pm.log.sampling.EventLogSampling;
 import org.jbpt.pm.models.FDAGraph;
 import org.jbpt.pm.quality.EntropyPrecisionRecallMeasure;
 import org.jbpt.pm.tools.QualityMeasuresCLI;

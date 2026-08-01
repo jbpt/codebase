@@ -1,5 +1,6 @@
-package org.jbpt.pm.log;
+package org.jbpt.pm.log.rep;
 
+import org.jbpt.pm.log.EventLog;
 import org.jbpt.pm.utils.Utils;
 
 public class EventLogCLI {

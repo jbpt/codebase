@@ -1,6 +1,7 @@
-package org.jbpt.pm.log;
+package org.jbpt.pm.log.rep;
 
 import org.apache.commons.math3.util.Pair;
+import org.jbpt.pm.log.EventLog;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package org.jbpt.pm.log;
+package org.jbpt.pm.log.rep;
 
 public enum EventDataEnum {
     TRACE,

@@ -1,4 +1,4 @@
-package org.jbpt.pm.log;
+package org.jbpt.pm.log.sampling;
 
 import java.util.Collection;
 

@@ -1,4 +1,4 @@
-package org.jbpt.pm.gen.bootstrap;
+package org.jbpt.pm.log.sampling;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,8 +8,7 @@ import java.util.Random;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.petri.Transition;
 import org.jbpt.pm.log.EventLog;
-import org.jbpt.pm.log.EventLogUtils;
-import org.jbpt.pm.log.Trace;
+import org.jbpt.pm.log.rep.Trace;
 
 public class EventLogSampling extends EventLogUtils {
 	

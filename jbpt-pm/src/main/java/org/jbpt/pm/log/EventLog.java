@@ -4,6 +4,7 @@ import org.deckfour.xes.in.XParser;
 import org.deckfour.xes.in.XesXmlParser;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
+import org.jbpt.pm.log.rep.Trace;
 
 import java.io.*;
 import java.util.ArrayList;
